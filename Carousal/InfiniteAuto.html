@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carousel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0B1F4B;
+      --gold: #C9A84C;
+      --gold-light: rgba(201,168,76,0.12);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #fff;
+    }
+
+    /* ══════════════════════════════
+       CAROUSEL SECTION
+    ══════════════════════════════ */
+    .carousel-section {
+      background: #fff;
+      padding: 5rem 0;
+      overflow: hidden;
+    }
+
+    .carousel-header {
+      max-width: 1200px;
+      margin: 0 auto 2.8rem;
+      padding: 0 2rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .carousel-label {
+      display: inline-flex;
+      align-items: center;
+      background: var(--gold-light);
+      border: 1px solid rgba(201,168,76,0.28);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 0.75rem;
+    }
+
+    .carousel-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .carousel-title span { color: var(--gold); font-style: italic; }
+
+    /* Arrow buttons */
+    .carousel-arrows { display: flex; gap: 10px; flex-shrink: 0; }
+
+    .c-arrow {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      border: 1.5px solid #E0E0E0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s,
+                  transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.2s;
+      flex-shrink: 0;
+    }
+
+    .c-arrow:hover {
+      background: var(--navy);
+      border-color: var(--navy);
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(11,31,75,0.22);
+    }
+
+    .c-arrow:hover svg path { stroke: #fff; }
+    .c-arrow:active { transform: scale(0.96); }
+    .c-arrow svg { width: 18px; height: 18px; pointer-events: none; }
+
+    /* Viewport */
+    .carousel-viewport {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .carousel-viewport::before,
+    .carousel-viewport::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .carousel-viewport::before {
+      left: 0;
+      background: linear-gradient(to right, #fff 20%, transparent 100%);
+    }
+
+    .carousel-viewport::after {
+      right: 0;
+      background: linear-gradient(to left, #fff 20%, transparent 100%);
+    }
+
+    /* Track */
+    .carousel-track {
+      display: flex;
+      gap: 22px;
+      padding: 1rem 2rem 1.4rem;
+      transition: transform 0.52s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+      cursor: grab;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .carousel-track.dragging { transition: none; cursor: grabbing; }
+
+    /* Card */
+    .c-card {
+      flex: 0 0 300px;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 24px rgba(11,31,75,0.09);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
+      background: #f5f5f5;
+    }
+
+    .c-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 40px rgba(11,31,75,0.16);
+    }
+
+    .c-card-img { width: 100%; height: 220px; object-fit: cover; display: block; }
+
+    .c-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(11,31,75,0.82) 0%, rgba(11,31,75,0.10) 55%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .c-card-body {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 1rem 1.1rem 1.1rem;
+    }
+
+    .c-card-tag {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 100px;
+      margin-bottom: 6px;
+    }
+
+    .c-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.35;
+    }
+
+    /* Dots */
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      margin-top: 1.8rem;
+    }
+
+    .c-dot {
+      width: 7px; height: 7px;
+      border-radius: 100px;
+      background: #D4D9E3;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    .c-dot.active { width: 22px; background: var(--navy); }
+  </style>
+</head>
+<body>
+
+  <section class="carousel-section">
+
+    <div class="carousel-header">
+      <div>
+        <div class="carousel-label">Our Practice Areas</div>
+        <h2 class="carousel-title">Legal Expertise <span>Across Every Domain</span></h2>
+      </div>
+      <div class="carousel-arrows">
+        <button class="c-arrow" id="prevBtn" aria-label="Previous">
+          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.5 15L7.5 10L12.5 5" stroke="#0B1F4B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="c-arrow" id="nextBtn" aria-label="Next">
+          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.5 5L12.5 10L7.5 15" stroke="#0B1F4B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="carousel-viewport">
+      <div class="carousel-track" id="carouselTrack"></div>
+    </div>
+
+    <div class="carousel-dots" id="carouselDots"></div>
+
+  </section>
+
+  <script>
+    /* ── Slide data ── */
+    const SLIDES = [
+      { tag: 'Family Law',     title: 'Divorce & Matrimonial\nDisputes',         color: '#1a3360' },
+      { tag: 'Criminal Law',   title: 'Bail, Defence &\nTrial Representation',   color: '#12294f' },
+      { tag: 'Property Law',   title: 'Title Disputes &\nRegistration Issues',   color: '#0e2244' },
+      { tag: 'Civil Matters',  title: 'Injunctions, Suits &\nCivil Appeals',     color: '#172e55' },
+      { tag: 'Business Law',   title: 'Contracts, IP &\nCorporate Disputes',     color: '#0c1f44' },
+      { tag: 'Labour Law',     title: 'Employment Rights &\nWorkplace Disputes',  color: '#1c3060' },
+      { tag: 'Consumer Forum', title: 'Consumer Complaints\n& Compensation',     color: '#142848' },
+      { tag: 'Cyber Law',      title: 'Online Fraud &\nDigital Crime Defence',   color: '#0f2348' },
+    ];
+
+    /* ── SVG card backgrounds ── */
+    const PATTERNS = [
+      // Scales of justice
+      `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220" viewBox="0 0 300 220"><rect width="300" height="220" fill="{C}"/><g opacity="0.13" stroke="#C9A84C" stroke-width="1" fill="none"><line x1="150" y1="30" x2="150" y2="160"/><line x1="90" y1="60" x2="210" y2="60"/><ellipse cx="100" cy="100" rx="40" ry="12"/><ellipse cx="200" cy="100" rx="40" ry="12"/><path d="M100 100L100 130Q100 140 115 140H185Q200 140 200 130L200 100"/><path d="M60 180H240"/></g><g opacity="0.07" fill="#C9A84C"><circle cx="20" cy="20" r="60"/><circle cx="280" cy="200" r="80"/></g></svg>`,
+      // Gavel
+      `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220" viewBox="0 0 300 220"><rect width="300" height="220" fill="{C}"/><g opacity="0.13" stroke="#C9A84C" stroke-width="1.3" fill="none"><rect x="140" y="40" width="80" height="35" rx="8" transform="rotate(-45 180 57)"/><rect x="60" y="120" width="30" height="90" rx="6" transform="rotate(-45 75 165)"/><line x1="130" y1="80" x2="80" y2="130"/></g><g opacity="0.07" fill="#C9A84C"><circle cx="260" cy="30" r="70"/><circle cx="30" cy="200" r="60"/></g></svg>`,
+      // Document
+      `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220" viewBox="0 0 300 220"><rect width="300" height="220" fill="{C}"/><g opacity="0.12" stroke="#C9A84C" stroke-width="1" fill="none"><rect x="90" y="25" width="120" height="160" rx="8"/><line x1="110" y1="60" x2="190" y2="60"/><line x1="110" y1="80" x2="190" y2="80"/><line x1="110" y1="100" x2="190" y2="100"/><line x1="110" y1="120" x2="160" y2="120"/><circle cx="150" cy="155" r="14"/></g><g opacity="0.07" fill="#C9A84C"><circle cx="270" cy="20" r="75"/></g></svg>`,
+      // Courthouse columns
+      `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220" viewBox="0 0 300 220"><rect width="300" height="220" fill="{C}"/><g opacity="0.12" stroke="#C9A84C" stroke-width="1.1" fill="none"><rect x="70" y="160" width="160" height="12"/><rect x="80" y="45" width="140" height="14"/><rect x="95" y="59" width="14" height="101"/><rect x="120" y="59" width="14" height="101"/><rect x="145" y="59" width="14" height="101"/><rect x="170" y="59" width="14" height="101"/><path d="M80 45L150 18L220 45"/></g><g opacity="0.07" fill="#C9A84C"><circle cx="30" cy="30" r="65"/></g></svg>`,
+      // Shield
+      `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220" viewBox="0 0 300 220"><rect width="300" height="220" fill="{C}"/><g opacity="0.13" stroke="#C9A84C" stroke-width="1.2" fill="none"><path d="M150 30L220 55L220 115Q220 160 150 185Q80 160 80 115L80 55Z"/><path d="M125 108L143 126L178 91"/></g><g opacity="0.07" fill="#C9A84C"><circle cx="270" cy="180" r="80"/></g></svg>`,
+      // Handshake
+      `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220" viewBox="0 0 300 220"><rect width="300" height="220" fill="{C}"/><g opacity="0.12" stroke="#C9A84C" stroke-width="1.1" fill="none"><path d="M60 120Q90 100 120 110L150 105Q180 100 200 115L240 120"/><path d="M110 110L130 90Q145 78 160 90L180 110"/><line x1="60" y1="140" x2="100" y2="140"/><line x1="200" y1="140" x2="240" y2="140"/></g><g opacity="0.07" fill="#C9A84C"><circle cx="20" cy="180" r="70"/><circle cx="280" cy="40" r="55"/></g></svg>`,
+      // Fingerprint
+      `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220" viewBox="0 0 300 220"><rect width="300" height="220" fill="{C}"/><g opacity="0.13" stroke="#C9A84C" stroke-width="1.1" fill="none"><path d="M150 60Q190 60 200 100Q205 130 190 155"/><path d="M150 72Q182 72 190 105Q194 130 180 150"/><path d="M150 84Q174 84 180 108Q183 128 170 145"/><path d="M150 96Q166 96 170 112Q172 126 160 140"/><path d="M130 65Q110 75 108 105Q106 135 120 158"/><path d="M130 78Q115 87 113 110Q111 133 124 152"/><path d="M150 48Q200 48 215 100Q222 138 200 165"/></g><g opacity="0.07" fill="#C9A84C"><circle cx="40" cy="40" r="60"/></g></svg>`,
+      // Document stack
+      `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220" viewBox="0 0 300 220"><rect width="300" height="220" fill="{C}"/><g opacity="0.12" stroke="#C9A84C" stroke-width="1" fill="none"><rect x="100" y="30" width="100" height="140" rx="4"/><rect x="88" y="40" width="100" height="140" rx="4"/><rect x="76" y="50" width="100" height="140" rx="4"/><line x1="96" y1="85" x2="166" y2="85"/><line x1="96" y1="105" x2="166" y2="105"/><line x1="96" y1="125" x2="140" y2="125"/></g><g opacity="0.07" fill="#C9A84C"><circle cx="260" cy="200" r="90"/></g></svg>`,
+    ];
+
+    /* ── Config ── */
+    const CARD_W  = 300;
+    const GAP     = 22;
+    const STEP    = CARD_W + GAP;
+    const CLONE_N = 3;
+    const N       = SLIDES.length;
+
+    const track    = document.getElementById('carouselTrack');
+    const dotsWrap = document.getElementById('carouselDots');
+    let current    = 0;
+    let autoTimer  = null;
+    let isDragging = false, dragStartX = 0, dragStartTx = 0;
+
+    /* ── Build card ── */
+    function makeCard(slide, idx) {
+      const svg = PATTERNS[idx % PATTERNS.length].replace('{C}', slide.color);
+      const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      const el  = document.createElement('div');
+      el.className = 'c-card';
+      el.innerHTML = `
+        <img class="c-card-img" src="${url}" alt="${slide.tag}" draggable="false"/>
+        <div class="c-card-overlay"></div>
+        <div class="c-card-body">
+          <span class="c-card-tag">${slide.tag}</span>
+          <div class="c-card-title">${slide.title.replace('\n', '<br>')}</div>
+        </div>`;
+      return el;
+    }
+
+    /* ── Render clones + originals ── */
+    for (let i = N - CLONE_N; i < N; i++) track.appendChild(makeCard(SLIDES[i], i));
+    SLIDES.forEach((s, i) => track.appendChild(makeCard(s, i)));
+    for (let i = 0; i < CLONE_N; i++)      track.appendChild(makeCard(SLIDES[i], i));
+
+    /* ── Translate helpers ── */
+    function setTranslate(animated) {
+      track.style.transition = animated
+        ? 'transform 0.52s cubic-bezier(0.4,0,0.2,1)' : 'none';
+      track.style.transform  = `translateX(${-((CLONE_N + current) * STEP)}px)`;
+    }
+
+    function goTo(idx, animated = true) {
+      current = idx;
+      setTranslate(animated);
+      updateDots();
+    }
+
+    /* Silent jump when landing on a clone */
+    track.addEventListener('transitionend', () => {
+      if (current < 0)  goTo(N + current, false);
+      if (current >= N) goTo(current - N, false);
+    });
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    document.getElementById('nextBtn').addEventListener('click', () => { next(); resetAuto(); });
+    document.getElementById('prevBtn').addEventListener('click', () => { prev(); resetAuto(); });
+
+    /* ── Dots ── */
+    function buildDots() {
+      for (let i = 0; i < N; i++) {
+        const d = document.createElement('button');
+        d.className = 'c-dot' + (i === 0 ? ' active' : '');
+        d.setAttribute('aria-label', `Slide ${i + 1}`);
+        d.addEventListener('click', () => { goTo(i); resetAuto(); });
+        dotsWrap.appendChild(d);
+      }
+    }
+
+    function updateDots() {
+      const dots   = dotsWrap.querySelectorAll('.c-dot');
+      const active = ((current % N) + N) % N;
+      dots.forEach((d, i) => d.classList.toggle('active', i === active));
+    }
+
+    buildDots();
+    goTo(0, false);
+
+    /* ── Auto-play ── */
+    function startAuto() { autoTimer = setInterval(next, 3200); }
+    function resetAuto()  { clearInterval(autoTimer); startAuto(); }
+    startAuto();
+
+    track.addEventListener('mouseenter', () => clearInterval(autoTimer));
+    track.addEventListener('mouseleave', startAuto);
+
+    /* ── Drag / swipe ── */
+    function onDragStart(x) {
+      isDragging  = true;
+      dragStartX  = x;
+      dragStartTx = -((CLONE_N + current) * STEP);
+      track.classList.add('dragging');
+      clearInterval(autoTimer);
+    }
+
+    function onDragMove(x) {
+      if (!isDragging) return;
+      track.style.transition = 'none';
+      track.style.transform  = `translateX(${dragStartTx + x - dragStartX}px)`;
+    }
+
+    function onDragEnd(x) {
+      if (!isDragging) return;
+      isDragging = false;
+      track.classList.remove('dragging');
+      const d = x - dragStartX;
+      if      (d < -50) next();
+      else if (d >  50) prev();
+      else goTo(current);
+      resetAuto();
+    }
+
+    track.addEventListener('mousedown',  e => onDragStart(e.clientX));
+    window.addEventListener('mousemove', e => onDragMove(e.clientX));
+    window.addEventListener('mouseup',   e => onDragEnd(e.clientX));
+
+    track.addEventListener('touchstart', e => onDragStart(e.touches[0].clientX),       { passive: true });
+    track.addEventListener('touchmove',  e => onDragMove(e.touches[0].clientX),        { passive: true });
+    track.addEventListener('touchend',   e => onDragEnd(e.changedTouches[0].clientX));
+  </script>
+
+</body>
+</html>

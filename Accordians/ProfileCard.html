@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accordion 7 — Profile Cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f3;
+    --white: #ffffff;
+    --ink: #1c1c1e;
+    --muted: #8e8c8a;
+    --border: #e4e2de;
+    --accent: #2563eb;
+    --accent-soft: #eff4ff;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+  }
+
+  .container { width: 100%; max-width: 700px; }
+
+  .header { margin-bottom: 44px; }
+
+  .header .label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .header p {
+    margin-top: 10px;
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  /* ── ACCORDION ── */
+  .accordion { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+  .accordion-item {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.25s;
+  }
+
+  .accordion-item:hover {
+    border-color: #d0ccc6;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transform: translateY(-1px);
+  }
+
+  .accordion-item.open {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.08), 0 4px 24px rgba(0,0,0,0.07);
+  }
+
+  /* ── TRIGGER ── */
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+  }
+
+  /* Avatar */
+  .avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .avatar {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    object-fit: cover;
+    display: block;
+    transition: border-radius 0.35s;
+  }
+
+  .accordion-item.open .avatar { border-radius: 50%; }
+
+  .avatar-status {
+    position: absolute;
+    bottom: 2px; right: 2px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 2px solid var(--white);
+  }
+
+  .trigger-info { flex: 1; min-width: 0; }
+
+  .person-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .person-role {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  .person-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 100px;
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .acc-btn {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.3s, border-color 0.3s, transform 0.4s cubic-bezier(0.4,0,0.2,1), color 0.3s;
+    color: var(--muted);
+  }
+
+  .accordion-item.open .acc-btn {
+    background: var(--accent-soft);
+    border-color: rgba(37,99,235,0.25);
+    color: var(--accent);
+    transform: rotate(180deg);
+  }
+
+  /* ── BODY ── */
+  .accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.42s cubic-bezier(0.4,0,0.2,1);
+  }
+  .accordion-item.open .accordion-body { grid-template-rows: 1fr; }
+  .accordion-body-inner { overflow: hidden; }
+
+  /* ── EXPANDED CONTENT ── */
+  .profile-expanded {
+    border-top: 1.5px solid var(--border);
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0;
+  }
+
+  @media(max-width: 560px){
+    .profile-expanded { grid-template-columns: 1fr; }
+    .profile-side { display: none; }
+  }
+
+  .profile-side {
+    padding: 22px 20px;
+    border-right: 1.5px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+  }
+
+  .profile-photo-lg {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--white);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+
+  .profile-name-lg {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+  }
+
+  .profile-role-lg {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .social-btn {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-decoration: none;
+  }
+  .social-btn:hover { background: var(--accent-soft); border-color: rgba(37,99,235,0.3); }
+
+  .profile-main { padding: 22px 22px; }
+
+  .bio-text {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: #5a5856;
+    font-weight: 400;
+  }
+
+  .skills-section { margin-top: 18px; }
+
+  .skills-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .skill-chip {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 8px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid rgba(37,99,235,0.15);
+  }
+
+  .profile-stats {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 24px;
+  }
+
+  .p-stat-val {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .p-stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-top: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="label">Our Team</div>
+    <h1>The people behind the product</h1>
+    <p>Small team, big output. Each person brings something irreplaceable.</p>
+  </div>
+
+  <ul class="accordion">
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="avatar-wrap">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="Sara Chen">
+          <span class="avatar-status"></span>
+        </div>
+        <div class="trigger-info">
+          <div class="person-name">Sara Chen</div>
+          <div class="person-role">Co-founder & CEO</div>
+          <div class="person-tags">
+            <span class="tag">Product</span>
+            <span class="tag">Strategy</span>
+            <span class="tag">YC S22</span>
+          </div>
+        </div>
+        <span class="acc-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="profile-expanded">
+            <div class="profile-side">
+              <img class="profile-photo-lg" src="https://i.pravatar.cc/200?img=47" alt="Sara Chen">
+              <div class="profile-name-lg">Sara Chen</div>
+              <div class="profile-role-lg">CEO & Co-founder</div>
+              <div class="social-links">
+                <a class="social-btn" title="Twitter">𝕏</a>
+                <a class="social-btn" title="LinkedIn">in</a>
+              </div>
+            </div>
+            <div class="profile-main">
+              <div class="bio-text">Previously led product at Figma for 4 years, then went through YC S22 with her first company. Sara's obsession is removing friction — she believes the best software is the software you stop noticing. She runs the company from both a whiteboard and a spreadsheet simultaneously.</div>
+              <div class="skills-section">
+                <div class="skills-label">Expertise</div>
+                <div class="skills-grid">
+                  <span class="skill-chip">Product Strategy</span>
+                  <span class="skill-chip">User Research</span>
+                  <span class="skill-chip">GTM</span>
+                  <span class="skill-chip">Fundraising</span>
+                </div>
+              </div>
+              <div class="profile-stats">
+                <div class="p-stat"><div class="p-stat-val">4 yrs</div><div class="p-stat-label">At Figma</div></div>
+                <div class="p-stat"><div class="p-stat-val">$8M</div><div class="p-stat-label">Raised</div></div>
+                <div class="p-stat"><div class="p-stat-val">2022</div><div class="p-stat-label">YC Batch</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="avatar-wrap">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=12" alt="Marcos Delgado">
+          <span class="avatar-status"></span>
+        </div>
+        <div class="trigger-info">
+          <div class="person-name">Marcos Delgado</div>
+          <div class="person-role">CTO & Co-founder</div>
+          <div class="person-tags">
+            <span class="tag">Engineering</span>
+            <span class="tag">Infra</span>
+            <span class="tag">Ex-AWS</span>
+          </div>
+        </div>
+        <span class="acc-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="profile-expanded">
+            <div class="profile-side">
+              <img class="profile-photo-lg" src="https://i.pravatar.cc/200?img=12" alt="Marcos Delgado">
+              <div class="profile-name-lg">Marcos Delgado</div>
+              <div class="profile-role-lg">CTO & Co-founder</div>
+              <div class="social-links">
+                <a class="social-btn" title="GitHub">⌥</a>
+                <a class="social-btn" title="LinkedIn">in</a>
+              </div>
+            </div>
+            <div class="profile-main">
+              <div class="bio-text">7 years at AWS building distributed systems at scale before jumping into the startup world. Marcos's superpower is making complex infrastructure feel simple. He wrote the first version of the product in a weekend and has been optimizing it ever since. Will talk your ear off about Rust.</div>
+              <div class="skills-section">
+                <div class="skills-label">Expertise</div>
+                <div class="skills-grid">
+                  <span class="skill-chip">Distributed Systems</span>
+                  <span class="skill-chip">Rust</span>
+                  <span class="skill-chip">Kubernetes</span>
+                  <span class="skill-chip">PostgreSQL</span>
+                </div>
+              </div>
+              <div class="profile-stats">
+                <div class="p-stat"><div class="p-stat-val">7 yrs</div><div class="p-stat-label">At AWS</div></div>
+                <div class="p-stat"><div class="p-stat-val">99.99%</div><div class="p-stat-label">Uptime SLA</div></div>
+                <div class="p-stat"><div class="p-stat-val">12M</div><div class="p-stat-label">API req/day</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="avatar-wrap">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=32" alt="Priya Nair">
+        </div>
+        <div class="trigger-info">
+          <div class="person-name">Priya Nair</div>
+          <div class="person-role">Head of Design</div>
+          <div class="person-tags">
+            <span class="tag">UX</span>
+            <span class="tag">Brand</span>
+            <span class="tag">Ex-Stripe</span>
+          </div>
+        </div>
+        <span class="acc-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="profile-expanded">
+            <div class="profile-side">
+              <img class="profile-photo-lg" src="https://i.pravatar.cc/200?img=32" alt="Priya Nair">
+              <div class="profile-name-lg">Priya Nair</div>
+              <div class="profile-role-lg">Head of Design</div>
+              <div class="social-links">
+                <a class="social-btn" title="Dribbble">🏀</a>
+                <a class="social-btn" title="LinkedIn">in</a>
+              </div>
+            </div>
+            <div class="profile-main">
+              <div class="bio-text">Shaped Stripe's design system for 3 years before joining us as design lead #1. Priya believes design is fundamentally about reducing cognitive load — and that great design goes unnoticed precisely because it works. She owns everything from user flows to the company's visual identity.</div>
+              <div class="skills-section">
+                <div class="skills-label">Expertise</div>
+                <div class="skills-grid">
+                  <span class="skill-chip">Design Systems</span>
+                  <span class="skill-chip">Figma</span>
+                  <span class="skill-chip">Motion Design</span>
+                  <span class="skill-chip">Brand Identity</span>
+                </div>
+              </div>
+              <div class="profile-stats">
+                <div class="p-stat"><div class="p-stat-val">3 yrs</div><div class="p-stat-label">At Stripe</div></div>
+                <div class="p-stat"><div class="p-stat-val">400+</div><div class="p-stat-label">Components</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="avatar-wrap">
+          <img class="avatar" src="https://i.pravatar.cc/150?img=55" alt="James Okafor">
+          <span class="avatar-status"></span>
+        </div>
+        <div class="trigger-info">
+          <div class="person-name">James Okafor</div>
+          <div class="person-role">Head of Growth</div>
+          <div class="person-tags">
+            <span class="tag">Marketing</span>
+            <span class="tag">PLG</span>
+            <span class="tag">0→1</span>
+          </div>
+        </div>
+        <span class="acc-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="profile-expanded">
+            <div class="profile-side">
+              <img class="profile-photo-lg" src="https://i.pravatar.cc/200?img=55" alt="James Okafor">
+              <div class="profile-name-lg">James Okafor</div>
+              <div class="profile-role-lg">Head of Growth</div>
+              <div class="social-links">
+                <a class="social-btn" title="Twitter">𝕏</a>
+                <a class="social-btn" title="LinkedIn">in</a>
+              </div>
+            </div>
+            <div class="profile-main">
+              <div class="bio-text">Took Loom from 50k to 5M users as their first growth hire. James is a product-led growth specialist who believes that the best marketing is a product so good people can't help but share it. He owns acquisition, activation, and retention — the full funnel, every day.</div>
+              <div class="skills-section">
+                <div class="skills-label">Expertise</div>
+                <div class="skills-grid">
+                  <span class="skill-chip">PLG</span>
+                  <span class="skill-chip">SEO</span>
+                  <span class="skill-chip">Onboarding</span>
+                  <span class="skill-chip">Analytics</span>
+                </div>
+              </div>
+              <div class="profile-stats">
+                <div class="p-stat"><div class="p-stat-val">100x</div><div class="p-stat-label">User growth</div></div>
+                <div class="p-stat"><div class="p-stat-val">2.1%</div><div class="p-stat-label">Trial→paid</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.accordion-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item.open').forEach(el => {
+        el.classList.remove('open');
+        el.querySelector('.accordion-trigger').setAttribute('aria-expanded','false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        trigger.setAttribute('aria-expanded','true');
+      }
+    });
+  });
+</script>
+</body>
+</html>

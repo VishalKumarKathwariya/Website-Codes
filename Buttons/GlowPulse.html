@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 08 — Glow Pulse</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3rem;
+    padding: 3rem 2rem; text-align: center;
+  }
+
+  .label-block { display: flex; flex-direction: column; gap: 8px; }
+
+  .tag {
+    display: inline-block; padding: 4px 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 50px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700; color: #fff; line-height: 1.1;
+  }
+
+  p { font-size: 15px; color: rgba(255,255,255,0.38); max-width: 400px; line-height: 1.6; }
+
+  /* ── BUTTONS ── */
+  .btn-group {
+    display: flex; flex-direction: column; gap: 1.5rem; align-items: center;
+  }
+
+  /* White glow (Vercel style) */
+  .btn-glow-white {
+    padding: 15px 40px;
+    border: none; border-radius: 8px;
+    background: #fff; color: #000;
+    font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.15s;
+  }
+  .btn-glow-white:hover {
+    animation: glow-white-pulse 1.5s ease-in-out infinite;
+  }
+  .btn-glow-white:active { transform: scale(0.97); }
+  @keyframes glow-white-pulse {
+    0%,100% { box-shadow: 0 0 12px 2px rgba(255,255,255,0.15); }
+    50% { box-shadow: 0 0 40px 10px rgba(255,255,255,0.35); }
+  }
+
+  /* Green glow (Supabase style) */
+  .btn-glow-green {
+    padding: 15px 40px;
+    border: none; border-radius: 8px;
+    background: #3fcf8e; color: #000;
+    font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .btn-glow-green:hover {
+    animation: glow-green-pulse 1.2s ease-in-out infinite;
+  }
+  .btn-glow-green:active { transform: scale(0.97); }
+  @keyframes glow-green-pulse {
+    0%,100% { box-shadow: 0 0 12px 2px rgba(63,207,142,0.2); }
+    50% { box-shadow: 0 0 48px 14px rgba(63,207,142,0.5); }
+  }
+
+  /* Blue glow (Linear / generic SaaS) */
+  .btn-glow-blue {
+    padding: 15px 40px;
+    border: none; border-radius: 8px;
+    background: #5e6ad2; color: #fff;
+    font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .btn-glow-blue:hover {
+    animation: glow-blue-pulse 1.2s ease-in-out infinite;
+  }
+  .btn-glow-blue:active { transform: scale(0.97); }
+  @keyframes glow-blue-pulse {
+    0%,100% { box-shadow: 0 0 12px 2px rgba(94,106,210,0.2); }
+    50% { box-shadow: 0 0 48px 14px rgba(94,106,210,0.55); }
+  }
+
+  /* Pink glow */
+  .btn-glow-pink {
+    padding: 15px 40px;
+    border: none; border-radius: 8px;
+    background: #ec4899; color: #fff;
+    font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .btn-glow-pink:hover {
+    animation: glow-pink-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes glow-pink-pulse {
+    0%,100% { box-shadow: 0 0 12px 2px rgba(236,72,153,0.2); }
+    50% { box-shadow: 0 0 48px 14px rgba(236,72,153,0.55); }
+  }
+
+  .row { display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
+
+  .info {
+    display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;
+    margin-top: 1rem;
+  }
+  .info-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 12px 20px;
+    font-size: 13px; color: rgba(255,255,255,0.35);
+    display: flex; flex-direction: column; gap: 4px; min-width: 130px;
+  }
+  .info-item strong { color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 600; }
+
+  .hint { font-size: 12px; color: rgba(255,255,255,0.2); letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 08 / 10</span>
+    <h1>Glow Pulse</h1>
+    <p>A radiant aura breathes in and out on hover — used on dark landing pages to make the primary CTA impossible to miss.</p>
+  </div>
+
+  <div class="btn-group">
+    <div class="row">
+      <button class="btn-glow-white">Deploy →</button>
+      <button class="btn-glow-green">Start for Free</button>
+    </div>
+    <div class="row">
+      <button class="btn-glow-blue">Open App</button>
+      <button class="btn-glow-pink">Get Early Access</button>
+    </div>
+  </div>
+
+  <span class="hint">↑ Hover any button to trigger the glow pulse</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Vercel, Supabase, Planetscale</div>
+    <div class="info-item"><strong>Technique</strong>CSS box-shadow animation</div>
+    <div class="info-item"><strong>Feel</strong>Dramatic, inviting, alive</div>
+    <div class="info-item"><strong>Best for</strong>Dark hero CTAs</div>
+  </div>
+</div>
+</body>
+</html>

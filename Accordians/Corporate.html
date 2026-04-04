@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corporate Horizontal Accordion</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --panel-bg: #111118;
+    --panel-active: #16161f;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --text-primary: #f0ede8;
+    --text-secondary: #7a7880;
+    --border: rgba(201,168,76,0.15);
+    --border-active: rgba(201,168,76,0.5);
+    --shadow: rgba(0,0,0,0.6);
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-x: hidden;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+
+  .page-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .accordion-wrapper {
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  /* HORIZONTAL layout for desktop */
+  .accordion {
+    display: flex;
+    height: 460px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px var(--shadow);
+    background: var(--panel-bg);
+  }
+
+  .panel {
+    position: relative;
+    flex: 0 0 72px;
+    background: var(--panel-bg);
+    border-right: 1px solid var(--border);
+    cursor: pointer;
+    transition: flex 0.65s cubic-bezier(0.77,0,0.175,1);
+    overflow: hidden;
+  }
+
+  .panel:last-child { border-right: none; }
+
+  .panel.active {
+    flex: 1 1 auto;
+    background: var(--panel-active);
+    border-color: var(--border-active);
+  }
+
+  /* Vertical label */
+  .panel-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 72px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    z-index: 2;
+    transition: opacity 0.3s;
+  }
+
+  .panel.active .panel-label { opacity: 0; pointer-events: none; }
+
+  .panel-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+  }
+
+  .panel-icon {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-active);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 1rem;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .panel:hover:not(.active) .panel-icon {
+    transform: scale(1.1);
+    border-color: var(--gold-light);
+  }
+
+  .panel-title-vertical {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+  }
+
+  /* Content area */
+  .panel-content {
+    position: absolute;
+    top: 0;
+    left: 72px;
+    right: 0;
+    bottom: 0;
+    padding: 48px 52px;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.4s 0.2s, transform 0.4s 0.2s;
+    pointer-events: none;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .panel.active .panel-content {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .content-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .content-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.6rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.15;
+    margin-bottom: 24px;
+    max-width: 380px;
+  }
+
+  .content-body {
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    max-width: 400px;
+    margin-bottom: 32px;
+  }
+
+  .content-meta {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 36px;
+  }
+
+  .meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .meta-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-secondary); }
+  .meta-value { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--gold-light); font-weight: 700; }
+
+  .content-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-active);
+    padding-bottom: 4px;
+    transition: color 0.2s, border-color 0.2s;
+    cursor: pointer;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .content-cta:hover { color: var(--gold-light); border-color: var(--gold-light); }
+  .cta-arrow { transition: transform 0.2s; }
+  .content-cta:hover .cta-arrow { transform: translateX(4px); }
+
+  /* Decorative line on active panel */
+  .panel.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+  }
+
+  /* BG pattern */
+  .panel-bg-num {
+    position: absolute;
+    bottom: -20px;
+    right: -10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 14rem;
+    font-weight: 900;
+    color: rgba(201,168,76,0.03);
+    line-height: 1;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* VERTICAL layout for mobile */
+  @media (max-width: 760px) {
+    .accordion {
+      flex-direction: column;
+      height: auto;
+    }
+
+    .panel {
+      flex: 0 0 60px;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      transition: flex 0.65s cubic-bezier(0.77,0,0.175,1);
+    }
+
+    .panel:last-child { border-bottom: none; }
+
+    .panel.active {
+      flex: 0 0 340px;
+    }
+
+    .panel-label {
+      width: 100%;
+      height: 60px;
+      flex-direction: row;
+      justify-content: flex-start;
+      padding: 0 24px;
+      gap: 14px;
+    }
+
+    .panel-number, .panel-title-vertical {
+      writing-mode: horizontal-tb;
+      transform: none;
+    }
+
+    .panel-number { font-size: 0.7rem; }
+    .panel-title-vertical { font-size: 0.7rem; }
+
+    .panel-content {
+      top: 60px;
+      left: 0;
+      padding: 28px 28px 32px;
+    }
+
+    .panel.active::before {
+      width: 100%;
+      height: 2px;
+      top: 60px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+
+    .content-meta { gap: 20px; }
+    .meta-value { font-size: 1.1rem; }
+    .content-heading { font-size: 1.4rem; margin-bottom: 14px; }
+    .content-body { font-size: 0.82rem; margin-bottom: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Enterprise Solutions</h1>
+<p class="page-subtitle">Strategic pillars for modern organizations</p>
+
+<div class="accordion-wrapper">
+  <div class="accordion" id="accordion">
+
+    <div class="panel active" data-panel="0">
+      <div class="panel-label">
+        <div class="panel-number">01</div>
+        <div class="panel-icon">◈</div>
+        <div class="panel-title-vertical">Strategy</div>
+      </div>
+      <div class="panel-content">
+        <div class="panel-bg-num">01</div>
+        <div>
+          <div class="content-eyebrow">01 — Corporate Strategy</div>
+          <h2 class="content-heading">Transforming Vision Into Competitive Advantage</h2>
+          <p class="content-body">We work alongside leadership teams to redefine market positioning, unlock new revenue streams, and build organizational resilience for the decade ahead. Our frameworks are battle-tested across Fortune 500 environments.</p>
+          <div class="content-meta">
+            <div class="meta-item">
+              <span class="meta-label">Clients</span>
+              <span class="meta-value">240+</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Avg. ROI</span>
+              <span class="meta-value">3.8×</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Years</span>
+              <span class="meta-value">18</span>
+            </div>
+          </div>
+        </div>
+        <button class="content-cta">Explore Strategy <span class="cta-arrow">→</span></button>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="1">
+      <div class="panel-label">
+        <div class="panel-number">02</div>
+        <div class="panel-icon">◇</div>
+        <div class="panel-title-vertical">Technology</div>
+      </div>
+      <div class="panel-content">
+        <div class="panel-bg-num">02</div>
+        <div>
+          <div class="content-eyebrow">02 — Digital Transformation</div>
+          <h2 class="content-heading">Infrastructure Built for Scale and Longevity</h2>
+          <p class="content-body">From cloud migration to AI integration, we architect systems that reduce technical debt and accelerate product velocity. Our engineers are embedded partners, not contractors, delivering outcomes that last.</p>
+          <div class="content-meta">
+            <div class="meta-item">
+              <span class="meta-label">Systems</span>
+              <span class="meta-value">180+</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Uptime</span>
+              <span class="meta-value">99.9%</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Stack</span>
+              <span class="meta-value">Full</span>
+            </div>
+          </div>
+        </div>
+        <button class="content-cta">View Technology <span class="cta-arrow">→</span></button>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="2">
+      <div class="panel-label">
+        <div class="panel-number">03</div>
+        <div class="panel-icon">○</div>
+        <div class="panel-title-vertical">Operations</div>
+      </div>
+      <div class="panel-content">
+        <div class="panel-bg-num">03</div>
+        <div>
+          <div class="content-eyebrow">03 — Operational Excellence</div>
+          <h2 class="content-heading">Precision Processes That Eliminate Waste</h2>
+          <p class="content-body">Lean principles meet modern automation. We audit, redesign, and automate critical workflows to free your people for high-value work. Measurable efficiency gains within the first 90 days, guaranteed.</p>
+          <div class="content-meta">
+            <div class="meta-item">
+              <span class="meta-label">Cost Save</span>
+              <span class="meta-value">34%</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Projects</span>
+              <span class="meta-value">310+</span>
+            </div>
+          </div>
+        </div>
+        <button class="content-cta">See Operations <span class="cta-arrow">→</span></button>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="3">
+      <div class="panel-label">
+        <div class="panel-number">04</div>
+        <div class="panel-icon">△</div>
+        <div class="panel-title-vertical">Growth</div>
+      </div>
+      <div class="panel-content">
+        <div class="panel-bg-num">04</div>
+        <div>
+          <div class="content-eyebrow">04 — Revenue Growth</div>
+          <h2 class="content-heading">Data-Led Strategies for Sustained Market Growth</h2>
+          <p class="content-body">We fuse market intelligence with behavioral analytics to unlock acquisition, retention, and expansion levers your team hasn't yet explored. Growth isn't luck — it's engineered.</p>
+          <div class="content-meta">
+            <div class="meta-item">
+              <span class="meta-label">Revenue</span>
+              <span class="meta-value">$2B+</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">CAGR</span>
+              <span class="meta-value">41%</span>
+            </div>
+          </div>
+        </div>
+        <button class="content-cta">Drive Growth <span class="cta-arrow">→</span></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const panels = document.querySelectorAll('.panel');
+  panels.forEach(panel => {
+    panel.addEventListener('click', () => {
+      panels.forEach(p => p.classList.remove('active'));
+      panel.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

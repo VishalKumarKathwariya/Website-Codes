@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Testimonials</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --wine:       #7B1C3A;
+      --wine-light: #9E2449;
+      --wine-pale:  #C0466A;
+      --wine-glow:  rgba(123,28,58,0.38);
+      --bg:         #0D0A0B;
+      --card:       #1A1118;
+      --border:     rgba(123,28,58,0.25);
+      --text:       #F0E6EA;
+      --muted:      #9A8590;
+      --gold:       #C9A96E;
+      --card-w:     340px;
+      --gap:        22px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content:'';
+      position:fixed; inset:0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(123,28,58,.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(123,28,58,.12) 0%, transparent 55%);
+      pointer-events:none; z-index:0;
+    }
+
+    /* ── SECTION ── */
+    .testimonials-section {
+      position:relative; z-index:1;
+      padding: clamp(60px,8vw,120px) 0;
+    }
+
+    /* ── HEADER ── */
+    .header-row {
+      display:flex; align-items:flex-end;
+      justify-content:space-between;
+      padding: 0 clamp(20px,5vw,80px);
+      margin-bottom: clamp(36px,5vw,60px);
+      gap:24px; flex-wrap:wrap;
+    }
+    .eyebrow {
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:11px; font-weight:500; letter-spacing:.22em;
+      text-transform:uppercase; color:var(--wine-pale);
+      margin-bottom:14px;
+    }
+    .eyebrow::before,.eyebrow::after {
+      content:''; display:block; width:24px; height:1px;
+      background:var(--wine-pale); opacity:.6;
+    }
+    .section-title {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(32px,5vw,60px);
+      font-weight:300; line-height:1.1;
+    }
+    .section-title em { font-style:italic; color:var(--wine-pale); }
+    .section-subtitle {
+      margin-top:10px;
+      font-size:clamp(13px,1.5vw,15px);
+      color:var(--muted); font-weight:300;
+      line-height:1.7; max-width:420px;
+    }
+
+    /* ── NAV BUTTONS ── */
+    .nav-buttons { display:flex; gap:10px; align-items:center; flex-shrink:0; }
+    .nav-btn {
+      width:48px; height:48px; border-radius:50%;
+      border:1px solid var(--border);
+      background:var(--card); color:var(--text);
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .25s,border-color .25s,box-shadow .25s,transform .2s;
+    }
+    .nav-btn:hover {
+      background:var(--wine); border-color:var(--wine-light);
+      box-shadow:0 4px 20px var(--wine-glow); transform:scale(1.08);
+    }
+    .nav-btn:active { transform:scale(.94); }
+    .nav-btn svg {
+      width:18px; height:18px; stroke:currentColor; fill:none;
+      stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+    }
+
+    /* ── CAROUSEL ── */
+    .carousel-outer {
+      position:relative; width:100%; overflow:hidden;
+    }
+    .carousel-outer::before,
+    .carousel-outer::after {
+      content:'';
+      position:absolute; top:0; bottom:0;
+      width:clamp(32px,6vw,100px);
+      z-index:2; pointer-events:none;
+    }
+    .carousel-outer::before {
+      left:0;
+      background:linear-gradient(90deg,var(--bg),transparent);
+    }
+    .carousel-outer::after {
+      right:0;
+      background:linear-gradient(270deg,var(--bg),transparent);
+    }
+
+    /* The track is overflow hidden — we move it with transform */
+    .carousel-track {
+      display:flex;
+      gap:var(--gap);
+      padding: 16px 0 28px;
+      /* no overflow, no scroll — all movement via JS transform */
+      will-change:transform;
+      cursor:grab;
+      -webkit-user-select: none;
+      user-select:none;
+    }
+    .carousel-track.dragging { cursor:grabbing; }
+
+    /* ── CARD ── */
+    .card {
+      flex-shrink:0;
+      width:var(--card-w);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:clamp(20px,2.5vw,30px);
+      position:relative; overflow:hidden;
+      cursor:pointer;
+      transition:border-color .35s,box-shadow .35s,transform .35s,opacity .35s;
+    }
+    .card::before {
+      content:'';
+      position:absolute; top:0; left:0; right:0; height:2px;
+      background:linear-gradient(90deg,transparent,var(--wine),transparent);
+      opacity:0; transition:opacity .35s;
+    }
+    .card:hover { transform:translateY(-4px); }
+    .card.active {
+      border-color:var(--wine-light);
+      box-shadow:0 8px 44px var(--wine-glow),0 2px 14px rgba(0,0,0,.5);
+      transform:translateY(-5px);
+    }
+    .card.active::before { opacity:1; }
+    /* dim non-active cards slightly */
+    .card:not(.active) { opacity:.72; }
+
+    .card-quote {
+      font-family:'Cormorant Garamond',serif;
+      font-size:68px; line-height:.6;
+      color:var(--wine); opacity:.35;
+      margin-bottom:8px;
+      -webkit-user-select: none;
+      user-select:none;
+    }
+    .card-stars { display:flex; gap:3px; margin-bottom:12px; }
+    .star { color:var(--gold); font-size:12px; }
+    .card-text {
+      font-size:clamp(13px,1.3vw,14px);
+      line-height:1.85; color:#C8B8BF;
+      font-weight:300; font-style:italic;
+    }
+    .card-divider {
+      width:28px; height:1px;
+      background:var(--wine); opacity:.5; margin:16px 0;
+    }
+    .card-author { display:flex; align-items:center; gap:11px; }
+    .author-avatar {
+      width:38px; height:38px; border-radius:50%;
+      background:linear-gradient(135deg,var(--wine),var(--wine-light));
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Cormorant Garamond',serif;
+      font-size:15px; color:#fff; font-weight:600; flex-shrink:0;
+      border:1px solid rgba(255,255,255,.1);
+    }
+    .author-name { font-size:13px; font-weight:500; letter-spacing:.03em; }
+    .author-role { font-size:11px; color:var(--muted); margin-top:2px; letter-spacing:.04em; }
+
+    /* ── DOTS ── */
+    .dots-row {
+      display:flex; justify-content:center; align-items:center;
+      gap:8px; margin-top:22px;
+    }
+    .dot {
+      width:6px; height:6px; border-radius:50%;
+      background:var(--border);
+      transition:background .3s,width .3s;
+      cursor:pointer;
+    }
+    .dot.active { background:var(--wine-pale); width:22px; border-radius:3px; }
+
+    /* ── STATS ── */
+    .stats-row {
+      display:flex; justify-content:center; align-items:center;
+      gap:clamp(24px,5vw,80px);
+      margin-top:clamp(40px,6vw,68px);
+      padding:0 clamp(20px,5vw,80px);
+      flex-wrap:wrap;
+    }
+    .stat { text-align:center; }
+    .stat-number {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(32px,4vw,50px);
+      font-weight:300; color:var(--wine-pale); line-height:1;
+    }
+    .stat-label {
+      font-size:11px; text-transform:uppercase;
+      letter-spacing:.15em; color:var(--muted); margin-top:6px;
+    }
+    .stat-sep { width:1px; height:44px; background:var(--border); }
+
+    @media (max-width:600px) {
+      .stat-sep { display:none; }
+      .stats-row { gap:28px; }
+      :root { --card-w: 280px; }
+    }
+    @media (max-width:380px) {
+      :root { --card-w: 250px; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="testimonials-section">
+
+  <div class="header-row">
+    <div>
+      <p class="eyebrow">Client Stories</p>
+      <h2 class="section-title">Words That <em>Define</em> Us</h2>
+      <p class="section-subtitle">Real experiences from the people who matter most — our clients, partners, and community.</p>
+    </div>
+    <div class="nav-buttons">
+      <button class="nav-btn" id="prevBtn" aria-label="Previous">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="nav-btn" id="nextBtn" aria-label="Next">
+        <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="carousel-outer" id="outer">
+    <div class="carousel-track" id="track"></div>
+  </div>
+
+  <div class="dots-row" id="dots"></div>
+
+  <div class="stats-row">
+    <div class="stat"><div class="stat-number">4.9★</div><div class="stat-label">Average Rating</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat"><div class="stat-number">12K+</div><div class="stat-label">Happy Clients</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat"><div class="stat-number">98%</div><div class="stat-label">Satisfaction Rate</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat"><div class="stat-number">8yr</div><div class="stat-label">In Business</div></div>
+  </div>
+
+</section>
+
+<script>
+/* ─────────────────────────────────────────────
+   DATA  (exactly 4 cards)
+───────────────────────────────────────────── */
+const DATA = [
+  { name:"Sophia Laurent",  role:"Creative Director, Lumière Studio", stars:5,
+    text:"Working with this team felt like collaborating with artists. Every deliverable exceeded our expectations. The attention to craft is something I haven't seen elsewhere." },
+  { name:"Marcus Chen",     role:"Founder, Elevate Ventures",         stars:5,
+    text:"From strategy to execution, the process was seamless. They understood our vision intuitively and translated it into something truly extraordinary for our brand." },
+  { name:"Isabella Moreau", role:"Head of Brand, Velour Co.",         stars:5,
+    text:"The final result left our entire board speechless. It's rare to find a partner that can blend aesthetics with business outcomes this elegantly and consistently." },
+  { name:"Dmitri Volkov",   role:"CTO, Axiom Systems",                stars:5,
+    text:"I was skeptical at first, but the depth of thinking they brought to our technical challenges was remarkable. A genuinely transformative partnership from day one." },
+];
+
+const N = DATA.length; // 4
+
+/* ─────────────────────────────────────────────
+   DOM REFS
+───────────────────────────────────────────── */
+const outer   = document.getElementById('outer');
+const track   = document.getElementById('track');
+const dotsRow = document.getElementById('dots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+/* ─────────────────────────────────────────────
+   BUILD  3 × N cards  [ghost | real | ghost]
+   "ghost" sets mirror the real set for seamless wrap
+───────────────────────────────────────────── */
+const cardEls = [];
+
+for (let set = 0; set < 3; set++) {
+  DATA.forEach((t, i) => {
+    const ini = t.name.split(' ').map(w => w[0]).join('').slice(0, 2);
+    const el  = document.createElement('div');
+    el.className   = 'card';
+    el.dataset.idx = i;
+    el.innerHTML   = `
+      <div class="card-quote">"</div>
+      <div class="card-stars">${'<span class="star">★</span>'.repeat(t.stars)}</div>
+      <p class="card-text">${t.text}</p>
+      <div class="card-divider"></div>
+      <div class="card-author">
+        <div class="author-avatar">${ini}</div>
+        <div>
+          <div class="author-name">${t.name}</div>
+          <div class="author-role">${t.role}</div>
+        </div>
+      </div>`;
+    track.appendChild(el);
+    cardEls.push(el);
+  });
+}
+
+/* ─────────────────────────────────────────────
+   DOTS
+───────────────────────────────────────────── */
+const dotEls = DATA.map((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot';
+  d.addEventListener('click', () => goTo(i, true));
+  dotsRow.appendChild(d);
+  return d;
+});
+
+/* ─────────────────────────────────────────────
+   STATE
+   currentOffset  = the CSS translateX we apply to the track (px, negative = moved left)
+   currentReal    = which real card index (0-3) is centred
+───────────────────────────────────────────── */
+let currentOffset = 0;   // translateX(currentOffset)
+let currentReal   = 0;   // 0-3
+let animId        = null;
+
+/* ─────────────────────────────────────────────
+   METRICS  (recalculated on resize)
+───────────────────────────────────────────── */
+let cardW  = 340;  // card width px
+let gap    = 22;   // gap px
+let step   = 362;  // cardW + gap
+let viewW  = 0;    // outer viewport width
+
+function readMetrics() {
+  const c = cardEls[0];
+  cardW = c.offsetWidth;
+  gap   = 22;
+  step  = cardW + gap;
+  viewW = outer.offsetWidth;
+}
+
+/* ─────────────────────────────────────────────
+   OFFSET CALCULATION
+   We want card at position `absIdx` in the flat list to be centred.
+   The track has no scroll — we translate it.
+   Card left edge (within track, excluding track's own padding):
+     cardEls[i].offsetLeft  (relative to track)
+   Centre of card i = offsetLeft + cardW/2
+   We want that to land at viewW/2
+   => translateX = viewW/2 - (offsetLeft + cardW/2)
+───────────────────────────────────────────── */
+function offsetForAbsIdx(absIdx) {
+  const el     = cardEls[absIdx];
+  const centre = el.offsetLeft + cardW / 2;
+  return viewW / 2 - centre;
+}
+
+/* The "canonical" real-set copies are indices N..2N-1 */
+function offsetForReal(realIdx) {
+  return offsetForAbsIdx(N + realIdx);
+}
+
+/* ─────────────────────────────────────────────
+   ANIMATED MOVE  (ease-out cubic)
+───────────────────────────────────────────── */
+function animateTo(targetOffset, duration, onDone) {
+  if (animId) cancelAnimationFrame(animId);
+  const startOffset = currentOffset;
+  const dist        = targetOffset - startOffset;
+  if (Math.abs(dist) < 0.5) { applyOffset(targetOffset); onDone && onDone(); return; }
+  const t0 = performance.now();
+
+  function step(now) {
+    const p    = Math.min((now - t0) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);          // ease-out cubic
+    applyOffset(startOffset + dist * ease);
+    if (p < 1) {
+      animId = requestAnimationFrame(step);
+    } else {
+      animId = null;
+      onDone && onDone();
+    }
+  }
+  animId = requestAnimationFrame(step);
+}
+
+function applyOffset(offset) {
+  currentOffset = offset;
+  track.style.transform = `translateX(${offset}px)`;
+}
+
+/* ─────────────────────────────────────────────
+   GO TO REAL INDEX  (with infinite wrap)
+───────────────────────────────────────────── */
+function goTo(realIdx, animated = true) {
+  realIdx = ((realIdx % N) + N) % N;   // clamp to 0-3
+
+  const target = offsetForReal(realIdx);
+  const dur    = animated ? 420 : 0;
+
+  animateTo(target, dur, () => {
+    // After animation lands, silently snap to canonical set
+    // (so future moves always have room in both directions)
+    currentReal = realIdx;
+    updateUI();
+  });
+  currentReal = realIdx;
+  updateUI();
+}
+
+/* ─────────────────────────────────────────────
+   STEP  +1 / -1 with wrap
+───────────────────────────────────────────── */
+function step_dir(dir) {
+  // Work out which absolute index we're currently "near"
+  // by finding the card whose centre is closest to viewW/2
+  let best = N; // default to canonical set
+  let bestDist = Infinity;
+  cardEls.forEach((el, i) => {
+    const centre = el.offsetLeft + cardW / 2;
+    const screenPos = centre + currentOffset;
+    const d = Math.abs(screenPos - viewW / 2);
+    if (d < bestDist) { bestDist = d; best = i; }
+  });
+
+  const nextAbs  = best + dir;
+  const nextReal = ((nextAbs % N) + N) % N;
+
+  // Animate toward the neighbouring card in that direction (could be ghost)
+  const target = offsetForAbsIdx(nextAbs);
+  animateTo(target, 400, () => {
+    // Silently warp to the canonical equivalent so we never run out of track
+    const canonical = offsetForReal(nextReal);
+    applyOffset(canonical);
+    currentReal = nextReal;
+    updateUI();
+  });
+  currentReal = nextReal;
+  updateUI();
+}
+
+/* ─────────────────────────────────────────────
+   UPDATE DOTS + ACTIVE CARD
+───────────────────────────────────────────── */
+function updateUI() {
+  dotEls.forEach((d, i) => d.classList.toggle('active', i === currentReal));
+  cardEls.forEach(c => {
+    c.classList.toggle('active', parseInt(c.dataset.idx) === currentReal);
+  });
+}
+
+/* ─────────────────────────────────────────────
+   BUTTON CLICKS
+───────────────────────────────────────────── */
+prevBtn.addEventListener('click', () => step_dir(-1));
+nextBtn.addEventListener('click', () => step_dir(+1));
+
+/* ─────────────────────────────────────────────
+   CARD CLICK → CENTRE THAT CARD
+───────────────────────────────────────────── */
+cardEls.forEach((el, absIdx) => {
+  el.addEventListener('click', () => {
+    if (dragMoved) return;
+    const realIdx = parseInt(el.dataset.idx);
+    // Animate to the clicked card's absolute position (smooth), then warp
+    const target = offsetForAbsIdx(absIdx);
+    animateTo(target, 380, () => {
+      const canonical = offsetForReal(realIdx);
+      applyOffset(canonical);
+      currentReal = realIdx;
+      updateUI();
+    });
+    currentReal = realIdx;
+    updateUI();
+  });
+});
+
+/* ─────────────────────────────────────────────
+   DRAG  (mouse + touch)
+   After release: snap to nearest card centre
+───────────────────────────────────────────── */
+let dragActive    = false;
+let dragStartX    = 0;
+let dragStartOff  = 0;
+let dragMoved     = false;
+let dragVelX      = 0;
+let dragLastX     = 0;
+let dragLastT     = 0;
+
+function dragStart(x) {
+  if (animId) { cancelAnimationFrame(animId); animId = null; }
+  dragActive   = true;
+  dragMoved    = false;
+  dragStartX   = x;
+  dragStartOff = currentOffset;
+  dragVelX     = 0;
+  dragLastX    = x;
+  dragLastT    = performance.now();
+  track.classList.add('dragging');
+}
+
+function dragMove(x) {
+  if (!dragActive) return;
+  const dx = x - dragStartX;
+  if (Math.abs(dx) > 4) dragMoved = true;
+  applyOffset(dragStartOff + dx);
+
+  // Track velocity
+  const now = performance.now();
+  dragVelX  = (x - dragLastX) / Math.max(now - dragLastT, 1);
+  dragLastX = x;
+  dragLastT = now;
+}
+
+function dragEnd() {
+  if (!dragActive) return;
+  dragActive = false;
+  track.classList.remove('dragging');
+  snapNearest();
+}
+
+function snapNearest() {
+  // Find card centre closest to viewport centre (with optional momentum)
+  let best = N;
+  let bestDist = Infinity;
+  const momentum = dragVelX * 80; // small momentum boost
+
+  cardEls.forEach((el, i) => {
+    const centre    = el.offsetLeft + cardW / 2;
+    const screenPos = centre + currentOffset + momentum;
+    const d = Math.abs(screenPos - viewW / 2);
+    if (d < bestDist) { bestDist = d; best = i; }
+  });
+
+  const realIdx = parseInt(cardEls[best].dataset.idx);
+  const target  = offsetForAbsIdx(best);
+
+  animateTo(target, 350, () => {
+    const canonical = offsetForReal(realIdx);
+    applyOffset(canonical);
+    currentReal = realIdx;
+    updateUI();
+  });
+  currentReal = realIdx;
+  updateUI();
+}
+
+/* Mouse */
+track.addEventListener('mousedown', e => dragStart(e.pageX));
+document.addEventListener('mousemove', e => { if (dragActive) { e.preventDefault(); dragMove(e.pageX); }});
+document.addEventListener('mouseup', () => dragEnd());
+
+/* Touch */
+track.addEventListener('touchstart', e => dragStart(e.touches[0].pageX), { passive:true });
+track.addEventListener('touchmove',  e => dragMove(e.touches[0].pageX),  { passive:true });
+track.addEventListener('touchend',   () => dragEnd());
+
+/* ─────────────────────────────────────────────
+   INIT + RESIZE
+───────────────────────────────────────────── */
+function init() {
+  readMetrics();
+  const canonical = offsetForReal(currentReal);
+  applyOffset(canonical);
+  updateUI();
+}
+
+// Double rAF ensures layout is complete before we measure
+requestAnimationFrame(() => requestAnimationFrame(init));
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => { init(); }, 80);
+});
+</script>
+</body>
+</html>

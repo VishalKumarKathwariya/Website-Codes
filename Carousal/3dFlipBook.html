@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>14 — 3D Page Flip Carousel | The Journal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #f4f0e8;
+  --paper: #fffef8;
+  --ink: #1a1710;
+  --ink-muted: #8c8474;
+  --ink-faint: #c4bfb0;
+  --accent: #c1440e;
+  --gold: #b8960c;
+}
+
+body {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--ink);
+}
+
+/* Paper texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Masthead */
+.masthead {
+  text-align: center;
+  border-bottom: 3px double var(--ink);
+  padding-bottom: 20px;
+  margin-bottom: 10px;
+  width: 100%;
+  max-width: 840px;
+}
+
+.edition-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-muted);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.masthead-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(38px, 6vw, 72px);
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.masthead-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.masthead-sub {
+  font-size: 12px;
+  color: var(--ink-muted);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Book Stage */
+.book-stage {
+  width: min(90vw, 840px);
+  height: 520px;
+  perspective: 2200px;
+  perspective-origin: 50% 45%;
+  position: relative;
+  margin: 24px 0;
+}
+
+.book-shadow {
+  position: absolute;
+  bottom: -20px;
+  left: 8%;
+  right: 8%;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.28) 0%, transparent 70%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+.book {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+/* Static pages (always visible) */
+.static-left,
+.static-right {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.static-left {
+  left: 0;
+  border-radius: 2px 0 0 2px;
+  box-shadow: inset -4px 0 12px rgba(0,0,0,0.06), 4px 0 12px rgba(0,0,0,0.1);
+}
+
+.static-right {
+  right: 0;
+  border-radius: 0 2px 2px 0;
+  box-shadow: inset 4px 0 12px rgba(0,0,0,0.06), -2px 0 12px rgba(0,0,0,0.08);
+}
+
+/* Flipping page (3D) */
+.page {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.95s cubic-bezier(0.645, 0.045, 0.355, 1);
+  z-index: 5;
+}
+
+.page-front, .page-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 2px 8px 8px 2px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.02), 2px 0 12px rgba(0,0,0,0.12);
+  background: var(--paper);
+}
+
+.page-back {
+  transform: rotateY(180deg);
+  border-radius: 8px 2px 2px 8px;
+  box-shadow: -2px 0 12px rgba(0,0,0,0.12);
+}
+
+/* Shared page content styling */
+.page-content {
+  width: 100%;
+  height: 100%;
+  padding: 36px 32px;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+}
+
+.page-content::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 76px;
+  height: 1px;
+  background: var(--ink-faint);
+  opacity: .5;
+}
+
+.pg-issue {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-muted);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pg-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--ink);
+  margin-bottom: 12px;
+}
+
+.pg-category {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.pg-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.15;
+  margin-bottom: 12px;
+  letter-spacing: -.01em;
+}
+
+.pg-headline em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.pg-byline {
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink-faint);
+}
+
+.pg-body {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.8;
+  flex: 1;
+}
+
+.pg-body p {
+  margin-bottom: 10px;
+}
+
+.pg-body p:first-child::first-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 700;
+  float: left;
+  line-height: .75;
+  margin: 4px 8px 0 0;
+  color: var(--ink);
+}
+
+/* Full-bleed image spread style */
+.pg-image-full {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 110px;
+  overflow: hidden;
+}
+
+.pg-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.7) 0%, rgba(0,0,0,.2) 50%, rgba(0,0,0,.1) 100%);
+}
+
+.pg-image-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  color: #fff;
+  z-index: 5;
+}
+
+.pg-image-caption .pg-category {
+  color: rgba(255,255,255,.8);
+}
+
+.pg-image-caption .pg-headline {
+  color: #fff;
+  font-size: clamp(18px, 2.5vw, 24px);
+}
+
+.pg-image-caption .pg-byline {
+  color: rgba(255,255,255,.6);
+  border-color: rgba(255,255,255,.2);
+  margin-bottom: 0;
+}
+
+.pg-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-muted);
+  text-align: center;
+  margin-top: 12px;
+  letter-spacing: .1em;
+}
+
+.page-curl {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, transparent 50%, var(--bg) 50%);
+  opacity: .6;
+  pointer-events: none;
+}
+
+/* Navigation bar */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 840px;
+  border-top: 1px solid var(--ink-faint);
+  padding-top: 16px;
+  margin-top: 8px;
+}
+
+.nav-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+  letter-spacing: .08em;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.flip-btn {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  letter-spacing: .04em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flip-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.pg-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.pg-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+  cursor: pointer;
+  border: none;
+  transition: background .3s, transform .3s;
+}
+
+.pg-dot.active {
+  background: var(--accent);
+  transform: scale(1.3);
+}
+
+/* Responsive */
+@media (max-width: 680px) {
+  .book-stage {
+    height: 460px;
+  }
+  .page-content {
+    padding: 24px 20px;
+  }
+  .pg-headline {
+    font-size: 20px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="edition-tag">Design 14 · 3D Page-Flip · CSS preserve-3d</div>
+  <div class="masthead-title">The <em>Journal</em></div>
+  <div class="masthead-sub">Immersive Editorial Carousel · Backface Visibility · True 3D Flip</div>
+</div>
+
+<div class="book-stage">
+  <div class="book-shadow"></div>
+  <div class="book" id="book">
+    <div class="static-left" id="static-left"></div>
+    <div class="static-right" id="static-right"></div>
+    <div class="page" id="flip-page">
+      <div class="page-front" id="page-front"></div>
+      <div class="page-back" id="page-back"></div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <div class="nav-meta" id="page-meta">Page 1 – 2 of 10</div>
+  <div class="nav-controls">
+    <button class="flip-btn" id="prev-btn">← Prev</button>
+    <div class="pg-dots" id="pg-dots"></div>
+    <button class="flip-btn" id="next-btn">Next →</button>
+  </div>
+</div>
+
+<script>
+  // ---- EDITORIAL CONTENT (10 spreads = 20 pages) ----
+  const SPREADS = [
+    {
+      left: { type: 'article', category: 'Technology', headline: 'The New<br>Architecture<br>of the Web', byline: 'By Sarah Chen · March 2025', body: 'The internet is being rewired. After decades of centralised servers and monolithic applications, the next generation of the web is built at the edge — distributed, fast, and closer to every person on the planet.\n\nThis shift isn\'t incremental. It\'s tectonic. The implications for developers, businesses, and users are profound in ways we are only beginning to understand.', pg: 1 },
+      right: { type: 'image', emoji: '🌐', bg: 'linear-gradient(145deg,#050520,#0a0a40,#05051a)', category: 'Feature', headline: 'Edge compute is the most important invention since the cloud.', byline: 'Sundar Pichai, Google CEO', pg: 2 }
+    },
+    {
+      left: { type: 'article', category: 'Design', headline: 'When<br>Typography<br>Becomes Art', byline: 'By Marcus Webb · March 2025', body: 'Variable fonts are changing everything about how type lives on screen. A single font file can now express infinite weights, widths, and optical sizes — adapting in real-time to the reader\'s context.\n\nDesigners who understand this shift are creating experiences that feel alive. Text that breathes. Headings that grow as you scroll.', pg: 3 },
+      right: { type: 'image', emoji: '✒️', bg: 'linear-gradient(145deg,#1a0800,#3d1500,#1a0800)', category: 'Design', headline: 'Type is not decoration. It is the architecture of thought.', byline: 'Ellen Lupton, Cooper Hewitt', pg: 4 }
+    },
+    {
+      left: { type: 'article', category: 'Science', headline: 'The Quantum<br>Decade<br>Arrives', byline: 'By Dr. Leila Ahmad · March 2025', body: 'For forty years, quantum computing was a theoretical promise. In 2025, it is becoming a practical reality. Three separate teams have demonstrated quantum advantage on commercially relevant problems — and the world is not ready.\n\nFrom drug discovery to cryptography, the implications are staggering.', pg: 5 },
+      right: { type: 'image', emoji: '⚛️', bg: 'linear-gradient(145deg,#001a20,#003040,#001a20)', category: 'Science', headline: 'We are witnessing a transition as significant as the shift from analog to digital.', byline: 'Dr. Priya Nair, MIT Quantum Lab', pg: 6 }
+    },
+    {
+      left: { type: 'article', category: 'Culture', headline: 'The Quiet<br>Return of<br>Slow Things', byline: 'By James Okonkwo · March 2025', body: 'Vinyl records outsold CDs for the third consecutive year. Film cameras are back-ordered at every major retailer. Printed books are outperforming their digital equivalents in every age demographic under 35.\n\nSomething curious is happening. In an age of instant everything, people are deliberately choosing the slow version.', pg: 7 },
+      right: { type: 'image', emoji: '🎵', bg: 'linear-gradient(145deg,#1a0a1a,#30153d,#1a0a1a)', category: 'Culture', headline: 'Slowness is not inefficiency. It is a different kind of intelligence.', byline: 'Tara Parker, The Atlantic', pg: 8 }
+    },
+    {
+      left: { type: 'article', category: 'Economy', headline: 'Cities That<br>Build Without<br>Sprawling', byline: 'By Nina Vasquez · March 2025', body: 'The compact city is having its moment. After a century of suburban expansion, urban planners are rediscovering what ancient cities knew instinctively: density is not the enemy of quality of life — car dependency is.\n\nFrom Singapore to Amsterdam, the cities leading quality-of-life indexes share a single defining feature.', pg: 9 },
+      right: { type: 'image', emoji: '🏙️', bg: 'linear-gradient(145deg,#0a1a08,#143d10,#0a1a08)', category: 'Urban', headline: 'A city that works for a child and an elderly person works for everyone.', byline: 'Enrique Peñalosa, Former Mayor of Bogotá', pg: 10 }
+    }
+  ];
+
+  const N = SPREADS.length;
+  let cur = 0;
+  let isAnimating = false;
+  let animationTimeout = null;
+
+  // DOM elements
+  const flipPage = document.getElementById('flip-page');
+  const pageFront = document.getElementById('page-front');
+  const pageBack = document.getElementById('page-back');
+  const staticLeft = document.getElementById('static-left');
+  const staticRight = document.getElementById('static-right');
+  const dotsEl = document.getElementById('pg-dots');
+  const metaEl = document.getElementById('page-meta');
+
+  // ---- Helper: build HTML for any page (article or image) ----
+  function buildPageContent(data, side = 'left') {
+    if (data.type === 'image') {
+      return `<div class="page-content" style="padding:0;position:relative">
+        <div class="pg-image-full" style="background:${data.bg}">${data.emoji}</div>
+        <div class="pg-image-overlay"></div>
+        <div class="pg-image-caption">
+          <div class="pg-category">${data.category}</div>
+          <div class="pg-headline">“${data.headline}”</div>
+          <div class="pg-byline">— ${data.byline}</div>
+        </div>
+        <div class="pg-number">${data.pg}</div>
+      </div>`;
+    }
+    // article layout
+    const bodyHtml = data.body.split('\n\n').map(p => `<p>${p}</p>`).join('');
+    return `<div class="page-content">
+      <div class="pg-issue"><span>The Journal</span><span>March 2025</span></div>
+      <div class="pg-divider"></div>
+      <div class="pg-category">${data.category}</div>
+      <div class="pg-headline">${data.headline}</div>
+      <div class="pg-byline">${data.byline}</div>
+      <div class="pg-body">${bodyHtml}</div>
+      <div class="pg-number">${data.pg}</div>
+      <div class="page-curl"></div>
+    </div>`;
+  }
+
+  // ---- Render static left & right pages for current spread ----
+  function renderStaticSpread(index) {
+    const sp = SPREADS[index];
+    staticLeft.innerHTML = buildPageContent(sp.left, 'left');
+    staticRight.innerHTML = buildPageContent(sp.right, 'right');
+    metaEl.textContent = `Page ${sp.left.pg}–${sp.right.pg} of ${N * 2}`;
+    // update dots active state
+    document.querySelectorAll('.pg-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+  }
+
+  // ---- Reset flipping page to match current spread (hidden state) ----
+  function resetFlipPageToCurrent() {
+    // front = current right page, back = current left page (idle orientation)
+    pageFront.innerHTML = buildPageContent(SPREADS[cur].right, 'right');
+    pageBack.innerHTML = buildPageContent(SPREADS[cur].left, 'left');
+    flipPage.style.left = '50%';
+    flipPage.style.transformOrigin = 'left center';
+    flipPage.style.transform = 'rotateY(0deg)';
+    flipPage.style.zIndex = '';
+    flipPage.style.visibility = 'hidden';
+  }
+
+  // ---- Perform flip animation (direction: 'forward' or 'backward') ----
+  function performFlip(targetIndex, direction) {
+    if (isAnimating) return;
+    if (targetIndex === cur) return;
+    if (targetIndex < 0 || targetIndex >= N) return;
+
+    isAnimating = true;
+
+    // Prepare flip page: make it visible, clear any pending transition
+    flipPage.style.visibility = 'visible';
+    flipPage.style.transition = 'transform 0.95s cubic-bezier(0.645, 0.045, 0.355, 1)';
+    
+    if (direction === 'forward') {
+      // FORWARD: flip current right page to left, revealing next left page.
+      // front shows current RIGHT page, back shows NEXT left page.
+      pageFront.innerHTML = buildPageContent(SPREADS[cur].right, 'right');
+      pageBack.innerHTML = buildPageContent(SPREADS[targetIndex].left, 'left');
+      
+      flipPage.style.left = '50%';
+      flipPage.style.transformOrigin = 'left center';
+      flipPage.style.transform = 'rotateY(0deg)';
+      flipPage.style.zIndex = '30';
+      
+      // force reflow then animate
+      void flipPage.offsetHeight;
+      flipPage.style.transform = 'rotateY(-180deg)';
+    } 
+    else {
+      // BACKWARD: flip current left page to right, revealing previous right page.
+      // front shows current LEFT page, back shows PREVIOUS right page.
+      pageFront.innerHTML = buildPageContent(SPREADS[cur].left, 'left');
+      pageBack.innerHTML = buildPageContent(SPREADS[targetIndex].right, 'right');
+      
+      flipPage.style.left = '0';
+      flipPage.style.transformOrigin = 'right center';
+      flipPage.style.transform = 'rotateY(0deg)';
+      flipPage.style.zIndex = '30';
+      
+      void flipPage.offsetHeight;
+      flipPage.style.transform = 'rotateY(180deg)';
+    }
+
+    // Clear any previous timeout
+    if (animationTimeout) clearTimeout(animationTimeout);
+    
+    animationTimeout = setTimeout(() => {
+      // update current index
+      cur = targetIndex;
+      // re-render static pages with new spread
+      renderStaticSpread(cur);
+      // reset flip page contents to new spread and hide it
+      resetFlipPageToCurrent();
+      // ensure inline transform and flags cleaned
+      flipPage.style.zIndex = '';
+      flipPage.style.transition = '';
+      isAnimating = false;
+      animationTimeout = null;
+    }, 950);
+  }
+
+  // ---- Public goTo (with direction detection) ----
+  function goTo(target) {
+    if (isAnimating) return;
+    if (target === cur) return;
+    if (target < 0 || target >= N) return;
+    const direction = target > cur ? 'forward' : 'backward';
+    performFlip(target, direction);
+  }
+
+  // ---- Setup navigation dots ----
+  function buildDots() {
+    dotsEl.innerHTML = '';
+    SPREADS.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'pg-dot' + (i === cur ? ' active' : '');
+      dot.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!isAnimating && i !== cur) goTo(i);
+      });
+      dotsEl.appendChild(dot);
+    });
+  }
+
+  // ---- Initialise carousel ----
+  function init() {
+    buildDots();
+    renderStaticSpread(0);
+    // set up flip page content to match current spread, then hide
+    pageFront.innerHTML = buildPageContent(SPREADS[0].right, 'right');
+    pageBack.innerHTML = buildPageContent(SPREADS[0].left, 'left');
+    flipPage.style.left = '50%';
+    flipPage.style.transformOrigin = 'left center';
+    flipPage.style.transform = 'rotateY(0deg)';
+    flipPage.style.visibility = 'hidden';
+    flipPage.style.zIndex = '';
+  }
+  
+  init();
+
+  // ---- Event listeners ----
+  document.getElementById('next-btn').addEventListener('click', () => {
+    if (cur < N - 1) goTo(cur + 1);
+  });
+  document.getElementById('prev-btn').addEventListener('click', () => {
+    if (cur > 0) goTo(cur - 1);
+  });
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' && cur < N - 1) goTo(cur + 1);
+    if (e.key === 'ArrowLeft' && cur > 0) goTo(cur - 1);
+  });
+  
+  // Touch swipe (simple)
+  let touchStartX = null;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+  });
+  document.addEventListener('touchend', (e) => {
+    if (touchStartX === null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(diff) > 55) {
+      if (diff < 0 && cur < N - 1) goTo(cur + 1);
+      else if (diff > 0 && cur > 0) goTo(cur - 1);
+    }
+    touchStartX = null;
+  });
+  
+  // Disable transition conflicts on window resize
+  window.addEventListener('resize', () => {
+    if (!isAnimating) {
+      resetFlipPageToCurrent();
+    }
+  });
+</script>
+</body>
+</html>

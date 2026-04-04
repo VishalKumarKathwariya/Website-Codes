@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 07 — Gradient Border</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0c0c14;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 30% 50%, rgba(255,107,107,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 70% 50%, rgba(77,150,255,0.07) 0%, transparent 60%);
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3rem;
+    padding: 3rem 2rem; text-align: center;
+  }
+
+  .label-block { display: flex; flex-direction: column; gap: 8px; }
+
+  .tag {
+    display: inline-block; padding: 4px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700; color: #fff; line-height: 1.1;
+  }
+
+  p { font-size: 15px; color: rgba(255,255,255,0.38); max-width: 400px; line-height: 1.6; }
+
+  /* ── GRADIENT BORDER BUTTONS ── */
+  .btn-group { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+
+  /* Technique: conic-gradient on ::before, inner bg on ::after */
+  .btn-gb {
+    position: relative;
+    padding: 14px 32px;
+    border: none; border-radius: 10px;
+    background: transparent;
+    color: #fff;
+    font-size: 15px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    cursor: pointer; z-index: 0;
+    transition: color 0.2s;
+  }
+
+  .btn-gb::before {
+    content: ''; position: absolute; inset: -1.5px;
+    border-radius: 11.5px;
+    background: conic-gradient(from 0deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b6b);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .btn-gb::after {
+    content: ''; position: absolute; inset: 1.5px;
+    border-radius: 8.5px;
+    background: #0c0c14;
+    z-index: -1;
+  }
+
+  .btn-gb:hover::before {
+    opacity: 1;
+    animation: rotate-gradient 2s linear infinite;
+  }
+
+  @keyframes rotate-gradient {
+    to { filter: hue-rotate(360deg); }
+  }
+
+  /* always-on variant */
+  .btn-gb-on::before { opacity: 1; animation: rotate-gradient 2s linear infinite; }
+
+  /* Static gradient border (no animation) */
+  .btn-gb-static::before {
+    opacity: 1;
+    background: linear-gradient(135deg, #ff6b6b, #4d96ff);
+    animation: none;
+  }
+  .btn-gb-static:hover::before {
+    animation: none;
+    filter: brightness(1.2);
+  }
+
+  /* Rainbow spin variant */
+  .btn-gb-rainbow::before {
+    opacity: 1;
+    background: conic-gradient(from 0deg, #ff0080, #ff8c00, #ffe800, #00cf00, #00b7ff, #9e00ff, #ff0080);
+    animation: spin-fast 1s linear infinite;
+  }
+  @keyframes spin-fast {
+    to { transform: rotate(360deg); }
+  }
+  /* contain rainbow spin within border */
+  .btn-gb-rainbow {
+    overflow: hidden;
+  }
+  .btn-gb-rainbow::before {
+    inset: -200%; width: 200%; height: 200%;
+    border-radius: 0;
+    left: 50%; top: 50%;
+    transform-origin: center;
+  }
+  .btn-gb-rainbow::after { inset: 1.5px; border-radius: 8.5px; }
+
+  .info {
+    display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;
+    margin-top: 1rem;
+  }
+  .info-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 12px 20px;
+    font-size: 13px; color: rgba(255,255,255,0.35);
+    display: flex; flex-direction: column; gap: 4px; min-width: 130px;
+  }
+  .info-item strong { color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 600; }
+
+  .hint { font-size: 12px; color: rgba(255,255,255,0.2); letter-spacing: 0.05em; }
+
+  .divider-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.2); font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 07 / 10</span>
+    <h1>Animated Gradient Border</h1>
+    <p>A rotating conic gradient creates a living rainbow border — used for upgrade prompts, premium features, and standout CTAs.</p>
+  </div>
+
+  <div>
+    <span class="divider-label">Hover to activate</span>
+    <div class="btn-group">
+      <button class="btn-gb"><span>Hover Me</span></button>
+      <button class="btn-gb btn-gb-static"><span>Upgrade Plan</span></button>
+    </div>
+
+    <span class="divider-label">Always on</span>
+    <div class="btn-group">
+      <button class="btn-gb btn-gb-on"><span>Get Pro Access</span></button>
+    </div>
+  </div>
+
+  <span class="hint">↑ Hover the first row buttons — right column is always active</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Railway, Prisma, Resend</div>
+    <div class="info-item"><strong>Technique</strong>conic-gradient pseudo-el</div>
+    <div class="info-item"><strong>Feel</strong>Vibrant, premium, eye-catching</div>
+    <div class="info-item"><strong>Best for</strong>Upgrade / Pro CTAs</div>
+  </div>
+</div>
+</body>
+</html>

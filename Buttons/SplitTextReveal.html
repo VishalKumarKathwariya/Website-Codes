@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 17 — Split Text Reveal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    min-height:100vh;background:#f8f5f0;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Sans',sans-serif;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,0,0,0.04) 0%, transparent 60%);
+  }
+  .page{
+    position:relative;z-index:1;
+    display:flex;flex-direction:column;align-items:center;gap:3.5rem;
+    padding:3rem 2rem;text-align:center;max-width:680px;
+  }
+  .label-block{display:flex;flex-direction:column;gap:10px;align-items:center}
+  .tag{
+    display:inline-block;padding:5px 14px;
+    background:rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.12);
+    border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:rgba(0,0,0,0.45);
+  }
+  h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;color:#1a1a1a;line-height:1.1}
+  p{font-size:15px;color:#6b6b6b;max-width:420px;line-height:1.65}
+
+  /* ── BUTTONS ── */
+  .demo-area{display:flex;flex-direction:column;align-items:center;gap:2.5rem;width:100%}
+  .row{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+
+  /* Base split button */
+  .btn-split{
+    padding:0;border:none;border-radius:0;
+    background:transparent;
+    cursor:pointer;overflow:hidden;
+    display:inline-flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+
+  .split-clip{
+    height:1.25em;overflow:hidden;display:inline-flex;
+    flex-direction:column;align-items:flex-start;
+    position:relative;
+  }
+
+  .split-a,.split-b{
+    display:block;line-height:1.25em;white-space:nowrap;
+    transition:transform .4s cubic-bezier(.76,0,.24,1);
+    will-change:transform;
+  }
+  .split-b{position:absolute;top:100%;left:0}
+
+  .btn-split:hover .split-a{ transform:translateY(-100%) }
+  .btn-split:hover .split-b{ transform:translateY(-100%) }
+
+  /* Variant 1 — uppercase minimal */
+  .btn-sp1{
+    padding:14px 36px;
+    border-bottom:1.5px solid #1a1a1a;
+  }
+  .btn-sp1 .split-a,.btn-sp1 .split-b{
+    font-size:13px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#1a1a1a;
+  }
+  .btn-sp1 .split-b{color:#6b4f3a}
+
+  /* Variant 2 — filled dark */
+  .btn-sp2{
+    padding:15px 36px;background:#1a1a1a;border-radius:4px;
+  }
+  .btn-sp2 .split-a,.btn-sp2 .split-b{
+    font-size:15px;font-weight:600;color:#fff;
+  }
+  .btn-sp2 .split-b{color:#f5d0a9}
+
+  /* Variant 3 — serif italic reveal */
+  .btn-sp3{
+    padding:15px 36px;border:1.5px solid #1a1a1a;border-radius:2px;
+  }
+  .btn-sp3 .split-a{
+    font-size:15px;font-weight:600;color:#1a1a1a;letter-spacing:.04em;
+  }
+  .btn-sp3 .split-b{
+    font-family:'Playfair Display',serif;font-style:italic;
+    font-size:16px;color:#6b4f3a;
+  }
+
+  /* Variant 4 — large editorial */
+  .btn-sp4{
+    padding:20px 48px;background:#6b4f3a;border-radius:6px;
+  }
+  .btn-sp4 .split-a{
+    font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;
+  }
+  .btn-sp4 .split-b{
+    font-size:14px;font-weight:500;color:#f5d0a9;letter-spacing:.1em;text-transform:uppercase;
+  }
+
+  /* Variant 5 — word swap with icon */
+  .btn-sp5{
+    padding:14px 36px;background:transparent;border:1.5px solid rgba(0,0,0,0.2);border-radius:4px;
+    display:inline-flex;align-items:center;gap:12px;
+  }
+  .btn-sp5 .split-a,.btn-sp5 .split-b{
+    font-size:14px;font-weight:500;color:#1a1a1a;
+  }
+  .arrow-icon{font-size:16px;transition:transform .4s cubic-bezier(.76,0,.24,1)}
+  .btn-sp5:hover .arrow-icon{transform:translateX(6px)}
+
+  .divider{width:100%;height:1px;background:rgba(0,0,0,0.08)}
+  .sub{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#9ca3af;font-weight:600}
+
+  .info{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+  .info-item{
+    background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.07);
+    border-radius:10px;padding:12px 20px;font-size:13px;color:#6b7280;
+    display:flex;flex-direction:column;gap:4px;min-width:130px;
+  }
+  .info-item strong{color:#1a1a1a;font-size:14px;font-weight:600}
+  .hint{font-size:12px;color:#9ca3af;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 17 / 20</span>
+    <h1>Split Text Reveal</h1>
+    <p>The visible text slides up as a hidden line rises from below — an editorial technique common in luxury fashion and GSAP-powered agency sites.</p>
+  </div>
+
+  <div class="demo-area">
+    <span class="sub">Minimal / editorial</span>
+    <div class="row">
+      <button class="btn-split btn-sp1">
+        <span class="split-clip">
+          <span class="split-a">Discover</span>
+          <span class="split-b">Explore →</span>
+        </span>
+      </button>
+      <button class="btn-split btn-sp5">
+        <span class="split-clip">
+          <span class="split-a">View Collection</span>
+          <span class="split-b">See All Pieces</span>
+        </span>
+        <span class="arrow-icon">→</span>
+      </button>
+    </div>
+
+    <div class="divider"></div>
+    <span class="sub">Filled variants</span>
+    <div class="row">
+      <button class="btn-split btn-sp2">
+        <span class="split-clip">
+          <span class="split-a">Shop Now</span>
+          <span class="split-b">Let's Go →</span>
+        </span>
+      </button>
+      <button class="btn-split btn-sp3">
+        <span class="split-clip">
+          <span class="split-a">Read More</span>
+          <span class="split-b">Open Story</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="divider"></div>
+    <span class="sub">Large editorial CTA</span>
+    <button class="btn-split btn-sp4">
+      <span class="split-clip">
+        <span class="split-a">The New Collection</span>
+        <span class="split-b">Shop SS 2025</span>
+      </span>
+    </button>
+  </div>
+
+  <span class="hint">↑ Hover each button — text slides up, revealing a second line</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Luxury fashion, GSAP, Awwwards</div>
+    <div class="info-item"><strong>Technique</strong>CSS overflow:hidden + translateY</div>
+    <div class="info-item"><strong>Feel</strong>Refined, editorial, deliberate</div>
+    <div class="info-item"><strong>Best for</strong>Luxury, editorial, portfolio</div>
+  </div>
+</div>
+</body>
+</html>

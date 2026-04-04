@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testimonials · Design 03 · Carousel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0c0c0c;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #ededed;
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .carousel-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .carousel-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .carousel-header h2 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      background: linear-gradient(145deg, #fff, #aaa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .carousel-header p {
+      color: #a3a3a3;
+      font-size: 1.1rem;
+    }
+
+    /* carousel container */
+    .carousel-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-track-wrapper {
+      overflow: hidden;
+      width: 100%;
+      border-radius: 28px;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s ease-in-out;
+      gap: 1rem;
+    }
+
+    .carousel-slide {
+      flex: 0 0 100%;            /* 1 slide on mobile */
+      padding: 0.2rem;
+    }
+
+    /* card design */
+    .testimonial-card {
+      background: #1b1b1b;
+      border-radius: 28px;
+      padding: 2rem 1.8rem;
+      border: 1px solid #2e2e2e;
+      box-shadow: 0 20px 35px -8px rgba(0,0,0,0.7);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-rating {
+      color: #facc15;
+      margin-bottom: 1.2rem;
+      font-size: 1.1rem;
+    }
+
+    .card-quote {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #d1d5db;
+      margin-bottom: 2rem;
+      flex: 1;
+    }
+
+    .card-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-top: 1px dashed #333;
+      padding-top: 1.2rem;
+    }
+
+    .author-avatar {
+      background: linear-gradient(145deg, #383838, #1f1f1f);
+      border-radius: 50%;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.4rem;
+      color: #ddd;
+    }
+
+    .author-info h4 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    .author-info p {
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+
+    /* nav buttons */
+    .carousel-btn {
+      background: #262626;
+      border: 1px solid #3b3b3b;
+      color: #f0f0f0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      transition: background 0.2s;
+      font-size: 1.2rem;
+    }
+
+    .carousel-btn:hover {
+      background: #3b3b3b;
+    }
+
+    .carousel-btn--prev {
+      left: -10px;
+    }
+
+    .carousel-btn--next {
+      right: -10px;
+    }
+
+    /* dots */
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+      gap: 0.75rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 20px;
+      background: #3a3a3a;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot.active {
+      background: #facc15;
+      width: 30px;
+    }
+
+    /* tablet: show 2 slides */
+    @media (min-width: 700px) {
+      .carousel-slide {
+        flex: 0 0 calc(50% - 0.5rem);
+      }
+      .carousel-btn--prev { left: -20px; }
+      .carousel-btn--next { right: -20px; }
+    }
+
+    /* desktop: still 2 slides, but we could use 3; keep 2 for readability */
+    @media (min-width: 1024px) {
+      .carousel-slide {
+        flex: 0 0 calc(33.33% - 0.7rem);
+      }
+    }
+
+    /* hide buttons if needed */
+    .carousel-btn.hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <section class="carousel-section">
+    <div class="carousel-header">
+      <h2>Wall of love</h2>
+      <p>swipe or click through</p>
+    </div>
+
+    <div class="carousel-container">
+      <button class="carousel-btn carousel-btn--prev" id="prevBtn" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+      <div class="carousel-track-wrapper">
+        <div class="carousel-track" id="carouselTrack">
+          <!-- slide 1 -->
+          <div class="carousel-slide">
+            <div class="testimonial-card">
+              <div class="card-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+              <p class="card-quote">“Absolutely love the design. The carousel is smooth and the dark theme makes the reviews pop.”</p>
+              <div class="card-author">
+                <div class="author-avatar">AL</div>
+                <div class="author-info"><h4>Ana L.</h4><p>Designer, Mosaic</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- slide 2 -->
+          <div class="carousel-slide">
+            <div class="testimonial-card">
+              <div class="card-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+              <p class="card-quote">“Finally a testimonial section that doesn't feel generic. The carousel works perfectly on mobile.”</p>
+              <div class="card-author">
+                <div class="author-avatar">MB</div>
+                <div class="author-info"><h4>Marcus B.</h4><p>Dev Advocate</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- slide 3 -->
+          <div class="carousel-slide">
+            <div class="testimonial-card">
+              <div class="card-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+              <p class="card-quote">“We installed this on our landing page and conversions went up. The dark UI matches our brand.”</p>
+              <div class="card-author">
+                <div class="author-avatar">CJ</div>
+                <div class="author-info"><h4>Casey J.</h4><p>Founder, Nomad</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- slide 4 -->
+          <div class="carousel-slide">
+            <div class="testimonial-card">
+              <div class="card-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+              <p class="card-quote">“Super clean and accessible. The JS is lightweight and the buttons are intuitive.”</p>
+              <div class="card-author">
+                <div class="author-avatar">NP</div>
+                <div class="author-info"><h4>Nadia P.</h4><p>Product Manager</p></div>
+              </div>
+            </div>
+          </div>
+          <!-- slide 5 -->
+          <div class="carousel-slide">
+            <div class="testimonial-card">
+              <div class="card-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+              <p class="card-quote">“Exactly what we needed — modern, responsive, and fits our dark theme perfectly.”</p>
+              <div class="card-author">
+                <div class="author-avatar">TR</div>
+                <div class="author-info"><h4>Taylor R.</h4><p>Marketing Lead</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-btn carousel-btn--next" id="nextBtn" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <div class="carousel-dots" id="carouselDots"></div>
+  </section>
+
+  <script>
+    (function() {
+      const track = document.getElementById('carouselTrack');
+      const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const dotsContainer = document.getElementById('carouselDots');
+
+      let currentIndex = 0;
+      let slidesPerView = getSlidesPerView();
+
+      function getSlidesPerView() {
+        if (window.innerWidth >= 1024) return 3;
+        if (window.innerWidth >= 700) return 2;
+        return 1;
+      }
+
+      function updateDots() {
+        const totalSlides = slides.length;
+        const maxIndex = totalSlides - slidesPerView;
+        let dotsHtml = '';
+        for (let i = 0; i <= maxIndex; i++) {
+          dotsHtml += `<button class="dot ${i === currentIndex ? 'active' : ''}" data-index="${i}"></button>`;
+        }
+        dotsContainer.innerHTML = dotsHtml;
+
+        // attach click to new dots
+        document.querySelectorAll('.dot').forEach(dot => {
+          dot.addEventListener('click', (e) => {
+            const index = parseInt(e.target.dataset.index, 10);
+            if (!isNaN(index)) {
+              currentIndex = Math.min(maxIndex, Math.max(0, index));
+              moveSlide();
+            }
+          });
+        });
+      }
+
+      function moveSlide() {
+        const gap = 16; // 1rem gap in px (16px)
+        const slideWidth = slides[0].getBoundingClientRect().width;
+        const translateX = -currentIndex * (slideWidth + gap);
+        track.style.transform = `translateX(${translateX}px)`;
+        updateDots();
+        // hide/show buttons
+        const maxIndex = slides.length - slidesPerView;
+        prevBtn.classList.toggle('hidden', currentIndex === 0);
+        nextBtn.classList.toggle('hidden', currentIndex >= maxIndex);
+      }
+
+      function onResize() {
+        const newSlidesPerView = getSlidesPerView();
+        if (newSlidesPerView !== slidesPerView) {
+          slidesPerView = newSlidesPerView;
+          currentIndex = 0; // reset to start to avoid empty space
+          moveSlide();
+        } else {
+          // just reposition
+          moveSlide();
+        }
+      }
+
+      // event listeners
+      prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          moveSlide();
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        const maxIndex = slides.length - slidesPerView;
+        if (currentIndex < maxIndex) {
+          currentIndex++;
+          moveSlide();
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        onResize();
+      });
+
+      // initial setup
+      updateDots();
+      moveSlide();
+    })();
+  </script>
+</body>
+</html>

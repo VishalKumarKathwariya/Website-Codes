@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 — Apple Hero Carousel</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: #f5f5f7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .page-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #86868b;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1d1d1f;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .page-sub {
+    font-size: 14px;
+    color: #86868b;
+    margin-bottom: 36px;
+    text-align: center;
+  }
+
+  /* ── CAROUSEL ── */
+  .apple-car {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    height: 440px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #0a0a0a;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .apple-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: #0071e3;
+    z-index: 20;
+    width: 0%;
+  }
+
+  .apple-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 48px 52px;
+    opacity: 0;
+    transition: opacity 0.75s ease;
+  }
+
+  .apple-slide.active { opacity: 1; }
+
+  .apple-slide-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 60px;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .apple-slide-icon {
+    font-size: 280px;
+    opacity: 0.12;
+    line-height: 1;
+    filter: blur(0px);
+  }
+
+  .slide-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,.85) 40%, transparent 80%);
+  }
+
+  .apple-eyebrow {
+    font-size: 12px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #86b9f0;
+    font-weight: 600;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .apple-headline {
+    font-size: 48px;
+    font-weight: 700;
+    color: #f5f5f7;
+    line-height: 1.05;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 2;
+    letter-spacing: -.02em;
+  }
+
+  .apple-sub {
+    font-size: 16px;
+    color: #a1a1a6;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 2;
+    max-width: 380px;
+    line-height: 1.5;
+  }
+
+  .apple-cta-row {
+    display: flex;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .apple-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #0071e3;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 11px 22px;
+    border-radius: 980px;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background .2s;
+  }
+
+  .apple-cta:hover { background: #0077ed; }
+
+  .apple-cta-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    color: #86b9f0;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 11px 22px;
+    border-radius: 980px;
+    cursor: pointer;
+    border: 1px solid rgba(134,185,240,.4);
+    font-family: inherit;
+    transition: border-color .2s;
+  }
+
+  .apple-cta-ghost:hover { border-color: rgba(134,185,240,.8); }
+
+  /* Nav arrows */
+  .apple-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,.1);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: none;
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background .2s;
+  }
+
+  .apple-nav:hover { background: rgba(255,255,255,.18); }
+  .apple-nav.prev { left: 20px; }
+  .apple-nav.next { right: 20px; }
+
+  /* Dots */
+  .apple-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 7px;
+    z-index: 10;
+  }
+
+  .apple-dot {
+    height: 7px;
+    border-radius: 4px;
+    background: rgba(255,255,255,.3);
+    transition: width .35s cubic-bezier(.23,1,.32,1), background .3s;
+    cursor: pointer;
+    width: 7px;
+    border: none;
+  }
+
+  .apple-dot.active { width: 24px; background: #fff; }
+
+  /* Slide accent colors */
+  .slide-0 { background: #0a0a14; }
+  .slide-1 { background: #0a0e1a; }
+  .slide-2 { background: #0f0a14; }
+  .slide-3 { background: #1a0a0a; }
+
+  /* Thumbnail strip */
+  .thumb-strip {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  .thumb {
+    flex: 1;
+    height: 60px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    opacity: 0.5;
+    transition: opacity .3s, transform .2s;
+    border: 2px solid transparent;
+  }
+
+  .thumb:hover { opacity: 0.75; }
+  .thumb.active { opacity: 1; border-color: #0071e3; transform: scale(1.04); }
+</style>
+</head>
+<body>
+
+<p class="page-label">Pattern 01 — Apple.com</p>
+<h1 class="page-title">Full-bleed Hero Carousel</h1>
+<p class="page-sub">Fade crossfade · progress bar · dot + thumbnail nav · auto-advance</p>
+
+<div class="apple-car" id="apple">
+  <div class="apple-progress-bar" id="apple-bar"></div>
+
+  <div class="apple-slide slide-0 active">
+    <div class="apple-slide-bg"><div class="slide-gradient"></div><div class="apple-slide-icon">💻</div></div>
+    <div class="apple-eyebrow">New — Available now</div>
+    <div class="apple-headline">MacBook Pro<br>M4 Ultra</div>
+    <div class="apple-sub">The most powerful Mac notebook ever. Now with 512GB unified memory and a stunning Liquid Retina XDR display.</div>
+    <div class="apple-cta-row">
+      <button class="apple-cta">Learn more →</button>
+      <button class="apple-cta-ghost">Watch the event</button>
+    </div>
+  </div>
+
+  <div class="apple-slide slide-1">
+    <div class="apple-slide-bg"><div class="slide-gradient"></div><div class="apple-slide-icon">📱</div></div>
+    <div class="apple-eyebrow">iPhone 17 Series</div>
+    <div class="apple-headline">Camera.<br>Reinvented.</div>
+    <div class="apple-sub">A brand-new ultra-wide camera system. Designed to shoot like a professional cinematographer, out of the box.</div>
+    <div class="apple-cta-row">
+      <button class="apple-cta">Shop iPhone →</button>
+      <button class="apple-cta-ghost">Compare models</button>
+    </div>
+  </div>
+
+  <div class="apple-slide slide-2">
+    <div class="apple-slide-bg"><div class="slide-gradient"></div><div class="apple-slide-icon">🥽</div></div>
+    <div class="apple-eyebrow">Apple Vision Pro</div>
+    <div class="apple-headline">Spatial<br>Computing.</div>
+    <div class="apple-sub">The most advanced display system ever built into a consumer product. Experience computing in a whole new dimension.</div>
+    <div class="apple-cta-row">
+      <button class="apple-cta">Explore →</button>
+      <button class="apple-cta-ghost">Book a demo</button>
+    </div>
+  </div>
+
+  <div class="apple-slide slide-3">
+    <div class="apple-slide-bg"><div class="slide-gradient"></div><div class="apple-slide-icon">⌚</div></div>
+    <div class="apple-eyebrow">Apple Watch Ultra 2</div>
+    <div class="apple-headline">Made for<br>the extreme.</div>
+    <div class="apple-sub">The most rugged and capable Apple Watch. With the largest display, longest battery, and most powerful GPS ever.</div>
+    <div class="apple-cta-row">
+      <button class="apple-cta">Buy Watch →</button>
+      <button class="apple-cta-ghost">See all features</button>
+    </div>
+  </div>
+
+  <button class="apple-nav prev" id="apple-prev">&#8249;</button>
+  <button class="apple-nav next" id="apple-next">&#8250;</button>
+  <div class="apple-dots" id="apple-dots"></div>
+</div>
+
+<div class="thumb-strip" id="thumb-strip">
+  <div class="thumb active" data-i="0">💻</div>
+  <div class="thumb" data-i="1">📱</div>
+  <div class="thumb" data-i="2">🥽</div>
+  <div class="thumb" data-i="3">⌚</div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.apple-slide');
+  const dotsEl = document.getElementById('apple-dots');
+  const bar = document.getElementById('apple-bar');
+  const thumbs = document.querySelectorAll('.thumb');
+  const DURATION = 5000;
+  let cur = 0, timer, raf, startTs;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'apple-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[cur].classList.remove('active');
+    dotsEl.querySelectorAll('.apple-dot')[cur].classList.remove('active');
+    thumbs[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dotsEl.querySelectorAll('.apple-dot')[cur].classList.add('active');
+    thumbs[cur].classList.add('active');
+    startProgressBar();
+  }
+
+  function startProgressBar() {
+    cancelAnimationFrame(raf);
+    clearTimeout(timer);
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    requestAnimationFrame(() => {
+      bar.style.transition = `width ${DURATION}ms linear`;
+      bar.style.width = '100%';
+    });
+    timer = setTimeout(() => goTo(cur + 1), DURATION);
+  }
+
+  document.getElementById('apple-prev').addEventListener('click', () => goTo(cur - 1));
+  document.getElementById('apple-next').addEventListener('click', () => goTo(cur + 1));
+
+  thumbs.forEach(t => {
+    t.addEventListener('click', () => goTo(parseInt(t.dataset.i)));
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') goTo(cur - 1);
+    if (e.key === 'ArrowRight') goTo(cur + 1);
+  });
+
+  // Touch swipe
+  let touchX = null;
+  document.getElementById('apple').addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+  document.getElementById('apple').addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) goTo(dx < 0 ? cur + 1 : cur - 1);
+    touchX = null;
+  });
+
+  startProgressBar();
+</script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accordion 3 — Brutalist Bold</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f0ec44;
+    --ink: #0d0d0d;
+    --white: #fafafa;
+    --accent: #ff3b30;
+    --border-w: 2.5px;
+    --shadow: 5px 5px 0px var(--ink);
+    --shadow-hover: 8px 8px 0px var(--ink);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 700px;
+  }
+
+  .header {
+    margin-bottom: 48px;
+  }
+
+  .kicker {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 5px 12px;
+    margin-bottom: 18px;
+    letter-spacing: 0.05em;
+  }
+
+  .header h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .header p {
+    margin-top: 16px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    max-width: 480px;
+    color: #333;
+  }
+
+  .accordion {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .accordion-item {
+    background: var(--white);
+    border: var(--border-w) solid var(--ink);
+    margin-top: -2.5px;
+    transition: box-shadow 0.2s, transform 0.2s, z-index 0s;
+    position: relative;
+    z-index: 1;
+  }
+
+  .accordion-item:hover {
+    z-index: 2;
+    box-shadow: var(--shadow-hover);
+    transform: translate(-3px, -3px);
+  }
+
+  .accordion-item.open {
+    z-index: 3;
+    background: var(--ink);
+    box-shadow: var(--shadow-hover);
+    transform: translate(-3px, -3px);
+  }
+
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    text-align: left;
+  }
+
+  .trigger-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .acc-index {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 28px;
+  }
+
+  .accordion-item.open .acc-index {
+    color: var(--bg);
+  }
+
+  .acc-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .accordion-item.open .acc-title {
+    color: var(--white);
+  }
+
+  .acc-plus {
+    width: 36px;
+    height: 36px;
+    border: var(--border-w) solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1;
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), background 0.3s, color 0.3s, border-color 0.3s;
+    background: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .accordion-item.open .acc-plus {
+    background: var(--accent);
+    color: var(--white);
+    border-color: var(--accent);
+    transform: rotate(45deg);
+  }
+
+  .accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .accordion-item.open .accordion-body {
+    grid-template-rows: 1fr;
+  }
+
+  .accordion-body-inner {
+    overflow: hidden;
+  }
+
+  .accordion-content {
+    border-top: var(--border-w) solid rgba(255,255,255,0.15);
+    padding: 20px 24px 24px 68px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.75);
+    font-weight: 400;
+  }
+
+  .acc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--bg);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: gap 0.2s;
+    cursor: pointer;
+  }
+
+  .acc-link:hover { gap: 12px; }
+  .acc-link::after { content: '→'; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <span class="kicker">// FAQ — BRUTALIST EDITION</span>
+    <h1>Got <em>questions?</em><br>We've got answers.</h1>
+    <p>No fluff, no corporate jargon. Just straight answers to your biggest questions about our product.</p>
+  </div>
+
+  <ul class="accordion">
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="trigger-left">
+          <span class="acc-index">#01</span>
+          <span class="acc-title">How does pricing work?</span>
+        </div>
+        <span class="acc-plus" aria-hidden="true">+</span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            We charge per seat, per month. No hidden fees, no annual lock-in unless you want it (20% off). Cancel any time. Free tier supports up to 3 users and 5 projects indefinitely — no credit card required. We believe in earning your money every single month.
+            <br><span class="acc-link">View full pricing</span>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="trigger-left">
+          <span class="acc-index">#02</span>
+          <span class="acc-title">Is my data actually safe?</span>
+        </div>
+        <span class="acc-plus" aria-hidden="true">+</span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            SOC 2 Type II certified. AES-256 encryption at rest, TLS 1.3 in transit. Your data lives in isolated tenants — we physically cannot access customer data without audit trail. EU and US data residency options. We publish our security report publicly, because hiding things is a red flag.
+            <br><span class="acc-link">Security whitepaper</span>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="trigger-left">
+          <span class="acc-index">#03</span>
+          <span class="acc-title">What integrations do you support?</span>
+        </div>
+        <span class="acc-plus" aria-hidden="true">+</span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Native integrations with Slack, Notion, GitHub, Jira, Figma, Linear, and 60+ more. If it's not on the list, use our Zapier integration or build your own with our open API. We add at least 3 new integrations per month based on community votes.
+            <br><span class="acc-link">Browse integrations</span>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="trigger-left">
+          <span class="acc-index">#04</span>
+          <span class="acc-title">Do you offer a free trial?</span>
+        </div>
+        <span class="acc-plus" aria-hidden="true">+</span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            14 days, full Pro access, no credit card. After that, you automatically drop to the free tier — we don't charge you without your explicit consent. Your data stays intact forever. Sales calls are optional, not mandatory. We're not going to hound you.
+            <br><span class="acc-link">Start free trial</span>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="trigger-left">
+          <span class="acc-index">#05</span>
+          <span class="acc-title">What does support actually look like?</span>
+        </div>
+        <span class="acc-plus" aria-hidden="true">+</span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Pro: 4h response, email + chat. Business: 1h response, Slack shared channel, dedicated CS manager. Enterprise: 15min SLA, 24/7 phone, implementation engineers. Free: community forum, docs, and our AI assistant that actually reads your codebase context.
+            <br><span class="acc-link">Contact support</span>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.accordion-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item.open').forEach(el => {
+        el.classList.remove('open');
+        el.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+</script>
+</body>
+</html>

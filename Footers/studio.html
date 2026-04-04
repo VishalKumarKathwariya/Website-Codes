@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Footer 04 — Creative Agency / Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0c0c;
+    --surface: #141414;
+    --border: #1e1e1e;
+    --text: #e8e6e0;
+    --muted: #555;
+    --accent: #ff6b2c;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { font-size: 16px; }
+  body { background: #080808; color: var(--text); font-family: var(--font-body); min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; cursor: none; }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease, width 0.2s, height 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,107,44,0.4);
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.25s, height 0.25s, opacity 0.2s;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  .demo-page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; }
+  .demo-page p { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; border: 1px dashed #222; padding: 12px 24px; border-radius: 2px; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--bg); border-top: 1px solid var(--border); position: relative; overflow: hidden; }
+
+  /* Watermark text */
+  .watermark {
+    position: absolute;
+    bottom: 20px; right: -20px;
+    font-family: var(--font-display);
+    font-size: clamp(80px, 14vw, 160px);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    color: rgba(255,255,255,0.025);
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .footer-inner { max-width: 1200px; margin: 0 auto; padding: 80px 48px 0; position: relative; }
+
+  /* Hero */
+  .footer-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 80px;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .big-headline {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    max-width: 600px;
+  }
+  .big-headline em { font-style: italic; color: var(--accent); }
+
+  .right-cta { text-align: right; }
+  .email-link {
+    display: block;
+    font-size: 15px;
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .email-link:hover { color: var(--text); }
+
+  .start-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1.5px solid #2a2a2a;
+    border-radius: 100px;
+    padding: 14px 28px;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text);
+    background: transparent;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: background 0.25s, border-color 0.25s, color 0.25s;
+    text-decoration: none;
+  }
+  .start-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-arrow { transition: transform 0.2s; display: inline-block; }
+  .start-btn:hover .btn-arrow { transform: translateX(4px); }
+
+  /* Divider info bar */
+  .info-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .info-item {
+    flex: 1;
+    padding: 20px 0;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .info-item:last-child { border-right: none; padding-left: 32px; }
+  .info-item:not(:first-child) { padding-left: 32px; }
+  .info-item .label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .info-item .val { font-size: 14px; color: var(--text); font-family: var(--font-display); font-weight: 700; }
+
+  /* Bottom bar */
+  .footer-bottom {
+    max-width: 1200px; margin: 0 auto;
+    padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 18px;
+  }
+  .bottom-left { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+  .studio-mark {
+    font-family: var(--font-display); font-size: 14px; font-weight: 800;
+    letter-spacing: 0.05em; color: var(--text);
+  }
+  .copyright { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a {
+    font-size: 11px; color: var(--muted); text-decoration: none;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  .socials-row { display: flex; gap: 20px; }
+  .socials-row a {
+    font-size: 11px; color: var(--muted); text-decoration: none;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .socials-row a::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0;
+    height: 1px; background: var(--accent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.2s;
+  }
+  .socials-row a:hover { color: var(--accent); }
+  .socials-row a:hover::after { transform: scaleX(1); }
+
+  /* Marquee */
+  .marquee-wrap {
+    background: var(--accent);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 14px 0;
+  }
+  .marquee-track {
+    display: inline-block;
+    animation: marquee 18s linear infinite;
+  }
+  .marquee-track span {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 0 32px;
+  }
+  .marquee-track span::after { content: '✦'; padding-left: 32px; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 860px) {
+    .footer-hero { align-items: flex-start; }
+    .right-cta { text-align: left; }
+    .info-bar { flex-wrap: wrap; }
+    .info-item { min-width: calc(50% - 1px); }
+    .footer-inner { padding: 60px 28px 0; }
+    .footer-bottom { padding: 24px 28px; }
+  }
+  @media (max-width: 600px) {
+    .footer-inner { padding: 48px 20px 0; }
+    .footer-bottom { padding: 20px; flex-direction: column; align-items: flex-start; }
+    .bottom-left { flex-direction: column; gap: 8px; align-items: flex-start; }
+    .info-item { min-width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding: 16px 0 !important; }
+    .info-item:last-child { border-bottom: none; }
+    .nav-links { flex-wrap: wrap; gap: 16px; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<div class="demo-page"><p>← Page content above footer →</p></div>
+
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>Brand Identity</span><span>Web Design</span><span>Motion</span><span>Strategy</span><span>Campaign</span><span>Editorial</span><span>Brand Identity</span><span>Web Design</span><span>Motion</span><span>Strategy</span><span>Campaign</span><span>Editorial</span>
+  </div>
+</div>
+
+<footer>
+  <div class="watermark">STUDIO</div>
+
+  <div class="footer-inner">
+    <div class="footer-hero">
+      <h2 class="big-headline">Let's build something <em>bold</em> together.</h2>
+      <div class="right-cta">
+        <a class="email-link" href="mailto:hello@studio.co">hello@studio.co</a>
+        <a class="start-btn" href="#">
+          Start a project <span class="btn-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="info-bar">
+      <div class="info-item">
+        <span class="label">Based in</span>
+        <span class="val">New Delhi, IN</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Founded</span>
+        <span class="val">2018</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Projects Done</span>
+        <span class="val">240+</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Availability</span>
+        <span class="val">Q3 2026 →</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="bottom-left">
+      <span class="studio-mark">STUDIO</span>
+      <span class="copyright">© 2026. All rights reserved.</span>
+    </div>
+    <div class="nav-links">
+      <a href="#">Work</a>
+      <a href="#">Process</a>
+      <a href="#">About</a>
+      <a href="#">Journal</a>
+      <a href="#">Privacy</a>
+    </div>
+    <div class="socials-row">
+      <a href="#">IG</a>
+      <a href="#">TW</a>
+      <a href="#">Dribbble</a>
+      <a href="#">Behance</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      ring.style.width = '56px';
+      ring.style.height = '56px';
+      ring.style.opacity = '0.5';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+      ring.style.opacity = '1';
+    });
+  });
+</script>
+</body>
+</html>

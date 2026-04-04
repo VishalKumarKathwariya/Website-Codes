@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team design 7 · stat cards</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #0e0b10;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    .team-section {
+      max-width: 1300px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .section-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .section-title h2 {
+      color: #f2dfdf;
+      font-size: 2.4rem;
+      font-weight: 400;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.8rem;
+    }
+    @media (min-width: 640px) {
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1024px) {
+      .stat-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: #1b1620;
+      border-radius: 28px;
+      padding: 1.8rem 1.2rem;
+      border: 1px solid #342a32;
+      transition: 0.2s;
+    }
+    .stat-card:hover {
+      border-color: #ac3747;
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .stat-header img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #812f3a;
+    }
+    .stat-header h3 {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 450;
+    }
+    .role-stat {
+      color: #c7757f;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin: 1.2rem 0;
+      background: #2d2330;
+      border-radius: 40px;
+      padding: 0.7rem 1rem;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-item .number {
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+    .stat-item .label {
+      color: #b28080;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 1rem 0;
+    }
+    .skills span {
+      background: #2e1e28;
+      color: #ebb7b7;
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: 30px;
+      border: 1px solid #65333b;
+    }
+
+    .social-stat {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    .social-stat a {
+      color: #b49999;
+      font-size: 1.1rem;
+    }
+    .social-stat a:hover {
+      color: #bc3f4f;
+    }
+  </style>
+</head>
+<body>
+  <section class="team-section">
+    <div class="section-title">
+      <h2>experts · stats</h2>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&q=80&auto=format&fit=crop" alt="Leila">
+          <div>
+            <h3>Leila</h3>
+            <div class="role-stat">UX director</div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat-item"><span class="number">9+</span> <span class="label">years</span></div>
+          <div class="stat-item"><span class="number">48</span> <span class="label">projects</span></div>
+          <div class="stat-item"><span class="number">12</span> <span class="label">awards</span></div>
+        </div>
+        <div class="skills">
+          <span>research</span><span>UI</span><span>design sys</span>
+        </div>
+        <div class="social-stat">
+          <a href="#"><i class="fab fa-linkedin">L</i></a>
+          <a href="#"><i class="fab fa-behance">B</i></a>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80&auto=format&fit=crop" alt="Andre">
+          <div>
+            <h3>Andre</h3>
+            <div class="role-stat">backend lead</div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat-item"><span class="number">7+</span> <span class="label">years</span></div>
+          <div class="stat-item"><span class="number">30+</span> <span class="label">microsvc</span></div>
+          <div class="stat-item"><span class="number">6</span> <span class="label">langs</span></div>
+        </div>
+        <div class="skills">
+          <span>Go</span><span>Rust</span><span>k8s</span>
+        </div>
+        <div class="social-stat">
+          <a href="#"><i class="fab fa-github">G</i></a>
+          <a href="#"><i class="fab fa-linkedin">L</i></a>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <img src="https://images.unsplash.com/photo-1494790108777-466fd2c3c5d3?w=200&q=80&auto=format&fit=crop" alt="Clara">
+          <div>
+            <h3>Clara</h3>
+            <div class="role-stat">product</div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat-item"><span class="number">6+</span> <span class="label">years</span></div>
+          <div class="stat-item"><span class="number">22</span> <span class="label">features</span></div>
+          <div class="stat-item"><span class="number">4</span> <span class="label">patents</span></div>
+        </div>
+        <div class="skills">
+          <span>agile</span><span>strategy</span><span>analytics</span>
+        </div>
+        <div class="social-stat">
+          <a href="#"><i class="fab fa-x-twitter">T</i></a>
+          <a href="#"><i class="fab fa-linkedin">L</i></a>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80&auto=format&fit=crop" alt="Ming">
+          <div>
+            <h3>Ming</h3>
+            <div class="role-stat">AI research</div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat-item"><span class="number">5+</span> <span class="label">years</span></div>
+          <div class="stat-item"><span class="number">18</span> <span class="label">papers</span></div>
+          <div class="stat-item"><span class="number">2k</span> <span class="label">citations</span></div>
+        </div>
+        <div class="skills">
+          <span>LLM</span><span>CV</span><span>python</span>
+        </div>
+        <div class="social-stat">
+          <a href="#"><i class="fab fa-google-scholar">S</i></a>
+          <a href="#"><i class="fab fa-github">G</i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

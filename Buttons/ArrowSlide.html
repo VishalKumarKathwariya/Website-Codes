@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 03 — Arrow Slide</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #060010;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(94,106,210,0.25) 0%, transparent 70%);
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3rem;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .label-block { display: flex; flex-direction: column; gap: 8px; }
+
+  .tag {
+    display: inline-block; padding: 4px 12px;
+    background: rgba(94,106,210,0.15);
+    border: 1px solid rgba(94,106,210,0.35);
+    border-radius: 50px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #a0a8f0;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700; color: #fff; line-height: 1.1;
+  }
+
+  p { font-size: 15px; color: rgba(255,255,255,0.4); max-width: 380px; line-height: 1.6; }
+
+  /* ── BUTTONS ── */
+  .btn-group { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+
+  /* Primary solid */
+  .btn-arrow {
+    position: relative;
+    padding: 15px 32px;
+    border: none; border-radius: 10px;
+    background: #5e6ad2;
+    color: #fff;
+    font-size: 16px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: background 0.2s, gap 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), padding-right 0.28s;
+  }
+  .btn-arrow:hover {
+    background: #4e5ac0;
+    gap: 18px;
+    padding-right: 26px;
+  }
+
+  .arrow-icon {
+    display: inline-block;
+    font-size: 17px; line-height: 1;
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .btn-arrow:hover .arrow-icon { transform: translateX(4px); }
+
+  /* Ghost variant */
+  .btn-arrow-ghost {
+    background: transparent;
+    border: 1.5px solid rgba(94,106,210,0.5);
+    color: #a0a8f0;
+  }
+  .btn-arrow-ghost:hover {
+    background: rgba(94,106,210,0.1);
+    border-color: #5e6ad2;
+    color: #fff;
+    gap: 18px;
+    padding-right: 26px;
+  }
+
+  /* Small link style */
+  .btn-arrow-link {
+    background: transparent; border: none;
+    color: rgba(255,255,255,0.55);
+    font-size: 14px; font-weight: 500;
+    gap: 6px; padding: 8px 0;
+    border-radius: 0;
+  }
+  .btn-arrow-link:hover {
+    background: transparent;
+    color: #fff; gap: 12px; padding-right: 0;
+  }
+
+  .info {
+    display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;
+    margin-top: 1rem;
+  }
+  .info-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 12px 20px;
+    font-size: 13px; color: rgba(255,255,255,0.4);
+    display: flex; flex-direction: column; gap: 4px; min-width: 130px;
+  }
+  .info-item strong { color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 600; }
+
+  .hint { font-size: 12px; color: rgba(255,255,255,0.22); letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 03 / 10</span>
+    <h1>Arrow Slide</h1>
+    <p>The arrow stretches away from the text on hover — a micro-interaction that communicates forward motion and direction.</p>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn-arrow">
+      Get Started <span class="arrow-icon">→</span>
+    </button>
+    <button class="btn-arrow btn-arrow-ghost">
+      View Docs <span class="arrow-icon">→</span>
+    </button>
+    <button class="btn-arrow btn-arrow-link">
+      Learn more <span class="arrow-icon">→</span>
+    </button>
+  </div>
+
+  <span class="hint">↑ Hover to watch the arrow slide</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Linear, Arc, Loom</div>
+    <div class="info-item"><strong>Technique</strong>CSS gap + spring easing</div>
+    <div class="info-item"><strong>Feel</strong>Directional, forward</div>
+    <div class="info-item"><strong>Best for</strong>Hero CTAs, nav links</div>
+  </div>
+</div>
+</body>
+</html>

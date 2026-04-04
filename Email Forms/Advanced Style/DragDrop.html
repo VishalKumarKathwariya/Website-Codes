@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 46 — Drag-and-drop Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.45);--wine-tint:rgba(139,26,56,.13);
+  --bg0:#07070D;--bg2:#111118;--bg3:#161622;--bg4:#1E1E2A;--bg5:#262636;
+  --chalk:#F0E8EE;--chalk2:#C0B4C0;--chalk3:#857880;--chalk4:#4A4258;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.12);--bdr-w:rgba(139,26,56,.45);
+  --r:12px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --ff-d:'Cormorant Garamond',Georgia,serif;--ff-s:'Syne',sans-serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-s);min-height:100dvh;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input{font:inherit;color:inherit;border:none;outline:none}
+
+.page{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:clamp(2rem,5vw,3.5rem) clamp(1rem,4vw,2rem);gap:2.5rem;position:relative}
+.page::before{content:'';position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(139,26,56,.08) 0%,transparent 65%);pointer-events:none;z-index:0}
+
+.page-header{text-align:center;max-width:580px;position:relative;z-index:1}
+.page-chip{display:inline-block;padding:5px 16px;border-radius:99px;border:1px solid var(--bdr-w);background:var(--wine-tint);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--wine-xl);margin-bottom:1.2rem;font-family:var(--ff-m)}
+.page-title{font-family:var(--ff-d);font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;line-height:1.1;margin-bottom:.6rem}
+.page-title em{font-style:italic;background:linear-gradient(135deg,var(--wine-xl),#F08098,var(--wine));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-sub{color:var(--chalk3);font-size:13px}
+
+/* SECTION A — DRAG TOPICS */
+.section{width:100%;max-width:760px;position:relative;z-index:1}
+.section-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--chalk4);font-family:var(--ff-m);margin-bottom:.8rem}
+
+.drag-workspace{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:560px){.drag-workspace{grid-template-columns:1fr}}
+
+.drag-zone{
+  background:var(--bg2);border:1.5px solid var(--bdr);border-radius:var(--r-xl);
+  min-height:160px;padding:1rem;transition:all .2s;
+}
+.drag-zone.over{border-color:var(--wine);background:var(--wine-tint);box-shadow:0 0 0 4px rgba(139,26,56,.1)}
+.dz-header{display:flex;align-items:center;gap:8px;margin-bottom:.8rem;padding-bottom:.7rem;border-bottom:1px solid var(--bdr)}
+.dz-icon{width:28px;height:28px;border-radius:var(--r);background:var(--wine-tint);border:1px solid var(--bdr-w);display:flex;align-items:center;justify-content:center;color:var(--wine-xl);flex-shrink:0}
+.dz-title{font-size:12px;font-weight:700;color:var(--chalk2)}
+.dz-sub{font-size:10px;color:var(--chalk4);font-family:var(--ff-m)}
+.dz-count{margin-left:auto;font-size:10px;font-weight:700;font-family:var(--ff-m);color:var(--wine-xl);background:var(--wine-tint);padding:2px 8px;border-radius:99px;border:1px solid var(--bdr-w)}
+.dz-items{display:flex;flex-wrap:wrap;gap:7px;min-height:60px}
+
+/* Draggable chip */
+.d-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:99px;
+  background:var(--bg4);border:1.5px solid var(--bdr2);
+  font-size:12px;color:var(--chalk2);
+  cursor:grab;
+  -webkit-user-select: none;
+  user-select:none;
+  transition:all .2s var(--ease);
+  font-weight:600;
+}
+.d-chip:hover{border-color:var(--bdr-w);color:var(--chalk);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.d-chip.dragging{opacity:.35;transform:scale(.92)}
+.d-chip.subscribed{background:var(--wine-tint);border-color:var(--bdr-w);color:var(--wine-xl)}
+.d-chip-grip{color:var(--chalk4);font-size:10px}
+
+/* SECTION B — FILE DROP */
+.file-drop-zone{
+  width:100%;max-width:760px;position:relative;z-index:1;
+  background:var(--bg2);border:2px dashed var(--bdr2);border-radius:var(--r-xl);
+  padding:clamp(1.5rem,4vw,2.2rem);text-align:center;
+  transition:all .25s var(--ease);cursor:pointer;
+}
+.file-drop-zone:hover,.file-drop-zone.over{border-color:var(--wine);background:var(--wine-tint);box-shadow:0 0 0 4px rgba(139,26,56,.08)}
+.fdz-icon{width:52px;height:52px;border-radius:var(--r-lg);background:var(--wine-tint);border:1px solid var(--bdr-w);display:flex;align-items:center;justify-content:center;color:var(--wine-xl);margin:0 auto .9rem;transition:transform .2s var(--spring)}
+.file-drop-zone.over .fdz-icon{transform:scale(1.1)}
+.fdz-title{font-family:var(--ff-d);font-size:1.1rem;font-weight:700;margin-bottom:.3rem}
+.fdz-sub{font-size:12px;color:var(--chalk3);margin-bottom:.8rem}
+.fdz-types{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--chalk4);font-family:var(--ff-m)}
+.fdz-uploaded{display:none;flex-direction:column;gap:8px;margin-top:.8rem}
+.fdz-file{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg4);border:1px solid var(--bdr-w);border-radius:var(--r);animation:slideIn .3s var(--spring)}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.fdz-file-icon{width:32px;height:32px;border-radius:var(--r);background:var(--wine-tint);display:flex;align-items:center;justify-content:center;color:var(--wine-xl);flex-shrink:0}
+.fdz-file-name{font-size:13px;font-weight:600;flex:1}
+.fdz-file-size{font-size:11px;color:var(--chalk4);font-family:var(--ff-m)}
+.fdz-remove{width:22px;height:22px;border-radius:50%;background:var(--bg5);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--chalk4);font-size:11px;transition:all .2s}
+.fdz-remove:hover{background:rgba(139,26,56,.2);border-color:var(--bdr-w);color:var(--wine-xl)}
+
+/* SECTION C — FORM */
+.form-section{width:100%;max-width:760px;position:relative;z-index:1;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r-xl);overflow:hidden}
+.fs-header{background:linear-gradient(135deg,var(--wine-xd) 0%,var(--wine-d) 60%,#1A0A14 100%);padding:1.3rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.fsh-title{font-family:var(--ff-d);font-size:1.1rem;font-weight:700}
+.fsh-sub{font-size:12px;color:rgba(255,255,255,.5)}
+.selected-topics{display:flex;flex-wrap:wrap;gap:6px}
+.st-badge{padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);font-size:11px;font-weight:700;color:#fff}
+.fs-body{padding:clamp(1.2rem,3vw,1.6rem) clamp(1.5rem,4vw,2rem)}
+.fields{display:flex;flex-direction:column;gap:12px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:420px){.field-row{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:5px}
+.lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);font-family:var(--ff-m)}
+.ipt{background:var(--bg4);border:1.5px solid var(--bdr);border-radius:var(--r);padding:12px 15px;font-size:14px;transition:all .2s;color:var(--chalk);width:100%}
+.ipt:focus{background:var(--bg5);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.ipt::placeholder{color:var(--chalk4)}
+.sub-btn{width:100%;height:50px;border-radius:var(--r-lg);font-size:14px;font-weight:800;letter-spacing:.04em;background:linear-gradient(135deg,var(--wine-xd),var(--wine) 55%,var(--wine-l));color:#fff;box-shadow:0 5px 22px var(--wine-glow);transition:all .22s;margin-top:4px}
+.sub-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(139,26,56,.65)}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg4);border:1px solid var(--bdr-w);padding:13px 22px;border-radius:var(--r);font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:9px;box-shadow:0 10px 36px rgba(0,0,0,.6);opacity:0;pointer-events:none;white-space:nowrap;transition:transform .4s var(--spring),opacity .35s}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.t-dot{width:8px;height:8px;border-radius:50%;background:var(--wine-xl);animation:bl 1.4s infinite;flex-shrink:0}
+@keyframes bl{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span class="t-dot"></span><span id="tmsg">Subscribed! ✦</span></div>
+
+<div class="page">
+
+  <div class="page-header">
+    <p class="page-chip">Design 46 · Drag-and-drop</p>
+    <h1 class="page-title">Build your feed by<br/><em>dragging topics.</em></h1>
+    <p class="page-sub">Drag topics you love into the "Subscribe to" zone, then enter your email to confirm.</p>
+  </div>
+
+  <!-- Section A — Topic Drag -->
+  <div class="section">
+    <div class="section-label">↓ Drag topics to the subscription zone</div>
+    <div class="drag-workspace">
+      <!-- Available zone -->
+      <div class="drag-zone" id="zoneAvailable" data-zone="available">
+        <div class="dz-header">
+          <div class="dz-icon"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+          <div><div class="dz-title">Available Topics</div><div class="dz-sub">Drag to subscribe →</div></div>
+          <div class="dz-count" id="countAvail">8</div>
+        </div>
+        <div class="dz-items" id="itemsAvailable">
+          <div class="d-chip" draggable="true" data-topic="Design"><span class="d-chip-grip">⠿</span>✦ Design</div>
+          <div class="d-chip" draggable="true" data-topic="Technology"><span class="d-chip-grip">⠿</span>⚙ Tech</div>
+          <div class="d-chip" draggable="true" data-topic="Business"><span class="d-chip-grip">⠿</span>◈ Business</div>
+          <div class="d-chip" draggable="true" data-topic="Science"><span class="d-chip-grip">⠿</span>◉ Science</div>
+          <div class="d-chip" draggable="true" data-topic="Culture"><span class="d-chip-grip">⠿</span>◎ Culture</div>
+          <div class="d-chip" draggable="true" data-topic="Finance"><span class="d-chip-grip">⠿</span>◐ Finance</div>
+          <div class="d-chip" draggable="true" data-topic="Health"><span class="d-chip-grip">⠿</span>◑ Health</div>
+          <div class="d-chip" draggable="true" data-topic="AI & Future"><span class="d-chip-grip">⠿</span>◓ AI</div>
+        </div>
+      </div>
+      <!-- Subscribe zone -->
+      <div class="drag-zone" id="zoneSubscribe" data-zone="subscribe">
+        <div class="dz-header">
+          <div class="dz-icon"><svg width="14" height="14" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div><div class="dz-title">Subscribe To</div><div class="dz-sub">Drop topics here</div></div>
+          <div class="dz-count" id="countSub">0</div>
+        </div>
+        <div class="dz-items" id="itemsSubscribe">
+          <div id="dropHint">← Drop topics here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section B — File Upload -->
+  <div class="file-drop-zone" id="fileZone" onclick="document.getElementById('fileInput').click()">
+    <input type="file" id="fileInput" multiple accept=".pdf,.csv,.txt" title="upload" onchange="handleFiles(this.files)"/>
+    <div class="fdz-icon">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    </div>
+    <div class="fdz-title">Drop your contact list here</div>
+    <div class="fdz-sub">or click to browse — import a list of emails to bulk subscribe</div>
+    <div class="fdz-types">Supports: .CSV · .TXT · .PDF</div>
+    <div class="fdz-uploaded" id="uploadedList"></div>
+  </div>
+
+  <!-- Section C — Form -->
+  <div class="form-section">
+    <div class="fs-header">
+      <div>
+        <div class="fsh-title">Almost done — enter your email</div>
+        <div class="fsh-sub">Your selected topics will be applied to your account</div>
+      </div>
+      <div class="selected-topics" id="selectedBadges">
+        <span class="st-badge">No topics yet</span>
+      </div>
+    </div>
+    <div class="fs-body">
+      <form class="fields" onsubmit="handleSubmit(event)">
+        <div class="field-row">
+          <div class="fld"><label class="lbl">First Name</label><input class="ipt" type="text" placeholder="Jane" autocomplete="given-name" required/></div>
+          <div class="fld"><label class="lbl">Email</label><input class="ipt" type="email" placeholder="jane@example.com" autocomplete="email" required/></div>
+        </div>
+        <button class="sub-btn" type="submit">
+          Confirm Subscription →
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let draggedEl=null;
+
+// Drag & drop for chips
+document.addEventListener('dragstart',e=>{
+  if(!e.target.classList.contains('d-chip'))return;
+  draggedEl=e.target;
+  draggedEl.classList.add('dragging');
+  e.dataTransfer.effectAllowed='move';
+});
+document.addEventListener('dragend',e=>{
+  if(draggedEl)draggedEl.classList.remove('dragging');
+  draggedEl=null;
+  document.querySelectorAll('.drag-zone').forEach(z=>z.classList.remove('over'));
+});
+document.querySelectorAll('.drag-zone').forEach(zone=>{
+  zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over')});
+  zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+  zone.addEventListener('drop',e=>{
+    e.preventDefault();zone.classList.remove('over');
+    if(!draggedEl)return;
+    const targetItems=zone.querySelector('.dz-items');
+    const hint=document.getElementById('dropHint');
+    const isSubscribeZone=zone.id==='zoneSubscribe';
+    if(isSubscribeZone){
+      draggedEl.classList.add('subscribed');
+      if(hint)hint.style.display='none';
+    } else {
+      draggedEl.classList.remove('subscribed');
+      if(document.getElementById('itemsSubscribe').children.length<=1)hint&&(hint.style.display='');
+    }
+    targetItems.appendChild(draggedEl);
+    updateCounts();updateBadges();
+  });
+});
+
+// Touch drag (mobile)
+let touchChip=null,touchClone=null;
+document.addEventListener('touchstart',e=>{
+  const chip=e.target.closest('.d-chip');
+  if(!chip)return;
+  touchChip=chip;
+  touchClone=chip.cloneNode(true);
+  touchClone.style.cssText=`position:fixed;pointer-events:none;z-index:9999;opacity:.85;transform:scale(1.05);transition:none;`;
+  document.body.appendChild(touchClone);
+},{ passive:true });
+document.addEventListener('touchmove',e=>{
+  if(!touchClone)return;
+  const t=e.touches[0];
+  touchClone.style.left=(t.clientX-touchClone.offsetWidth/2)+'px';
+  touchClone.style.top=(t.clientY-touchClone.offsetHeight/2)+'px';
+  document.querySelectorAll('.drag-zone').forEach(z=>{
+    const r=z.getBoundingClientRect();
+    z.classList.toggle('over',t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom);
+  });
+},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(!touchClone){return;}
+  const t=e.changedTouches[0];
+  const over=document.querySelector('.drag-zone.over');
+  if(over&&touchChip){
+    const items=over.querySelector('.dz-items');
+    const hint=document.getElementById('dropHint');
+    if(over.id==='zoneSubscribe'){touchChip.classList.add('subscribed');if(hint)hint.style.display='none';}
+    else{touchChip.classList.remove('subscribed');if(!document.getElementById('itemsSubscribe').querySelectorAll('.d-chip').length)hint&&(hint.style.display='');}
+    items.appendChild(touchChip);
+    updateCounts();updateBadges();
+  }
+  document.querySelectorAll('.drag-zone').forEach(z=>z.classList.remove('over'));
+  touchClone.remove();touchClone=null;touchChip=null;
+},{passive:true});
+
+function updateCounts(){
+  document.getElementById('countAvail').textContent=document.getElementById('itemsAvailable').querySelectorAll('.d-chip').length;
+  document.getElementById('countSub').textContent=document.getElementById('itemsSubscribe').querySelectorAll('.d-chip').length;
+}
+function updateBadges(){
+  const chips=document.getElementById('itemsSubscribe').querySelectorAll('.d-chip');
+  const badgeZone=document.getElementById('selectedBadges');
+  badgeZone.innerHTML='';
+  if(!chips.length){badgeZone.innerHTML='<span class="st-badge">No topics yet</span>';return;}
+  chips.forEach(c=>{
+    const b=document.createElement('span');b.className='st-badge';b.textContent=c.dataset.topic;
+    badgeZone.appendChild(b);
+  });
+}
+
+// File drop
+const fileZone=document.getElementById('fileZone');
+fileZone.addEventListener('dragover',e=>{e.preventDefault();e.stopPropagation();fileZone.classList.add('over')});
+fileZone.addEventListener('dragleave',()=>fileZone.classList.remove('over'));
+fileZone.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();fileZone.classList.remove('over');handleFiles(e.dataTransfer.files)});
+function handleFiles(files){
+  const list=document.getElementById('uploadedList');list.style.display='flex';
+  [...files].forEach(f=>{
+    const item=document.createElement('div');item.className='fdz-file';
+    item.innerHTML=`<div class="fdz-file-icon"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+    <span class="fdz-file-name">${f.name}</span><span class="fdz-file-size">${(f.size/1024).toFixed(1)}KB</span>
+    <button class="fdz-remove" onclick="this.closest('.fdz-file').remove()">✕</button>`;
+    list.appendChild(item);
+  });
+}
+
+function handleSubmit(e){
+  e.preventDefault();
+  const t=document.getElementById('toast');
+  document.getElementById('tmsg').textContent='Subscribed with custom topics! ✦';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);
+  e.target.reset();
+}
+</script>
+</body>
+</html>

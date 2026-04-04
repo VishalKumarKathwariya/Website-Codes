@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design 15 · Kinetic Words</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0f;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #ddd;
+    }
+
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .kinetic-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .kinetic-card {
+      background: #151520;
+      border-radius: 36px;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 20px 40px -10px black;
+      transition: background 0.2s;
+    }
+
+    .kinetic-card:hover {
+      background: #1f1f30;
+    }
+
+    .icon {
+      font-size: 3rem;
+      color: #9f9fff;
+      margin-bottom: 1rem;
+    }
+
+    .word-rotator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .static-word {
+      color: #fff;
+    }
+
+    .rotating-word {
+      display: inline-block;
+      animation: rotateWords 6s infinite;
+      color: #9f9fff;
+    }
+    .word2{
+        color: purple;
+    }
+    .word3{
+        color: aqua;
+    }
+    .word4{
+        color: brown;
+    }
+
+    @keyframes rotateWords {
+      0%, 20% { content: "create"; }
+      25%, 45% { content: "build"; }
+      50%, 70% { content: "scale"; }
+      75%, 95% { content: "innovate"; }
+    }
+    /* simulate rotating text via pseudo-element trick */
+    .rotating-word::before {
+      content: "create";
+      animation: changeWord 6s infinite;
+    }
+
+    @keyframes changeWord {
+      0% { content: "create"; }
+      25% { content: "build"; }
+      50% { content: "scale"; }
+      75% { content: "innovate"; }
+      100% { content: "create"; }
+    }
+
+    .feature-desc {
+      color: #aaa;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .kinetic-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .kinetic-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <h2 class="section-title">kinetic energy</h2>
+    <div class="kinetic-grid">
+      <div class="kinetic-card">
+        <i class="fas fa-pen-fancy icon"></i>
+        <div class="word-rotator">
+          <span class="static-word">you</span>
+          <span class="rotating-word word1" aria-label="changing word"></span>
+        </div>
+        <p class="feature-desc">Dynamic words that inspire action.</p>
+      </div>
+      <div class="kinetic-card">
+        <i class="fas fa-code icon"></i>
+        <div class="word-rotator">
+          <span class="static-word">code</span>
+          <span class="rotating-word word2"></span>
+        </div>
+        <p class="feature-desc">Write, refactor, deploy – continuously.</p>
+      </div>
+      <div class="kinetic-card">
+        <i class="fas fa-chart-line icon"></i>
+        <div class="word-rotator">
+          <span class="static-word">grow</span>
+          <span class="rotating-word word3"></span>
+        </div>
+        <p class="feature-desc">Scale your metrics with confidence.</p>
+      </div>
+      <div class="kinetic-card">
+        <i class="fas fa-rocket icon"></i>
+        <div class="word-rotator">
+          <span class="static-word">launch</span>
+          <span class="rotating-word word4"></span>
+        </div>
+        <p class="feature-desc">From idea to orbit in no time.</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

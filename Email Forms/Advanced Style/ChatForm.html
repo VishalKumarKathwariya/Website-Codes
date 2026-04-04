@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 42 — Conversational / Chat-style Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.45);--wine-tint:rgba(139,26,56,.14);
+  --bg0:#07070C;--bg1:#0C0C14;--bg2:#111118;--bg3:#171720;--bg4:#1F1F2A;--bg5:#272735;
+  --chalk:#F0E8EE;--chalk2:#C0B4C0;--chalk3:#847880;--chalk4:#4A4255;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.11);--bdr-w:rgba(139,26,56,.42);
+  --r:12px;--r-sm:8px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --ff-d:'Playfair Display',Georgia,serif;--ff-o:'Outfit',sans-serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-o);font-size:15px;line-height:1.65;min-height:100dvh;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input{font:inherit;color:inherit;border:none;outline:none}
+
+/* Page */
+.page{min-height:100dvh;display:grid;place-items:center;padding:clamp(1rem,4vw,2rem);background:radial-gradient(ellipse 70% 60% at 50% 30%,rgba(139,26,56,.07) 0%,transparent 70%)}
+
+/* Chat Shell */
+.chat-shell{
+  width:100%;max-width:480px;
+  background:var(--bg2);border:1px solid var(--bdr2);border-radius:var(--r-2xl);
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 32px 80px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.03);
+  height:clamp(520px,85dvh,720px);
+}
+
+/* Chat topbar */
+.chat-bar{
+  background:var(--bg3);border-bottom:1px solid var(--bdr);
+  padding:1rem 1.2rem;display:flex;align-items:center;gap:12px;flex-shrink:0;
+}
+.chat-av{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(145deg,var(--wine-d),var(--wine));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px var(--wine-glow);position:relative;
+}
+.chat-av::after{content:'';position:absolute;bottom:1px;right:1px;width:9px;height:9px;border-radius:50%;background:#22C55E;border:2px solid var(--bg3)}
+.chat-info{flex:1}
+.chat-name{font-weight:700;font-size:.9rem;font-family:var(--ff-d)}
+.chat-status{font-size:11px;color:var(--chalk3);display:flex;align-items:center;gap:5px}
+.status-dot{width:5px;height:5px;border-radius:50%;background:#22C55E}
+.chat-dots{display:flex;gap:5px;margin-left:auto}
+.chat-dot{width:7px;height:7px;border-radius:50%;background:var(--bdr2)}
+.chat-dot:nth-child(1){background:#FF5F57}
+.chat-dot:nth-child(2){background:#FEBC2E}
+.chat-dot:nth-child(3){background:#28C840}
+
+/* Messages feed */
+.messages{flex:1;overflow-y:auto;padding:1.2rem 1rem;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.messages::-webkit-scrollbar{width:3px}
+.messages::-webkit-scrollbar-thumb{background:var(--bdr-w);border-radius:99px}
+
+/* Message bubbles */
+.msg{max-width:80%;display:flex;flex-direction:column;gap:4px;opacity:0;transform:translateY(10px);animation:msgIn .35s var(--ease) forwards}
+@keyframes msgIn{to{opacity:1;transform:none}}
+.msg-bot{align-self:flex-start}
+.msg-user{align-self:flex-end}
+.bubble{
+  padding:10px 14px;border-radius:var(--r-lg);font-size:13.5px;line-height:1.55;
+}
+.msg-bot .bubble{background:var(--bg4);border:1px solid var(--bdr);border-bottom-left-radius:var(--r-sm);color:var(--chalk2)}
+.msg-user .bubble{background:linear-gradient(135deg,var(--wine-d),var(--wine));color:#fff;border-bottom-right-radius:var(--r-sm);box-shadow:0 3px 12px var(--wine-glow)}
+.msg-time{font-size:10px;color:var(--chalk4);font-family:var(--ff-m);align-self:flex-start}
+.msg-user .msg-time{align-self:flex-end}
+
+/* Bot avatar row */
+.bot-row{display:flex;align-items:flex-end;gap:8px}
+.bot-mini-av{width:26px;height:26px;border-radius:50%;flex-shrink:0;background:linear-gradient(145deg,var(--wine-d),var(--wine));display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+
+/* Quick reply chips */
+.quick-replies{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;align-self:flex-start;opacity:0;animation:msgIn .35s var(--ease) .1s forwards}
+.qr-chip{padding:8px 16px;border-radius:99px;background:var(--bg4);border:1.5px solid var(--bdr-w);font-size:12px;color:var(--wine-xl);cursor:pointer;transition:all .2s;font-weight:600}
+.qr-chip:hover{background:var(--wine-tint);border-color:var(--wine-l)}
+.qr-chip.used{opacity:.4;pointer-events:none}
+
+/* Typing indicator */
+.typing-indicator{display:none;align-items:center;gap:4px;padding:12px 14px;background:var(--bg4);border:1px solid var(--bdr);border-radius:var(--r-lg) var(--r-lg) var(--r-lg) var(--r-sm);width:fit-content}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--chalk3);animation:typingBounce 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:.15s}
+.typing-dot:nth-child(3){animation-delay:.3s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.typing-indicator.show{display:flex}
+
+/* Input bar */
+.input-bar{
+  background:var(--bg3);border-top:1px solid var(--bdr);
+  padding:.85rem 1rem;display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.chat-input{
+  flex:1;background:var(--bg4);border:1.5px solid var(--bdr);
+  border-radius:99px;padding:10px 18px;font-size:14px;color:var(--chalk);
+  transition:all .2s;
+}
+.chat-input:focus{border-color:var(--wine);background:var(--bg5);box-shadow:0 0 0 3px var(--wine-tint)}
+.chat-input::placeholder{color:var(--chalk4)}
+.chat-input:disabled{opacity:.4;pointer-events:none}
+.send-btn{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--wine-d),var(--wine));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 12px var(--wine-glow);transition:all .2s;
+}
+.send-btn:hover{transform:scale(1.08);box-shadow:0 5px 16px rgba(139,26,56,.6)}
+.send-btn:disabled{opacity:.35;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="chat-shell">
+
+  <!-- Topbar -->
+  <div class="chat-bar">
+    <div class="chat-av">
+      <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </div>
+    <div class="chat-info">
+      <div class="chat-name">Meridian Bot</div>
+      <div class="chat-status"><span class="status-dot"></span> Online · replies instantly</div>
+    </div>
+    <div class="chat-dots"><div class="chat-dot"></div><div class="chat-dot"></div><div class="chat-dot"></div></div>
+  </div>
+
+  <!-- Messages -->
+  <div class="messages" id="messages">
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="input-bar">
+    <input class="chat-input" id="chatInput" type="text" placeholder="Type your answer…" autocomplete="off" disabled/>
+    <button class="send-btn" id="sendBtn" onclick="sendUserMessage()" title="Send" disabled>
+      <svg width="15" height="15" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+</div>
+
+<script>
+const msgs=document.getElementById('messages');
+const inp=document.getElementById('chatInput');
+const sendBtn=document.getElementById('sendBtn');
+const typingEl=document.getElementById('typingIndicator');
+
+let step=0;
+let userData={name:'',email:'',interests:[],source:''};
+const now=()=>new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+
+const flow=[
+  {bot:"Hey there! 👋 I'm Meridian — your personal newsletter assistant. I'd love to get you set up. What's your first name?",input:true},
+  {bot:(n)=>`Nice to meet you, ${n}! 😊 What's your email address? I'll send your first issue there.`,input:true},
+  {bot:(n)=>`Perfect! Now, what topics interest you most, ${n.split(' ')[0]}?`,chips:['Design & Art','Technology','Business','Science','Culture','All of the above']},
+  {bot:"Great taste! 🙌 One last thing — how did you hear about us?",chips:['Social media','Friend or colleague','Search engine','Newsletter','Just found it']},
+  {bot:(s)=>`Wonderful! You're all set. Your first issue lands in your inbox soon. 🎉\n\nWe respect your inbox — no spam, ever. You can unsubscribe anytime.`},
+];
+
+function scrollBottom(){msgs.scrollTop=msgs.scrollHeight}
+
+function addBotMsg(text,delay=0){
+  return new Promise(res=>{
+    // show typing
+    typingEl.classList.add('show');
+    msgs.appendChild(typingEl);
+    scrollBottom();
+    setTimeout(()=>{
+      typingEl.classList.remove('show');
+      const row=document.createElement('div');
+      row.className='bot-row';
+      const av=document.createElement('div');
+      av.className='bot-mini-av';
+      av.innerHTML='<svg width="12" height="12" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>';
+      const msg=document.createElement('div');
+      msg.className='msg msg-bot';
+      const bubble=document.createElement('div');
+      bubble.className='bubble';
+      bubble.style.whiteSpace='pre-line';
+      bubble.textContent=text;
+      const time=document.createElement('div');
+      time.className='msg-time';
+      time.textContent=now();
+      msg.appendChild(bubble);msg.appendChild(time);
+      row.appendChild(av);row.appendChild(msg);
+      msgs.appendChild(row);
+      scrollBottom();
+      res();
+    },delay+600+text.length*8);
+  });
+}
+
+function addUserMsg(text){
+  const msg=document.createElement('div');
+  msg.className='msg msg-user';
+  const b=document.createElement('div');b.className='bubble';b.textContent=text;
+  const t=document.createElement('div');t.className='msg-time';t.textContent=now();
+  msg.appendChild(b);msg.appendChild(t);
+  msgs.appendChild(msg);scrollBottom();
+}
+
+function showChips(options,onSelect){
+  const wrap=document.createElement('div');
+  wrap.className='quick-replies';
+  options.forEach(opt=>{
+    const chip=document.createElement('button');
+    chip.className='qr-chip';chip.textContent=opt;
+    chip.addEventListener('click',()=>{
+      wrap.querySelectorAll('.qr-chip').forEach(c=>c.classList.add('used'));
+      addUserMsg(opt);
+      onSelect(opt);
+    });
+    wrap.appendChild(chip);
+  });
+  msgs.appendChild(wrap);scrollBottom();
+}
+
+function enableInput(){inp.disabled=false;sendBtn.disabled=false;inp.focus()}
+function disableInput(){inp.disabled=true;sendBtn.disabled=true}
+
+async function sendUserMessage(){
+  const val=inp.value.trim();
+  if(!val)return;
+  inp.value='';disableInput();
+  addUserMsg(val);
+  processAnswer(val);
+}
+inp.addEventListener('keydown',e=>{if(e.key==='Enter')sendUserMessage()});
+
+async function processAnswer(val){
+  if(step===0){
+    userData.name=val;
+    const txt=typeof flow[1].bot==='function'?flow[1].bot(userData.name):flow[1].bot;
+    await addBotMsg(txt);step=1;enableInput();
+  } else if(step===1){
+    if(!/\S+@\S+\.\S+/.test(val)){
+      await addBotMsg("Hmm, that doesn't look like a valid email. Could you double-check it?");
+      enableInput();return;
+    }
+    userData.email=val;
+    const txt=typeof flow[2].bot==='function'?flow[2].bot(userData.name):flow[2].bot;
+    await addBotMsg(txt);step=2;disableInput();
+    showChips(flow[2].chips,async(sel)=>{
+      userData.interests=sel;step=3;
+      const txt2=typeof flow[3].bot==='function'?flow[3].bot(sel):flow[3].bot;
+      await addBotMsg(txt2);
+      showChips(flow[3].chips,async(src)=>{
+        userData.source=src;step=4;
+        const txt3=typeof flow[4].bot==='function'?flow[4].bot(src):flow[4].bot;
+        await addBotMsg(txt3);
+      });
+    });
+  }
+}
+
+// Start
+(async()=>{
+  await addBotMsg(flow[0].bot,400);
+  enableInput();
+})();
+</script>
+</body>
+</html>

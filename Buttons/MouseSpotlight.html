@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 10 — Mouse Spotlight</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #08080f;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(120,100,255,0.08) 0%, transparent 65%);
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3rem;
+    padding: 3rem 2rem; text-align: center;
+  }
+
+  .label-block { display: flex; flex-direction: column; gap: 8px; }
+
+  .tag {
+    display: inline-block; padding: 4px 12px;
+    background: rgba(120,100,255,0.1);
+    border: 1px solid rgba(120,100,255,0.25);
+    border-radius: 50px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(160,140,255,0.8);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700; color: #fff; line-height: 1.1;
+  }
+
+  p { font-size: 15px; color: rgba(255,255,255,0.38); max-width: 400px; line-height: 1.6; }
+
+  /* ── SPOTLIGHT BUTTONS ── */
+  .btn-group { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
+  .row { display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
+
+  .btn-spot {
+    position: relative; overflow: hidden;
+    padding: 15px 36px;
+    border: 1px solid rgba(120,100,255,0.25);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: rgba(255,255,255,0.85);
+    font-size: 15px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .btn-spot:hover {
+    border-color: rgba(120,100,255,0.55);
+    background: rgba(120,100,255,0.06);
+  }
+
+  .spot-glow {
+    position: absolute; border-radius: 50%;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(140,120,255,0.45) 0%, transparent 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .btn-spot:hover .spot-glow { opacity: 1; }
+
+  .btn-spot span { position: relative; z-index: 1; }
+
+  /* White spot variant */
+  .btn-spot-white {
+    border-color: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.7);
+  }
+  .btn-spot-white:hover {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.08);
+  }
+  .btn-spot-white .spot-glow {
+    background: radial-gradient(circle, rgba(255,255,255,0.35) 0%, transparent 70%);
+  }
+
+  /* Teal spot variant */
+  .btn-spot-teal {
+    border-color: rgba(20,184,166,0.25);
+  }
+  .btn-spot-teal:hover { border-color: rgba(20,184,166,0.55); background: rgba(20,184,166,0.05); }
+  .btn-spot-teal .spot-glow {
+    background: radial-gradient(circle, rgba(20,184,166,0.45) 0%, transparent 70%);
+  }
+
+  /* Glass card demo */
+  .glass-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 2rem;
+    display: flex; flex-direction: column; gap: 1rem; align-items: center;
+    max-width: 360px; width: 100%;
+  }
+  .glass-card p { font-size: 13px; color: rgba(255,255,255,0.35); margin: 0; }
+
+  .info {
+    display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;
+    margin-top: 1rem;
+  }
+  .info-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 12px 20px;
+    font-size: 13px; color: rgba(255,255,255,0.35);
+    display: flex; flex-direction: column; gap: 4px; min-width: 130px;
+  }
+  .info-item strong { color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 600; }
+
+  .hint { font-size: 12px; color: rgba(255,255,255,0.2); letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 10 / 10</span>
+    <h1>Mouse Spotlight</h1>
+    <p>A radial glow follows the cursor inside the button — pioneered by Apple Vision Pro's glass UI and adopted in Figma and spatial design systems.</p>
+  </div>
+
+  <div class="btn-group">
+    <div class="row">
+      <button class="btn-spot" data-color="purple">
+        <div class="spot-glow"></div>
+        <span>Open App</span>
+      </button>
+      <button class="btn-spot btn-spot-white" data-color="white">
+        <div class="spot-glow"></div>
+        <span>Learn More</span>
+      </button>
+      <button class="btn-spot btn-spot-teal" data-color="teal">
+        <div class="spot-glow"></div>
+        <span>Connect</span>
+      </button>
+    </div>
+
+    <!-- contextual glass card -->
+    <div class="glass-card">
+      <p>Move your cursor over the button below — the glow tracks your mouse precisely</p>
+      <button class="btn-spot" data-color="purple">
+        <div class="spot-glow"></div>
+        <span>✦ Start Spatial Session</span>
+      </button>
+    </div>
+  </div>
+
+  <span class="hint">↑ Move your cursor across the buttons slowly</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Apple Vision Pro, Figma</div>
+    <div class="info-item"><strong>Technique</strong>JS mousemove + CSS radial</div>
+    <div class="info-item"><strong>Feel</strong>Spatial, futuristic, glass</div>
+    <div class="info-item"><strong>Best for</strong>Dark glass UI, spatial apps</div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.btn-spot').forEach(btn => {
+    const glow = btn.querySelector('.spot-glow');
+    btn.addEventListener('mousemove', e => {
+      const rect = btn.getBoundingClientRect();
+      glow.style.left = (e.clientX - rect.left) + 'px';
+      glow.style.top  = (e.clientY - rect.top)  + 'px';
+    });
+  });
+</script>
+</body>
+</html>

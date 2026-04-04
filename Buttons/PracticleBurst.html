@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 13 — Particle Burst</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#1a0533;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Sans',sans-serif;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 50%, rgba(245,87,108,0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(240,147,251,0.08) 0%, transparent 50%);
+  }
+  .page{
+    position:relative;z-index:1;
+    display:flex;flex-direction:column;align-items:center;gap:3.5rem;
+    padding:3rem 2rem;text-align:center;
+  }
+  .label-block{display:flex;flex-direction:column;gap:10px;align-items:center}
+  .tag{
+    display:inline-block;padding:5px 14px;
+    background:rgba(245,87,108,0.12);border:1px solid rgba(245,87,108,0.3);
+    border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:#f5576c;
+  }
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;color:#fff;line-height:1.1}
+  p{font-size:15px;color:rgba(255,255,255,0.4);max-width:420px;line-height:1.65}
+
+  /* ── BUTTONS ── */
+  .demo-area{display:flex;flex-direction:column;align-items:center;gap:2rem}
+  .row{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+
+  .particle-wrap{position:relative;display:inline-block}
+
+  .btn-particle{
+    position:relative;z-index:1;
+    padding:15px 38px;border:none;border-radius:14px;
+    font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;
+    cursor:pointer;
+    transition:transform .1s,filter .15s;
+    letter-spacing:.01em;
+  }
+  .btn-particle:active{transform:scale(.94)}
+  .btn-particle:hover{filter:brightness(1.1)}
+
+  .btn-p1{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff}
+  .btn-p2{background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff}
+  .btn-p3{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#1a0533}
+  .btn-p4{background:linear-gradient(135deg,#fa709a,#fee140);color:#fff}
+
+  /* score counter */
+  .score-area{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:12px;padding:1rem 2rem;
+    display:flex;flex-direction:column;gap:4px;align-items:center;
+  }
+  .score-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.3);font-weight:600}
+  .score-number{font-size:3rem;font-weight:700;color:#fff;font-family:'Syne',sans-serif;line-height:1;transition:transform .15s}
+  .score-number.bump{transform:scale(1.3);color:#f5576c}
+
+  .hint-row{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.22);letter-spacing:.04em}
+
+  .info{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+  .info-item{
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
+    border-radius:10px;padding:12px 20px;font-size:13px;color:rgba(255,255,255,0.38);
+    display:flex;flex-direction:column;gap:4px;min-width:130px;
+  }
+  .info-item strong{color:rgba(255,255,255,0.75);font-size:14px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 13 / 20</span>
+    <h1>Particle Burst</h1>
+    <p>Colorful particles explode outward from the click point — used in gamification UIs to reward user actions and create delight.</p>
+  </div>
+
+  <div class="demo-area">
+    <div class="score-area">
+      <span class="score-label">Score</span>
+      <span class="score-number" id="score">0</span>
+    </div>
+
+    <div class="row">
+      <div class="particle-wrap">
+        <button class="btn-particle btn-p1" onclick="burst(this,['#f093fb','#f5576c','#ff6b6b','#fff','#ffd93d'],'+10')">🎉 Celebrate</button>
+      </div>
+      <div class="particle-wrap">
+        <button class="btn-particle btn-p2" onclick="burst(this,['#4facfe','#00f2fe','#fff','#a8edea'],'+25')">💧 Splash</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="particle-wrap">
+        <button class="btn-particle btn-p3" onclick="burst(this,['#43e97b','#38f9d7','#fff','#b8f7d4'],'+50')">⚡ Power Up</button>
+      </div>
+      <div class="particle-wrap">
+        <button class="btn-particle btn-p4" onclick="burst(this,['#fa709a','#fee140','#ff6b6b','#fff'],'+100')">🔥 COMBO</button>
+      </div>
+    </div>
+
+    <div class="hint-row">↑ Click any button — each has unique particles</div>
+  </div>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Duolingo, gamified apps</div>
+    <div class="info-item"><strong>Technique</strong>JS DOM + CSS transition</div>
+    <div class="info-item"><strong>Feel</strong>Joyful, rewarding, alive</div>
+    <div class="info-item"><strong>Best for</strong>Rewards, celebrations</div>
+  </div>
+</div>
+
+<script>
+  let scoreVal = 0;
+  const scoreEl = document.getElementById('score');
+
+  function burst(btn, colors, points){
+    const wrap = btn.parentElement;
+    const bRect = btn.getBoundingClientRect();
+    const wRect = wrap.getBoundingClientRect();
+    const cx = bRect.left - wRect.left + bRect.width / 2;
+    const cy = bRect.top - wRect.top + bRect.height / 2;
+    const count = 28;
+
+    for(let i = 0; i < count; i++){
+      const p = document.createElement('div');
+      const angle = (i / count) * 360 + Math.random() * 10;
+      const dist = 50 + Math.random() * 70;
+      const size = 6 + Math.random() * 9;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const shape = Math.random() > 0.5 ? '50%' : '2px';
+      p.style.cssText = `
+        position:absolute;width:${size}px;height:${size}px;
+        background:${color};border-radius:${shape};
+        left:${cx}px;top:${cy}px;
+        pointer-events:none;z-index:20;opacity:1;
+        transition:transform .6s cubic-bezier(.25,.46,.45,.94),opacity .6s ease;
+      `;
+      wrap.appendChild(p);
+      const dx = Math.cos(angle * Math.PI / 180) * dist;
+      const dy = Math.sin(angle * Math.PI / 180) * dist - 20;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        p.style.transform = `translate(${dx}px,${dy}px) rotate(${Math.random()*360}deg)`;
+        p.style.opacity = '0';
+      }));
+      setTimeout(() => p.remove(), 700);
+    }
+
+    /* score bump */
+    const add = parseInt(points);
+    scoreVal += add;
+    scoreEl.textContent = scoreVal;
+    scoreEl.classList.add('bump');
+    setTimeout(() => scoreEl.classList.remove('bump'), 200);
+
+    /* floating point label */
+    const lbl = document.createElement('div');
+    lbl.textContent = points;
+    lbl.style.cssText = `
+      position:absolute;left:${cx}px;top:${cy - 20}px;
+      color:#fff;font-weight:700;font-size:18px;font-family:'DM Sans',sans-serif;
+      pointer-events:none;z-index:30;opacity:1;
+      transition:transform .7s ease,opacity .7s ease;transform:translateX(-50%);
+    `;
+    wrap.appendChild(lbl);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      lbl.style.transform = 'translateX(-50%) translateY(-50px)';
+      lbl.style.opacity = '0';
+    }));
+    setTimeout(() => lbl.remove(), 750);
+  }
+</script>
+</body>
+</html>

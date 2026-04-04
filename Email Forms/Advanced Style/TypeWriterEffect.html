@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 45 — Typewriter Effect Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.45);--wine-tint:rgba(139,26,56,.14);
+  --bg0:#05050A;--bg1:#09090F;--bg2:#0D0D15;--bg3:#141420;--bg4:#1C1C28;--bg5:#242434;
+  --chalk:#EEE8E0;--chalk2:#C8BEB0;--chalk3:#928880;--chalk4:#5A5248;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.12);--bdr-w:rgba(139,26,56,.42);
+  --r:4px;--r-sm:6px;--r-lg:8px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --ff-type:'Special Elite',cursive;--ff-s:'Syne',sans-serif;--ff-m:'DM Mono',monospace;
+  --scan:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-type);min-height:100dvh;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input{font:inherit;color:inherit;border:none;outline:none}
+
+/* CRT Screen effect */
+.page{
+  min-height:100dvh;display:grid;place-items:center;padding:clamp(1rem,4vw,2rem);
+  position:relative;
+  background:radial-gradient(ellipse 80% 70% at 50% 50%,#0D0D18 0%,#05050A 100%);
+}
+.page::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:2;background:var(--scan)}
+.page::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(ellipse 85% 85% at 50% 50%,transparent 60%,rgba(0,0,0,.5) 100%)}
+
+/* Terminal card */
+.terminal{
+  position:relative;z-index:3;
+  width:100%;max-width:620px;
+  background:var(--bg1);
+  border:1.5px solid rgba(139,26,56,.35);
+  border-radius:var(--r-sm);
+  overflow:hidden;
+  box-shadow:0 0 60px rgba(139,26,56,.15),0 32px 80px rgba(0,0,0,.9),inset 0 0 60px rgba(0,0,0,.3);
+}
+
+/* Terminal chrome */
+.term-chrome{
+  background:var(--bg2);border-bottom:1.5px solid rgba(139,26,56,.25);
+  padding:.65rem 1rem;display:flex;align-items:center;gap:8px;
+}
+.tc-btn{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.tc-btn:nth-child(1){background:#FF5F57}
+.tc-btn:nth-child(2){background:#FEBC2E}
+.tc-btn:nth-child(3){background:#28C840}
+.tc-title{flex:1;text-align:center;font-family:var(--ff-m);font-size:11px;color:var(--chalk4);letter-spacing:.08em}
+.tc-status{font-family:var(--ff-m);font-size:10px;color:var(--wine-xl);animation:blink-t 1.2s step-start infinite}
+@keyframes blink-t{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Terminal body */
+.term-body{padding:clamp(1.2rem,4vw,2rem);min-height:420px;display:flex;flex-direction:column;gap:0}
+
+/* Output lines */
+.t-line{font-size:clamp(13px,2.2vw,15px);line-height:1.9;margin-bottom:2px;overflow:hidden}
+.t-prompt{color:var(--wine-xl);
+    -webkit-user-select: none;
+    user-select:none}
+.t-sys{color:var(--chalk4);font-size:11px}
+.t-question{color:var(--chalk);font-size:clamp(14px,2.5vw,16px);font-weight:400}
+.t-answer{color:#22C55E}
+.t-error{color:#F87171}
+.t-success{color:var(--wine-xl)}
+
+/* Cursor */
+.cursor{display:inline-block;width:9px;height:15px;background:var(--wine-xl);margin-left:2px;vertical-align:middle;animation:cursorBlink .8s step-start infinite}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Input row */
+.input-row{display:flex;align-items:center;gap:0;margin-top:8px}
+.t-input-prompt{color:var(--wine-xl);font-family:var(--ff-type);font-size:clamp(13px,2.2vw,15px);-webkit-user-select: none; user-select:none;flex-shrink:0}
+.t-input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:#22C55E;font-family:var(--ff-type);font-size:clamp(13px,2.2vw,15px);
+  caret-color:var(--wine-xl);padding:0 6px;
+}
+.t-input::placeholder{color:var(--chalk4);opacity:.5}
+.t-input:disabled{opacity:.5;cursor:default}
+
+/* Progress bar terminal */
+.t-progress{margin:8px 0;height:10px;background:var(--bg4);border:1px solid var(--bdr-w);border-radius:var(--r);overflow:hidden}
+.t-progress-fill{height:100%;width:0%;background:repeating-linear-gradient(90deg,var(--wine),var(--wine) 8px,var(--wine-d) 8px,var(--wine-d) 16px);transition:width .4s var(--ease)}
+
+/* Bottom bar */
+.term-footer{background:var(--bg2);border-top:1.5px solid rgba(139,26,56,.25);padding:.5rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.tf-item{font-family:var(--ff-m);font-size:10px;color:var(--chalk4);display:flex;align-items:center;gap:5px}
+.tf-val{color:var(--wine-xl)}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="terminal">
+
+  <!-- Chrome bar -->
+  <div class="term-chrome">
+    <div class="tc-btn"></div><div class="tc-btn"></div><div class="tc-btn"></div>
+    <div class="tc-title">meridian-subscribe — v2.4.0</div>
+    <div class="tc-status">● LIVE</div>
+  </div>
+
+  <!-- Terminal body -->
+  <div class="term-body" id="termBody">
+    <!-- Lines injected by JS -->
+  </div>
+
+  <!-- Input row (pinned) -->
+  <div>
+    <div class="input-row" id="inputRow">
+      <span class="t-input-prompt" id="promptSymbol">›&nbsp;</span>
+      <input class="t-input" id="termInput" autocomplete="off" spellcheck="false" placeholder="type here…"/>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="term-footer">
+    <div class="tf-item">NODE <span class="tf-val" id="nodeCount">0/4</span></div>
+    <div class="tf-item">SESSION <span class="tf-val" id="sessionId">0x4D4552</span></div>
+    <div class="tf-item">STATUS <span class="tf-val" id="termStatus">READY</span></div>
+    <div class="tf-item">ENC <span class="tf-val">TLS 1.3</span></div>
+  </div>
+</div>
+</div>
+
+<script>
+const body=document.getElementById('termBody');
+const inputRow=document.getElementById('inputRow');
+const termInput=document.getElementById('termInput');
+
+let step=0;
+let data={};
+const STEPS=4;
+
+const script=[
+  {system:true, text:'Meridian Newsletter Subscription Interface v2.4.0'},
+  {system:true, text:'Secure session established · TLS 1.3 · AES-256-GCM'},
+  {system:true, text:'─────────────────────────────────────────────────'},
+  {prompt:true, text:'INIT: Starting subscription flow…', delay:400},
+  {question:true, text:'What is your first name?', delay:600},
+];
+
+function addLine(text, type='output', delay=0){
+  return new Promise(res=>{
+    setTimeout(()=>{
+      const line=document.createElement('div');
+      line.className='t-line';
+      if(type==='system') line.innerHTML=`<span class="t-sys">[SYS]&nbsp;${text}</span>`;
+      else if(type==='prompt') line.innerHTML=`<span class="t-prompt">$ </span><span>${text}</span>`;
+      else if(type==='question') line.innerHTML=`<span class="t-prompt">?&nbsp;</span><span class="t-question">${text}</span>`;
+      else if(type==='answer') line.innerHTML=`<span class="t-prompt">›&nbsp;</span><span class="t-answer">${text}</span>`;
+      else if(type==='error') line.innerHTML=`<span class="t-error">✗ ${text}</span>`;
+      else if(type==='success') line.innerHTML=`<span class="t-success">✓ ${text}</span>`;
+      else line.textContent=text;
+      body.appendChild(line);
+      body.scrollTop=body.scrollHeight;
+      res();
+    },delay);
+  });
+}
+
+// Typewriter effect
+function typeWriter(element, text, speed=35){
+  return new Promise(res=>{
+    let i=0;
+    function type(){
+      if(i<text.length){
+        element.textContent+=text[i++];
+        body.scrollTop=body.scrollHeight;
+        setTimeout(type,speed+Math.random()*20);
+      } else res();
+    }
+    type();
+  });
+}
+
+async function addTypedLine(text, type='question', delay=0){
+  await new Promise(r=>setTimeout(r,delay));
+  const line=document.createElement('div');
+  line.className='t-line';
+  let prefix='';
+  if(type==='question') prefix='<span class="t-prompt">?&nbsp;</span>';
+  else if(type==='prompt') prefix='<span class="t-prompt">$ </span>';
+  else if(type==='success') prefix='<span class="t-success">✓&nbsp;</span>';
+  
+  const span=document.createElement('span');
+  if(type==='question') span.className='t-question';
+  else if(type==='success') span.className='t-success';
+
+  line.innerHTML=prefix;
+  line.appendChild(span);
+  body.appendChild(line);
+  await typeWriter(span, text, 30);
+  body.scrollTop=body.scrollHeight;
+}
+
+function showProgress(pct){
+  const line=document.createElement('div');
+  line.className='t-line';
+  line.innerHTML=`<span class="t-sys">Progress: </span>`;
+  const bar=document.createElement('div');bar.className='t-progress';
+  const fill=document.createElement('div');fill.className='t-progress-fill';
+  bar.appendChild(fill);body.appendChild(line);body.appendChild(bar);
+  setTimeout(()=>{fill.style.width=pct+'%';},50);
+  body.scrollTop=body.scrollHeight;
+  document.getElementById('nodeCount').textContent=Math.round(pct/25)+'/'+STEPS;
+}
+
+function enableInput(placeholder=''){
+  termInput.disabled=false;termInput.value='';
+  termInput.placeholder=placeholder;
+  inputRow.style.display='flex';
+  termInput.focus();
+}
+
+const questions=[
+  {ask:'What is your first name?',placeholder:'your first name…',key:'name'},
+  {ask:'What is your email address?',placeholder:'your@email.com',key:'email'},
+  {ask:'What topics interest you? (e.g. Design, Tech, Business)',placeholder:'topic list…',key:'topics'},
+  {ask:'Where did you hear about us?',placeholder:'social media, friend, etc…',key:'source'},
+];
+
+async function start(){
+  document.getElementById('termStatus').textContent='RUNNING';
+  await addLine('Meridian Newsletter Subscription Interface v2.4.0','system');
+  await addLine('Secure session · TLS 1.3 · AES-256-GCM','system',200);
+  await addLine('───────────────────────────────────────────','system',400);
+  
+  setTimeout(async()=>{
+    await addTypedLine('INIT: Starting subscription flow…','prompt',200);
+    showProgress(0);
+    await new Promise(r=>setTimeout(r,600));
+    await askQuestion(0);
+  },800);
+}
+
+async function askQuestion(i){
+  const q=questions[i];
+  await addTypedLine(q.ask,'question',200);
+  enableInput(q.placeholder);
+}
+
+termInput.addEventListener('keydown',async(e)=>{
+  if(e.key!=='Enter')return;
+  const val=termInput.value.trim();
+  if(!val)return;
+
+  // Validate
+  if(step===1&&!/\S+@\S+\.\S+/.test(val)){
+    termInput.value='';
+    await addLine('✗ Invalid email format. Please try again.','error');
+    return;
+  }
+
+  termInput.disabled=true;
+  inputRow.style.display='none';
+  data[questions[step].key]=val;
+  await addLine(val,'answer');
+
+  step++;
+  showProgress(step*25);
+  document.getElementById('nodeCount').textContent=step+'/'+STEPS;
+
+  if(step<questions.length){
+    await new Promise(r=>setTimeout(r,400));
+    await askQuestion(step);
+  } else {
+    await new Promise(r=>setTimeout(r,500));
+    await addLine('Processing registration…','prompt');
+    await new Promise(r=>setTimeout(r,800));
+    await addTypedLine(`✓ Welcome, ${data.name}! Subscription confirmed.`,'success');
+    await addLine(`  Email: ${data.email}`,'answer');
+    await addLine(`  Interests: ${data.topics}`,'answer');
+    await addLine(`  Source: ${data.source}`,'answer');
+    await new Promise(r=>setTimeout(r,400));
+    await addTypedLine('Your first issue arrives this Tuesday. Enjoy! 🎉','success',200);
+    document.getElementById('termStatus').textContent='SUCCESS';
+    showProgress(100);
+  }
+});
+
+start();
+</script>
+</body>
+</html>

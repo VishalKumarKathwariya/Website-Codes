@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 — Testimonial Carousel</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: #0f0f10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #fff;
+  }
+
+  .page-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #a78bfa;
+    margin-bottom: 10px;
+  }
+
+  .page-title {
+    font-size: 40px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  .page-sub {
+    font-size: 16px;
+    color: #71717a;
+    margin-bottom: 60px;
+    text-align: center;
+  }
+
+  /* Logo strip */
+  .logo-strip {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 52px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .logo-item {
+    font-size: 14px;
+    font-weight: 700;
+    color: #52525b;
+    letter-spacing: -.01em;
+    transition: color .2s;
+    cursor: pointer;
+  }
+
+  .logo-item.active { color: #a1a1aa; }
+  .logo-item:hover { color: #a1a1aa; }
+
+  /* Carousel */
+  .testi-outer {
+    width: 100%;
+    max-width: 780px;
+    position: relative;
+  }
+
+  .testi-car {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Slides */
+  .testi-slides {
+    position: relative;
+    min-height: 300px;
+  }
+
+  .testi-slide {
+    position: absolute;
+    inset: 0;
+    padding: 48px 52px 40px;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity .45s ease, transform .45s ease;
+    pointer-events: none;
+  }
+
+  .testi-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    position: relative;
+    pointer-events: all;
+  }
+
+  .testi-slide.exit {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  .quote-icon {
+    font-size: 60px;
+    line-height: .8;
+    color: #3f3f46;
+    font-family: Georgia, serif;
+    display: block;
+    margin-bottom: 16px;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .testi-text {
+    font-size: 20px;
+    line-height: 1.65;
+    color: #e4e4e7;
+    font-weight: 400;
+    margin-bottom: 32px;
+    max-width: 620px;
+  }
+
+  .highlight { color: #a78bfa; font-weight: 600; }
+
+  .author-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 2px solid #3f3f46;
+  }
+
+  .author-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 3px;
+  }
+
+  .author-role { font-size: 13px; color: #71717a; }
+
+  .stars {
+    margin-left: auto;
+    display: flex;
+    gap: 3px;
+    font-size: 16px;
+    color: #f59e0b;
+  }
+
+  /* Footer */
+  .testi-footer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 52px 20px;
+    border-top: 1px solid #27272a;
+  }
+
+  .progress-wrap {
+    flex: 1;
+    height: 2px;
+    background: #27272a;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: #a78bfa;
+    border-radius: 1px;
+    width: 0%;
+    transition: width .1s linear;
+  }
+
+  .nav-btns { display: flex; gap: 8px; }
+
+  .nav-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid #3f3f46;
+    background: #27272a;
+    color: #a1a1aa;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color .2s, color .2s, background .2s;
+  }
+
+  .nav-btn:hover { border-color: #a78bfa; color: #fff; background: #3f3f46; }
+
+  .slide-counter {
+    font-size: 12px;
+    color: #52525b;
+    min-width: 36px;
+    text-align: center;
+  }
+
+  /* Indicator dots */
+  .dot-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background: #3f3f46;
+    cursor: pointer;
+    transition: width .3s, background .3s;
+    border: none;
+  }
+
+  .dot.active { width: 24px; background: #a78bfa; }
+
+  /* Decorative background */
+  .bg-glow {
+    position: fixed;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse at center, rgba(167,139,250,.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<p class="page-label">Pattern 05 — Notion / Figma / Linear</p>
+<h1 class="page-title">Testimonial Carousel</h1>
+<p class="page-sub">Auto-rotate · animated slide transition · progress bar · star ratings</p>
+
+<!-- Logo strip -->
+<div class="logo-strip" id="logo-strip">
+  <span class="logo-item active">Razorpay</span>
+  <span class="logo-item">Notion</span>
+  <span class="logo-item">Shopify</span>
+  <span class="logo-item">Flutterwave</span>
+  <span class="logo-item">Intercom</span>
+  <span class="logo-item">Vercel</span>
+</div>
+
+<!-- Carousel -->
+<div class="testi-outer">
+  <div class="testi-car">
+    <div class="testi-slides" id="slide-area"></div>
+    <div class="testi-footer">
+      <div class="progress-wrap"><div class="progress-fill" id="prog-fill"></div></div>
+      <span class="slide-counter" id="counter">1 / 6</span>
+      <div class="nav-btns">
+        <button class="nav-btn" id="prev-btn">&#8249;</button>
+        <button class="nav-btn" id="next-btn">&#8250;</button>
+      </div>
+    </div>
+  </div>
+  <div class="dot-row" id="dot-row"></div>
+</div>
+
+<script>
+  const TESTIMONIALS = [
+    {
+      text: `We shipped our entire billing infrastructure in <span class="highlight">2 weeks instead of 6 months</span>. The developer experience is genuinely the best I've encountered in 12 years of building products.`,
+      name: 'Shreya Kapoor', role: 'VP Engineering, Razorpay',
+      init: 'SK', bg: '#4f1999', color: '#e9d5ff',
+      stars: 5, company: 'Razorpay'
+    },
+    {
+      text: `Our team's design velocity <span class="highlight">tripled</span> after we adopted a unified design system. What used to require three meetings and a Figma file now takes one component and five minutes.`,
+      name: 'Marcus Chen', role: 'Head of Design, Notion',
+      init: 'MC', bg: '#0c4a6e', color: '#bae6fd',
+      stars: 5, company: 'Notion'
+    },
+    {
+      text: `Every company claims "developer-first." These folks actually mean it. The docs are honest, the APIs are stable, and the <span class="highlight">error messages tell you what's actually wrong</span>.`,
+      name: 'Yuki Tanaka', role: 'Staff Engineer, Shopify',
+      init: 'YT', bg: '#7c2d12', color: '#fed7aa',
+      stars: 5, company: 'Shopify'
+    },
+    {
+      text: `The migration took a weekend. Zero downtime, zero issues. Our <span class="highlight">infrastructure bill dropped 40%</span> and the team has never been more focused on what actually matters: the product.`,
+      name: 'Amara Osei', role: 'CTO, Flutterwave',
+      init: 'AO', bg: '#14532d', color: '#bbf7d0',
+      stars: 5, company: 'Flutterwave'
+    },
+    {
+      text: `We evaluated six platforms. This was the only one where our engineers didn't immediately ask to swap it out after the first week. That's not a low bar — <span class="highlight">that's a miracle</span>.`,
+      name: 'Priya Nair', role: 'Engineering Lead, Intercom',
+      init: 'PN', bg: '#1e1b4b', color: '#c7d2fe',
+      stars: 5, company: 'Intercom'
+    },
+    {
+      text: `We went from idea to production in 72 hours. The platform handled <span class="highlight">our launch day traffic spike</span> without us touching a single configuration. It just scaled.`,
+      name: 'Alex Rivera', role: 'Co-founder, Vercel',
+      init: 'AR', bg: '#3f1f00', color: '#fde68a',
+      stars: 5, company: 'Vercel'
+    }
+  ];
+
+  let cur = 0, autoTimer, raf, startTs;
+  const DURATION = 7000;
+  const slideArea = document.getElementById('slide-area');
+  const dotRow = document.getElementById('dot-row');
+  const progFill = document.getElementById('prog-fill');
+  const counter = document.getElementById('counter');
+  const logos = document.querySelectorAll('.logo-item');
+
+  // Build slides
+  TESTIMONIALS.forEach((t, i) => {
+    const s = document.createElement('div');
+    s.className = 'testi-slide' + (i === 0 ? ' active' : '');
+    s.innerHTML = `
+      <span class="quote-icon">"</span>
+      <p class="testi-text">${t.text}</p>
+      <div class="author-row">
+        <div class="avatar" style="background:${t.bg};color:${t.color}">${t.init}</div>
+        <div>
+          <div class="author-name">${t.name}</div>
+          <div class="author-role">${t.role}</div>
+        </div>
+        <div class="stars">${'★'.repeat(t.stars)}</div>
+      </div>`;
+    slideArea.appendChild(s);
+
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => { goTo(i); resetTimer(); });
+    dotRow.appendChild(dot);
+  });
+
+  function goTo(n) {
+    const slides = slideArea.querySelectorAll('.testi-slide');
+    const dots = dotRow.querySelectorAll('.dot');
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    logos[cur % logos.length].classList.remove('active');
+    cur = (n + TESTIMONIALS.length) % TESTIMONIALS.length;
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+    logos[cur % logos.length].classList.add('active');
+    counter.textContent = `${cur + 1} / ${TESTIMONIALS.length}`;
+  }
+
+  function resetTimer() {
+    cancelAnimationFrame(raf);
+    clearTimeout(autoTimer);
+    progFill.style.transition = 'none';
+    progFill.style.width = '0%';
+    requestAnimationFrame(() => {
+      progFill.style.transition = `width ${DURATION}ms linear`;
+      progFill.style.width = '100%';
+    });
+    autoTimer = setTimeout(() => { goTo(cur + 1); resetTimer(); }, DURATION);
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', () => { goTo(cur - 1); resetTimer(); });
+  document.getElementById('next-btn').addEventListener('click', () => { goTo(cur + 1); resetTimer(); });
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { goTo(cur - 1); resetTimer(); }
+    if (e.key === 'ArrowRight') { goTo(cur + 1); resetTimer(); }
+  });
+
+  // Touch
+  let touchStart = null;
+  slideArea.addEventListener('touchstart', e => touchStart = e.touches[0].clientX);
+  slideArea.addEventListener('touchend', e => {
+    if (!touchStart) return;
+    const dx = e.changedTouches[0].clientX - touchStart;
+    if (Math.abs(dx) > 50) { goTo(dx < 0 ? cur + 1 : cur - 1); resetTimer(); }
+    touchStart = null;
+  });
+
+  resetTimer();
+</script>
+</body>
+</html>

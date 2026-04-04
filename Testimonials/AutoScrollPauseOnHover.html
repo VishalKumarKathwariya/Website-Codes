@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testimonials · Design 12 · Infinite Marquee</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0c0f14;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: #eef2f6;
+      padding: 2rem 1rem;
+      display: flex;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .marquee-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .marquee-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .marquee-header h2 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .marquee-header p {
+      color: #a5b3cc;
+    }
+
+    /* marquee wrapper */
+    .marquee-wrapper {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 2rem;
+      width: max-content;
+      animation: scroll 40s linear infinite;
+      will-change: transform;
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    .marquee-card {
+      width: 320px;
+      background: #1c212a;
+      border-radius: 28px;
+      padding: 2rem 1.8rem;
+      border: 1px solid #303841;
+      box-shadow: 0 15px 30px -10px #000000;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+
+    .marquee-card:hover {
+      transform: translateY(-6px);
+      background: #242b36;
+    }
+
+    .stars {
+      color: #fbbf24;
+      margin-bottom: 1rem;
+    }
+
+    .quote {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+      color: #d3def0;
+    }
+
+    .author {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      background: #2f3743;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .author-info h4 {
+      font-size: 1rem;
+    }
+
+    .author-info p {
+      font-size: 0.8rem;
+      color: #9aa9c0;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+  </style>
+</head>
+<body>
+  <section class="marquee-section">
+    <div class="marquee-header">
+      <h2>Never‑ending love</h2>
+      <p>auto‑scroll · pause on hover</p>
+    </div>
+
+    <div class="marquee-wrapper">
+      <div class="marquee-track" id="marqueeTrack">
+        <!-- original cards (will be cloned in JS) -->
+        <div class="marquee-card">
+          <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="quote">“The infinite scroll is hypnotic. Great for showcasing many testimonials without clutter.”</p>
+          <div class="author"><div class="avatar">AL</div><div class="author-info"><h4>Alex Rivera</h4><p>Designer</p></div></div>
+        </div>
+        <div class="marquee-card">
+          <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="quote">“Pause on hover is a thoughtful touch. Makes it easy to read any card.”</p>
+          <div class="author"><div class="avatar">MC</div><div class="author-info"><h4>Mia Chen</h4><p>Dev</p></div></div>
+        </div>
+        <div class="marquee-card">
+          <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+          <p class="quote">“Smooth, seamless, and the dark theme ties everything together.”</p>
+          <div class="author"><div class="avatar">SV</div><div class="author-info"><h4>Samira V.</h4><p>Founder</p></div></div>
+        </div>
+        <div class="marquee-card">
+          <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="quote">“I could watch this all day. Perfect for our brand's infinite energy.”</p>
+          <div class="author"><div class="avatar">TR</div><div class="author-info"><h4>Taylor R.</h4><p>Marketing</p></div></div>
+        </div>
+        <!-- JS will clone these -->
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function() {
+      const track = document.getElementById('marqueeTrack');
+      const cards = Array.from(track.children);
+
+      // Duplicate cards to create infinite effect (enough to fill width)
+      cards.forEach(card => {
+        const clone = card.cloneNode(true);
+        track.appendChild(clone);
+      });
+      // Clone again for safety (sometimes need more on large screens)
+      cards.forEach(card => {
+        const clone = card.cloneNode(true);
+        track.appendChild(clone);
+      });
+    })();
+  </script>
+</body>
+</html>

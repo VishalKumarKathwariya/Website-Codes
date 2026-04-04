@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testimonials · Design 06 · Neon Glow</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0b0d10;
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+      color: #eaeef2;
+      padding: 2rem 1rem;
+    }
+
+    .glow-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .glow-section h2 {
+      font-size: 2.3rem;
+      font-weight: 600;
+      text-shadow: 0 0 8px #00ffff80;
+      margin-bottom: 0.5rem;
+    }
+
+    .glow-section .sub {
+      color: #b0b0b0;
+      margin-bottom: 3rem;
+    }
+
+    .glow-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .glow-card {
+      background: #13161c;
+      border-radius: 30px;
+      padding: 2.5rem 2rem;
+      border: 1px solid #2a2e3a;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+      transition: all 0.25s ease;
+      text-align: left;
+    }
+
+    .glow-card:hover {
+      border-color: #00ffff;
+      box-shadow: 0 0 30px #00ffff80, 0 0 60px #ff00ff40;
+      transform: translateY(-6px) scale(1.01);
+    }
+
+    .glow-card .rating {
+      color: #00ffff;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      text-shadow: 0 0 8px cyan;
+    }
+
+    .glow-card .quote {
+      font-size: 1.2rem;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+      color: #cfd9e6;
+    }
+
+    .glow-card .author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .author-avatar {
+      background: linear-gradient(145deg, #00ffff20, #ff00ff20);
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.4rem;
+      border: 1px solid #00ffff;
+      box-shadow: 0 0 12px #00ffff;
+    }
+
+    .author-info h4 {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .author-info p {
+      color: #8892b0;
+    }
+
+    @media (min-width: 650px) {
+      .glow-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .glow-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="glow-section">
+    <h2>Neon reviews</h2>
+    <div class="sub">Developers & creators love the glow</div>
+
+    <div class="glow-grid">
+      <div class="glow-card">
+        <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p class="quote">“The neon accents are subtle but make the whole section feel futuristic. Our users keep mentioning it.”</p>
+        <div class="author">
+          <div class="author-avatar">AP</div>
+          <div class="author-info"><h4>Alex P.</h4><p>DevRel, Neon</p></div>
+        </div>
+      </div>
+      <div class="glow-card">
+        <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p class="quote">“Incredible attention to detail. The glow effect is modern and doesn't overpower the content.”</p>
+        <div class="author">
+          <div class="author-avatar">MC</div>
+          <div class="author-info"><h4>Mia C.</h4><p>Lead Designer</p></div>
+        </div>
+      </div>
+      <div class="glow-card">
+        <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+        <p class="quote">“Finally a testimonial design that matches our brand's cyberpunk aesthetic. Perfect.”</p>
+        <div class="author">
+          <div class="author-avatar">RJ</div>
+          <div class="author-info"><h4>Riley J.</h4><p>Founder, Cyberwave</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

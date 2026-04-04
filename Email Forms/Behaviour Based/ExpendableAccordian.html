@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 37 — Expandable / Accordion Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.4);--wine-tint:rgba(139,26,56,.13);
+  --bg0:#080810;--bg1:#0E0E18;--bg2:#131320;--bg3:#191926;--bg4:#21212E;--bg5:#29293A;
+  --chalk:#F0E8EE;--chalk2:#C0B4C4;--chalk3:#84768A;--chalk4:#4C4460;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.12);--bdr-w:rgba(139,26,56,.45);
+  --r:12px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --ff-d:'Playfair Display',Georgia,serif;--ff-s:'Syne',sans-serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-s);font-size:15px;line-height:1.65;min-height:100dvh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.2;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input,select{font:inherit;color:inherit}
+input:focus,select:focus{outline:none}
+
+/* PAGE */
+.page{position:relative;z-index:1;min-height:100dvh;padding:clamp(3rem,7vw,5rem) clamp(1rem,5vw,2rem);display:flex;flex-direction:column;align-items:center;gap:3rem}
+.page-header{text-align:center;max-width:600px}
+.page-chip{display:inline-block;padding:5px 16px;border-radius:99px;border:1px solid var(--bdr-w);background:var(--wine-tint);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--wine-xl);margin-bottom:1.2rem;font-family:var(--ff-m)}
+.page-title{font-family:var(--ff-d);font-size:clamp(1.8rem,5vw,3rem);font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:.8rem}
+.page-title em{font-style:italic;background:linear-gradient(135deg,var(--wine-xl),#F08098,var(--wine));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-sub{color:var(--chalk3);font-size:13px}
+
+/* ACCORDION CONTAINER */
+.accordion-wrap{width:100%;max-width:680px;display:flex;flex-direction:column;gap:12px}
+
+/* ACCORDION ITEM */
+.acc-item{background:var(--bg2);border:1.5px solid var(--bdr);border-radius:var(--r-xl);overflow:hidden;transition:border-color .25s var(--ease),box-shadow .25s}
+.acc-item.active{border-color:var(--bdr-w);box-shadow:0 0 50px var(--wine-tint),0 8px 32px rgba(0,0,0,.4)}
+.acc-header{display:flex;align-items:center;gap:14px;padding:clamp(1rem,3vw,1.3rem) clamp(1.2rem,3vw,1.5rem);cursor:pointer;
+    -webkit-user-select: none;
+    user-select:none;transition:background .2s}
+.acc-header:hover{background:rgba(255,255,255,.02)}
+.acc-step-badge{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bdr-w);background:var(--wine-tint);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--wine-xl);flex-shrink:0;font-family:var(--ff-m);transition:all .25s}
+.acc-item.active .acc-step-badge{background:var(--wine);border-color:var(--wine);color:#fff;box-shadow:0 4px 14px var(--wine-glow)}
+.acc-item.done .acc-step-badge{background:var(--wine-d);border-color:var(--wine-d);color:#fff}
+.acc-header-text{flex:1}
+.acc-header-title{font-family:var(--ff-d);font-size:clamp(1rem,2.5vw,1.2rem);font-weight:700;transition:color .2s}
+.acc-item.active .acc-header-title{color:var(--chalk)}
+.acc-header-sub{font-size:12px;color:var(--chalk4);margin-top:2px;transition:color .2s}
+.acc-item.active .acc-header-sub,.acc-item.done .acc-header-sub{color:var(--chalk3)}
+.acc-chevron{color:var(--chalk4);transition:transform .3s var(--ease),color .2s;flex-shrink:0}
+.acc-item.active .acc-chevron{transform:rotate(180deg);color:var(--wine-xl)}
+.acc-status{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--wine-xl);font-family:var(--ff-m);flex-shrink:0;display:none}
+.acc-item.done .acc-status{display:block}
+.acc-item.done .acc-chevron{display:none}
+
+/* ACCORDION BODY */
+.acc-body{max-height:0;overflow:hidden;transition:max-height .45s var(--ease)}
+.acc-item.active .acc-body{max-height:600px}
+.acc-inner{padding:0 clamp(1.2rem,3vw,1.5rem) clamp(1.2rem,3vw,1.5rem);border-top:1px solid var(--bdr)}
+
+/* FORM FIELDS */
+.form-grid{display:flex;flex-direction:column;gap:14px;padding-top:1.2rem}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:440px){.row2{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:5px}
+.lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);font-family:var(--ff-m)}
+.ipt{background:var(--bg4);border:1.5px solid var(--bdr);border-radius:var(--r);padding:13px 16px;font-size:14px;transition:all .2s}
+.ipt:focus{background:var(--bg5);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.ipt::placeholder{color:var(--chalk4)}
+.next-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--wine-xd),var(--wine) 55%,var(--wine-l));color:#fff;font-size:14px;font-weight:700;letter-spacing:.04em;box-shadow:0 4px 18px var(--wine-glow);transition:all .22s;align-self:flex-start}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(139,26,56,.65)}
+.next-btn.full{width:100%;justify-content:center;height:50px}
+
+/* INTEREST TAGS */
+.tag-grid{display:flex;flex-wrap:wrap;gap:8px}
+.tag{padding:8px 16px;border-radius:99px;background:var(--bg4);border:1.5px solid var(--bdr);font-size:13px;color:var(--chalk3);cursor:pointer;transition:all .2s;
+    -webkit-user-select: none;
+    user-select:none}
+.tag.on{background:var(--wine-tint);border-color:var(--bdr-w);color:var(--wine-xl)}
+
+/* FINAL CARD */
+.final-card{background:var(--bg3);border-radius:var(--r-lg);padding:1.2rem;display:flex;flex-direction:column;gap:8px}
+.fc-row{display:flex;align-items:center;justify-content:space-between;font-size:13px}
+.fc-key{color:var(--chalk3)}
+.fc-val{color:var(--chalk);font-weight:600}
+
+/* PROGRESS DOTS */
+.progress-dots{display:flex;align-items:center;gap:6px}
+.pd{width:8px;height:8px;border-radius:50%;background:var(--bdr2);transition:all .3s}
+.pd.done{background:var(--wine-d)}
+.pd.active{background:var(--wine);box-shadow:0 0 8px var(--wine);width:24px;border-radius:99px}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg4);border:1px solid var(--bdr-w);padding:13px 22px;border-radius:var(--r);font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:9px;box-shadow:0 10px 36px rgba(0,0,0,.6);opacity:0;pointer-events:none;white-space:nowrap;transition:transform .4s var(--spring),opacity .35s}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.t-dot{width:8px;height:8px;border-radius:50%;background:var(--wine-xl);animation:blink 1.4s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span class="t-dot"></span><span id="toast-msg">Subscribed! ✦</span></div>
+
+<div class="page">
+  <div class="page-header">
+    <p class="page-chip">Design 37 · Accordion Form</p>
+    <h1 class="page-title">Step-by-step <em>Accordion</em><br/>Subscription Form</h1>
+    <p class="page-sub">Sections expand one at a time — guiding users through a multi-step subscription flow without page navigation.</p>
+  </div>
+
+  <div class="progress-dots" id="progDots">
+    <div class="pd active" id="pd0"></div>
+    <div class="pd" id="pd1"></div>
+    <div class="pd" id="pd2"></div>
+    <div class="pd" id="pd3"></div>
+  </div>
+
+  <div class="accordion-wrap">
+
+    <!-- STEP 1 -->
+    <div class="acc-item active" id="acc0">
+      <div class="acc-header" onclick="toggleAcc(0)">
+        <div class="acc-step-badge" id="badge0">1</div>
+        <div class="acc-header-text">
+          <div class="acc-header-title">Your Details</div>
+          <div class="acc-header-sub" id="sub0">Name and email address</div>
+        </div>
+        <span class="acc-status">✓ Done</span>
+        <svg class="acc-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="form-grid">
+            <div class="row2">
+              <div class="fld"><label class="lbl">First Name</label><input class="ipt" id="fname" type="text" placeholder="Jane" autocomplete="given-name" required/></div>
+              <div class="fld"><label class="lbl">Last Name</label><input class="ipt" id="lname" type="text" placeholder="Doe" autocomplete="family-name" required/></div>
+            </div>
+            <div class="fld"><label class="lbl">Email Address</label><input class="ipt" id="email" type="email" placeholder="jane@example.com" autocomplete="email" required/></div>
+            <button class="next-btn" onclick="nextStep(0)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="acc-item" id="acc1">
+      <div class="acc-header" onclick="toggleAcc(1)">
+        <div class="acc-step-badge" id="badge1">2</div>
+        <div class="acc-header-text">
+          <div class="acc-header-title">Your Interests</div>
+          <div class="acc-header-sub" id="sub1">Select topics you care about</div>
+        </div>
+        <span class="acc-status">✓ Done</span>
+        <svg class="acc-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="form-grid">
+            <div class="fld">
+              <label class="lbl">Select all that apply</label>
+              <div class="tag-grid">
+                <span class="tag on" onclick="toggleTag(this)">Design</span>
+                <span class="tag" onclick="toggleTag(this)">Technology</span>
+                <span class="tag" onclick="toggleTag(this)">Business</span>
+                <span class="tag" onclick="toggleTag(this)">Science</span>
+                <span class="tag" onclick="toggleTag(this)">Culture</span>
+                <span class="tag" onclick="toggleTag(this)">Finance</span>
+              </div>
+            </div>
+            <div class="fld">
+              <label class="lbl">Frequency</label>
+              <select class="ipt" id="freq" title="select">
+                <option value="weekly" selected>Weekly digest</option>
+                <option value="daily">Daily brief</option>
+                <option value="monthly">Monthly roundup</option>
+              </select>
+            </div>
+            <button class="next-btn" onclick="nextStep(1)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="acc-item" id="acc2">
+      <div class="acc-header" onclick="toggleAcc(2)">
+        <div class="acc-step-badge" id="badge2">3</div>
+        <div class="acc-header-text">
+          <div class="acc-header-title">Profile (Optional)</div>
+          <div class="acc-header-sub" id="sub2">Help us personalise your experience</div>
+        </div>
+        <span class="acc-status">✓ Done</span>
+        <svg class="acc-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="form-grid">
+            <div class="row2">
+              <div class="fld"><label class="lbl">Role</label><input class="ipt" id="role" type="text" placeholder="Designer, developer…"/></div>
+              <div class="fld"><label class="lbl">Company</label><input class="ipt" id="company" type="text" placeholder="Acme Inc."/></div>
+            </div>
+            <button class="next-btn" onclick="nextStep(2)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 — CONFIRM -->
+    <div class="acc-item" id="acc3">
+      <div class="acc-header" onclick="toggleAcc(3)">
+        <div class="acc-step-badge" id="badge3">4</div>
+        <div class="acc-header-text">
+          <div class="acc-header-title">Confirm &amp; Subscribe</div>
+          <div class="acc-header-sub">Review your details</div>
+        </div>
+        <span class="acc-status">✓ Done</span>
+        <svg class="acc-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="form-grid">
+            <div class="final-card">
+              <div class="fc-row"><span class="fc-key">Name</span><span class="fc-val" id="cf-name">—</span></div>
+              <div class="fc-row"><span class="fc-key">Email</span><span class="fc-val" id="cf-email">—</span></div>
+              <div class="fc-row"><span class="fc-key">Frequency</span><span class="fc-val" id="cf-freq">—</span></div>
+            </div>
+            <button class="next-btn full" onclick="finalSubmit()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Confirm &amp; Subscribe
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let current=0;
+function toggleAcc(i){if(current===i)return;openAcc(i)}
+function openAcc(i){
+  document.querySelectorAll('.acc-item').forEach((el,j)=>{
+    el.classList.toggle('active',j===i);
+  });
+  current=i;
+  updateDots();
+}
+function nextStep(i){
+  if(i===0){
+    const fn=document.getElementById('fname').value.trim();
+    const em=document.getElementById('email').value.trim();
+    if(!fn||!em){alert('Please fill in your name and email.');return;}
+    document.getElementById('sub0').textContent=fn+' · '+em;
+  }
+  if(i===1){
+    const fr=document.getElementById('freq').value;
+    document.getElementById('sub1').textContent=fr;
+  }
+  if(i===2){
+    const r=document.getElementById('role').value||'Not specified';
+    document.getElementById('sub2').textContent=r;
+  }
+  // Mark done
+  document.getElementById('acc'+i).classList.remove('active');
+  document.getElementById('acc'+i).classList.add('done');
+  // Update confirm card
+  document.getElementById('cf-name').textContent=(document.getElementById('fname').value+' '+document.getElementById('lname').value).trim()||'—';
+  document.getElementById('cf-email').textContent=document.getElementById('email').value||'—';
+  document.getElementById('cf-freq').textContent=document.getElementById('freq').value||'—';
+  // Open next
+  const next=document.getElementById('acc'+(i+1));
+  if(next){next.classList.add('active');current=i+1;}
+  updateDots();
+}
+function updateDots(){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById('pd'+i);
+    const item=document.getElementById('acc'+i);
+    if(item.classList.contains('done')){d.className='pd done';}
+    else if(item.classList.contains('active')){d.className='pd active';}
+    else{d.className='pd';}
+  }
+}
+function toggleTag(el){el.classList.toggle('on')}
+function finalSubmit(){
+  document.getElementById('acc3').classList.add('done');
+  document.querySelectorAll('.pd').forEach(d=>{d.className='pd done'});
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent='All done! Subscribed successfully. ✦';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);
+}
+</script>
+</body>
+</html>

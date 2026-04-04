@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 16 — 3D Skew Tilt</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#f1f5f9;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Sans',sans-serif;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background:radial-gradient(ellipse 70% 60% at 50% 30%, rgba(99,102,241,0.08) 0%, transparent 65%);
+  }
+  .page{
+    position:relative;z-index:1;
+    display:flex;flex-direction:column;align-items:center;gap:3.5rem;
+    padding:3rem 2rem;text-align:center;
+  }
+  .label-block{display:flex;flex-direction:column;gap:10px;align-items:center}
+  .tag{
+    display:inline-block;padding:5px 14px;
+    background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);
+    border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:#4f46e5;
+  }
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;color:#0f172a;line-height:1.1}
+  p{font-size:15px;color:#64748b;max-width:420px;line-height:1.65}
+
+  /* ── TILT BUTTONS ── */
+  .demo-area{display:flex;flex-direction:column;align-items:center;gap:2.5rem}
+  .row{display:flex;gap:2rem;flex-wrap:wrap;justify-content:center}
+
+  .tilt-wrap{perspective:600px;display:inline-block}
+
+  .btn-tilt{
+    padding:16px 42px;border:none;border-radius:12px;
+    font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;
+    cursor:pointer;display:inline-block;
+    transform-style:preserve-3d;
+    transition:box-shadow .25s;
+    will-change:transform;position:relative;
+    overflow:hidden;
+  }
+
+  /* shine layer */
+  .btn-tilt::after{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.25) 0%, transparent 65%);
+    pointer-events:none;opacity:0;transition:opacity .25s;
+  }
+  .btn-tilt:hover::after{opacity:1}
+
+  /* colour variants */
+  .bt-dark{background:#0f172a;color:#fff}
+  .bt-dark:hover{box-shadow:0 24px 48px rgba(15,23,42,0.25)}
+
+  .bt-indigo{background:#4f46e5;color:#fff}
+  .bt-indigo:hover{box-shadow:0 24px 48px rgba(79,70,229,0.35)}
+
+  .bt-white{background:#fff;color:#0f172a;border:1px solid rgba(0,0,0,0.08)}
+  .bt-white:hover{box-shadow:0 24px 48px rgba(0,0,0,0.12)}
+
+  .bt-slate{background:#334155;color:#fff}
+  .bt-slate:hover{box-shadow:0 24px 48px rgba(51,65,85,0.3)}
+
+  /* intensity note */
+  .intensity-panel{
+    background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:12px;
+    padding:1.25rem 2rem;display:flex;flex-direction:column;gap:.75rem;align-items:center;
+    max-width:400px;width:100%;
+  }
+  .intensity-label{font-size:13px;color:#64748b;font-weight:500}
+  .intensity-bar{
+    display:flex;align-items:center;gap:1rem;width:100%;
+  }
+  input[type=range]{flex:1;accent-color:#4f46e5}
+  #intensity-val{font-size:14px;font-weight:600;color:#0f172a;min-width:24px}
+
+  /* live tilt demo */
+  .btn-live{
+    padding:16px 48px;border:none;border-radius:12px;
+    background:#4f46e5;color:#fff;
+    font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;
+    cursor:pointer;will-change:transform;
+    transition:box-shadow .25s;position:relative;overflow:hidden;
+  }
+  .btn-live::after{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.25) 0%, transparent 65%);
+    pointer-events:none;opacity:0;transition:opacity .2s;
+  }
+  .btn-live:hover::after{opacity:1}
+  .btn-live:hover{box-shadow:0 24px 48px rgba(79,70,229,0.35)}
+
+  .info{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+  .info-item{
+    background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.07);
+    border-radius:10px;padding:12px 20px;font-size:13px;color:#64748b;
+    display:flex;flex-direction:column;gap:4px;min-width:130px;
+  }
+  .info-item strong{color:#0f172a;font-size:14px;font-weight:600}
+  .hint{font-size:12px;color:#94a3b8;letter-spacing:.05em}
+  .sub{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#94a3b8;font-weight:600}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 16 / 20</span>
+    <h1>3D Skew Tilt</h1>
+    <p>The button tilts in 3D toward your cursor with a live sheen highlight — used by Stripe and Apple to make flat elements feel physical.</p>
+  </div>
+
+  <div class="demo-area">
+    <span class="sub">Hover slowly across each button</span>
+    <div class="row">
+      <div class="tilt-wrap"><button class="btn-tilt bt-dark" data-intensity="18">Get Started</button></div>
+      <div class="tilt-wrap"><button class="btn-tilt bt-indigo" data-intensity="18">Try Free</button></div>
+    </div>
+    <div class="row">
+      <div class="tilt-wrap"><button class="btn-tilt bt-white" data-intensity="14">Learn More</button></div>
+      <div class="tilt-wrap"><button class="btn-tilt bt-slate" data-intensity="14">View Demo</button></div>
+    </div>
+
+    <!-- adjustable intensity -->
+    <div class="intensity-panel">
+      <span class="intensity-label">Adjust tilt intensity</span>
+      <div class="intensity-bar">
+        <span>Subtle</span>
+        <input type="range" title="Depth" min="4" max="30" value="18"  id="intensity-slider"/>
+        <span id="intensity-val">18°</span>
+        <span>Extreme</span>
+      </div>
+      <button class="btn-live" id="live-btn" data-intensity="18">Move cursor here</button>
+    </div>
+  </div>
+
+  <span class="hint">↑ Move cursor across buttons — notice the light shifts with you</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Stripe, Apple, Lottie</div>
+    <div class="info-item"><strong>Technique</strong>JS mousemove + rotateXY</div>
+    <div class="info-item"><strong>Feel</strong>Physical, dimensional, premium</div>
+    <div class="info-item"><strong>Best for</strong>Hero CTAs, product cards</div>
+  </div>
+</div>
+
+<script>
+  function addTilt(btn){
+    btn.addEventListener('mousemove', function(e){
+      const rect = this.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) / (rect.width / 2);
+      const dy = (e.clientY - cy) / (rect.height / 2);
+      const intensity = parseFloat(this.dataset.intensity) || 18;
+      this.style.transition = 'transform .08s linear, box-shadow .25s';
+      this.style.transform = `perspective(600px) rotateX(${-dy * intensity * 0.7}deg) rotateY(${dx * intensity}deg) scale(1.05)`;
+      const mx = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+      const my = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+      this.style.setProperty('--mx', mx + '%');
+      this.style.setProperty('--my', my + '%');
+    });
+    btn.addEventListener('mouseleave', function(){
+      this.style.transition = 'transform .5s cubic-bezier(.34,1.56,.64,1), box-shadow .25s';
+      this.style.transform = 'perspective(600px) rotateX(0) rotateY(0) scale(1)';
+    });
+  }
+
+  document.querySelectorAll('.btn-tilt').forEach(addTilt);
+  addTilt(document.getElementById('live-btn'));
+
+  const slider = document.getElementById('intensity-slider');
+  const valEl = document.getElementById('intensity-val');
+  const liveBtn = document.getElementById('live-btn');
+  slider.addEventListener('input', function(){
+    valEl.textContent = this.value + '°';
+    liveBtn.dataset.intensity = this.value;
+  });
+</script>
+</body>
+</html>

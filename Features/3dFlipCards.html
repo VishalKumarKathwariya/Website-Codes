@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design 9 · 3D Flip Cards</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #121212;
+      font-family: system-ui, sans-serif;
+      color: #fff;
+    }
+
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: #e0e0e0;
+    }
+
+    .flip-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    /* flip card container */
+    .flip-card {
+      background-color: transparent;
+      width: 100%;
+      aspect-ratio: 1 / 1.1;        /* consistent card shape */
+      perspective: 2000px;
+    }
+
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      border-radius: 28px;
+    }
+
+    .flip-card:hover .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-front, .flip-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 28px;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: #1f1f2e;
+      box-shadow: 0 20px 30px rgba(0,0,0,0.7);
+    }
+
+    .flip-front {
+      background: #1f1f2e;
+      border: 1px solid #2d2d44;
+    }
+
+    .flip-back {
+      background: #2a2a3b;
+      transform: rotateY(180deg);
+      border-left: 4px solid #9f7aea;
+    }
+
+    .icon {
+      font-size: 3.2rem;
+      color: #bb9aff;
+      margin-bottom: 1rem;
+    }
+
+    .feature-title {
+      font-size: 1.7rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .flip-back p {
+      color: #cdcdcd;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    @media (min-width: 640px) {
+      .flip-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1024px) {
+      .flip-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <h2 class="section-title">Flip to discover</h2>
+    <div class="flip-grid">
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <i class="fas fa-sync-alt icon"></i>
+            <h3 class="feature-title">Sync</h3>
+          </div>
+          <div class="flip-back">
+            <p>Real‑time sync across all your devices, with zero conflicts.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <i class="fas fa-shield icon"></i>
+            <h3 class="feature-title">Privacy</h3>
+          </div>
+          <div class="flip-back">
+            <p>End‑to‑end encrypted, your data belongs only to you.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <i class="fas fa-bolt icon"></i>
+            <h3 class="feature-title">Speed</h3>
+          </div>
+          <div class="flip-back">
+            <p>Optimized algorithms ensure near‑instant response.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <i class="fas fa-code-branch icon"></i>
+            <h3 class="feature-title">Open</h3>
+          </div>
+          <div class="flip-back">
+            <p>Fully open‑source, audit and contribute on GitHub.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

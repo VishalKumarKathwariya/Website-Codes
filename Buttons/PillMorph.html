@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 09 — Pill Morph</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #f5f5f7;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3rem;
+    padding: 3rem 2rem; text-align: center;
+  }
+
+  .label-block { display: flex; flex-direction: column; gap: 8px; }
+
+  .tag {
+    display: inline-block; padding: 4px 12px;
+    background: rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 50px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(0,0,0,0.4);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700; color: #1d1d1f; line-height: 1.1;
+  }
+
+  p { font-size: 15px; color: #6e6e73; max-width: 400px; line-height: 1.6; }
+
+  /* ── BUTTONS ── */
+  .btn-group { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
+  .row { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+  /* Green (Apple confirm) */
+  .btn-morph {
+    padding: 14px 32px;
+    border: none; border-radius: 10px;
+    font-size: 16px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition:
+      border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.12s,
+      box-shadow 0.3s,
+      background 0.2s;
+  }
+
+  .btn-morph:active { transform: scale(0.96); }
+
+  .btn-green { background: #34c759; color: #fff; }
+  .btn-green:hover {
+    border-radius: 50px;
+    padding: 14px 40px;
+    box-shadow: 0 6px 20px rgba(52,199,89,0.35);
+    background: #2fb350;
+  }
+
+  .btn-blue { background: #007aff; color: #fff; }
+  .btn-blue:hover {
+    border-radius: 50px;
+    padding: 14px 40px;
+    box-shadow: 0 6px 20px rgba(0,122,255,0.35);
+    background: #0066dd;
+  }
+
+  .btn-dark { background: #1d1d1f; color: #fff; }
+  .btn-dark:hover {
+    border-radius: 50px;
+    padding: 14px 40px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  }
+
+  .btn-red { background: #ff3b30; color: #fff; }
+  .btn-red:hover {
+    border-radius: 50px;
+    padding: 14px 40px;
+    box-shadow: 0 6px 20px rgba(255,59,48,0.35);
+    background: #e0362d;
+  }
+
+  /* Ghost morph */
+  .btn-ghost {
+    background: transparent;
+    border: 1.5px solid rgba(0,0,0,0.18);
+    color: #1d1d1f;
+    padding: 13px 31px;
+  }
+  .btn-ghost:hover {
+    border-radius: 50px;
+    padding: 13px 39px;
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.25);
+  }
+
+  /* Pill-first morphs to square */
+  .btn-reverse {
+    background: #007aff; color: #fff;
+    border-radius: 50px; padding: 14px 36px;
+  }
+  .btn-reverse:hover {
+    border-radius: 10px;
+    padding: 14px 32px;
+    box-shadow: 0 6px 20px rgba(0,122,255,0.3);
+  }
+
+  .easing-note {
+    font-size: 13px; color: #6e6e73;
+    background: rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 8px; padding: 10px 18px;
+    max-width: 400px; line-height: 1.5;
+  }
+  .easing-note code {
+    font-family: monospace; font-size: 12px;
+    background: rgba(0,122,255,0.08);
+    padding: 1px 5px; border-radius: 4px;
+    color: #007aff;
+  }
+
+  .info {
+    display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;
+  }
+  .info-item {
+    background: rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.07);
+    border-radius: 10px; padding: 12px 20px;
+    font-size: 13px; color: #6e6e73;
+    display: flex; flex-direction: column; gap: 4px; min-width: 130px;
+  }
+  .info-item strong { color: #1d1d1f; font-size: 14px; font-weight: 600; }
+
+  .hint { font-size: 12px; color: #aeaeb2; letter-spacing: 0.05em; }
+  .sub-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #aeaeb2; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 09 / 10</span>
+    <h1>Pill Morph</h1>
+    <p>Border-radius animates smoothly between rectangle and full pill on hover — a signature Apple interaction that feels tactile and alive.</p>
+  </div>
+
+  <div class="btn-group">
+    <span class="sub-label">Rectangle → Pill</span>
+    <div class="row">
+      <button class="btn-morph btn-green">Confirm</button>
+      <button class="btn-morph btn-blue">Continue</button>
+      <button class="btn-morph btn-red">Delete</button>
+    </div>
+    <div class="row">
+      <button class="btn-morph btn-dark">Download</button>
+      <button class="btn-morph btn-ghost">Cancel</button>
+    </div>
+    <span class="sub-label">Pill → Rectangle</span>
+    <div class="row">
+      <button class="btn-morph btn-reverse">Get App</button>
+    </div>
+  </div>
+
+  <div class="easing-note">
+    Easing: <code>cubic-bezier(0.4, 0, 0.2, 1)</code> — combined with border-radius + padding transition for the stretch feel
+  </div>
+
+  <span class="hint">↑ Hover each button to see the shape morph</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Apple, iOS, macOS</div>
+    <div class="info-item"><strong>Technique</strong>border-radius + padding transition</div>
+    <div class="info-item"><strong>Feel</strong>Satisfying, tactile, clean</div>
+    <div class="info-item"><strong>Best for</strong>Confirm / action buttons</div>
+  </div>
+</div>
+</body>
+</html>

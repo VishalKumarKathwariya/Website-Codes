@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 44 — Animated / Motion Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400;1,700&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.5);--wine-tint:rgba(139,26,56,.14);
+  --bg0:#06060C;--bg1:#0B0B13;--bg2:#10101A;--bg3:#161622;--bg4:#1E1E2C;--bg5:#262638;
+  --chalk:#F2E8F0;--chalk2:#C2B6C6;--chalk3:#867A8A;--chalk4:#4C4460;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.12);--bdr-w:rgba(139,26,56,.45);
+  --r:12px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;
+  --spring:cubic-bezier(.34,1.56,.64,1);--ease:cubic-bezier(.4,0,.2,1);
+  --ff-d:'Playfair Display',Georgia,serif;--ff-s:'Syne',sans-serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-s);min-height:100dvh;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input{font:inherit;color:inherit;border:none;outline:none}
+
+/* Canvas background */
+#canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* Page */
+.page{position:relative;z-index:1;min-height:100dvh;display:grid;place-items:center;padding:clamp(1rem,4vw,2rem)}
+
+/* Card */
+.card{
+  width:100%;max-width:520px;
+  background:rgba(16,16,26,.92);
+  border:1px solid var(--bdr2);border-radius:var(--r-2xl);
+  overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.03);
+  -webkit-backdrop-filter:blur(20px);
+  backdrop-filter:blur(20px);
+}
+.card-shine{height:1.5px;background:linear-gradient(90deg,transparent,var(--wine),transparent)}
+
+/* Animated header */
+.anim-header{
+  padding:clamp(1.8rem,5vw,2.5rem) clamp(1.5rem,4vw,2rem) clamp(1.4rem,4vw,2rem);
+  text-align:center;position:relative;overflow:hidden;
+}
+.anim-header::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:240px;height:140px;background:radial-gradient(ellipse,rgba(139,26,56,.2) 0%,transparent 70%)}
+
+/* Animated badge */
+.anim-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:6px 16px;border-radius:99px;
+  border:1px solid var(--bdr-w);background:var(--wine-tint);
+  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--wine-xl);margin-bottom:1rem;font-family:var(--ff-m);
+  animation:badgeFloat 3s ease-in-out infinite;
+}
+@keyframes badgeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--wine-xl);box-shadow:0 0 8px var(--wine-xl);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.5}}
+
+.anim-title{
+  font-family:var(--ff-d);font-size:clamp(1.6rem,5vw,2.2rem);font-weight:800;
+  line-height:1.15;letter-spacing:-.02em;margin-bottom:.6rem;
+  animation:titleReveal .8s var(--ease) .1s both;
+}
+@keyframes titleReveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.anim-title em{font-style:italic;background:linear-gradient(135deg,var(--wine-xl),#F08098,var(--wine));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.anim-sub{font-size:13px;color:var(--chalk3);animation:titleReveal .8s var(--ease) .2s both}
+
+/* Form body */
+.form-body{padding:clamp(1rem,3vw,1.4rem) clamp(1.5rem,4vw,2rem) clamp(1.5rem,4vw,2rem)}
+.fields{display:flex;flex-direction:column;gap:13px}
+
+/* Animated field */
+.fld{display:flex;flex-direction:column;gap:5px;animation:fieldIn .5s var(--ease) both}
+.fld:nth-child(1){animation-delay:.05s}
+.fld:nth-child(2){animation-delay:.1s}
+.fld:nth-child(3){animation-delay:.15s}
+.fld:nth-child(4){animation-delay:.2s}
+@keyframes fieldIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+
+.lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);font-family:var(--ff-m);transition:color .2s}
+.ipt-wrap{position:relative}
+.ipt{
+  width:100%;background:var(--bg4);border:1.5px solid var(--bdr);
+  border-radius:var(--r);padding:13px 16px 13px 44px;font-size:14px;
+  transition:all .25s;color:var(--chalk);
+}
+.ipt:focus{background:var(--bg5);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.ipt::placeholder{color:var(--chalk4)}
+.ipt-icon{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  color:var(--chalk4);transition:color .25s;pointer-events:none;
+}
+.ipt:focus~.ipt-icon,.ipt-wrap:focus-within .ipt-icon{color:var(--wine-xl)}
+
+/* Animated submit button */
+.sub-wrap{position:relative;margin-top:6px;animation:fieldIn .5s var(--ease) .25s both}
+.sub-btn{
+  width:100%;height:54px;border-radius:var(--r-lg);font-size:15px;font-weight:800;
+  letter-spacing:.05em;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--wine-xd),var(--wine) 55%,var(--wine-l));
+  color:#fff;transition:all .25s var(--ease);
+  box-shadow:0 6px 28px var(--wine-glow);
+}
+.sub-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 55%);
+  opacity:0;transition:opacity .25s;
+}
+.sub-btn:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(139,26,56,.7)}
+.sub-btn:hover::before{opacity:1}
+.sub-btn:active{transform:translateY(0);box-shadow:0 4px 16px var(--wine-glow)}
+/* Ripple */
+.sub-btn .ripple{position:absolute;border-radius:50%;transform:scale(0);animation:rippleOut .6s linear;background:rgba(255,255,255,.25);pointer-events:none}
+@keyframes rippleOut{to{transform:scale(4);opacity:0}}
+
+.sub-btn.loading{pointer-events:none}
+.sub-btn.loading .btn-text{opacity:0}
+.sub-btn .loader{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  display:none;width:20px;height:20px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+  animation:spin .7s linear infinite;
+}
+.sub-btn.loading .loader{display:block}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.btn-text{display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s}
+
+/* Footer */
+.form-footer{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-size:11px;color:var(--chalk4);animation:fieldIn .5s var(--ease) .3s both}
+
+/* Success overlay */
+.success-overlay{
+  position:absolute;inset:0;z-index:10;
+  background:rgba(7,7,12,.95);
+  display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;text-align:center;
+  padding:2rem;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter:blur(4px);
+}
+.success-overlay.show{display:flex;animation:fadeIn .4s var(--ease)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.success-ring{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(145deg,var(--wine-d),var(--wine));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 30px var(--wine-glow);
+  animation:ringIn .5s var(--spring) .2s both;
+}
+@keyframes ringIn{from{transform:scale(0) rotate(-90deg)}to{transform:scale(1) rotate(0deg)}}
+.s-title{font-family:var(--ff-d);font-size:1.6rem;font-weight:700;animation:titleReveal .4s var(--ease) .3s both}
+.s-sub{font-size:13px;color:var(--chalk3);max-width:32ch;animation:titleReveal .4s var(--ease) .4s both}
+.s-restart{padding:11px 24px;border-radius:var(--r-lg);background:var(--wine-tint);border:1.5px solid var(--bdr-w);color:var(--wine-xl);font-size:13px;font-weight:700;transition:all .2s;animation:titleReveal .4s var(--ease) .5s both}
+.s-restart:hover{background:rgba(139,26,56,.22)}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div class="page">
+<div class="card">
+
+  <div class="card-shine"></div>
+
+  <!-- Animated Header -->
+  <div class="anim-header">
+    <div class="anim-badge"><span class="live-dot"></span> Design 44 · Motion Form</div>
+    <h1 class="anim-title">Where <em>great ideas</em><br/>find your inbox.</h1>
+    <p class="anim-sub">Join 45,000 readers. Free, forever.</p>
+  </div>
+
+  <!-- Form -->
+  <div class="form-body">
+    <div class="fields">
+      <div class="fld">
+        <label class="lbl">Full Name</label>
+        <div class="ipt-wrap">
+          <input class="ipt" id="name" type="text" placeholder="Jane Doe" autocomplete="name"/>
+          <span class="ipt-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        </div>
+      </div>
+      <div class="fld">
+        <label class="lbl">Email Address</label>
+        <div class="ipt-wrap">
+          <input class="ipt" id="email" type="email" placeholder="jane@example.com" autocomplete="email"/>
+          <span class="ipt-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+        </div>
+      </div>
+      <div class="fld">
+        <label class="lbl">What do you do?</label>
+        <div class="ipt-wrap">
+          <input class="ipt" id="role" type="text" placeholder="Designer, developer, founder…"/>
+          <span class="ipt-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-wrap">
+      <button class="sub-btn" id="subBtn" onclick="handleSubmit(event)">
+        <span class="btn-text">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Subscribe Now — It's Free
+        </span>
+        <span class="loader"></span>
+      </button>
+    </div>
+    <div class="form-footer">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Private &amp; secure · No spam · Unsubscribe anytime
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-ring"><svg width="28" height="28" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h2 class="s-title">You're in! 🎉</h2>
+    <p class="s-sub">Check your inbox for a welcome email. See you Tuesday.</p>
+    <button class="s-restart" onclick="restart()">↩ Subscribe again</button>
+  </div>
+</div>
+</div>
+
+<script>
+// Particle canvas
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+let particles=[];
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+
+class Particle{
+  constructor(){this.reset()}
+  reset(){
+    this.x=Math.random()*canvas.width;
+    this.y=Math.random()*canvas.height;
+    this.r=Math.random()*1.5+.3;
+    this.vx=(Math.random()-.5)*.25;
+    this.vy=(Math.random()-.5)*.25;
+    this.alpha=Math.random()*.35+.05;
+    this.color=Math.random()>.6?`rgba(139,26,56,${this.alpha})`:`rgba(240,232,240,${this.alpha})`;
+  }
+  update(){
+    this.x+=this.vx;this.y+=this.vy;
+    if(this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height)this.reset();
+  }
+  draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=this.color;ctx.fill()}
+}
+for(let i=0;i<120;i++)particles.push(new Particle());
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // Connections
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x;
+      const dy=particles[i].y-particles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<100){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`rgba(139,26,56,${.08*(1-dist/100)})`;
+        ctx.lineWidth=.5;ctx.stroke();
+      }
+    }
+  }
+  particles.forEach(p=>{p.update();p.draw()});
+  requestAnimationFrame(animate);
+}
+animate();
+
+// Ripple
+document.getElementById('subBtn').addEventListener('click',function(e){
+  const r=document.createElement('span');
+  r.className='ripple';
+  const btn=this.getBoundingClientRect();
+  const sz=Math.max(btn.width,btn.height);
+  r.style.cssText=`width:${sz}px;height:${sz}px;left:${e.clientX-btn.left-sz/2}px;top:${e.clientY-btn.top-sz/2}px`;
+  this.appendChild(r);
+  setTimeout(()=>r.remove(),600);
+});
+
+function handleSubmit(e){
+  const name=document.getElementById('name').value.trim();
+  const email=document.getElementById('email').value.trim();
+  if(!name){alert('Please enter your name.');return;}
+  if(!email||!/\S+@\S+\.\S+/.test(email)){alert('Please enter a valid email.');return;}
+  const btn=document.getElementById('subBtn');
+  btn.classList.add('loading');
+  setTimeout(()=>{
+    btn.classList.remove('loading');
+    document.getElementById('successOverlay').classList.add('show');
+  },1400);
+}
+function restart(){
+  document.getElementById('successOverlay').classList.remove('show');
+  ['name','email','role'].forEach(id=>document.getElementById(id).value='');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accordion 2 — Dark Glass</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080b12;
+    --surface: rgba(255,255,255,0.04);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --border-active: rgba(99,179,237,0.4);
+    --text: #e8eaf2;
+    --muted: #6b7280;
+    --accent: #63b3ed;
+    --glow: rgba(99,179,237,0.15);
+    --green: #68d391;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background orbs */
+  body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::before {
+    width: 500px; height: 500px;
+    background: rgba(99,179,237,0.06);
+    top: -100px; left: -100px;
+  }
+  body::after {
+    width: 400px; height: 400px;
+    background: rgba(104,211,145,0.04);
+    bottom: -100px; right: -100px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 680px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header {
+    margin-bottom: 40px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(99,179,237,0.1);
+    border: 1px solid rgba(99,179,237,0.2);
+    border-radius: 100px;
+    padding: 5px 14px 5px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.15;
+    background: linear-gradient(135deg, #e8eaf2 0%, #63b3ed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  .accordion {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .accordion-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .accordion-item:hover {
+    background: var(--surface-hover);
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  .accordion-item.open {
+    border-color: var(--border-active);
+    box-shadow: 0 0 30px var(--glow), inset 0 1px 0 rgba(99,179,237,0.1);
+  }
+
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+  }
+
+  .acc-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+  }
+
+  .accordion-item.open .acc-dot {
+    background: rgba(99,179,237,0.15);
+    border-color: rgba(99,179,237,0.3);
+    color: var(--accent);
+  }
+
+  .acc-title {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    transition: color 0.3s;
+  }
+
+  .accordion-item.open .acc-title {
+    color: #fff;
+  }
+
+  .acc-chevron {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--muted);
+  }
+
+  .accordion-item.open .acc-chevron {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+
+  .accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .accordion-item.open .accordion-body {
+    grid-template-rows: 1fr;
+  }
+
+  .accordion-body-inner {
+    overflow: hidden;
+  }
+
+  .accordion-content {
+    padding: 0 22px 22px 68px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-weight: 400;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 22px 18px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+
+  .chip.blue { color: var(--accent); border-color: rgba(99,179,237,0.25); background: rgba(99,179,237,0.07); }
+  .chip.green { color: var(--green); border-color: rgba(104,211,145,0.25); background: rgba(104,211,145,0.07); }
+  .chip.muted { color: var(--muted); border-color: rgba(107,114,128,0.3); background: rgba(107,114,128,0.07); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="badge">docs · v2.4.1</div>
+    <h1>Developer Documentation</h1>
+    <p>Deep-dive into our API, integrations, and configuration options.</p>
+  </div>
+
+  <ul class="accordion">
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-dot">01</span>
+        <span class="acc-title">Authentication & API Keys</span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="divider"></div>
+          <div class="accordion-content">
+            All API requests require a Bearer token passed in the Authorization header. Keys are generated from your dashboard and scoped per environment. Production keys are never logged and rotate every 90 days by default. Use environment variables — never hardcode credentials in your codebase.
+            <div class="meta-row">
+              <span class="chip blue">REST API</span>
+              <span class="chip green">Secure</span>
+              <span class="chip muted">OAuth2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-dot">02</span>
+        <span class="acc-title">Rate Limits & Throttling</span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="divider"></div>
+          <div class="accordion-content">
+            Free tier allows 100 requests/minute per API key. Pro tier scales to 10,000 req/min with burst allowances. All responses include X-RateLimit-Remaining and X-RateLimit-Reset headers. Implement exponential backoff for 429 responses — aggressive retry loops will trigger temporary IP bans.
+            <div class="meta-row">
+              <span class="chip blue">Limits</span>
+              <span class="chip muted">Headers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-dot">03</span>
+        <span class="acc-title">Webhooks & Event Streams</span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="divider"></div>
+          <div class="accordion-content">
+            Register webhook endpoints via the dashboard or API. Each delivery includes an HMAC-SHA256 signature in the X-Signature header — always verify this before processing. Failed deliveries are retried with exponential backoff for up to 72 hours. Use our webhook tester to simulate events in staging.
+            <div class="meta-row">
+              <span class="chip green">Real-time</span>
+              <span class="chip blue">HMAC</span>
+              <span class="chip muted">Retry</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-dot">04</span>
+        <span class="acc-title">SDK Installation & Setup</span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="divider"></div>
+          <div class="accordion-content">
+            SDKs are available for Node.js, Python, Go, and Ruby. Install via your package manager of choice. The SDK handles auth, retries, pagination, and type safety automatically. Tree-shakeable builds for frontend use keep your bundle under 8kb gzipped.
+            <div class="meta-row">
+              <span class="chip blue">Node.js</span>
+              <span class="chip muted">Python</span>
+              <span class="chip green">Go</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-dot">05</span>
+        <span class="acc-title">Error Handling & Status Codes</span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="divider"></div>
+          <div class="accordion-content">
+            All errors return a consistent JSON envelope with code, message, and trace_id fields. Use trace_id when contacting support. 4xx errors are client-side and will not resolve without changes. 5xx errors are transient — implement retries. Our status page at status.api.io shows real-time incident data.
+            <div class="meta-row">
+              <span class="chip muted">4xx · 5xx</span>
+              <span class="chip blue">JSON</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.accordion-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item.open').forEach(el => {
+        el.classList.remove('open');
+        el.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+</script>
+</body>
+</html>

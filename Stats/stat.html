@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stat Sections — Latest Designs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=Cormorant+Garamond:wght@300;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg-base: #07070D;
+    --bg-card: #0F0F18;
+    --bg-elevated: #16161F;
+    --bg-glass: rgba(15,15,24,0.7);
+    --wine-deep: #5C1A24;
+    --wine-mid: #7D2635;
+    --wine-bright: #A33447;
+    --wine-glow: #C43D56;
+    --wine-light: #E0566E;
+    --wine-pale: rgba(163,52,71,0.15);
+    --wine-border: rgba(163,52,71,0.3);
+    --text-primary: #F2EBE9;
+    --text-secondary: #9C8D8B;
+    --text-muted: #5A5055;
+    --border-subtle: rgba(255,255,255,0.06);
+    --border-mid: rgba(255,255,255,0.1);
+    --gold: #C9A96E;
+    --teal: #2EBFA5;
+    --blue-soft: #5B8DEF;
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── SHARED UTILS ── */
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--wine-glow);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--wine-glow);
+  }
+
+  section {
+    padding: 96px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--wine-border), transparent);
+    margin: 0 24px;
+  }
+
+  .design-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 32px;
+  }
+
+  /* ─────────────────────────────────────────
+     DESIGN 1 · GLASSMORPHISM CARDS
+  ───────────────────────────────────────── */
+  #design1 {
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(92,26,36,0.18) 0%, transparent 70%);
+    border-radius: var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+  }
+  #design1::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle 300px at 10% 50%, rgba(92,26,36,0.12) 0%, transparent 70%),
+      radial-gradient(circle 400px at 90% 30%, rgba(92,26,36,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .glass-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 56px;
+    max-width: 480px;
+  }
+  .glass-heading em {
+    font-style: italic;
+    color: var(--wine-light);
+  }
+
+  .glass-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+  }
+
+  .glass-card {
+    background: var(--bg-glass);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    cursor: default;
+  }
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  }
+  .glass-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--wine-border);
+  }
+  .glass-card .card-icon {
+    width: 44px; height: 44px;
+    background: var(--wine-pale);
+    border: 1px solid var(--wine-border);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+    font-size: 20px;
+  }
+  .glass-card .card-number {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .glass-card .card-number span {
+    color: var(--wine-light);
+    font-size: 0.65em;
+  }
+  .glass-card .card-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+  .glass-card .card-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    background: rgba(46,191,165,0.08);
+    border: 1px solid rgba(46,191,165,0.2);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+  .glass-card .card-trend.down { color: var(--wine-light); background: rgba(163,52,71,0.08); border-color: var(--wine-border); }
+  .glass-card .highlight-glow {
+    position: absolute;
+    bottom: -20px; right: -20px;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(163,52,71,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  /* ─────────────────────────────────────────
+     DESIGN 2 · HORIZONTAL MARQUEE BANNER
+  ───────────────────────────────────────── */
+  .marquee-section {
+    padding: 0;
+    max-width: 100%;
+    margin: 0;
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-card);
+    overflow: hidden;
+    position: relative;
+  }
+  .marquee-section::before,
+  .marquee-section::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 120px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .marquee-section::before { left: 0; background: linear-gradient(90deg, var(--bg-card), transparent); }
+  .marquee-section::after  { right: 0; background: linear-gradient(-90deg, var(--bg-card), transparent); }
+
+  .marquee-track {
+    display: flex;
+    animation: marquee-scroll 28s linear infinite;
+    width: max-content;
+  }
+  .marquee-track:hover { animation-play-state: paused; }
+
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 28px 48px;
+    border-right: 1px solid var(--border-subtle);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .marquee-item .m-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--wine-light);
+  }
+  .marquee-item .m-sep {
+    width: 4px; height: 4px;
+    background: var(--wine-mid);
+    border-radius: 50%;
+  }
+  .marquee-item .m-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  /* ─────────────────────────────────────────
+     DESIGN 3 · BIG COUNTER with PROGRESS RINGS
+  ───────────────────────────────────────── */
+  #design3 {
+    position: relative;
+  }
+  .ring-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+    margin-top: 56px;
+  }
+  .ring-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 40px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .ring-card:hover { border-color: var(--wine-border); }
+  .ring-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(92,26,36,0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .ring-svg {
+    width: 120px; height: 120px;
+    transform: rotate(-90deg);
+    flex-shrink: 0;
+  }
+  .ring-bg { fill: none; stroke: var(--bg-elevated); stroke-width: 8; }
+  .ring-fill {
+    fill: none;
+    stroke: var(--wine-glow);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 339.3;
+    stroke-dashoffset: 339.3;
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1);
+    filter: drop-shadow(0 0 6px var(--wine-glow));
+  }
+  .ring-fill.teal { stroke: var(--teal); filter: drop-shadow(0 0 6px var(--teal)); }
+  .ring-fill.gold { stroke: var(--gold); filter: drop-shadow(0 0 6px var(--gold)); }
+  .ring-fill.blue { stroke: var(--blue-soft); filter: drop-shadow(0 0 6px var(--blue-soft)); }
+
+  .ring-inner {
+    position: absolute;
+    top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+  }
+  .ring-inner .ri-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .ring-inner .ri-pct {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .ring-info { text-align: center; }
+  .ring-info .ri-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .ring-info .ri-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ─────────────────────────────────────────
+     DESIGN 4 · EDITORIAL SPLIT LAYOUT
+  ───────────────────────────────────────── */
+  #design4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  @media (max-width: 768px) { #design4 { grid-template-columns: 1fr; gap: 48px; } }
+
+  .editorial-left .el-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--wine-glow);
+    margin-bottom: 20px;
+  }
+  .editorial-left h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-weight: 600;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+  .editorial-left h2 .accent {
+    color: var(--wine-light);
+    font-style: italic;
+  }
+  .editorial-left p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    max-width: 380px;
+    margin-bottom: 36px;
+  }
+  .el-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wine-light);
+    text-decoration: none;
+    border-bottom: 1px solid var(--wine-border);
+    padding-bottom: 2px;
+    transition: gap 0.2s, border-color 0.2s;
+    cursor: pointer;
+  }
+  .el-cta:hover { gap: 14px; border-color: var(--wine-light); }
+
+  .editorial-right { display: flex; flex-direction: column; gap: 0; }
+  .editorial-stat {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 20px;
+    transition: background 0.2s;
+  }
+  .editorial-stat:first-child { border-top: 1px solid var(--border-subtle); }
+  .editorial-stat:hover { background: var(--bg-card); padding-left: 16px; padding-right: 16px; margin: 0 -16px; border-radius: var(--radius-sm); border-color: transparent; }
+
+  .es-meta .es-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+  .es-meta .es-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .es-value {
+    text-align: right;
+  }
+  .es-value .es-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+  .es-value .es-unit {
+    font-size: 13px;
+    color: var(--wine-light);
+    font-family: 'Space Mono', monospace;
+  }
+  .es-value .es-change {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--teal);
+    display: block;
+    margin-top: 2px;
+  }
+  .es-value .es-change.neg { color: var(--wine-light); }
+
+  /* ─────────────────────────────────────────
+     DESIGN 5 · NEON BENTO GRID
+  ───────────────────────────────────────── */
+  #design5 {
+    position: relative;
+  }
+  .bento-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .bento-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+  }
+  .bento-header p {
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 300px;
+    text-align: right;
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto;
+    gap: 16px;
+  }
+
+  .bento-cell {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .bento-cell:hover {
+    border-color: var(--wine-border);
+    transform: scale(1.01);
+    z-index: 1;
+  }
+
+  .bc-1 { grid-column: span 5; }
+  .bc-2 { grid-column: span 3; }
+  .bc-3 { grid-column: span 4; }
+  .bc-4 { grid-column: span 4; }
+  .bc-5 { grid-column: span 5; }
+  .bc-6 { grid-column: span 3; }
+
+  @media (max-width: 900px) {
+    .bento-grid { grid-template-columns: repeat(6, 1fr); }
+    .bc-1,.bc-2,.bc-3,.bc-4,.bc-5,.bc-6 { grid-column: span 3; }
+  }
+  @media (max-width: 540px) {
+    .bento-grid { grid-template-columns: 1fr; }
+    .bc-1,.bc-2,.bc-3,.bc-4,.bc-5,.bc-6 { grid-column: span 1; }
+  }
+
+  .bento-cell .bc-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: block;
+  }
+  .bento-cell .bc-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .bento-cell .bc-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .bento-cell.wine-bg {
+    background: linear-gradient(135deg, var(--wine-deep) 0%, var(--wine-mid) 100%);
+    border-color: var(--wine-border);
+  }
+  .bento-cell.wine-bg .bc-tag { color: rgba(255,255,255,0.4); }
+  .bento-cell.wine-bg .bc-num { color: #fff; }
+  .bento-cell.wine-bg .bc-sub { color: rgba(255,255,255,0.5); }
+  .bento-cell .glow-dot {
+    position: absolute;
+    bottom: -30px; right: -30px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .bento-cell .mini-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .mini-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mini-bar-row .mb-label { font-size: 11px; color: var(--text-muted); width: 60px; flex-shrink: 0; }
+  .mini-bar-track {
+    flex: 1;
+    height: 4px;
+    background: var(--bg-elevated);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .mini-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: var(--wine-glow);
+    transition: width 1s ease;
+  }
+  .mini-bar-fill.t { background: var(--teal); }
+  .mini-bar-fill.g { background: var(--gold); }
+  .mini-bar-fill.b { background: var(--blue-soft); }
+  .mini-bar-row .mb-val { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-secondary); }
+
+  .sparkline-wrap {
+    margin-top: 16px;
+    position: relative;
+  }
+
+  /* ─────────────────────────────────────────
+     DESIGN 6 · TIMELINE MILESTONES
+  ───────────────────────────────────────── */
+  #design6 {
+    position: relative;
+  }
+  #design6 h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  #design6 > p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin-bottom: 64px;
+  }
+
+  .timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--wine-mid), var(--wine-border), transparent);
+  }
+
+  .tm-item {
+    display: flex;
+    gap: 32px;
+    padding-bottom: 48px;
+    position: relative;
+    cursor: default;
+  }
+  .tm-item:last-child { padding-bottom: 0; }
+
+  .tm-dot {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 2px solid var(--wine-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    position: relative;
+    z-index: 1;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .tm-item:hover .tm-dot {
+    background: var(--wine-pale);
+    border-color: var(--wine-glow);
+  }
+  .tm-active .tm-dot {
+    background: var(--wine-mid);
+    border-color: var(--wine-glow);
+    box-shadow: 0 0 20px rgba(163,52,71,0.4);
+  }
+
+  .tm-content {
+    flex: 1;
+    padding-top: 8px;
+  }
+  .tm-year {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--wine-glow);
+    letter-spacing: 0.15em;
+    margin-bottom: 6px;
+  }
+  .tm-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .tm-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .tm-stat-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .tm-stat {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+  }
+  .tm-stat .ts-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--wine-light);
+    line-height: 1;
+  }
+  .tm-stat .ts-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ─────────────────────────────────────────
+     DESIGN 7 · COUNTER WITH INLINE SPARK
+  ───────────────────────────────────────── */
+  #design7 {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    max-width: 100%;
+    padding: 80px 24px;
+  }
+  #design7 .inner { max-width: 1200px; margin: 0 auto; }
+
+  .spark-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .spark-cell {
+    background: var(--bg-card);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .spark-cell:hover { background: var(--bg-elevated); }
+
+  .spark-cell .sc-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sc-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--wine-glow);
+    flex-shrink: 0;
+  }
+  .sc-dot.t { background: var(--teal); }
+  .sc-dot.g { background: var(--gold); }
+  .sc-dot.b { background: var(--blue-soft); }
+
+  .spark-cell .sc-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+  .spark-cell .sc-change {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--teal);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .spark-cell .sc-change.neg { color: var(--wine-light); }
+  .spark-svg {
+    width: 100%;
+    height: 48px;
+    opacity: 0.7;
+  }
+
+  /* ─────────────────────────────────────────
+     DESIGN 8 · OVERSIZED NUMBER HERO STATS
+  ───────────────────────────────────────── */
+  #design8 {
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #design8::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(92,26,36,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-stats-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--wine-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 60px;
+  }
+  .hero-stats-label::before, .hero-stats-label::after {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--wine-mid);
+  }
+
+  .hero-stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+  }
+  .hero-stat-item {
+    flex: 1;
+    min-width: 220px;
+    max-width: 320px;
+    padding: 0 48px;
+    border-right: 1px solid var(--border-subtle);
+    position: relative;
+  }
+  .hero-stat-item:last-child { border-right: none; }
+
+  @media (max-width: 700px) {
+    .hero-stat-item {
+      border-right: none;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 32px 0;
+      min-width: 100%;
+    }
+    .hero-stat-item:last-child { border-bottom: none; }
+  }
+
+  .hero-stat-item .hs-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    font-weight: 700;
+    line-height: 0.9;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+  }
+  .hero-stat-item .hs-num sup {
+    font-size: 0.4em;
+    color: var(--wine-light);
+    vertical-align: super;
+  }
+  .hero-stat-item .hs-label {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+  .hero-stat-item .hs-badge {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--wine-glow);
+    letter-spacing: 0.1em;
+    border: 1px solid var(--wine-border);
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+
+  /* ─────────────────────────────────────────
+     ANIMATIONS
+  ───────────────────────────────────────── */
+  .count-up {
+    display: inline;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in {
+    opacity: 0;
+    animation: fadeInUp 0.7s ease forwards;
+  }
+  .fade-in.d1 { animation-delay: 0.1s; }
+  .fade-in.d2 { animation-delay: 0.2s; }
+  .fade-in.d3 { animation-delay: 0.3s; }
+  .fade-in.d4 { animation-delay: 0.4s; }
+  .fade-in.d5 { animation-delay: 0.5s; }
+  .fade-in.d6 { animation-delay: 0.6s; }
+
+  /* ─────────────────────────────────────────
+     PAGE HEADER
+  ───────────────────────────────────────── */
+  .page-header {
+    text-align: center;
+    padding: 80px 24px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--wine-border), transparent);
+  }
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #F2EBE9 0%, var(--wine-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .page-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .design-heading {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--wine-mid);
+    margin-bottom: 8px;
+  }
+
+  /* ─────────────────────────────────────────
+     SECTION WRAPPERS
+  ───────────────────────────────────────── */
+  .section-wrap {
+    padding: 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 96px 24px;
+  }
+  .section-wrap:last-child { border-bottom: none; }
+
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>Stat Section Showcase</h1>
+  <p>8 industry-standard designs · Dark UI · Wine Colour System</p>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DESIGN 1 · GLASSMORPHISM CARDS
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-inner">
+    <div class="design-tag">Design 01 · Glassmorphism Cards</div>
+    <section id="design1">
+      <div class="section-label">Performance Overview</div>
+      <h2 class="glass-heading">Numbers that<br>drive our <em>growth</em>.</h2>
+      <div class="glass-grid">
+        <div class="glass-card fade-in d1">
+          <div class="card-icon">📊</div>
+          <div class="card-number"><span class="count-up" data-target="2.4">0</span><span>M</span></div>
+          <div class="card-label">Monthly Active Users</div>
+          <span class="card-trend">↑ 18.2% vs last month</span>
+          <div class="highlight-glow"></div>
+        </div>
+        <div class="glass-card fade-in d2">
+          <div class="card-icon">💰</div>
+          <div class="card-number"><span class="count-up" data-target="94.7">0</span><span>K</span></div>
+          <div class="card-label">Revenue This Quarter</div>
+          <span class="card-trend">↑ 31.5% vs Q3</span>
+          <div class="highlight-glow"></div>
+        </div>
+        <div class="glass-card fade-in d3">
+          <div class="card-icon">🎯</div>
+          <div class="card-number"><span class="count-up" data-target="98.3">0</span><span>%</span></div>
+          <div class="card-label">Uptime SLA</div>
+          <span class="card-trend down">↓ 0.1% vs target</span>
+          <div class="highlight-glow"></div>
+        </div>
+        <div class="glass-card fade-in d4">
+          <div class="card-icon">🚀</div>
+          <div class="card-number"><span class="count-up" data-target="1290">0</span><span></span></div>
+          <div class="card-label">Deployments / Month</div>
+          <span class="card-trend">↑ 4.6% velocity</span>
+          <div class="highlight-glow"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DESIGN 2 · MARQUEE SCROLLING STATS BANNER
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="design-tag">Design 02 · Marquee Scrolling Banner</div>
+  <div class="marquee-section">
+    <div class="marquee-track" id="marqueeTrack">
+      <div class="marquee-item"><span class="m-num">140+</span><span class="m-sep"></span><span class="m-label">Countries Served</span></div>
+      <div class="marquee-item"><span class="m-num">$4.2B</span><span class="m-sep"></span><span class="m-label">Total Processed</span></div>
+      <div class="marquee-item"><span class="m-num">99.97%</span><span class="m-sep"></span><span class="m-label">System Uptime</span></div>
+      <div class="marquee-item"><span class="m-num">12M+</span><span class="m-sep"></span><span class="m-label">Active Customers</span></div>
+      <div class="marquee-item"><span class="m-num">3.8s</span><span class="m-sep"></span><span class="m-label">Avg. Response Time</span></div>
+      <div class="marquee-item"><span class="m-num">850+</span><span class="m-sep"></span><span class="m-label">Enterprise Clients</span></div>
+      <div class="marquee-item"><span class="m-num">48hrs</span><span class="m-sep"></span><span class="m-label">Onboarding Time</span></div>
+      <div class="marquee-item"><span class="m-num">4.9★</span><span class="m-sep"></span><span class="m-label">Average Rating</span></div>
+      <!-- Duplicate for seamless loop -->
+      <div class="marquee-item"><span class="m-num">140+</span><span class="m-sep"></span><span class="m-label">Countries Served</span></div>
+      <div class="marquee-item"><span class="m-num">$4.2B</span><span class="m-sep"></span><span class="m-label">Total Processed</span></div>
+      <div class="marquee-item"><span class="m-num">99.97%</span><span class="m-sep"></span><span class="m-label">System Uptime</span></div>
+      <div class="marquee-item"><span class="m-num">12M+</span><span class="m-sep"></span><span class="m-label">Active Customers</span></div>
+      <div class="marquee-item"><span class="m-num">3.8s</span><span class="m-sep"></span><span class="m-label">Avg. Response Time</span></div>
+      <div class="marquee-item"><span class="m-num">850+</span><span class="m-sep"></span><span class="m-label">Enterprise Clients</span></div>
+      <div class="marquee-item"><span class="m-num">48hrs</span><span class="m-sep"></span><span class="m-label">Onboarding Time</span></div>
+      <div class="marquee-item"><span class="m-num">4.9★</span><span class="m-sep"></span><span class="m-label">Average Rating</span></div>
+    </div>
+  </div>
+  <div></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DESIGN 3 · CIRCULAR PROGRESS RINGS
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-inner">
+    <div class="design-tag">Design 03 · Circular Progress Rings</div>
+    <section id="design3">
+      <div class="section-label">Health Dashboard</div>
+      <div>
+        <h2>
+          System health at a glance
+        </h2>
+        <p>
+          Real-time operational metrics across all infrastructure layers.
+        </p>
+      </div>
+      <div class="ring-grid">
+        <div class="ring-card fade-in d1">
+          <div>
+            <svg class="ring-svg" viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="54"/>
+              <circle class="ring-fill" cx="60" cy="60" r="54" data-pct="94"/>
+            </svg>
+            <div class="ring-inner">
+              <span class="ri-num">94%</span>
+              <span class="ri-pct">of target</span>
+            </div>
+          </div>
+          <div class="ring-info">
+            <div class="ri-label">CPU Utilization</div>
+            <div class="ri-sub">Across 48 nodes</div>
+          </div>
+        </div>
+        <div class="ring-card fade-in d2">
+          <div>
+            <svg class="ring-svg" viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="54"/>
+              <circle class="ring-fill teal" cx="60" cy="60" r="54" data-pct="78"/>
+            </svg>
+            <div class="ring-inner">
+              <span class="ri-num">78%</span>
+              <span class="ri-pct">allocated</span>
+            </div>
+          </div>
+          <div class="ring-info">
+            <div class="ri-label">Memory Usage</div>
+            <div class="ri-sub">128 GB total pool</div>
+          </div>
+        </div>
+        <div class="ring-card fade-in d3">
+          <div>
+            <svg class="ring-svg" viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="54"/>
+              <circle class="ring-fill gold" cx="60" cy="60" r="54" data-pct="61"/>
+            </svg>
+            <div class="ring-inner">
+              <span class="ri-num">61%</span>
+              <span class="ri-pct">filled</span>
+            </div>
+          </div>
+          <div class="ring-info">
+            <div class="ri-label">Storage Capacity</div>
+            <div class="ri-sub">4.8 TB consumed</div>
+          </div>
+        </div>
+        <div class="ring-card fade-in d4">
+          <div>
+            <svg class="ring-svg" viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="54"/>
+              <circle class="ring-fill blue" cx="60" cy="60" r="54" data-pct="87"/>
+            </svg>
+            <div class="ring-inner">
+              <span class="ri-num">87%</span>
+              <span class="ri-pct">resolved</span>
+            </div>
+          </div>
+          <div class="ring-info">
+            <div class="ri-label">Incident Resolution</div>
+            <div class="ri-sub">This quarter</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DESIGN 4 · EDITORIAL SPLIT
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-inner">
+    <div class="design-tag">Design 04 · Editorial Split Layout</div>
+    <section id="design4">
+      <div class="editorial-left">
+        <div class="el-eyebrow">Annual Review · 2024</div>
+        <h2>Our <span class="accent">impact</span> in numbers.</h2>
+        <p>A decade of compounding outcomes — from team growth to global reach, every metric tells the story of deliberate momentum.</p>
+        <span class="el-cta">Download Full Report →</span>
+      </div>
+      <div class="editorial-right">
+        <div class="editorial-stat">
+          <div class="es-meta">
+            <div class="es-label">Annual Recurring Revenue</div>
+            <div class="es-desc">Year-over-year comparison</div>
+          </div>
+          <div class="es-value">
+            <div class="es-num">$38<span class="es-unit">M</span></div>
+            <span class="es-change">+42% YoY</span>
+          </div>
+        </div>
+        <div class="editorial-stat">
+          <div class="es-meta">
+            <div class="es-label">Team Headcount</div>
+            <div class="es-desc">Full-time equivalent globally</div>
+          </div>
+          <div class="es-value">
+            <div class="es-num">312</div>
+            <span class="es-change">+89 hired in 2024</span>
+          </div>
+        </div>
+        <div class="editorial-stat">
+          <div class="es-meta">
+            <div class="es-label">Customer Retention</div>
+            <div class="es-desc">12-month rolling average</div>
+          </div>
+          <div class="es-value">
+            <div class="es-num">96<span class="es-unit">%</span></div>
+            <span class="es-change neg">-1.2% vs target</span>
+          </div>
+        </div>
+        <div class="editorial-stat">
+          <div class="es-meta">
+            <div class="es-label">Countries of Operation</div>
+            <div class="es-desc">With active go-to-market</div>
+          </div>
+          <div class="es-value">
+            <div class="es-num">34</div>
+            <span class="es-change">+11 new markets</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DESIGN 5 · NEON BENTO GRID
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-inner">
+    <div class="design-tag">Design 05 · Bento Grid Mosaic</div>
+    <section id="design5">
+      <div class="bento-header">
+        <h2>Platform <em>Metrics</em></h2>
+        <p>Aggregated across all workspaces and environments</p>
+      </div>
+      <div class="bento-grid">
+        <!-- Cell 1 -->
+        <div class="bento-cell bc-1 wine-bg">
+          <span class="bc-tag">Total Revenue</span>
+          <div class="bc-num">$12.8M</div>
+          <div class="bc-sub">+28% this quarter</div>
+          <div class="glow-dot"></div>
+        </div>
+        <!-- Cell 2 -->
+        <div class="bento-cell bc-2">
+          <span class="bc-tag">NPS Score</span>
+          <div class="bc-num">72</div>
+          <div class="bc-sub">World-class threshold</div>
+          <div class="glow-dot"></div>
+        </div>
+        <!-- Cell 3 -->
+        <div class="bento-cell bc-3">
+          <span class="bc-tag">Product Breakdown</span>
+          <div class="bc-num">Q4 Split</div>
+          <div class="mini-bar-wrap">
+            <div class="mini-bar-row">
+              <span class="mb-label">Enterprise</span>
+              <div class="mini-bar-track"><div class="mini-bar-fill"></div></div>
+              <span class="mb-val">72%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mb-label">SMB</span>
+              <div class="mini-bar-track"><div class="mini-bar-fill t"></div></div>
+              <span class="mb-val">18%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mb-label">Solo</span>
+              <div class="mini-bar-track"><div class="mini-bar-fill g"></div></div>
+              <span class="mb-val">10%</span>
+            </div>
+          </div>
+        </div>
+        <!-- Cell 4 -->
+        <div class="bento-cell bc-4">
+          <span class="bc-tag">Avg Deal Size</span>
+          <div class="bc-num">$24K</div>
+          <div class="bc-sub">↑ 19% vs last year</div>
+        </div>
+        <!-- Cell 5 -->
+        <div class="bento-cell bc-5">
+          <span class="bc-tag">Pipeline by Region</span>
+          <div class="bc-num">Global</div>
+          <div class="mini-bar-wrap">
+            <div class="mini-bar-row">
+              <span class="mb-label">Americas</span>
+              <div class="mini-bar-track"><div class="mini-bar-fill"></div></div>
+              <span class="mb-val">60%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mb-label">EMEA</span>
+              <div class="mini-bar-track"><div class="mini-bar-fill b"></div></div>
+              <span class="mb-val">28%</span>
+            </div>
+            <div class="mini-bar-row">
+              <span class="mb-label">APAC</span>
+              <div class="mini-bar-track"><div class="mini-bar-fill g"></div></div>
+              <span class="mb-val">12%</span>
+            </div>
+          </div>
+        </div>
+        <!-- Cell 6 -->
+        <div class="bento-cell bc-6">
+          <span class="bc-tag">Churn Rate</span>
+          <div class="bc-num">1.8%</div>
+          <div class="bc-sub">Below 2% target ✓</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DESIGN 6 · TIMELINE MILESTONES
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-inner">
+    <div class="design-tag">Design 06 · Timeline Milestones</div>
+    <section id="design6">
+      <div class="section-label">Company Journey</div>
+      <h2>Milestones & Metrics</h2>
+      <p>Key moments in our growth story, each accompanied by the numbers that defined them.</p>
+      <div class="timeline">
+        <div class="tm-item">
+          <div class="tm-dot">🌱</div>
+          <div class="tm-content">
+            <div class="tm-year">2020 · SEED</div>
+            <div class="tm-title">Company Founded</div>
+            <div class="tm-desc">Started with a $2M seed round and a team of 8.</div>
+            <div class="tm-stat-row">
+              <div class="tm-stat"><div class="ts-num">$2M</div><div class="ts-label">Seed Round</div></div>
+              <div class="tm-stat"><div class="ts-num">8</div><div class="ts-label">Team Members</div></div>
+              <div class="tm-stat"><div class="ts-num">3</div><div class="ts-label">Pilot Clients</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="tm-item tm-active">
+          <div class="tm-dot">🚀</div>
+          <div class="tm-content">
+            <div class="tm-year">2022 · SERIES A</div>
+            <div class="tm-title">Series A & Global Expansion</div>
+            <div class="tm-desc">Raised $18M, expanded to Europe and APAC.</div>
+            <div class="tm-stat-row">
+              <div class="tm-stat"><div class="ts-num">$18M</div><div class="ts-label">Series A</div></div>
+              <div class="tm-stat"><div class="ts-num">64</div><div class="ts-label">Team Members</div></div>
+              <div class="tm-stat"><div class="ts-num">$1.2M</div><div class="ts-label">ARR</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="tm-item">
+          <div class="tm-dot">🏆</div>
+          <div class="tm-content">
+            <div class="tm-year">2024 · PROFITABILITY</div>
+            <div class="tm-title">First Year of Profitability</div>
+            <div class="tm-desc">Hit profitability ahead of schedule with 312 FTEs worldwide.</div>
+            <div class="tm-stat-row">
+              <div class="tm-stat"><div class="ts-num">$38M</div><div class="ts-label">ARR</div></div>
+              <div class="tm-stat"><div class="ts-num">312</div><div class="ts-label">Team Members</div></div>
+              <div class="tm-stat"><div class="ts-num">34</div><div class="ts-label">Countries</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DESIGN 7 · CELL GRID WITH SPARKLINES
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div>
+    <div class="design-tag">Design 07 · Cell Grid with Sparklines</div>
+  </div>
+  <section id="design7">
+    <div class="inner">
+      <div>
+        <div>
+          <div class="section-label">Live Metrics</div>
+          <h2>Real-time performance</h2>
+        </div>
+        <div>
+          ● LIVE
+        </div>
+      </div>
+      <div class="spark-grid">
+        <div class="spark-cell">
+          <div class="sc-label"><span class="sc-dot"></span> Daily Active Users</div>
+          <div class="sc-num"><span class="count-up" data-target="84">0</span>K</div>
+          <div class="sc-change">↑ +12.4% 7d avg</div>
+          <svg class="spark-svg" viewBox="0 0 200 48" preserveAspectRatio="none">
+            <polyline points="0,40 25,35 50,38 75,28 100,30 125,18 150,20 175,12 200,8" fill="none" stroke="var(--wine-glow)" stroke-width="2"/>
+            <polyline points="0,40 25,35 50,38 75,28 100,30 125,18 150,20 175,12 200,8 200,48 0,48" fill="var(--wine-pale)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="spark-cell">
+          <div class="sc-label"><span class="sc-dot t"></span> API Calls / Min</div>
+          <div class="sc-num"><span class="count-up" data-target="14230">0</span></div>
+          <div class="sc-change">↑ +5.1% from 1hr ago</div>
+          <svg class="spark-svg" viewBox="0 0 200 48" preserveAspectRatio="none">
+            <polyline points="0,30 25,25 50,32 75,20 100,24 125,16 150,22 175,14 200,10" fill="none" stroke="var(--teal)" stroke-width="2"/>
+            <polyline points="0,30 25,25 50,32 75,20 100,24 125,16 150,22 175,14 200,10 200,48 0,48" fill="rgba(46,191,165,0.08)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="spark-cell">
+          <div class="sc-label"><span class="sc-dot g"></span> Gross Margin</div>
+          <div class="sc-num"><span class="count-up" data-target="71">0</span>%</div>
+          <div class="sc-change neg">↓ -0.8% this month</div>
+          <svg class="spark-svg" viewBox="0 0 200 48" preserveAspectRatio="none">
+            <polyline points="0,15 25,18 50,14 75,20 100,16 125,22 150,18 175,24 200,28" fill="none" stroke="var(--gold)" stroke-width="2"/>
+            <polyline points="0,15 25,18 50,14 75,20 100,16 125,22 150,18 175,24 200,28 200,48 0,48" fill="rgba(201,169,110,0.08)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="spark-cell">
+          <div class="sc-label"><span class="sc-dot b"></span> Support Tickets</div>
+          <div class="sc-num"><span class="count-up" data-target="248">0</span></div>
+          <div class="sc-change">↑ 94% resolved today</div>
+          <svg class="spark-svg" viewBox="0 0 200 48" preserveAspectRatio="none">
+            <polyline points="0,35 25,28 50,30 75,22 100,25 125,15 150,18 175,12 200,8" fill="none" stroke="var(--blue-soft)" stroke-width="2"/>
+            <polyline points="0,35 25,28 50,30 75,22 100,25 125,15 150,18 175,12 200,8 200,48 0,48" fill="rgba(91,141,239,0.08)" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DESIGN 8 · OVERSIZED HERO NUMBERS
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+  <div class="section-inner">
+    <div class="design-tag">Design 08 · Oversized Hero Numbers</div>
+    <section id="design8">
+      <div class="hero-stats-label">Trusted Worldwide</div>
+      <div class="hero-stats-row">
+        <div class="hero-stat-item fade-in d1">
+          <div class="hs-num"><sup>$</sup><span class="count-up" data-target="4.2">0</span>B</div>
+          <div class="hs-label">Total Volume Processed</div>
+          <span class="hs-badge">Since Launch</span>
+        </div>
+        <div class="hero-stat-item fade-in d2">
+          <div class="hs-num"><span class="count-up" data-target="12">0</span>M<sup>+</sup></div>
+          <div class="hs-label">Customers Worldwide</div>
+          <span class="hs-badge">140 Countries</span>
+        </div>
+        <div class="hero-stat-item fade-in d3">
+          <div class="hs-num"><span class="count-up" data-target="99.9">0</span>%</div>
+          <div class="hs-label">Guaranteed Uptime SLA</div>
+          <span class="hs-badge">Enterprise Tier</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div>
+  STAT SECTIONS SHOWCASE — DARK / WINE THEME
+</div>
+
+<script>
+  /* ── COUNT-UP ANIMATION ── */
+  function animateCount(el) {
+    const target = parseFloat(el.dataset.target);
+    const isFloat = target % 1 !== 0;
+    const duration = 1800;
+    const start = performance.now();
+    function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const value = target * ease;
+      el.textContent = isFloat ? value.toFixed(1) : Math.floor(value).toLocaleString();
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = isFloat ? target.toFixed(1) : target.toLocaleString();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ── RING ANIMATION ── */
+  function animateRing(ring) {
+    const pct = parseFloat(ring.dataset.pct) / 100;
+    const circumference = 339.3;
+    const offset = circumference * (1 - pct);
+    ring.style.strokeDashoffset = offset;
+  }
+
+  /* ── INTERSECTION OBSERVER ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      if (el.classList.contains('count-up')) animateCount(el);
+      if (el.classList.contains('ring-fill')) animateRing(el);
+      observer.unobserve(el);
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.count-up, .ring-fill').forEach(el => observer.observe(el));
+
+  /* ── MINI BAR ANIMATION ── */
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.querySelectorAll('.mini-bar-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0%';
+        requestAnimationFrame(() => {
+          setTimeout(() => { bar.style.width = w; }, 100);
+        });
+      });
+      barObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.bento-cell').forEach(cell => barObserver.observe(cell));
+</script>
+</body>
+</html>

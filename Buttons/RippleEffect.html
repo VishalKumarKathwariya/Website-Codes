@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 01 — Ripple Effect</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #0a0a0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+  }
+
+  /* background grid */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(99,91,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,91,255,0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3rem;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .label-block { display: flex; flex-direction: column; gap: 8px; }
+
+  .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(99,91,255,0.15);
+    border: 1px solid rgba(99,91,255,0.3);
+    border-radius: 50px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #a09bff;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+  }
+
+  p {
+    font-size: 15px; color: rgba(255,255,255,0.45);
+    max-width: 380px; line-height: 1.6;
+  }
+
+  /* ── BUTTON ── */
+  .btn-ripple {
+    position: relative; overflow: hidden;
+    padding: 16px 40px;
+    border: none; border-radius: 10px;
+    background: #635bff;
+    color: #fff;
+    font-size: 16px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-ripple:hover { background: #5249e1; }
+  .btn-ripple:active { transform: scale(0.98); }
+
+  .ripple-effect {
+    position: absolute; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.38);
+    transform: scale(0);
+    animation: ripple-go 0.65s linear forwards;
+    pointer-events: none;
+  }
+
+  @keyframes ripple-go {
+    to { transform: scale(4.5); opacity: 0; }
+  }
+
+  /* info card */
+  .info {
+    display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .info-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 13px; color: rgba(255,255,255,0.5);
+    display: flex; flex-direction: column; gap: 4px;
+    min-width: 130px;
+  }
+  .info-item strong { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 600; }
+
+  /* click hint */
+  .hint {
+    font-size: 12px; color: rgba(255,255,255,0.25);
+    letter-spacing: 0.05em;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100% { opacity:0.4 } 50% { opacity:1 } }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 01 / 10</span>
+    <h1>Ripple Effect</h1>
+    <p>A tactile wave radiates from the exact point of click — used by Stripe and Google Material Design to confirm touch interactions.</p>
+  </div>
+
+  <button class="btn-ripple" id="btn">Pay Now — $49</button>
+
+  <span class="hint">↑ Click anywhere on the button</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Stripe, Google</div>
+    <div class="info-item"><strong>Technique</strong>CSS keyframe + JS</div>
+    <div class="info-item"><strong>Feel</strong>Tactile, physical</div>
+    <div class="info-item"><strong>Best for</strong>CTA, Pay buttons</div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('btn').addEventListener('click', function(e) {
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 2;
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple-effect';
+    ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
+    this.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 700);
+  });
+</script>
+</body>
+</html>

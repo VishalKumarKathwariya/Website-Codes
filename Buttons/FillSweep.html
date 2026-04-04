@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 02 — Fill Sweep</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #f6f8fa;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: radial-gradient(circle at 60% 30%, rgba(31,35,40,0.04) 0%, transparent 60%);
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3rem;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .label-block { display: flex; flex-direction: column; gap: 8px; }
+
+  .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(31,35,40,0.08);
+    border: 1px solid rgba(31,35,40,0.15);
+    border-radius: 50px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #57606a;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700; color: #1f2328; line-height: 1.1;
+  }
+
+  p { font-size: 15px; color: #57606a; max-width: 380px; line-height: 1.6; }
+
+  /* ── BUTTON ── */
+  .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+  .btn-fill {
+    position: relative; overflow: hidden;
+    padding: 14px 32px; border-radius: 8px;
+    border: 1.5px solid #1f2328; background: transparent;
+    color: #1f2328;
+    font-size: 15px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer; transition: color 0.28s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-fill::before {
+    content: ''; position: absolute; inset: 0;
+    background: #1f2328;
+    transform: translateX(-101%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-fill:hover::before { transform: translateX(0); }
+  .btn-fill:hover { color: #fff; }
+  .btn-fill span { position: relative; z-index: 1; }
+
+  /* white variant */
+  .btn-fill-white {
+    border-color: #fff; color: #fff; background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.5);
+  }
+  .btn-fill-white::before { background: #fff; }
+  .btn-fill-white:hover { color: #1f2328; }
+
+  /* GitHub-green variant */
+  .btn-fill-green {
+    border-color: #2da44e; color: #2da44e;
+  }
+  .btn-fill-green::before { background: #2da44e; }
+  .btn-fill-green:hover { color: #fff; }
+
+  /* dark showcase panel */
+  .dark-panel {
+    background: #1f2328;
+    border-radius: 14px;
+    padding: 2rem 2.5rem;
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .info {
+    display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .info-item {
+    background: rgba(31,35,40,0.06);
+    border: 1px solid rgba(31,35,40,0.1);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 13px; color: #57606a;
+    display: flex; flex-direction: column; gap: 4px;
+    min-width: 130px;
+  }
+  .info-item strong { color: #1f2328; font-size: 14px; font-weight: 600; }
+
+  .hint { font-size: 12px; color: #8c959f; letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 02 / 10</span>
+    <h1>Fill Sweep</h1>
+    <p>Background slides in from the left on hover — clean, confident, and directional. A staple in developer tools and SaaS products.</p>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn-fill"><span>⭐ Star Repo</span></button>
+    <button class="btn-fill btn-fill-green"><span>Fork Project</span></button>
+  </div>
+
+  <div class="dark-panel">
+    <button class="btn-fill btn-fill-white"><span>Deploy to Vercel</span></button>
+  </div>
+
+  <span class="hint">↑ Hover each button to see the fill sweep</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>GitHub, Vercel</div>
+    <div class="info-item"><strong>Technique</strong>CSS pseudo ::before</div>
+    <div class="info-item"><strong>Feel</strong>Confident, bold</div>
+    <div class="info-item"><strong>Best for</strong>Outlined CTAs</div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 49 — Auto-suggest / Autocomplete Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.45);--wine-tint:rgba(139,26,56,.13);
+  --bg0:#07070D;--bg2:#111118;--bg3:#171724;--bg4:#1F1F2C;--bg5:#272738;
+  --chalk:#F0E8EE;--chalk2:#C0B4C0;--chalk3:#857880;--chalk4:#4A4258;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.12);--bdr-w:rgba(139,26,56,.45);
+  --r:12px;--r-sm:8px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --ff-d:'Playfair Display',Georgia,serif;--ff-s:'Syne',sans-serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-s);min-height:100dvh;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input{font:inherit;color:inherit;border:none;outline:none}
+
+.page{min-height:100dvh;display:grid;place-items:center;padding:clamp(1rem,4vw,2rem);position:relative}
+.page::before{content:'';position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(139,26,56,.08) 0%,transparent 65%);pointer-events:none}
+
+/* Card */
+.card{position:relative;z-index:1;width:100%;max-width:540px;background:var(--bg2);border:1px solid var(--bdr2);border-radius:var(--r-2xl);overflow:visible;box-shadow:0 32px 80px rgba(0,0,0,.85)}
+
+/* Header */
+.card-head{background:linear-gradient(145deg,var(--wine-xd) 0%,var(--wine-d) 55%,#1A0A14 100%);padding:clamp(1.6rem,4vw,2.2rem) clamp(1.5rem,4vw,2rem);border-radius:var(--r-2xl) var(--r-2xl) 0 0;position:relative;overflow:hidden}
+.card-head::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(176,35,71,.25) 0%,transparent 70%)}
+.ch-badge{display:inline-block;padding:4px 12px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:.8rem;font-family:var(--ff-m);position:relative;z-index:1}
+.ch-title{font-family:var(--ff-d);font-size:clamp(1.4rem,4vw,1.8rem);font-weight:700;position:relative;z-index:1;line-height:1.15}
+.ch-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;position:relative;z-index:1}
+
+/* Form body */
+.card-body{padding:clamp(1.4rem,4vw,2rem)}
+.fields{display:flex;flex-direction:column;gap:16px}
+
+/* Auto-suggest field */
+.suggest-wrap{position:relative}
+.lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);font-family:var(--ff-m);display:block;margin-bottom:5px}
+.suggest-input-wrap{position:relative}
+.suggest-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--chalk4);pointer-events:none;transition:color .2s;z-index:1}
+.suggest-input-wrap:focus-within .suggest-icon{color:var(--wine-xl)}
+.suggest-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;background:var(--bg5);border:1px solid var(--bdr);display:none;align-items:center;justify-content:center;color:var(--chalk3);font-size:11px;cursor:pointer;transition:all .2s}
+.suggest-clear.show{display:flex}
+.suggest-clear:hover{background:var(--wine-tint);border-color:var(--bdr-w);color:var(--wine-xl)}
+.s-ipt{
+  width:100%;background:var(--bg4);border:1.5px solid var(--bdr);border-radius:var(--r-lg);
+  padding:13px 40px 13px 44px;font-size:14px;transition:all .22s;color:var(--chalk);
+}
+.s-ipt:focus{background:var(--bg5);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.s-ipt::placeholder{color:var(--chalk4)}
+
+/* Dropdown */
+.suggest-dropdown{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:999;
+  background:var(--bg3);border:1.5px solid var(--bdr-w);border-radius:var(--r-lg);
+  overflow:hidden;max-height:240px;overflow-y:auto;
+  box-shadow:0 16px 50px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.04);
+  opacity:0;transform:translateY(-8px) scale(.98);
+  pointer-events:none;transition:all .22s var(--ease);
+}
+.suggest-dropdown.open{opacity:1;transform:none;pointer-events:all}
+.suggest-dropdown::-webkit-scrollbar{width:4px}
+.suggest-dropdown::-webkit-scrollbar-thumb{background:var(--bdr-w);border-radius:99px}
+
+.dd-item{
+  display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;
+  transition:background .15s;border-bottom:1px solid var(--bdr);font-size:14px;
+}
+.dd-item:last-child{border-bottom:none}
+.dd-item:hover,.dd-item.focused{background:var(--wine-tint)}
+.dd-item-icon{width:30px;height:30px;border-radius:var(--r-sm);background:var(--bg5);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.dd-item-text{flex:1}
+.dd-item-main{font-size:13px;font-weight:600;color:var(--chalk2)}
+.dd-item-sub{font-size:11px;color:var(--chalk4);font-family:var(--ff-m)}
+.dd-item-badge{padding:2px 8px;border-radius:99px;background:var(--wine-tint);border:1px solid var(--bdr-w);font-size:10px;color:var(--wine-xl);font-family:var(--ff-m)}
+.dd-section-head{padding:7px 14px 4px;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--chalk4);font-family:var(--ff-m);background:var(--bg4)}
+.dd-highlight{color:var(--wine-xl);font-weight:700}
+.dd-empty{padding:1rem;text-align:center;font-size:13px;color:var(--chalk4);font-family:var(--ff-m)}
+
+/* Selected tags */
+.selected-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;min-height:0}
+.sel-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;background:var(--wine-tint);border:1px solid var(--bdr-w);font-size:12px;color:var(--wine-xl);font-weight:600;animation:tagIn .25s var(--spring)}
+@keyframes tagIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.sel-tag button{width:16px;height:16px;border-radius:50%;background:rgba(139,26,56,.3);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--wine-xl);transition:background .2s;flex-shrink:0}
+.sel-tag button:hover{background:rgba(139,26,56,.5)}
+
+/* Normal field */
+.fld{display:flex;flex-direction:column;gap:5px}
+.ipt{background:var(--bg4);border:1.5px solid var(--bdr);border-radius:var(--r-lg);padding:13px 16px;font-size:14px;transition:all .22s;color:var(--chalk);width:100%}
+.ipt:focus{background:var(--bg5);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.ipt::placeholder{color:var(--chalk4)}
+
+/* Email domain suggestions */
+.email-hints{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.email-hint{padding:5px 12px;border-radius:99px;background:var(--bg4);border:1px solid var(--bdr);font-size:12px;color:var(--chalk3);cursor:pointer;transition:all .2s;font-family:var(--ff-m)}
+.email-hint:hover{border-color:var(--bdr-w);color:var(--wine-xl);background:var(--wine-tint)}
+.email-hint.show{animation:tagIn .2s var(--spring)}
+
+/* Submit */
+.sub-btn{width:100%;height:52px;border-radius:var(--r-lg);font-size:15px;font-weight:800;letter-spacing:.04em;background:linear-gradient(135deg,var(--wine-xd),var(--wine) 55%,var(--wine-l));color:#fff;box-shadow:0 5px 22px var(--wine-glow);transition:all .22s;margin-top:4px}
+.sub-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(139,26,56,.65)}
+.form-note{text-align:center;font-size:11px;color:var(--chalk4);font-family:var(--ff-m)}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg4);border:1px solid var(--bdr-w);padding:13px 22px;border-radius:var(--r);font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:9px;box-shadow:0 10px 36px rgba(0,0,0,.6);opacity:0;pointer-events:none;white-space:nowrap;transition:transform .4s var(--spring),opacity .35s}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.t-dot{width:8px;height:8px;border-radius:50%;background:var(--wine-xl);animation:bl 1.4s infinite;flex-shrink:0}
+@keyframes bl{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span class="t-dot"></span><span id="tmsg">Subscribed! ✦</span></div>
+<div class="page">
+<div class="card">
+  <div class="card-head">
+    <div class="ch-badge">Design 49 · Autocomplete</div>
+    <h1 class="ch-title">Smart Subscription Form</h1>
+    <p class="ch-sub">Type and let the form suggest — faster, smarter, personalised.</p>
+  </div>
+  <div class="card-body">
+    <form class="fields" onsubmit="handleSubmit(event)">
+
+      <!-- Full name with suggestions -->
+      <div class="suggest-wrap" id="nameWrap">
+        <label class="lbl" for="nameIpt">Full Name</label>
+        <div class="suggest-input-wrap">
+          <span class="suggest-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+          <input class="s-ipt" id="nameIpt" type="text" placeholder="Start typing your name…" autocomplete="off" oninput="filterNames(this.value)" onkeydown="handleKeydown(event,'nameDd')"/>
+          <button type="button" class="suggest-clear" id="nameClear" onclick="clearField('nameIpt','nameDd','nameClear')">✕</button>
+        </div>
+        <div class="suggest-dropdown" id="nameDd"></div>
+      </div>
+
+      <!-- Email with domain hints -->
+      <div class="fld">
+        <label class="lbl" for="emailIpt">Email Address</label>
+        <div class="suggest-input-wrap">
+          <span class="suggest-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+          <input class="s-ipt" id="emailIpt" type="email" placeholder="your@email.com" autocomplete="email" oninput="suggestDomain(this.value)"/>
+        </div>
+        <div class="email-hints" id="emailHints"></div>
+      </div>
+
+      <!-- Interests with multi-select autocomplete -->
+      <div class="suggest-wrap" id="topicsWrap">
+        <label class="lbl">Interests <span>(select up to 5)</span></label>
+        <div class="suggest-input-wrap">
+          <span class="suggest-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input class="s-ipt" id="topicIpt" type="text" placeholder="Search topics…" autocomplete="off" oninput="filterTopics(this.value)" onkeydown="handleKeydown(event,'topicDd')"/>
+        </div>
+        <div class="suggest-dropdown" id="topicDd"></div>
+        <div class="selected-tags" id="selectedTopics"></div>
+      </div>
+
+      <button class="sub-btn" type="submit">Subscribe with Smart Preferences →</button>
+      <p class="form-note">🔒 Private · No spam · Unsubscribe anytime</p>
+    </form>
+  </div>
+</div>
+</div>
+
+<script>
+const nameSuggestions=['Jane Doe','James Chen','Julia Roberts','Jackson Brown','Jennifer Lee','Jake Wilson','Jessica Martinez','Jonathan Clark','John Smith','Jamie Taylor'];
+const topics=[
+  {icon:'✦',name:'Design & UX',cat:'Creative'},
+  {icon:'⚙',name:'Web Development',cat:'Tech'},
+  {icon:'◈',name:'Product Management',cat:'Business'},
+  {icon:'◉',name:'Data Science',cat:'Tech'},
+  {icon:'◎',name:'Startup Culture',cat:'Business'},
+  {icon:'◐',name:'Artificial Intelligence',cat:'Tech'},
+  {icon:'◑',name:'Photography',cat:'Creative'},
+  {icon:'◒',name:'Finance & Investing',cat:'Business'},
+  {icon:'◓',name:'Climate & Environment',cat:'Science'},
+  {icon:'◔',name:'Philosophy',cat:'Culture'},
+  {icon:'✿',name:'Health & Wellness',cat:'Lifestyle'},
+  {icon:'⊕',name:'Architecture',cat:'Creative'},
+  {icon:'◇',name:'Literature',cat:'Culture'},
+  {icon:'◆',name:'Geopolitics',cat:'World'},
+];
+const domains=['gmail.com','yahoo.com','outlook.com','icloud.com','protonmail.com','hey.com'];
+const selectedTopics=new Set();
+
+function filterNames(val){
+  const dd=document.getElementById('nameDd');
+  document.getElementById('nameClear').classList.toggle('show',!!val);
+  if(!val.trim()){dd.classList.remove('open');dd.innerHTML='';return;}
+  const matches=nameSuggestions.filter(n=>n.toLowerCase().startsWith(val.toLowerCase()));
+  if(!matches.length){dd.innerHTML='<div class="dd-empty">No suggestions</div>';dd.classList.add('open');return;}
+  dd.innerHTML=matches.map((n,i)=>`<div class="dd-item" tabindex="-1" onclick="selectName('${n}')" data-i="${i}"><div class="dd-item-icon">👤</div><div class="dd-item-text"><div class="dd-item-main">${highlight(n,val)}</div></div></div>`).join('');
+  dd.classList.add('open');
+}
+
+function selectName(n){
+  document.getElementById('nameIpt').value=n;
+  document.getElementById('nameDd').classList.remove('open');
+  document.getElementById('nameClear').classList.add('show');
+}
+
+function filterTopics(val){
+  const dd=document.getElementById('topicDd');
+  if(!val.trim()){dd.classList.remove('open');dd.innerHTML='';return;}
+  const avail=topics.filter(t=>!selectedTopics.has(t.name)&&t.name.toLowerCase().includes(val.toLowerCase()));
+  if(!avail.length){dd.innerHTML='<div class="dd-empty">No more topics</div>';dd.classList.add('open');return;}
+  // Group by category
+  const cats={};
+  avail.forEach(t=>{if(!cats[t.cat])cats[t.cat]=[];cats[t.cat].push(t);});
+  let html='';
+  Object.entries(cats).forEach(([cat,items])=>{
+    html+=`<div class="dd-section-head">${cat}</div>`;
+    items.forEach((t,i)=>{
+      html+=`<div class="dd-item" onclick="selectTopic('${t.name}')"><div class="dd-item-icon">${t.icon}</div><div class="dd-item-text"><div class="dd-item-main">${highlight(t.name,val)}</div></div>${selectedTopics.size>=4?'<span class="dd-item-badge">Limit</span>':''}</div>`;
+    });
+  });
+  dd.innerHTML=html;dd.classList.add('open');
+}
+
+function selectTopic(name){
+  if(selectedTopics.size>=5)return;
+  selectedTopics.add(name);
+  renderSelectedTopics();
+  document.getElementById('topicIpt').value='';
+  document.getElementById('topicDd').classList.remove('open');
+  document.getElementById('topicDd').innerHTML='';
+  document.getElementById('topicIpt').focus();
+}
+
+function renderSelectedTopics(){
+  const container=document.getElementById('selectedTopics');
+  container.innerHTML='';
+  selectedTopics.forEach(name=>{
+    const tag=document.createElement('div');tag.className='sel-tag';
+    tag.innerHTML=`${name}<button type="button" onclick="removeTag('${name}')">✕</button>`;
+    container.appendChild(tag);
+  });
+}
+
+function removeTag(name){selectedTopics.delete(name);renderSelectedTopics();}
+
+function suggestDomain(val){
+  const hints=document.getElementById('emailHints');hints.innerHTML='';
+  if(!val.includes('@')||val.includes('@')+1===val.length)return;
+  const [local,partial]=val.split('@');
+  const matches=partial?domains.filter(d=>d.startsWith(partial)&&d!==partial):[];
+  matches.slice(0,4).forEach(d=>{
+    const btn=document.createElement('button');
+    btn.type='button';btn.className='email-hint show';
+    btn.textContent=`${local}@${d}`;
+    btn.onclick=()=>{document.getElementById('emailIpt').value=`${local}@${d}`;hints.innerHTML='';};
+    hints.appendChild(btn);
+  });
+}
+
+function clearField(inputId,ddId,clearId){
+  document.getElementById(inputId).value='';
+  document.getElementById(ddId).classList.remove('open');
+  document.getElementById(clearId).classList.remove('show');
+  document.getElementById(inputId).focus();
+}
+
+function highlight(text,query){
+  const re=new RegExp(`(${query})`, 'gi');
+  return text.replace(re,'<span class="dd-highlight">$1</span>');
+}
+
+// Keyboard nav
+let focusIdx={nameDd:-1,topicDd:-1};
+function handleKeydown(e,ddId){
+  const dd=document.getElementById(ddId);
+  const items=dd.querySelectorAll('.dd-item');
+  if(!items.length)return;
+  if(e.key==='ArrowDown'){e.preventDefault();focusIdx[ddId]=Math.min(focusIdx[ddId]+1,items.length-1);items.forEach((it,i)=>it.classList.toggle('focused',i===focusIdx[ddId]));}
+  else if(e.key==='ArrowUp'){e.preventDefault();focusIdx[ddId]=Math.max(focusIdx[ddId]-1,0);items.forEach((it,i)=>it.classList.toggle('focused',i===focusIdx[ddId]));}
+  else if(e.key==='Enter'&&focusIdx[ddId]>=0){e.preventDefault();items[focusIdx[ddId]].click();}
+  else if(e.key==='Escape'){dd.classList.remove('open');focusIdx[ddId]=-1;}
+}
+
+// Close dropdowns on outside click
+document.addEventListener('click',e=>{
+  document.querySelectorAll('.suggest-dropdown').forEach(dd=>{
+    if(!dd.closest('.suggest-wrap').contains(e.target))dd.classList.remove('open');
+  });
+});
+
+function handleSubmit(e){
+  e.preventDefault();
+  const t=document.getElementById('toast');
+  document.getElementById('tmsg').textContent='Subscribed with smart preferences! ✦';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);
+}
+</script>
+</body>
+</html>

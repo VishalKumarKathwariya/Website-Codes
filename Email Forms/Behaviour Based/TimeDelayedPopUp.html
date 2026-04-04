@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 35 — Time-delayed Popup Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.45);--wine-tint:rgba(139,26,56,.14);
+  --bg0:#080810;--bg1:#0E0E16;--bg2:#131320;--bg3:#191928;--bg4:#212130;--bg5:#292938;
+  --chalk:#EEE6F2;--chalk2:#BCB2C4;--chalk3:#807888;--chalk4:#484058;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.12);--bdr-w:rgba(139,26,56,.45);
+  --r:12px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --ff-d:'Playfair Display',Georgia,serif;--ff-s:'Syne',sans-serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-s);font-size:15px;line-height:1.65;min-height:100dvh}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input{font:inherit;color:inherit}
+input:focus{outline:none}
+
+/* PAGE */
+.page{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(2rem,6vw,4rem) clamp(1rem,5vw,2rem);gap:2rem;position:relative;z-index:1}
+.page::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:clamp(400px,70vw,700px);height:clamp(400px,70vw,700px);background:radial-gradient(circle,rgba(139,26,56,.08) 0%,transparent 65%);pointer-events:none}
+
+/* COUNTDOWN WIDGET */
+.countdown-widget{background:var(--bg2);border:1px solid var(--bdr-w);border-radius:var(--r-xl);padding:2rem;text-align:center;max-width:420px;position:relative;overflow:hidden}
+.countdown-widget::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--wine),transparent)}
+.cw-title{font-family:var(--ff-d);font-size:clamp(.95rem,3vw,1.2rem);font-weight:700;margin-bottom:.5rem}
+.cw-sub{font-size:12px;color:var(--chalk3);margin-bottom:1.5rem}
+.cw-timer{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1.5rem}
+.cw-seg{text-align:center}
+.cw-num{font-family:var(--ff-d);font-size:clamp(2rem,5vw,2.8rem);font-weight:800;color:var(--wine-xl);line-height:1;display:block;min-width:60px;background:var(--bg3);border:1px solid var(--bdr-w);border-radius:var(--r);padding:8px 0}
+.cw-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk4);font-family:var(--ff-m);margin-top:4px}
+.cw-colon{font-family:var(--ff-d);font-size:2rem;font-weight:800;color:var(--chalk4);padding-bottom:14px;animation:blink-c .8s infinite}
+@keyframes blink-c{0%,100%{opacity:1}50%{opacity:.2}}
+.cw-track{width:100%;height:6px;background:var(--bg4);border-radius:99px;overflow:hidden;margin-bottom:1rem}
+.cw-fill{height:100%;background:linear-gradient(90deg,var(--wine-d),var(--wine),var(--wine-xl));border-radius:99px;transition:width .5s var(--ease)}
+.cw-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:var(--r-lg);background:var(--wine-tint);border:1.5px solid var(--bdr-w);color:var(--wine-xl);font-size:13px;font-weight:700;transition:all .2s;margin-top:.5rem}
+.cw-btn:hover{background:rgba(139,26,56,.22)}
+
+.page-badge{display:inline-block;padding:5px 16px;border-radius:99px;border:1px solid var(--bdr-w);background:var(--wine-tint);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--wine-xl);font-family:var(--ff-m)}
+.page-title{font-family:var(--ff-d);font-size:clamp(1.8rem,5vw,3rem);font-weight:800;line-height:1.12;letter-spacing:-.02em;text-align:center;max-width:560px}
+.page-title em{font-style:italic;background:linear-gradient(135deg,var(--wine-xl),#F08098,var(--wine));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-sub{color:var(--chalk3);font-size:13px;text-align:center;max-width:46ch}
+
+/* OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);
+    -webkit-backdrop-filter:blur(8px);
+    backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:clamp(1rem,4vw,2rem);opacity:0;pointer-events:none;transition:opacity .35s var(--ease)}
+.overlay.open{opacity:1;pointer-events:all}
+
+/* POPUP */
+.popup{position:relative;width:100%;max-width:480px;background:var(--bg2);border:1px solid var(--bdr2);border-radius:var(--r-2xl);overflow:hidden;transform:translateY(40px) scale(.93);transition:transform .5s var(--spring),opacity .4s;opacity:0;box-shadow:0 40px 100px rgba(0,0,0,.85)}
+.overlay.open .popup{transform:translateY(0) scale(1);opacity:1}
+
+.popup-close{position:absolute;top:14px;right:14px;z-index:10;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);font-size:15px;transition:all .2s;line-height:1}
+.popup-close:hover{background:rgba(0,0,0,.5);color:#fff}
+
+.popup-hero{background:linear-gradient(160deg,var(--wine-xd) 0%,var(--wine-d) 55%,#200A14 100%);padding:clamp(2rem,5vw,2.6rem) clamp(1.5rem,4vw,2.2rem);position:relative;overflow:hidden;text-align:center}
+.popup-hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(176,35,71,.25) 0%,transparent 68%)}
+.popup-hero::after{content:'';position:absolute;bottom:-30px;right:-30px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(92,15,36,.4) 0%,transparent 70%)}
+.ph-emoji{font-size:3rem;margin-bottom:.8rem;position:relative;z-index:1}
+.ph-pre{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px;font-family:var(--ff-m);position:relative;z-index:1}
+.ph-title{font-family:var(--ff-d);font-size:clamp(1.4rem,4vw,1.8rem);font-weight:800;line-height:1.2;position:relative;z-index:1}
+
+.popup-body{padding:clamp(1.5rem,4vw,2rem)}
+.pb-desc{font-size:13px;color:var(--chalk3);margin-bottom:1.4rem;text-align:center}
+.p-form{display:flex;flex-direction:column;gap:12px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);font-family:var(--ff-m)}
+.ipt{background:var(--bg4);border:1.5px solid var(--bdr);border-radius:var(--r);padding:13px 16px;font-size:14px;transition:all .2s}
+.ipt:focus{background:var(--bg5);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.ipt::placeholder{color:var(--chalk4)}
+.sub-btn{width:100%;height:52px;border-radius:var(--r-lg);font-size:15px;font-weight:800;letter-spacing:.04em;background:linear-gradient(135deg,var(--wine-xd),var(--wine) 55%,var(--wine-l));color:#fff;box-shadow:0 5px 22px var(--wine-glow);transition:all .22s;margin-top:4px}
+.sub-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(139,26,56,.65)}
+.pf-foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:4px}
+.pf-secure{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--chalk4)}
+.pf-skip{font-size:12px;color:var(--chalk3);border-bottom:1px dashed var(--bdr-w);transition:color .2s}
+.pf-skip:hover{color:var(--wine-xl)}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg4);border:1px solid var(--bdr-w);padding:13px 22px;border-radius:var(--r);font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:9px;box-shadow:0 10px 36px rgba(0,0,0,.6);opacity:0;pointer-events:none;white-space:nowrap;transition:transform .4s var(--spring),opacity .35s}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.t-dot{width:8px;height:8px;border-radius:50%;background:var(--wine-xl);animation:blink 1.4s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span class="t-dot"></span><span id="toast-msg">Subscribed! ✦</span></div>
+
+<!-- TIME-DELAYED POPUP -->
+<div class="overlay" id="overlay" onclick="overlayClick(event)">
+  <div class="popup" id="popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-hero">
+      <div class="ph-emoji">⏱️</div>
+      <div class="ph-pre">You've been here 5 seconds</div>
+      <h2 class="ph-title">Looks like you're enjoying<br/>your time here.</h2>
+    </div>
+    <div class="popup-body">
+      <p class="pb-desc">Let us send you more of what you clearly enjoy — straight to your inbox every week.</p>
+      <form class="p-form" onsubmit="handleSubmit(event)">
+        <div class="fld">
+          <label class="lbl">Full Name</label>
+          <input class="ipt" type="text" placeholder="Jane Doe" autocomplete="name" required/>
+        </div>
+        <div class="fld">
+          <label class="lbl">Email Address</label>
+          <input class="ipt" type="email" placeholder="jane@example.com" autocomplete="email" required/>
+        </div>
+        <button class="sub-btn" type="submit">Yes, Send Me More →</button>
+        <div class="pf-foot">
+          <span class="pf-secure"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> No spam ever</span>
+          <button type="button" class="pf-skip" onclick="closePopup()">Not right now</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <p class="page-badge">Design 35 · Time-delayed</p>
+  <h1 class="page-title">Popup fires after <em>5 seconds</em><br/>on the page.</h1>
+  <p class="page-sub">Time-delayed popups wait until the user has spent a meaningful amount of time before presenting the subscription prompt.</p>
+
+  <div class="countdown-widget">
+    <div class="cw-title">Time-delayed Popup Demo</div>
+    <div class="cw-sub">The popup fires automatically after 5 seconds</div>
+    <div class="cw-timer">
+      <div class="cw-seg"><span class="cw-num" id="sec">5</span><div class="cw-label">seconds</div></div>
+    </div>
+    <div class="cw-track"><div class="cw-fill" id="fill"></div></div>
+    <button class="cw-btn" onclick="triggerNow()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Trigger Now
+    </button>
+  </div>
+</div>
+
+<script>
+let delay=5,interval;
+function startCountdown(){
+  let t=delay;
+  interval=setInterval(()=>{
+    t--;
+    document.getElementById('sec').textContent=t;
+    document.getElementById('fill').style.width=(t/delay*100)+'%';
+    if(t<=0){clearInterval(interval);openPopup()}
+  },1000);
+}
+function openPopup(){document.getElementById('overlay').classList.add('open');document.body.style.overflow='hidden'}
+function closePopup(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow=''}
+function overlayClick(e){if(e.target===document.getElementById('overlay'))closePopup()}
+function triggerNow(){clearInterval(interval);openPopup()}
+function handleSubmit(e){
+  e.preventDefault();closePopup();
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent='Subscribed! Welcome aboard. ✦';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopup()});
+// Auto-start countdown
+startCountdown();
+</script>
+</body>
+</html>

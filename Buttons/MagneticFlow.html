@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 19 — Magnetic Follow</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#050510;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Sans',sans-serif;cursor:none;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background:
+      radial-gradient(ellipse 50% 40% at 25% 50%, rgba(99,102,241,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 75% 50%, rgba(236,72,153,0.08) 0%, transparent 60%);
+  }
+
+  /* custom cursor */
+  #cursor{
+    position:fixed;width:12px;height:12px;border-radius:50%;
+    background:#fff;pointer-events:none;z-index:1000;
+    transform:translate(-50%,-50%);
+    transition:transform .1s,width .2s,height .2s;
+    mix-blend-mode:difference;
+  }
+  #cursor-ring{
+    position:fixed;width:36px;height:36px;border-radius:50%;
+    border:1px solid rgba(255,255,255,0.4);
+    pointer-events:none;z-index:999;
+    transform:translate(-50%,-50%);
+    transition:transform .18s,width .25s,height .25s,opacity .2s;
+  }
+
+  .page{
+    position:relative;z-index:1;
+    display:flex;flex-direction:column;align-items:center;gap:3.5rem;
+    padding:3rem 2rem;text-align:center;
+  }
+  .label-block{display:flex;flex-direction:column;gap:10px;align-items:center}
+  .tag{
+    display:inline-block;padding:5px 14px;
+    background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);
+    border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:#818cf8;
+  }
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;color:#fff;line-height:1.1}
+  p{font-size:15px;color:rgba(255,255,255,0.38);max-width:420px;line-height:1.65}
+
+  /* ── MAGNETIC BUTTONS ── */
+  .demo-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+    max-width:560px;width:100%;
+  }
+  .mag-zone{
+    display:flex;align-items:center;justify-content:center;
+    width:200px;height:120px;position:relative;
+  }
+
+  .btn-mag{
+    padding:14px 32px;border:none;border-radius:50px;
+    font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;
+    cursor:none;display:inline-block;
+    position:relative;will-change:transform;
+    transition:box-shadow .3s;
+    white-space:nowrap;
+  }
+
+  .bm1{background:#6366f1;color:#fff}
+  .bm2{background:transparent;border:2px solid rgba(255,255,255,0.3);color:#fff}
+  .bm3{background:#ec4899;color:#fff}
+  .bm4{background:transparent;border:2px solid rgba(236,72,153,0.5);color:#ec4899}
+
+  /* text reveal on mag hover */
+  .btn-mag .mag-inner{display:inline-flex;align-items:center;gap:8px}
+  .mag-arrow{
+    display:inline-block;opacity:0;transform:translateX(-8px);
+    transition:opacity .25s,transform .25s;
+  }
+  .btn-mag:hover .mag-arrow{opacity:1;transform:translateX(0)}
+
+  /* strength indicator */
+  .strength-panel{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;padding:1.5rem 2rem;
+    display:flex;flex-direction:column;gap:1rem;align-items:center;
+    max-width:420px;width:100%;
+  }
+  .strength-label{font-size:13px;color:rgba(255,255,255,0.4);font-weight:500}
+  .strength-row{display:flex;align-items:center;gap:1rem;width:100%}
+  input[type=range]{flex:1;accent-color:#6366f1}
+  #s-val{font-size:14px;font-weight:600;color:#fff;min-width:30px}
+
+  .btn-demo{
+    padding:16px 48px;border:none;border-radius:50px;
+    background:#6366f1;color:#fff;
+    font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;
+    cursor:none;will-change:transform;
+    transition:box-shadow .3s;
+  }
+  .btn-demo:hover{box-shadow:0 16px 48px rgba(99,102,241,0.4)}
+
+  .info{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+  .info-item{
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
+    border-radius:10px;padding:12px 20px;font-size:13px;color:rgba(255,255,255,0.38);
+    display:flex;flex-direction:column;gap:4px;min-width:130px;
+  }
+  .info-item strong{color:rgba(255,255,255,0.75);font-size:14px;font-weight:600}
+  .hint{font-size:12px;color:rgba(255,255,255,0.2);letter-spacing:.05em}
+</style>
+</head>
+<body>
+
+<!-- custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 19 / 20</span>
+    <h1>Magnetic Follow</h1>
+    <p>The button physically drifts toward your cursor when nearby — a signature Awwwards interaction that makes elements feel alive and responsive to presence.</p>
+  </div>
+
+  <div class="demo-grid">
+    <div class="mag-zone" id="z1">
+      <button class="btn-mag bm1" id="m1">
+        <span class="mag-inner">Pull Me<span class="mag-arrow">✦</span></span>
+      </button>
+    </div>
+    <div class="mag-zone" id="z2">
+      <button class="btn-mag bm2" id="m2">
+        <span class="mag-inner">Ghost<span class="mag-arrow">→</span></span>
+      </button>
+    </div>
+    <div class="mag-zone" id="z3">
+      <button class="btn-mag bm3" id="m3">
+        <span class="mag-inner">Attract<span class="mag-arrow">✦</span></span>
+      </button>
+    </div>
+    <div class="mag-zone" id="z4">
+      <button class="btn-mag bm4" id="m4">
+        <span class="mag-inner">Hover<span class="mag-arrow">→</span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- adjustable demo -->
+  <div class="strength-panel">
+    <span class="strength-label">Magnetic strength</span>
+    <div class="strength-row">
+      <span>Weak</span>
+      <input type="range" title="Magnetic Strength" min="0.1" max="0.6" step="0.05" value="0.35" id="strength-slider"/>
+      <span id="s-val">0.35</span>
+      <span>Strong</span>
+    </div>
+    <div class="mag-zone" id="zdemo">
+      <button class="btn-demo" id="mdemo">Adjust &amp; Feel</button>
+    </div>
+  </div>
+
+  <span class="hint">↑ Move your cursor near the buttons — they're drawn to you</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Awwwards sites, Framer</div>
+    <div class="info-item"><strong>Technique</strong>JS mousemove + translate</div>
+    <div class="info-item"><strong>Feel</strong>Alive, gravitational, playful</div>
+    <div class="info-item"><strong>Best for</strong>Portfolio hero sections</div>
+  </div>
+</div>
+
+<script>
+  /* Custom cursor */
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let cx=window.innerWidth/2, cy=window.innerHeight/2;
+  let rx=cx, ry=cy;
+  document.addEventListener('mousemove', e=>{ cx=e.clientX; cy=e.clientY; });
+  (function animCur(){
+    rx += (cx-rx)*0.15; ry += (cy-ry)*0.15;
+    cur.style.left=cx+'px'; cur.style.top=cy+'px';
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(animCur);
+  })();
+
+  /* Magnetic buttons */
+  let strength = 0.35;
+  function makeMagnetic(zoneId, btnId){
+    const zone = document.getElementById(zoneId);
+    const btn = document.getElementById(btnId);
+    let active = false;
+    zone.addEventListener('mousemove', e=>{
+      const zr = zone.getBoundingClientRect();
+      const dx = e.clientX - (zr.left + zr.width/2);
+      const dy = e.clientY - (zr.top + zr.height/2);
+      btn.style.transition='transform .2s ease,box-shadow .3s';
+      btn.style.transform=`translate(${dx*strength}px,${dy*strength}px)`;
+      active=true;
+    });
+    zone.addEventListener('mouseleave', ()=>{
+      btn.style.transition='transform .5s cubic-bezier(.34,1.56,.64,1),box-shadow .3s';
+      btn.style.transform='translate(0,0)';
+      active=false;
+    });
+  }
+  ['1','2','3','4'].forEach(i=>makeMagnetic('z'+i,'m'+i));
+  makeMagnetic('zdemo','mdemo');
+
+  const sl = document.getElementById('strength-slider');
+  const sv = document.getElementById('s-val');
+  sl.addEventListener('input',function(){ strength=parseFloat(this.value); sv.textContent=this.value; });
+</script>
+</body>
+</html>

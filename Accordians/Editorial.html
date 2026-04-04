@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accordion 1 — Editorial Minimal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a18;
+    --paper: #f5f2ec;
+    --rule: #c8c0b0;
+    --accent: #b5401e;
+    --muted: #7a7260;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  .header {
+    margin-bottom: 56px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .header .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .header p {
+    margin-top: 14px;
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .accordion {
+    list-style: none;
+  }
+
+  .accordion-item {
+    border-top: 1px solid var(--rule);
+  }
+
+  .accordion-item:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 26px 0;
+    display: grid;
+    grid-template-columns: 40px 1fr 28px;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+    transition: opacity 0.2s;
+  }
+
+  .accordion-trigger:hover { opacity: 0.7; }
+
+  .acc-num {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  .acc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ink);
+    transition: color 0.3s;
+  }
+
+  .accordion-item.open .acc-title {
+    color: var(--accent);
+  }
+
+  .acc-icon {
+    width: 28px;
+    height: 28px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .acc-icon::before,
+  .acc-icon::after {
+    content: '';
+    position: absolute;
+    background: var(--ink);
+    border-radius: 2px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+  }
+
+  .acc-icon::before {
+    width: 16px; height: 1.5px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .acc-icon::after {
+    width: 1.5px; height: 16px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .accordion-item.open .acc-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+    opacity: 0;
+  }
+
+  .accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .accordion-item.open .accordion-body {
+    grid-template-rows: 1fr;
+  }
+
+  .accordion-body-inner {
+    overflow: hidden;
+  }
+
+  .accordion-content {
+    padding: 0 0 30px 56px;
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .accordion-content strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="eyebrow">Style Guide · FAQ</div>
+    <h1>Frequently Asked Questions</h1>
+    <p>Everything you need to know, laid out with clarity and care.</p>
+  </div>
+
+  <ul class="accordion">
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-num">01.</span>
+        <span class="acc-title">What makes editorial design timeless?</span>
+        <span class="acc-icon" aria-hidden="true"></span>
+      </button>
+      <div class="accordion-body" role="region">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Editorial design endures because it prioritizes <strong>clarity, hierarchy, and rhythm</strong> above all else. The whitespace breathes, the typography speaks before you read a word, and every element earns its place on the page. Great editorial work doesn't follow trends — it sets them.
+            <br><span class="tag">Design</span>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-num">02.</span>
+        <span class="acc-title">How do serif fonts influence readability?</span>
+        <span class="acc-icon" aria-hidden="true"></span>
+      </button>
+      <div class="accordion-body" role="region">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Serifs create a <strong>visual flow between letters</strong>, guiding the eye across long passages of text. In print traditions stretching back centuries, serifs have proven to reduce fatigue in extended reading. Paired with generous leading and measured line length, they create an almost meditative reading experience.
+            <br><span class="tag">Typography</span>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-num">03.</span>
+        <span class="acc-title">What role does negative space play?</span>
+        <span class="acc-icon" aria-hidden="true"></span>
+      </button>
+      <div class="accordion-body" role="region">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Negative space is not emptiness — it is <strong>intentional silence</strong>. It gives the eye a place to rest, creates emphasis through contrast, and communicates confidence. Designs cluttered with content signal anxiety; designs that breathe signal authority and trust.
+            <br><span class="tag">Layout</span>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-num">04.</span>
+        <span class="acc-title">Can minimalism be expressive?</span>
+        <span class="acc-icon" aria-hidden="true"></span>
+      </button>
+      <div class="accordion-body" role="region">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Absolutely. The most expressive work often uses the fewest elements. A single well-chosen accent color, one dominant typeface, one recurring rule — these create a <strong>design language stronger</strong> than a dozen competing elements. Constraints breed creativity.
+            <br><span class="tag">Philosophy</span>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-num">05.</span>
+        <span class="acc-title">Why do leading publications choose paper tones?</span>
+        <span class="acc-icon" aria-hidden="true"></span>
+      </button>
+      <div class="accordion-body" role="region">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Pure white (#ffffff) creates harsh contrast that fatigues the eye under extended reading. Warm paper tones like cream, ecru, or parchment <strong>reduce glare and evoke trust</strong> — they signal heritage, editorial authority, and the timeless permanence of print. The physical world informs the digital.
+            <br><span class="tag">Color Theory</span>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.accordion-item');
+      const isOpen = item.classList.contains('open');
+
+      document.querySelectorAll('.accordion-item.open').forEach(openItem => {
+        openItem.classList.remove('open');
+        openItem.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
+      });
+
+      if (!isOpen) {
+        item.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+</script>
+</body>
+</html>

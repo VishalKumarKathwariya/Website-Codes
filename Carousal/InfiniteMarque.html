@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>09 — Infinite Marquee Carousel</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --speed1: 35s;
+    --speed2: 28s;
+    --speed3: 40s;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: #09090b;
+    color: #e4e4e7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* Hero section */
+  .hero {
+    text-align: center;
+    padding: 80px 20px 60px;
+    max-width: 700px;
+    width: 100%;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(167,139,250,.12);
+    border: 1px solid rgba(167,139,250,.25);
+    color: #a78bfa;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: .03em;
+  }
+
+  .hero-title {
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -.03em;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: #71717a;
+    line-height: 1.65;
+    margin-bottom: 32px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: #fff;
+    color: #09090b;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 13px 26px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .2s;
+  }
+
+  .btn-primary:hover { background: #f4f4f5; }
+
+  .btn-secondary {
+    background: transparent;
+    color: #e4e4e7;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 13px 26px;
+    border-radius: 10px;
+    border: 1px solid #3f3f46;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color .2s, background .2s;
+  }
+
+  .btn-secondary:hover { border-color: #71717a; background: rgba(255,255,255,.04); }
+
+  /* Stats */
+  .stats-bar {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+    padding: 0 20px;
+  }
+
+  .stat { text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -.02em; }
+  .stat-label { font-size: 13px; color: #71717a; margin-top: 2px; }
+
+  /* Section label */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #52525b;
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  /* Marquee container */
+  .marquee-section {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 0;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  }
+
+  .marquee-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 4px 0;
+  }
+
+  .marquee-inner {
+    display: flex;
+    gap: 16px;
+    flex-shrink: 0;
+    animation: scroll-left var(--speed1) linear infinite;
+  }
+
+  .marquee-inner.reverse {
+    animation: scroll-right var(--speed2) linear infinite;
+  }
+
+  .marquee-inner.slow {
+    animation: scroll-left var(--speed3) linear infinite;
+  }
+
+  .marquee-section:hover .marquee-inner { animation-play-state: paused; }
+
+  @keyframes scroll-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes scroll-right {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+
+  /* Cards */
+  .mq-card {
+    flex-shrink: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #27272a;
+    background: #18181b;
+    cursor: pointer;
+    transition: border-color .25s, transform .25s;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .mq-card:hover { border-color: #52525b; transform: translateY(-3px); }
+
+  .mq-img {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+    border-right: 1px solid #27272a;
+  }
+
+  .mq-info { padding: 12px 16px; }
+  .mq-name { font-size: 13px; font-weight: 600; color: #e4e4e7; margin-bottom: 4px; white-space: nowrap; }
+
+  .mq-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  /* Wide card variant */
+  .mq-card-wide {
+    flex-direction: column;
+    width: 200px;
+    align-items: flex-start;
+  }
+
+  .mq-card-wide .mq-img {
+    width: 100%;
+    height: 120px;
+    border-right: none;
+    border-bottom: 1px solid #27272a;
+    font-size: 44px;
+  }
+
+  .mq-card-wide .mq-info { width: 100%; }
+  .mq-card-wide .mq-name { font-size: 14px; font-weight: 600; }
+  .mq-card-wide .mq-sub { font-size: 12px; color: #71717a; margin-top: 2px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Testimonial card variant */
+  .mq-testi {
+    flex-direction: column;
+    width: 280px;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 12px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    border: 1px solid #27272a;
+    background: #18181b;
+    cursor: pointer;
+    transition: border-color .25s, transform .25s;
+  }
+
+  .mq-testi:hover { border-color: #52525b; transform: translateY(-3px); }
+
+  .testi-q { font-size: 13px; color: #a1a1aa; line-height: 1.6; }
+  .testi-stars { color: #f59e0b; font-size: 13px; margin-bottom: 4px; }
+  .testi-ava-row { display: flex; align-items: center; gap: 10px; }
+  .testi-ava { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .testi-ava-name { font-size: 13px; font-weight: 600; color: #e4e4e7; }
+  .testi-ava-role { font-size: 11px; color: #71717a; }
+
+  /* Divider */
+  .divider { width: 100%; height: 1px; background: #27272a; margin: 48px 0; }
+
+  /* CTA section */
+  .cta-section {
+    text-align: center;
+    padding: 48px 20px 80px;
+    max-width: 600px;
+    width: 100%;
+  }
+
+  .cta-title { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 12px; letter-spacing: -.02em; }
+  .cta-sub { font-size: 15px; color: #71717a; margin-bottom: 28px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">✦ Trusted by 50,000+ teams worldwide</div>
+  <h1 class="hero-title">The platform teams<br>actually love using</h1>
+  <p class="hero-sub">Ship faster, collaborate seamlessly, and scale without limits. Used by startups and Fortune 500 companies alike.</p>
+  <div class="hero-btns">
+    <button class="btn-primary">Get started free →</button>
+    <button class="btn-secondary">See all integrations</button>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Teams using it</div></div>
+  <div class="stat"><div class="stat-num">4.9★</div><div class="stat-label">Average rating</div></div>
+  <div class="stat"><div class="stat-num">99.9%</div><div class="stat-label">Uptime SLA</div></div>
+  <div class="stat"><div class="stat-num">140+</div><div class="stat-label">Integrations</div></div>
+</div>
+
+<p class="section-label">Integrations · Tools · Platforms</p>
+
+<!-- Row 1: Tool pills (left scroll) -->
+<div class="marquee-section">
+  <div class="marquee-row" id="row1"></div>
+</div>
+
+<!-- Row 2: Wide cards (right scroll) -->
+<div class="marquee-section">
+  <div class="marquee-row" id="row2"></div>
+</div>
+
+<!-- Row 3: Tool pills (slow left) -->
+<div class="marquee-section">
+  <div class="marquee-row" id="row3"></div>
+</div>
+
+<div class="divider"></div>
+
+<p class="section-label">What our users are saying</p>
+
+<!-- Row 4: Testimonial cards -->
+<div class="marquee-section">
+  <div class="marquee-row" id="row4"></div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2 class="cta-title">Join the movement</h2>
+  <p class="cta-sub">Start your free trial today. No credit card required. Cancel anytime. Your team will thank you.</p>
+  <div class="hero-btns">
+    <button class="btn-primary">Start free trial →</button>
+    <button class="btn-secondary">Talk to sales</button>
+  </div>
+</div>
+
+<script>
+  const TOOLS_ROW1 = [
+    { emoji:'⚡', bg:'#fef9c3', name:'Notion AI', tag:'Productivity', tagColor:'#92400e', tagBg:'#fef3c7' },
+    { emoji:'🎯', bg:'#ede9fe', name:'Linear', tag:'Project Mgmt', tagColor:'#5b21b6', tagBg:'#ede9fe' },
+    { emoji:'🌊', bg:'#e0f2fe', name:'Figma', tag:'Design', tagColor:'#0c4a6e', tagBg:'#e0f2fe' },
+    { emoji:'🚀', bg:'#fce7f3', name:'Vercel', tag:'Deployment', tagColor:'#831843', tagBg:'#fce7f3' },
+    { emoji:'💬', bg:'#dcfce7', name:'Slack', tag:'Comms', tagColor:'#14532d', tagBg:'#dcfce7' },
+    { emoji:'📊', bg:'#fff7ed', name:'Mixpanel', tag:'Analytics', tagColor:'#7c2d12', tagBg:'#fff7ed' },
+    { emoji:'🔐', bg:'#f0f9ff', name:'Auth0', tag:'Auth', tagColor:'#0c4a6e', tagBg:'#e0f2fe' },
+    { emoji:'📦', bg:'#f7fee7', name:'Supabase', tag:'Database', tagColor:'#1a2e05', tagBg:'#ecfccb' },
+    { emoji:'🤖', bg:'#fdf4ff', name:'OpenAI', tag:'AI', tagColor:'#701a75', tagBg:'#fdf4ff' },
+    { emoji:'💳', bg:'#f0fdf4', name:'Stripe', tag:'Payments', tagColor:'#14532d', tagBg:'#dcfce7' },
+  ];
+
+  const TOOLS_ROW3 = [
+    { emoji:'📡', bg:'#fff1f2', name:'Pusher', tag:'Realtime', tagColor:'#881337', tagBg:'#ffe4e6' },
+    { emoji:'🗺️', bg:'#fffbeb', name:'Mapbox', tag:'Maps', tagColor:'#451a03', tagBg:'#fef3c7' },
+    { emoji:'📧', bg:'#f0f9ff', name:'Resend', tag:'Email', tagColor:'#0c4a6e', tagBg:'#e0f2fe' },
+    { emoji:'🔍', bg:'#f9fafb', name:'Algolia', tag:'Search', tagColor:'#374151', tagBg:'#f3f4f6' },
+    { emoji:'📱', bg:'#fffbeb', name:'Twilio', tag:'SMS', tagColor:'#451a03', tagBg:'#fef3c7' },
+    { emoji:'🔮', bg:'#ede9fe', name:'Prisma', tag:'ORM', tagColor:'#5b21b6', tagBg:'#ede9fe' },
+    { emoji:'☁️', bg:'#e0f2fe', name:'AWS', tag:'Cloud', tagColor:'#0c4a6e', tagBg:'#e0f2fe' },
+    { emoji:'🐳', bg:'#dbeafe', name:'Docker', tag:'DevOps', tagColor:'#1e3a5f', tagBg:'#dbeafe' },
+    { emoji:'📈', bg:'#f7fee7', name:'PostHog', tag:'Analytics', tagColor:'#1a2e05', tagBg:'#ecfccb' },
+    { emoji:'🎁', bg:'#fce7f3', name:'Lemon Squeezy', tag:'Billing', tagColor:'#831843', tagBg:'#fce7f3' },
+  ];
+
+  const PRODUCTS_ROW2 = [
+    { emoji:'🏗️', bg:'#1e1e2e', name:'Infrastructure', sub:'Auto-scaling compute', tag:'Core', tagColor:'#a78bfa', tagBg:'rgba(167,139,250,.15)' },
+    { emoji:'🔒', bg:'#1e2e1e', name:'Security', sub:'Zero-trust networking', tag:'Enterprise', tagColor:'#34d399', tagBg:'rgba(52,211,153,.15)' },
+    { emoji:'📊', bg:'#2e1e00', name:'Analytics', sub:'Real-time dashboards', tag:'Pro', tagColor:'#fb923c', tagBg:'rgba(251,146,60,.15)' },
+    { emoji:'🤝', bg:'#2e001e', name:'Collaboration', sub:'Live multiplayer editing', tag:'Teams', tagColor:'#f472b6', tagBg:'rgba(244,114,182,.15)' },
+    { emoji:'⚙️', bg:'#001e2e', name:'Automation', sub:'No-code workflows', tag:'Beta', tagColor:'#38bdf8', tagBg:'rgba(56,189,248,.15)' },
+    { emoji:'🌍', bg:'#1e1e00', name:'Edge Network', sub:'200 cities worldwide', tag:'Global', tagColor:'#facc15', tagBg:'rgba(250,204,21,.15)' },
+  ];
+
+  const TESTIMONIALS = [
+    { q: 'We shipped in 2 weeks what used to take 3 months. I cannot overstate how much this changed our team.', stars: 5, ava: '🧑', avaBg: '#1e1b4b', name: 'Arjun S.', role: 'CTO, Razorpay' },
+    { q: 'The DX is genuinely the best I\'ve seen. Every API does what it says, every error tells you why.', stars: 5, ava: '👩', avaBg: '#14532d', name: 'Priya K.', role: 'Staff Eng, Shopify' },
+    { q: 'Our infra bill dropped 38%. Our team velocity went up 2x. I don\'t know what else to say.', stars: 5, ava: '🧔', avaBg: '#7c2d12', name: 'Marcus T.', role: 'Co-founder, Linear' },
+    { q: 'Six months in and we\'ve had zero incidents. The reliability is remarkable.', stars: 5, ava: '👩‍💻', avaBg: '#0c4a6e', name: 'Yuki M.', role: 'Lead Eng, Notion' },
+    { q: 'Onboarding was 30 minutes. We were in production by end of day. Zero help desk tickets.', stars: 5, ava: '👨‍💻', avaBg: '#4f1999', name: 'Devon R.', role: 'Platform, Vercel' },
+    { q: 'I\'ve evaluated 12 platforms in my career. This is the only one I\'d use again on a Monday.', stars: 5, ava: '👩‍🚀', avaBg: '#1a2e05', name: 'Amara O.', role: 'VP Eng, Flutterwave' },
+  ];
+
+  function buildPillCard(d) {
+    const el = document.createElement('div');
+    el.className = 'mq-card';
+    el.innerHTML = `<div class="mq-img" style="background:${d.bg}">${d.emoji}</div>
+      <div class="mq-info">
+        <div class="mq-name">${d.name}</div>
+        <span class="mq-tag" style="background:${d.tagBg};color:${d.tagColor}">${d.tag}</span>
+      </div>`;
+    return el;
+  }
+
+  function buildWideCard(d) {
+    const el = document.createElement('div');
+    el.className = 'mq-card mq-card-wide';
+    el.innerHTML = `<div class="mq-img" style="background:${d.bg}">${d.emoji}</div>
+      <div class="mq-info">
+        <div class="mq-name">${d.name}</div>
+        <div class="mq-sub">${d.sub}</div>
+        <span class="mq-tag" style="background:${d.tagBg};color:${d.tagColor}">${d.tag}</span>
+      </div>`;
+    return el;
+  }
+
+  function buildTestiCard(d) {
+    const el = document.createElement('div');
+    el.className = 'mq-testi';
+    el.innerHTML = `<div class="testi-stars">${'★'.repeat(d.stars)}</div>
+      <p class="testi-q">"${d.q}"</p>
+      <div class="testi-ava-row">
+        <div class="testi-ava" style="background:${d.avaBg}">${d.ava}</div>
+        <div><div class="testi-ava-name">${d.name}</div><div class="testi-ava-role">${d.role}</div></div>
+      </div>`;
+    return el;
+  }
+
+  function populateRow(rowId, items, buildFn, direction, speed) {
+    const row = document.getElementById(rowId);
+    // Two copies for seamless loop
+    for (let copy = 0; copy < 2; copy++) {
+      const inner = document.createElement('div');
+      inner.className = 'marquee-inner' + (direction === 'reverse' ? ' reverse' : '') + (speed === 'slow' ? ' slow' : '');
+      items.forEach(d => inner.appendChild(buildFn(d)));
+      row.appendChild(inner);
+    }
+  }
+
+  populateRow('row1', [...TOOLS_ROW1, ...TOOLS_ROW1], buildPillCard, 'forward', 'normal');
+  populateRow('row2', [...PRODUCTS_ROW2, ...PRODUCTS_ROW2], buildWideCard, 'reverse', 'normal');
+  populateRow('row3', [...TOOLS_ROW3, ...TOOLS_ROW3], buildPillCard, 'forward', 'slow');
+  populateRow('row4', [...TESTIMONIALS, ...TESTIMONIALS], buildTestiCard, 'reverse', 'normal');
+</script>
+</body>
+</html>

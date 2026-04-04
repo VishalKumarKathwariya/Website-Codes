@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design 19 · Roadmap</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0a;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #f0f0f0;
+    }
+
+    .section {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.8rem;
+    }
+
+    .roadmap-card {
+      background: #161616;
+      border-radius: 30px;
+      padding: 2rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      border-bottom: 4px solid;
+      transition: transform 0.2s ease-in-out;
+    }
+    .roadmap-card:hover{
+        transform: translateY(-5px);
+    }
+
+    .roadmap-card:nth-child(1) { border-bottom-color: #6c5ce7; }
+    .roadmap-card:nth-child(2) { border-bottom-color: #00b894; }
+    .roadmap-card:nth-child(3) { border-bottom-color: #fdcb6e; }
+    .roadmap-card:nth-child(4) { border-bottom-color: #e17055; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .step {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #aaa;
+    }
+
+    .icon {
+      font-size: 2rem;
+      color: #ddd;
+    }
+
+    .feature-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    .progress-bg {
+      background: #2a2a2a;
+      height: 10px;
+      border-radius: 20px;
+      margin: 0.5rem 0;
+    }
+
+    .progress-fill {
+      height: 10px;
+      border-radius: 20px;
+      width: 75%; /* example */
+    }
+
+    .roadmap-card:nth-child(1) .progress-fill { background: #6c5ce7; width: 90%; }
+    .roadmap-card:nth-child(2) .progress-fill { background: #00b894; width: 70%; }
+    .roadmap-card:nth-child(3) .progress-fill { background: #fdcb6e; width: 50%; }
+    .roadmap-card:nth-child(4) .progress-fill { background: #e17055; width: 30%; }
+
+    .feature-desc {
+      color: #aaa;
+    }
+
+    @media (min-width: 640px) {
+      .roadmap-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .roadmap-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <h2 class="section-title">product roadmap</h2>
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <div class="card-header">
+          <span class="step">01</span>
+          <i class="fas fa-lightbulb icon"></i>
+        </div>
+        <h3 class="feature-title">Ideation</h3>
+        <div class="progress-bg"><div class="progress-fill"></div></div>
+        <p class="feature-desc">Concept & validation – 90% complete</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="card-header">
+          <span class="step">02</span>
+          <i class="fas fa-code icon"></i>
+        </div>
+        <h3 class="feature-title">Development</h3>
+        <div class="progress-bg"><div class="progress-fill"></div></div>
+        <p class="feature-desc">Core features implemented</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="card-header">
+          <span class="step">03</span>
+          <i class="fas fa-vial icon"></i>
+        </div>
+        <h3 class="feature-title">Testing</h3>
+        <div class="progress-bg"><div class="progress-fill"></div></div>
+        <p class="feature-desc">QA and user acceptance</p>
+      </div>
+      <div class="roadmap-card">
+        <div class="card-header">
+          <span class="step">04</span>
+          <i class="fas fa-rocket icon"></i>
+        </div>
+        <h3 class="feature-title">Launch</h3>
+        <div class="progress-bg"><div class="progress-fill"></div></div>
+        <p class="feature-desc">Production release</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

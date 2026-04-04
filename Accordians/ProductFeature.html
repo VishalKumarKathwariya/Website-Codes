@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accordion 8 — Product Feature Cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --surface: #fafaf9;
+    --ink: #111110;
+    --muted: #78716c;
+    --border: #e7e5e4;
+    --accent: #f97316;
+    --accent-bg: #fff7ed;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 20px;
+  }
+
+  .container { width: 100%; max-width: 780px; }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 52px; }
+
+  .header .pre {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .header .pre::before {
+    content: '';
+    width: 20px; height: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+
+  .header h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    max-width: 560px;
+  }
+
+  .header p {
+    margin-top: 14px;
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 480px;
+  }
+
+  /* ── ACCORDION ── */
+  .accordion { list-style: none; }
+
+  .accordion-item {
+    border-bottom: 1.5px solid var(--border);
+  }
+  .accordion:first-child { border-top: 1.5px solid var(--border); }
+
+  /* ── TRIGGER — horizontal card ── */
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 26px 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-align: left;
+    transition: opacity 0.2s;
+  }
+  .accordion-trigger:hover { opacity: 0.8; }
+
+  /* Left number */
+  .t-num {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--border);
+    min-width: 28px;
+    transition: color 0.3s;
+    letter-spacing: -0.01em;
+  }
+  .accordion-item.open .t-num { color: var(--accent); }
+
+  /* Icon box */
+  .t-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .accordion-item.open .t-icon {
+    background: var(--accent-bg);
+    border-color: rgba(249,115,22,0.2);
+  }
+
+  .t-body { flex: 1; min-width: 0; }
+
+  .t-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .t-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 3px;
+    font-weight: 400;
+  }
+
+  .t-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .t-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+    display: none;
+    transition: background 0.3s, border-color 0.3s, color 0.3s;
+  }
+  @media(min-width:500px){ .t-badge { display: block; } }
+  .accordion-item.open .t-badge {
+    background: var(--accent-bg);
+    border-color: rgba(249,115,22,0.25);
+    color: var(--accent);
+  }
+
+  .t-toggle {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), background 0.3s, color 0.3s, border-color 0.3s;
+    flex-shrink: 0;
+  }
+  .accordion-item.open .t-toggle {
+    transform: rotate(180deg);
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  /* ── BODY ── */
+  .accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+  .accordion-item.open .accordion-body { grid-template-rows: 1fr; }
+  .accordion-body-inner { overflow: hidden; }
+
+  /* ── EXPANDED PANEL ── */
+  .expanded-panel {
+    padding: 0 0 32px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media(max-width: 580px){
+    .expanded-panel { grid-template-columns: 1fr; padding-left: 0; }
+    .panel-image { order: -1; }
+  }
+
+  
+  .panel-desc {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .feature-list {
+    margin-top: 18px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .feature-list li::before {
+    content: '';
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .panel-cta {
+    margin-top: 22px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .panel-cta:hover { gap: 14px; }
+  .panel-cta::after { content: '→'; }
+
+  /* Image */
+  .panel-image {
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    position: relative;
+  }
+
+  .panel-image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.05);
+    transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  }
+  .accordion-item.open .panel-image img { transform: scale(1); }
+
+  .panel-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.25) 100%);
+  }
+
+  .panel-image-label {
+    position: absolute;
+    bottom: 12px; left: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    background: rgba(0,0,0,0.45);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    border-radius: 6px;
+    padding: 4px 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="pre">Product Features</div>
+    <h1>Everything your team needs to ship faster</h1>
+    <p>Explore the features that make our platform the go-to choice for product teams at every stage.</p>
+  </div>
+
+  <ul class="accordion">
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="t-num">01</span>
+        <span class="t-icon">🔄</span>
+        <div class="t-body">
+          <div class="t-title">Real-time Collaboration</div>
+          <div class="t-sub">Work together, live, across time zones</div>
+        </div>
+        <div class="t-right">
+          <span class="t-badge">Popular</span>
+          <span class="t-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="expanded-panel">
+            <div class="panel-text">
+              <div class="panel-desc">See your teammates' cursors in real time. Comment on any element, resolve threads, and watch changes propagate instantly — no refresh needed. Built on CRDTs so edits never conflict, even with spotty Wi-Fi.</div>
+              <ul class="feature-list">
+                <li>Presence indicators & live cursors</li>
+                <li>Inline comments with @mentions</li>
+                <li>Conflict-free concurrent editing</li>
+                <li>Change history with 1-click restore</li>
+              </ul>
+              <a class="panel-cta">See it in action</a>
+            </div>
+            <div class="panel-image">
+              <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=75" alt="Collaboration">
+              <div class="panel-image-overlay"></div>
+              <span class="panel-image-label">Live Demo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="t-num">02</span>
+        <span class="t-icon">🤖</span>
+        <div class="t-body">
+          <div class="t-title">AI-Powered Automation</div>
+          <div class="t-sub">Let the machine handle the repetitive parts</div>
+        </div>
+        <div class="t-right">
+          <span class="t-badge">New</span>
+          <span class="t-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="expanded-panel">
+            <div class="panel-text">
+              <div class="panel-desc">Describe a workflow in plain English and watch it become a running automation. Our AI understands context, suggests optimizations, and handles edge cases that rule-based tools miss entirely.</div>
+              <ul class="feature-list">
+                <li>Natural language workflow builder</li>
+                <li>Smart field mapping & data transforms</li>
+                <li>Error handling with self-healing logic</li>
+                <li>500+ pre-built automation templates</li>
+              </ul>
+              <a class="panel-cta">Try AI builder</a>
+            </div>
+            <div class="panel-image">
+              <img src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=75" alt="AI Automation">
+              <div class="panel-image-overlay"></div>
+              <span class="panel-image-label">AI Builder</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="t-num">03</span>
+        <span class="t-icon">📊</span>
+        <div class="t-body">
+          <div class="t-title">Advanced Analytics</div>
+          <div class="t-sub">Measure what matters, ignore what doesn't</div>
+        </div>
+        <div class="t-right">
+          <span class="t-badge">Pro</span>
+          <span class="t-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="expanded-panel">
+            <div class="panel-text">
+              <div class="panel-desc">Dashboards that update live, charts that don't lie, and reports you'll actually read. Drill from company-wide KPIs down to a single user session in three clicks. Export to Sheets, Notion, or Slack with one command.</div>
+              <ul class="feature-list">
+                <li>Real-time KPI dashboards</li>
+                <li>Custom funnel & cohort analysis</li>
+                <li>Slack/email automated reports</li>
+                <li>SQL query interface for power users</li>
+              </ul>
+              <a class="panel-cta">View sample dashboard</a>
+            </div>
+            <div class="panel-image">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=75" alt="Analytics">
+              <div class="panel-image-overlay"></div>
+              <span class="panel-image-label">Live Data</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="t-num">04</span>
+        <span class="t-icon">🔗</span>
+        <div class="t-body">
+          <div class="t-title">Deep Integrations</div>
+          <div class="t-sub">Plug into the tools you already love</div>
+        </div>
+        <div class="t-right">
+          <span class="t-badge">60+ apps</span>
+          <span class="t-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="expanded-panel">
+            <div class="panel-text">
+              <div class="panel-desc">First-class native integrations with the tools your team uses every day. Not shallow OAuth connections — deep, bidirectional syncs that keep data consistent everywhere without manual reconciliation.</div>
+              <ul class="feature-list">
+                <li>GitHub, Linear, Jira sync</li>
+                <li>Slack & Teams notifications</li>
+                <li>Salesforce & HubSpot CRM bridge</li>
+                <li>Zapier + native API for custom builds</li>
+              </ul>
+              <a class="panel-cta">Browse integrations</a>
+            </div>
+            <div class="panel-image">
+              <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=75" alt="Integrations">
+              <div class="panel-image-overlay"></div>
+              <span class="panel-image-label">Ecosystem</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="t-num">05</span>
+        <span class="t-icon">🛡️</span>
+        <div class="t-body">
+          <div class="t-title">Enterprise Security</div>
+          <div class="t-sub">SOC 2, SAML SSO, and zero-trust architecture</div>
+        </div>
+        <div class="t-right">
+          <span class="t-badge">Enterprise</span>
+          <span class="t-toggle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></span>
+        </div>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="expanded-panel">
+            <div class="panel-text">
+              <div class="panel-desc">Security shouldn't be an afterthought bolted on at enterprise tier. We built zero-trust from day one — every request is authenticated, every action logged, every data parcel encrypted at rest and in transit.</div>
+              <ul class="feature-list">
+                <li>SOC 2 Type II certified</li>
+                <li>SAML SSO & SCIM provisioning</li>
+                <li>Role-based access control (RBAC)</li>
+                <li>Audit logs with 12-month retention</li>
+              </ul>
+              <a class="panel-cta">Read security docs</a>
+            </div>
+            <div class="panel-image">
+              <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&q=75" alt="Security">
+              <div class="panel-image-overlay"></div>
+              <span class="panel-image-label">Zero-Trust</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.accordion-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item.open').forEach(el => {
+        el.classList.remove('open');
+        el.querySelector('.accordion-trigger').setAttribute('aria-expanded','false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        trigger.setAttribute('aria-expanded','true');
+      }
+    });
+  });
+</script>
+</body>
+</html>

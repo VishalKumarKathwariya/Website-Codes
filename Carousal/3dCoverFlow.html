@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06 — 3D Coverflow Carousel</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    background: #000;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Background */
+  .bg {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, #1a0a3a 0%, #000 65%);
+    z-index: 0;
+  }
+
+  /* Page header */
+  .page-label {
+    position: relative;
+    z-index: 10;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #6e6e73;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .page-title {
+    position: relative;
+    z-index: 10;
+    font-size: 28px;
+    font-weight: 700;
+    color: #f5f5f7;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .page-sub {
+    position: relative;
+    z-index: 10;
+    font-size: 14px;
+    color: #6e6e73;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  /* Coverflow stage */
+  .stage {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 800px;
+    height: 320px;
+    perspective: 1000px;
+    cursor: grab;
+  }
+
+  .stage:active { cursor: grabbing; }
+
+  .track {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cf-card {
+    position: absolute;
+    width: 200px;
+    height: 260px;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    will-change: transform;
+    transition: transform .5s cubic-bezier(.23,1,.32,1), opacity .5s;
+    box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 .5px rgba(255,255,255,.08);
+  }
+
+  .cf-card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 22px;
+  }
+
+  .cf-emoji {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+    font-size: 80px;
+    opacity: .85;
+  }
+
+  .cf-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 12px rgba(0,0,0,.6);
+  }
+
+  .cf-meta {
+    font-size: 12px;
+    color: rgba(255,255,255,.65);
+    position: relative;
+    z-index: 1;
+    margin-top: 3px;
+  }
+
+  .cf-reflect {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,.4), transparent);
+    pointer-events: none;
+  }
+
+  /* Reflection below */
+  .reflection-stage {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 800px;
+    height: 80px;
+    perspective: 1000px;
+    pointer-events: none;
+    opacity: .35;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.6) 0%, transparent 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,.6) 0%, transparent 100%);
+    transform: scaleY(-1);
+  }
+
+  /* Title display */
+  .now-playing {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    margin-top: 16px;
+    min-height: 52px;
+  }
+
+  .np-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #f5f5f7;
+    margin-bottom: 4px;
+    transition: opacity .3s;
+  }
+
+  .np-meta {
+    font-size: 14px;
+    color: #6e6e73;
+    transition: opacity .3s;
+  }
+
+  /* Controls */
+  .controls {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 24px;
+  }
+
+  .ctrl-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    opacity: .7;
+    transition: opacity .2s, transform .2s;
+  }
+
+  .ctrl-btn:hover { opacity: 1; transform: scale(1.1); }
+
+  .play-btn {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #fff;
+    color: #000;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    transition: transform .2s, background .2s;
+  }
+
+  .play-btn:hover { transform: scale(1.06); background: #f5f5f7; }
+
+  /* Dots */
+  .dots {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    gap: 7px;
+    margin-top: 18px;
+  }
+
+  .cf-dot {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,.2);
+    cursor: pointer;
+    border: none;
+    transition: width .35s cubic-bezier(.23,1,.32,1), background .3s;
+    width: 6px;
+  }
+
+  .cf-dot.active { width: 22px; background: rgba(255,255,255,.9); }
+
+  /* Volume */
+  .vol-row {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .vol-icon { font-size: 14px; color: #6e6e73; }
+
+  .vol-bar {
+    width: 180px;
+    height: 3px;
+    background: rgba(255,255,255,.2);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .vol-fill {
+    height: 100%;
+    background: rgba(255,255,255,.75);
+    border-radius: 2px;
+    width: 65%;
+    position: relative;
+  }
+
+  .vol-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    position: absolute;
+    right: -6px;
+    top: -4.5px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<p class="page-label">Pattern 06 — Apple Music / iTunes / App Store</p>
+<h1 class="page-title">3D Coverflow Carousel</h1>
+<p class="page-sub">CSS perspective · rotateY transforms · drag to spin · reflections</p>
+
+<div class="stage" id="stage">
+  <div class="track" id="track"></div>
+</div>
+
+<div class="now-playing">
+  <div class="np-title" id="np-title">Dark Side of the Moon</div>
+  <div class="np-meta" id="np-meta">Pink Floyd · 1973 · Alternative Rock</div>
+</div>
+
+<div class="controls">
+  <button class="ctrl-btn" id="prev-btn">⏮</button>
+  <button class="ctrl-btn">⏪</button>
+  <div class="play-btn" id="play-btn">▶</div>
+  <button class="ctrl-btn">⏩</button>
+  <button class="ctrl-btn" id="next-btn">⏭</button>
+</div>
+
+<div class="dots" id="dots"></div>
+
+<div class="vol-row">
+  <span class="vol-icon">🔈</span>
+  <div class="vol-bar">
+    <div class="vol-fill"><div class="vol-thumb"></div></div>
+  </div>
+  <span class="vol-icon">🔊</span>
+</div>
+
+<script>
+  const ALBUMS = [
+    { emoji:'🎸', bg:'linear-gradient(135deg,#1a0a2e,#3d1a7a)', title:'Dark Side of the Moon', meta:'Pink Floyd · 1973 · Alternative Rock' },
+    { emoji:'🌊', bg:'linear-gradient(135deg,#0a1a2e,#1a4a8c)', title:'Ocean Eyes', meta:'Billie Eilish · 2016 · Alternative Pop' },
+    { emoji:'🔥', bg:'linear-gradient(135deg,#2e0a0a,#8c1a1a)', title:'Blinding Lights', meta:'The Weeknd · 2019 · Synth-Pop' },
+    { emoji:'🌿', bg:'linear-gradient(135deg,#0a2e0a,#1a7a1a)', title:'Good Days', meta:'SZA · 2020 · Neo Soul' },
+    { emoji:'⚡', bg:'linear-gradient(135deg,#2e2a0a,#8c7a1a)', title:'Levitating', meta:'Dua Lipa · 2020 · Pop' },
+    { emoji:'🌙', bg:'linear-gradient(135deg,#0a2a2e,#1a6a7a)', title:'As It Was', meta:'Harry Styles · 2022 · Indie Pop' },
+    { emoji:'🦋', bg:'linear-gradient(135deg,#2e0a1e,#7a1a5a)', title:'Flowers', meta:'Miley Cyrus · 2023 · Pop' },
+    { emoji:'🎵', bg:'linear-gradient(135deg,#1a1a0a,#5a5a1a)', title:'Anti-Hero', meta:'Taylor Swift · 2022 · Pop' },
+    { emoji:'💎', bg:'linear-gradient(135deg,#0a2a1a,#1a7a5a)', title:'Unholy', meta:'Sam Smith · 2022 · Pop' },
+  ];
+
+  let cur = Math.floor(ALBUMS.length / 2);
+  let isPlaying = false;
+  const track = document.getElementById('track');
+  const dotsEl = document.getElementById('dots');
+  const npTitle = document.getElementById('np-title');
+  const npMeta = document.getElementById('np-meta');
+  const playBtn = document.getElementById('play-btn');
+
+  // Build cards
+  ALBUMS.forEach((a, i) => {
+    const c = document.createElement('div');
+    c.className = 'cf-card';
+    c.innerHTML = `<div class="cf-card-inner" style="background:${a.bg}">
+      <div class="cf-emoji">${a.emoji}</div>
+      <div class="cf-title">${a.title}</div>
+      <div class="cf-meta">${a.meta.split('·')[0].trim()}</div>
+      <div class="cf-reflect"></div>
+    </div>`;
+    c.addEventListener('click', () => goTo(i));
+    track.appendChild(c);
+
+    const d = document.createElement('button');
+    d.className = 'cf-dot';
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function render() {
+    const cards = track.querySelectorAll('.cf-card');
+    const dots = dotsEl.querySelectorAll('.cf-dot');
+    cards.forEach((c, i) => {
+      const off = i - cur;
+      const abs = Math.abs(off);
+      const x = off * 180;
+      const ry = off === 0 ? 0 : off < 0 ? 45 : -45;
+      const z = abs === 0 ? 0 : abs === 1 ? -80 : abs === 2 ? -200 : -350;
+      const sc = abs === 0 ? 1 : abs === 1 ? 0.8 : abs === 2 ? 0.62 : 0.5;
+      const op = abs === 0 ? 1 : abs === 1 ? 0.8 : abs === 2 ? 0.55 : 0;
+      const zi = 20 - abs;
+      c.style.cssText = `transform:translateX(${x}px) translateZ(${z}px) rotateY(${ry}deg) scale(${sc});opacity:${op};z-index:${zi};`;
+    });
+    dots.forEach((d, i) => d.className = 'cf-dot' + (i === cur ? ' active' : ''));
+    npTitle.style.opacity = 0;
+    npMeta.style.opacity = 0;
+    setTimeout(() => {
+      npTitle.textContent = ALBUMS[cur].title;
+      npMeta.textContent = ALBUMS[cur].meta;
+      npTitle.style.opacity = 1;
+      npMeta.style.opacity = 1;
+    }, 150);
+  }
+
+  function goTo(n) {
+    cur = (n + ALBUMS.length) % ALBUMS.length;
+    render();
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', () => goTo(cur - 1));
+  document.getElementById('next-btn').addEventListener('click', () => goTo(cur + 1));
+
+  playBtn.addEventListener('click', () => {
+    isPlaying = !isPlaying;
+    playBtn.textContent = isPlaying ? '⏸' : '▶';
+  });
+
+  // Drag
+  let dragX = null;
+  const stage = document.getElementById('stage');
+  stage.addEventListener('mousedown', e => { dragX = e.clientX; });
+  stage.addEventListener('mousemove', e => {
+    if (dragX === null) return;
+    const dx = e.clientX - dragX;
+    if (Math.abs(dx) > 55) { goTo(cur + (dx < 0 ? 1 : -1)); dragX = null; }
+  });
+  stage.addEventListener('mouseup', () => dragX = null);
+  stage.addEventListener('mouseleave', () => dragX = null);
+
+  // Touch
+  let touchX = null;
+  stage.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+  stage.addEventListener('touchend', e => {
+    if (!touchX) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) goTo(cur + (dx < 0 ? 1 : -1));
+    touchX = null;
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') goTo(cur - 1);
+    if (e.key === 'ArrowRight') goTo(cur + 1);
+    if (e.key === ' ') { isPlaying = !isPlaying; playBtn.textContent = isPlaying ? '⏸' : '▶'; e.preventDefault(); }
+  });
+
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 05 — Magnetic Scale</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #f0f4ff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(14,165,233,0.1) 0%, transparent 70%);
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3rem;
+    padding: 3rem 2rem; text-align: center;
+  }
+
+  .label-block { display: flex; flex-direction: column; gap: 8px; }
+
+  .tag {
+    display: inline-block; padding: 4px 12px;
+    background: rgba(14,165,233,0.1);
+    border: 1px solid rgba(14,165,233,0.25);
+    border-radius: 50px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #0284c7;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700; color: #0f172a; line-height: 1.1;
+  }
+
+  p { font-size: 15px; color: #64748b; max-width: 400px; line-height: 1.6; }
+
+  /* ── BUTTONS ── */
+  .btn-group { display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
+
+  .btn-magnetic {
+    padding: 15px 36px;
+    border: none; border-radius: 12px;
+    background: #0ea5e9;
+    color: #fff;
+    font-size: 16px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition:
+      transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.25s ease,
+      background 0.15s;
+    will-change: transform;
+  }
+  .btn-magnetic:hover {
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 0 16px 40px rgba(14,165,233,0.38);
+  }
+  .btn-magnetic:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 12px rgba(14,165,233,0.25);
+    transition: transform 0.08s, box-shadow 0.08s;
+  }
+
+  .btn-magnetic-dark {
+    background: #0f172a; color: #fff;
+  }
+  .btn-magnetic-dark:hover {
+    box-shadow: 0 16px 40px rgba(15,23,42,0.3);
+  }
+
+  .btn-magnetic-outline {
+    background: transparent;
+    border: 2px solid #0ea5e9;
+    color: #0ea5e9;
+  }
+  .btn-magnetic-outline:hover {
+    background: rgba(14,165,233,0.08);
+    box-shadow: 0 12px 32px rgba(14,165,233,0.2);
+  }
+
+  /* spring physics label */
+  .spring-note {
+    font-size: 13px; color: #94a3b8;
+    background: rgba(14,165,233,0.08);
+    border: 1px solid rgba(14,165,233,0.15);
+    border-radius: 8px; padding: 10px 18px;
+    max-width: 380px;
+    line-height: 1.5;
+  }
+  .spring-note code {
+    font-family: monospace; font-size: 12px;
+    background: rgba(14,165,233,0.12);
+    padding: 1px 5px; border-radius: 4px;
+    color: #0284c7;
+  }
+
+  .info {
+    display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;
+    margin-top: 0.5rem;
+  }
+  .info-item {
+    background: rgba(14,165,233,0.06);
+    border: 1px solid rgba(14,165,233,0.12);
+    border-radius: 10px; padding: 12px 20px;
+    font-size: 13px; color: #64748b;
+    display: flex; flex-direction: column; gap: 4px; min-width: 130px;
+  }
+  .info-item strong { color: #0f172a; font-size: 14px; font-weight: 600; }
+
+  .hint { font-size: 12px; color: #94a3b8; letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 05 / 10</span>
+    <h1>Magnetic Scale</h1>
+    <p>The button leaps toward the cursor with spring physics — overshoots and settles. Popularized by Framer Motion and used extensively in no-code tools.</p>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn-magnetic">Try Free</button>
+    <button class="btn-magnetic btn-magnetic-dark">Get Demo</button>
+    <button class="btn-magnetic btn-magnetic-outline">Learn More</button>
+  </div>
+
+  <div class="spring-note">
+    Easing: <code>cubic-bezier(0.34, 1.56, 0.64, 1)</code> — the overshoot past 1.0 creates the spring bounce effect
+  </div>
+
+  <span class="hint">↑ Hover and click each button — feel the spring</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Framer, Webflow, Prisma</div>
+    <div class="info-item"><strong>Technique</strong>CSS transform + spring easing</div>
+    <div class="info-item"><strong>Feel</strong>Bouncy, alive, playful</div>
+    <div class="info-item"><strong>Best for</strong>Hero sections, apps</div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 15 — Letter Scramble</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#080808;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Sans',sans-serif;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size:36px 36px;
+  }
+  .page{
+    position:relative;z-index:1;
+    display:flex;flex-direction:column;align-items:center;gap:3.5rem;
+    padding:3rem 2rem;text-align:center;
+  }
+  .label-block{display:flex;flex-direction:column;gap:10px;align-items:center}
+  .tag{
+    display:inline-block;padding:5px 14px;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
+    border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:rgba(255,255,255,0.45);
+  }
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;color:#fff;line-height:1.1}
+  p{font-size:15px;color:rgba(255,255,255,0.38);max-width:420px;line-height:1.65}
+
+  /* ── BUTTONS ── */
+  .demo-area{display:flex;flex-direction:column;align-items:center;gap:1.5rem;width:100%;max-width:520px}
+  .row{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center}
+
+  .btn-scramble{
+    padding:14px 32px;
+    border:1px solid rgba(255,255,255,0.12);border-radius:8px;
+    background:#111;color:#fff;
+    font-size:15px;font-weight:600;font-family:'DM Mono',monospace;
+    cursor:pointer;min-width:180px;letter-spacing:.08em;
+    transition:border-color .2s,background .2s;
+    text-transform:uppercase;
+  }
+  .btn-scramble:hover{border-color:rgba(255,255,255,0.3);background:#1a1a1a}
+
+  /* coloured variants */
+  .btn-sc-purple{border-color:rgba(139,92,246,0.35);color:#c4b5fd}
+  .btn-sc-purple:hover{border-color:#8b5cf6;background:rgba(139,92,246,0.08)}
+  .btn-sc-green{border-color:rgba(16,185,129,0.35);color:#6ee7b7}
+  .btn-sc-green:hover{border-color:#10b981;background:rgba(16,185,129,0.08)}
+  .btn-sc-red{border-color:rgba(239,68,68,0.35);color:#fca5a5}
+  .btn-sc-red:hover{border-color:#ef4444;background:rgba(239,68,68,0.08)}
+  .btn-sc-amber{border-color:rgba(245,158,11,0.35);color:#fcd34d}
+  .btn-sc-amber:hover{border-color:#f59e0b;background:rgba(245,158,11,0.08)}
+
+  .divider{width:100%;height:1px;background:rgba(255,255,255,0.06)}
+  .sub{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,0.22);font-weight:600}
+
+  .info{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+  .info-item{
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
+    border-radius:10px;padding:12px 20px;font-size:13px;color:rgba(255,255,255,0.38);
+    display:flex;flex-direction:column;gap:4px;min-width:130px;
+  }
+  .info-item strong{color:rgba(255,255,255,0.75);font-size:14px;font-weight:600}
+  .hint{font-size:12px;color:rgba(255,255,255,0.2);letter-spacing:.05em}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 15 / 20</span>
+    <h1>Letter Scramble</h1>
+    <p>Characters randomize rapidly then resolve back to the original text — a hacker-aesthetic micro-interaction popularized by developer-first products.</p>
+  </div>
+
+  <div class="demo-area">
+    <span class="sub">Hover any button</span>
+    <div class="row">
+      <button class="btn-scramble" data-text="EXECUTE">EXECUTE</button>
+      <button class="btn-scramble" data-text="DEPLOY">DEPLOY</button>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
+      <button class="btn-scramble btn-sc-purple" data-text="CONNECT">CONNECT</button>
+      <button class="btn-scramble btn-sc-green" data-text="CONFIRM">CONFIRM</button>
+    </div>
+    <div class="row">
+      <button class="btn-scramble btn-sc-red" data-text="DELETE">DELETE</button>
+      <button class="btn-scramble btn-sc-amber" data-text="OVERRIDE">OVERRIDE</button>
+    </div>
+    <div class="divider"></div>
+    <span class="sub">Full sentence scramble</span>
+    <button class="btn-scramble" data-text="INITIALIZE SEQUENCE">INITIALIZE SEQUENCE</button>
+  </div>
+
+  <span class="hint">↑ Hover each button — watch the letters crack and reassemble</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Resend, Raycast, Vercel</div>
+    <div class="info-item"><strong>Technique</strong>JS setInterval + charCode</div>
+    <div class="info-item"><strong>Feel</strong>Hacker, cryptic, technical</div>
+    <div class="info-item"><strong>Best for</strong>Dev tools, dark UIs</div>
+  </div>
+</div>
+
+<script>
+  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*?';
+  document.querySelectorAll('.btn-scramble').forEach(btn => {
+    const original = btn.dataset.text || btn.textContent;
+    let interval = null;
+    btn.addEventListener('mouseenter', () => {
+      let iter = 0;
+      clearInterval(interval);
+      interval = setInterval(() => {
+        btn.textContent = original.split('').map((ch, i) => {
+          if(ch === ' ') return ' ';
+          if(i < iter) return original[i];
+          return CHARS[Math.floor(Math.random() * CHARS.length)];
+        }).join('');
+        if(iter >= original.replace(/ /g,'').length + 2){
+          clearInterval(interval);
+          btn.textContent = original;
+        }
+        iter += 0.35;
+      }, 45);
+    });
+    btn.addEventListener('mouseleave', () => {
+      clearInterval(interval);
+      btn.textContent = original;
+    });
+  });
+</script>
+</body>
+</html>

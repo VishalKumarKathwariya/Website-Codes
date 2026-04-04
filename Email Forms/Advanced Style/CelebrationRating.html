@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 50 — Confetti / Celebration Feedback Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.5);--wine-tint:rgba(139,26,56,.14);
+  --bg0:#06060C;--bg1:#0B0B14;--bg2:#10101A;--bg3:#161622;--bg4:#1E1E2C;--bg5:#262638;
+  --chalk:#F2EAF0;--chalk2:#C4B8C8;--chalk3:#887C90;--chalk4:#504864;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.13);--bdr-w:rgba(139,26,56,.45);
+  --r:12px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;--r-3xl:40px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);--bounce:cubic-bezier(.34,2,.64,1);
+  --ff-d:'Playfair Display',Georgia,serif;--ff-s:'Syne',sans-serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-s);font-size:15px;line-height:1.65;min-height:100dvh;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input,select,textarea{font:inherit;color:inherit;border:none;outline:none}
+
+/* ── Canvas (confetti layer) ── */
+#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:9000}
+
+/* ── Page ── */
+.page{position:relative;z-index:1;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(1.5rem,5vw,3rem) clamp(1rem,4vw,2rem);gap:clamp(1.5rem,4vw,2.5rem)}
+
+/* ambient glow */
+.glow-bg{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(139,26,56,.09) 0%,transparent 70%)}
+
+/* ── Screen system ── */
+.screen{display:none;width:100%;max-width:520px;animation:screenIn .45s var(--spring) both}
+.screen.active{display:block}
+@keyframes screenIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+
+/* ── Card ── */
+.card{position:relative;z-index:1;background:var(--bg2);border:1px solid var(--bdr2);border-radius:var(--r-2xl);overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.03)}
+
+/* ── Screen 1: Subscription form ── */
+.s1-hero{background:linear-gradient(150deg,var(--wine-xd) 0%,var(--wine-d) 55%,#1E0A14 100%);padding:clamp(2rem,5vw,2.8rem) clamp(1.5rem,4vw,2.2rem);position:relative;overflow:hidden;text-align:center}
+.s1-hero::before{content:'';position:absolute;top:-70px;left:50%;transform:translateX(-50%);width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(176,35,71,.28) 0%,transparent 68%)}
+.s1-hero::after{content:'';position:absolute;bottom:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(92,15,36,.4) 0%,transparent 70%)}
+.s1-badge{display:inline-block;padding:5px 14px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:1rem;font-family:var(--ff-m);position:relative;z-index:1}
+.s1-title{font-family:var(--ff-d);font-size:clamp(1.6rem,5vw,2.2rem);font-weight:800;line-height:1.12;position:relative;z-index:1}
+.s1-title em{font-style:italic;opacity:.8}
+.s1-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:6px;position:relative;z-index:1}
+
+.s1-body{padding:clamp(1.5rem,4vw,2rem)}
+.fields{display:flex;flex-direction:column;gap:13px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);font-family:var(--ff-m)}
+.ipt{background:var(--bg4);border:1.5px solid var(--bdr);border-radius:var(--r);padding:13px 16px;font-size:14px;transition:all .22s;color:var(--chalk);width:100%}
+.ipt:focus{background:var(--bg5);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.ipt::placeholder{color:var(--chalk4)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:440px){.row2{grid-template-columns:1fr}}
+
+/* Star rating */
+.star-row{display:flex;gap:6px;flex-wrap:wrap}
+.star-opt{font-size:1.6rem;cursor:pointer;transition:transform .15s var(--spring);-webkit-user-select: none; user-select:none;line-height:1}
+.star-opt:hover,.star-opt.active{transform:scale(1.25)}
+.star-opt.filled{filter:drop-shadow(0 0 6px rgba(212,54,90,.7))}
+
+/* Topic chips */
+.topic-row{display:flex;flex-wrap:wrap;gap:7px}
+.t-chip{padding:7px 14px;border-radius:99px;background:var(--bg4);border:1.5px solid var(--bdr);font-size:12px;font-weight:600;color:var(--chalk3);cursor:pointer;transition:all .2s;-webkit-user-select: none; user-select:none}
+.t-chip:hover{border-color:var(--bdr-w);color:var(--chalk2)}
+.t-chip.on{background:var(--wine-tint);border-color:var(--bdr-w);color:var(--wine-xl)}
+
+.sub-btn{
+  width:100%;height:54px;border-radius:var(--r-lg);font-size:15px;font-weight:800;
+  letter-spacing:.05em;
+  background:linear-gradient(135deg,var(--wine-xd),var(--wine) 55%,var(--wine-l));
+  color:#fff;box-shadow:0 6px 28px var(--wine-glow);transition:all .25s;
+  position:relative;overflow:hidden;margin-top:4px;
+}
+.sub-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 55%);opacity:0;transition:opacity .25s}
+.sub-btn:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(139,26,56,.7)}
+.sub-btn:hover::before{opacity:1}
+.sub-btn:active{transform:none}
+
+/* loading state */
+.sub-btn .btn-label{transition:opacity .2s}
+.sub-btn.loading .btn-label{opacity:0}
+.sub-btn .spin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;animation:spin .7s linear infinite;display:none}
+.sub-btn.loading .spin{display:block}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* ── Screen 2: Celebration ── */
+.cel-card{position:relative;z-index:1;background:var(--bg2);border:1px solid var(--bdr2);border-radius:var(--r-2xl);overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.03);padding:clamp(2.5rem,6vw,4rem) clamp(1.5rem,5vw,2.5rem);text-align:center}
+.cel-card::before{content:'';display:block;height:2px;position:absolute;top:0;left:0;right:0;background:linear-gradient(90deg,transparent,var(--wine-l),#FFD700,var(--wine-l),transparent)}
+
+/* Trophy animation */
+.trophy-wrap{position:relative;margin:0 auto 1.5rem;width:fit-content}
+.trophy-emoji{font-size:clamp(3rem,8vw,4.5rem);display:block;animation:trophyBounce .6s var(--bounce) .15s both}
+@keyframes trophyBounce{0%{opacity:0;transform:scale(.3) rotate(-20deg)}60%{transform:scale(1.15) rotate(5deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+.trophy-glow{position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,.12) 0%,transparent 65%);animation:glowPulse 2s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.15);opacity:1}}
+
+/* Burst circles */
+.burst{position:absolute;top:50%;left:50%;pointer-events:none}
+.burst-dot{position:absolute;width:8px;height:8px;border-radius:50%;transform-origin:0 0}
+
+.cel-title{font-family:var(--ff-d);font-size:clamp(1.8rem,5vw,2.6rem);font-weight:900;line-height:1.1;margin-bottom:.5rem;animation:riseIn .5s var(--spring) .3s both}
+@keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.cel-title em{font-style:italic;background:linear-gradient(135deg,#FFD700,var(--wine-xl),#FF8C69);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.cel-sub{font-size:14px;color:var(--chalk3);max-width:38ch;margin:0 auto .8rem;animation:riseIn .5s var(--spring) .4s both}
+
+/* Summary card */
+.summary-card{background:var(--bg3);border:1px solid var(--bdr-w);border-radius:var(--r-xl);padding:clamp(1rem,3vw,1.4rem) clamp(1rem,3vw,1.5rem);margin:1.2rem 0;animation:riseIn .5s var(--spring) .5s both}
+.sc-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bdr)}
+.sc-row:last-child{border-bottom:none}
+.sc-key{font-size:11px;color:var(--chalk3);font-family:var(--ff-m);letter-spacing:.05em}
+.sc-val{font-size:13px;font-weight:700;color:var(--chalk)}
+.sc-stars{color:var(--wine-xl);font-size:13px;letter-spacing:1px}
+
+/* Share row */
+.share-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:1.2rem 0;animation:riseIn .5s var(--spring) .6s both}
+.share-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:var(--r-lg);font-size:13px;font-weight:700;transition:all .2s;border:1.5px solid var(--bdr-w);color:var(--chalk2);background:var(--bg4)}
+.share-btn:hover{background:var(--wine-tint);color:var(--chalk);transform:translateY(-2px)}
+
+/* Stat bubbles */
+.cel-stats{display:flex;justify-content:center;gap:clamp(.8rem,3vw,1.8rem);margin:1.4rem 0;flex-wrap:wrap;animation:riseIn .5s var(--spring) .55s both}
+.cs-item{text-align:center}
+.cs-num{font-family:var(--ff-d);font-size:clamp(1.4rem,4vw,2rem);font-weight:800;background:linear-gradient(135deg,var(--wine-xl),#F08098);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cs-label{font-size:10px;color:var(--chalk4);font-family:var(--ff-m);letter-spacing:.08em;text-transform:uppercase}
+
+/* Restart */
+.restart-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;animation:riseIn .5s var(--spring) .7s both}
+.restart-btn{display:inline-flex;align-items:center;gap:7px;padding:12px 22px;border-radius:var(--r-lg);background:var(--wine-tint);border:1.5px solid var(--bdr-w);color:var(--wine-xl);font-size:13px;font-weight:700;transition:all .2s}
+.restart-btn:hover{background:rgba(139,26,56,.22)}
+.replay-btn{display:inline-flex;align-items:center;gap:7px;padding:12px 22px;border-radius:var(--r-lg);background:rgba(255,215,0,.08);border:1.5px solid rgba(255,215,0,.25);color:#FFD700;font-size:13px;font-weight:700;transition:all .2s}
+.replay-btn:hover{background:rgba(255,215,0,.14)}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg4);border:1px solid var(--bdr-w);padding:13px 22px;border-radius:var(--r);font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:9px;box-shadow:0 10px 36px rgba(0,0,0,.6);opacity:0;pointer-events:none;white-space:nowrap;transition:transform .4s var(--spring),opacity .35s}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.t-dot{width:8px;height:8px;border-radius:50%;background:#FFD700;animation:bl 1.4s infinite;flex-shrink:0}
+@keyframes bl{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+
+@media(max-width:380px){
+  .star-opt{font-size:1.3rem}
+}
+</style>
+</head>
+<body>
+
+<canvas id="confettiCanvas"></canvas>
+<div class="glow-bg"></div>
+<div class="toast" id="toast"><span class="t-dot"></span><span id="tmsg">Confetti launched! 🎉</span></div>
+
+<div class="page">
+
+  <!-- ─── SCREEN 1: Subscription Form ─── -->
+  <div class="screen active" id="s1">
+    <div class="card">
+      <div class="s1-hero">
+        <div class="s1-badge">Design 50 · Celebration Form</div>
+        <h1 class="s1-title">Subscribe &amp; <em>celebrate</em><br/>with us.</h1>
+        <p class="s1-sub">Fill in your details — a little surprise awaits on the other side.</p>
+      </div>
+      <div class="s1-body">
+        <form class="fields" id="subForm" onsubmit="handleSubscribe(event)">
+          <div class="row2">
+            <div class="fld">
+              <label class="lbl">First Name</label>
+              <input class="ipt" id="fname" type="text" placeholder="Jane" autocomplete="given-name" required/>
+            </div>
+            <div class="fld">
+              <label class="lbl">Last Name</label>
+              <input class="ipt" id="lname" type="text" placeholder="Doe" autocomplete="family-name"/>
+            </div>
+          </div>
+          <div class="fld">
+            <label class="lbl">Email Address</label>
+            <input class="ipt" id="email" type="email" placeholder="jane@example.com" autocomplete="email" required/>
+          </div>
+
+          <!-- Star Rating -->
+          <div class="fld">
+            <label class="lbl">Rate your excitement</label>
+            <div class="star-row" id="starRow">
+              <span class="star-opt" data-v="1">⭐</span>
+              <span class="star-opt" data-v="2">⭐</span>
+              <span class="star-opt" data-v="3">⭐</span>
+              <span class="star-opt" data-v="4">⭐</span>
+              <span class="star-opt" data-v="5">⭐</span>
+            </div>
+          </div>
+
+          <!-- Topics -->
+          <div class="fld">
+            <label class="lbl">What excites you most?</label>
+            <div class="topic-row">
+              <span class="t-chip on" onclick="this.classList.toggle('on')">✦ Design</span>
+              <span class="t-chip" onclick="this.classList.toggle('on')">⚙ Technology</span>
+              <span class="t-chip" onclick="this.classList.toggle('on')">◈ Business</span>
+              <span class="t-chip" onclick="this.classList.toggle('on')">◉ Science</span>
+              <span class="t-chip" onclick="this.classList.toggle('on')">◎ Culture</span>
+            </div>
+          </div>
+
+          <button class="sub-btn" id="subBtn" type="submit">
+            <span class="btn-label">
+              🎉 Subscribe — Surprise Awaits
+            </span>
+            <span class="spin"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SCREEN 2: Celebration ─── -->
+  <div class="screen" id="s2">
+    <div class="cel-card">
+      <div class="trophy-wrap">
+        <div class="trophy-glow"></div>
+        <span class="trophy-emoji" id="trophyEmoji">🏆</span>
+      </div>
+
+      <h2 class="cel-title">You're <em>officially</em><br/>one of us!</h2>
+      <p class="cel-sub" id="celSub">Welcome aboard, Jane. Your first issue arrives this Tuesday.</p>
+
+      <div class="summary-card">
+        <div class="sc-row"><span class="sc-key">Email</span><span class="sc-val" id="sum-email">—</span></div>
+        <div class="sc-row"><span class="sc-key">Excitement</span><span class="sc-stars" id="sum-stars">⭐⭐⭐⭐⭐</span></div>
+        <div class="sc-row"><span class="sc-key">Topics</span><span class="sc-val" id="sum-topics">—</span></div>
+        <div class="sc-row"><span class="sc-key">Member since</span><span class="sc-val" id="sum-date">—</span></div>
+      </div>
+
+      <div class="cel-stats">
+        <div class="cs-item"><div class="cs-num" id="statNum1">40K+</div><div class="cs-label">Readers</div></div>
+        <div class="cs-item"><div class="cs-num">#<span id="statNum2">1</span></div><div class="cs-label">New Today</div></div>
+        <div class="cs-item"><div class="cs-num">96%</div><div class="cs-label">Open Rate</div></div>
+      </div>
+
+      <div class="share-row">
+        <button class="share-btn" onclick="fakeShare('Twitter')">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          Share on X
+        </button>
+        <button class="share-btn" onclick="fakeShare('LinkedIn')">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          Share
+        </button>
+        <button class="share-btn" onclick="copyLink()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy Link
+        </button>
+      </div>
+
+      <div class="restart-row">
+        <button class="replay-btn" onclick="launchConfetti()">
+          🎊 Replay Confetti
+        </button>
+        <button class="restart-btn" onclick="restart()">
+          ↩ Start Over
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   CONFETTI ENGINE
+══════════════════════════════════════════ */
+const canvas = document.getElementById('confettiCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let animFrame = null;
+let running = false;
+
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+
+const COLORS=['#D4365A','#8B1A38','#FFD700','#FF8C69','#F08098','#FFF0F5','#FF6B9D','#FFB347','#FFEC8B','#FF4D6D'];
+const SHAPES=['rect','circle','ribbon'];
+
+class Particle{
+  constructor(x,y){
+    this.x=x||Math.random()*canvas.width;
+    this.y=y||canvas.height*-.05;
+    this.color=COLORS[Math.floor(Math.random()*COLORS.length)];
+    this.shape=SHAPES[Math.floor(Math.random()*SHAPES.length)];
+    this.w=Math.random()*10+5;
+    this.h=Math.random()*6+3;
+    this.r=Math.random()*4+2;
+    this.vx=(Math.random()-.5)*5;
+    this.vy=Math.random()*4+2;
+    this.gravity=.12;
+    this.drag=.98;
+    this.angle=Math.random()*Math.PI*2;
+    this.spin=(Math.random()-.5)*.3;
+    this.opacity=1;
+    this.decay=.0035+Math.random()*.004;
+    this.life=1;
+  }
+  update(){
+    this.vy+=this.gravity;
+    this.vx*=this.drag;
+    this.x+=this.vx;
+    this.y+=this.vy;
+    this.angle+=this.spin;
+    this.life-=this.decay;
+    this.opacity=Math.max(0,this.life);
+  }
+  draw(){
+    ctx.save();
+    ctx.globalAlpha=this.opacity;
+    ctx.fillStyle=this.color;
+    ctx.translate(this.x,this.y);
+    ctx.rotate(this.angle);
+    if(this.shape==='rect'){ctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);}
+    else if(this.shape==='circle'){ctx.beginPath();ctx.arc(0,0,this.r,0,Math.PI*2);ctx.fill();}
+    else if(this.shape==='ribbon'){ctx.beginPath();ctx.moveTo(-this.w/2,0);ctx.quadraticCurveTo(0,-this.h*1.5,this.w/2,0);ctx.quadraticCurveTo(0,this.h*1.5,-this.w/2,0);ctx.fill();}
+    ctx.restore();
+  }
+}
+
+function launchBurst(x,y,count=60){
+  for(let i=0;i<count;i++){
+    const p=new Particle(x,y);
+    // Fan outward from origin
+    const angle=Math.random()*Math.PI*2;
+    const speed=Math.random()*12+3;
+    p.vx=Math.cos(angle)*speed;
+    p.vy=Math.sin(angle)*speed-6;
+    particles.push(p);
+  }
+}
+
+function launchRain(count=200){
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{
+      particles.push(new Particle());
+    },i*18);
+  }
+}
+
+function launchConfetti(){
+  if(running)return;
+  running=true;particles=[];
+  // Burst from multiple points
+  launchBurst(canvas.width*.25,canvas.height*.25,80);
+  launchBurst(canvas.width*.75,canvas.height*.25,80);
+  launchBurst(canvas.width*.5,canvas.height*.1,60);
+  // Rain
+  launchRain(160);
+  // Extra bursts
+  setTimeout(()=>launchBurst(canvas.width*.15,canvas.height*.4,50),600);
+  setTimeout(()=>launchBurst(canvas.width*.85,canvas.height*.4,50),600);
+
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles=particles.filter(p=>p.life>0);
+    particles.forEach(p=>{p.update();p.draw()});
+    if(particles.length>0){animFrame=requestAnimationFrame(animate);}
+    else{running=false;ctx.clearRect(0,0,canvas.width,canvas.height);}
+  }
+  if(animFrame)cancelAnimationFrame(animFrame);
+  animate();
+}
+
+/* ══════════════════════════════════════════
+   STAR RATING
+══════════════════════════════════════════ */
+let rating=5;
+const stars=document.querySelectorAll('.star-opt');
+stars.forEach(s=>{
+  s.addEventListener('mouseover',()=>{
+    const v=+s.dataset.v;
+    stars.forEach((x,i)=>{x.classList.toggle('filled',i<v)});
+  });
+  s.addEventListener('mouseout',()=>{
+    stars.forEach((x,i)=>{x.classList.toggle('filled',i<rating)});
+  });
+  s.addEventListener('click',()=>{
+    rating=+s.dataset.v;
+    stars.forEach((x,i)=>{x.classList.toggle('active',i<rating);x.classList.toggle('filled',i<rating)});
+  });
+});
+// Default all filled
+stars.forEach(s=>{s.classList.add('filled','active')});
+
+/* ══════════════════════════════════════════
+   FORM SUBMISSION
+══════════════════════════════════════════ */
+function handleSubscribe(e){
+  e.preventDefault();
+  const fn=document.getElementById('fname').value.trim();
+  const em=document.getElementById('email').value.trim();
+  if(!fn||!em)return;
+
+  const btn=document.getElementById('subBtn');
+  btn.classList.add('loading');
+
+  setTimeout(()=>{
+    btn.classList.remove('loading');
+
+    // Populate celebration screen
+    const name=fn+(document.getElementById('lname').value?' '+document.getElementById('lname').value.trim():'');
+    const topics=[...document.querySelectorAll('.t-chip.on')].map(c=>c.textContent.trim().replace(/^[✦⚙◈◉◎]\s*/,'')).join(', ')||'None';
+    const starEmoji='⭐'.repeat(rating)+'☆'.repeat(5-rating);
+
+    document.getElementById('celSub').textContent=`Welcome aboard, ${fn}. Your first issue arrives this Tuesday.`;
+    document.getElementById('sum-email').textContent=em;
+    document.getElementById('sum-stars').textContent=starEmoji;
+    document.getElementById('sum-topics').textContent=topics;
+    document.getElementById('sum-date').textContent=new Date().toLocaleDateString('en',{year:'numeric',month:'long',day:'numeric'});
+
+    // Update trophy based on rating
+    const trophies=['😊','⭐','🏅','🥇','🏆'];
+    document.getElementById('trophyEmoji').textContent=trophies[rating-1]||'🏆';
+
+    // Animate subscriber count
+    animateCount('statNum2',1,Math.floor(Math.random()*8+2));
+
+    showScreen(2);
+    setTimeout(launchConfetti,300);
+  },1200);
+}
+
+function animateCount(id,from,to){
+  let cur=from;const el=document.getElementById(id);
+  const step=()=>{if(cur>=to)return;cur++;el.textContent=cur;setTimeout(step,80)};
+  step();
+}
+
+/* ══════════════════════════════════════════
+   SCREEN SYSTEM
+══════════════════════════════════════════ */
+function showScreen(n){
+  document.querySelectorAll('.screen').forEach((s,i)=>s.classList.toggle('active',i===n-1));
+}
+
+function restart(){
+  document.getElementById('subForm').reset();
+  rating=5;stars.forEach(s=>{s.classList.add('filled','active')});
+  document.querySelectorAll('.t-chip').forEach((c,i)=>c.classList.toggle('on',i===0));
+  showScreen(1);
+  if(animFrame)cancelAnimationFrame(animFrame);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  running=false;particles=[];
+}
+
+/* ══════════════════════════════════════════
+   SHARE / COPY
+══════════════════════════════════════════ */
+function fakeShare(platform){
+  showToast(`Shared on ${platform}! 🎉`);
+}
+function copyLink(){
+  navigator.clipboard?.writeText(window.location.href).catch(()=>{});
+  showToast('Link copied to clipboard! 🔗');
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('tmsg').textContent=msg;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>

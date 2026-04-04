@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corporate Accordion — Design 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #080c10;
+  --surface:     #0f1419;
+  --gold:        #c8a96e;
+  --gold-bright: #e6c98a;
+  --gold-dim:    rgba(200,169,110,.18);
+  --border:      rgba(200,169,110,.14);
+  --border-on:   rgba(200,169,110,.45);
+  --text:        #edeae4;
+  --muted:       #7a7972;
+  --collapsed-w: 48px;
+}
+
+body {
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 16px;
+  gap: 40px;
+}
+
+/* ── Header ── */
+.hdr { text-align: center; }
+.hdr-eyebrow {
+  font-size: .65rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.hdr-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+.hdr-title em { font-style: italic; color: var(--gold-bright); }
+
+/* ── Accordion shell ── */
+.accordion-wrap { width: 100%; max-width: 1100px; }
+
+.accordion {
+  display: flex;                    /* ALWAYS ROW */
+  flex-direction: row;
+  height: clamp(300px, 52vw, 500px);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 40px 100px rgba(0,0,0,.7);
+}
+
+/* ── Panel ── */
+.panel {
+  position: relative;
+  flex: 0 0 var(--collapsed-w);
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: flex .6s cubic-bezier(.77,0,.18,1), border-color .4s;
+  overflow: hidden;
+}
+.panel:last-child { border-right: none; }
+.panel.active {
+  flex: 1 1 auto;
+  border-color: var(--border-on);
+}
+
+/* gold line on active left edge */
+.panel.active::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent 8%, var(--gold) 50%, transparent 92%);
+  z-index: 6;
+}
+
+/* ── Tab (collapsed view) ── */
+.tab {
+  position: absolute;
+  inset: 0;
+  width: var(--collapsed-w);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 3;
+  transition: opacity .25s;
+}
+.panel.active .tab { opacity: 0; pointer-events: none; }
+
+.tab-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .65rem;
+  color: var(--gold);
+  letter-spacing: .18em;
+}
+.tab-gem {
+  width: 28px; height: 28px;
+  border: 1px solid var(--border-on);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+  transition: transform .3s;
+}
+.panel:hover:not(.active) .tab-gem { transform: scale(1.15); }
+
+.tab-name {
+  font-size: .55rem;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+}
+
+/* ── Content ── */
+.content {
+  position: absolute;
+  top: 0;
+  left: var(--collapsed-w);
+  right: 0;
+  bottom: 0;
+  padding: clamp(20px, 3.5vw, 48px) clamp(18px, 3.5vw, 48px);
+  opacity: 0;
+  transform: translateX(18px);
+  transition: opacity .38s .18s, transform .38s .18s;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.panel.active .content {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* big ghost number */
+.ghost-num {
+  position: absolute;
+  right: -12px; bottom: -24px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(6rem, 16vw, 14rem);
+  font-weight: 700;
+  color: rgba(200,169,110,.04);
+  line-height: 1;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.content-top { position: relative; z-index: 1; }
+.eyebrow {
+  font-size: clamp(.6rem, 1.2vw, .68rem);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.2rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.desc {
+  font-size: clamp(.75rem, 1.4vw, .88rem);
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 400px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+.stats {
+  display: flex;
+  gap: clamp(16px, 3vw, 36px);
+  position: relative;
+  z-index: 1;
+}
+.stat { display: flex; flex-direction: column; gap: 3px; }
+.stat-lbl {
+  font-size: .58rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.stat-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.7rem);
+  font-weight: 700;
+  color: var(--gold-bright);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(.65rem, 1.2vw, .75rem);
+  font-weight: 500;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border-on);
+  padding-bottom: 3px;
+  cursor: pointer;
+  transition: color .2s;
+  position: relative;
+  z-index: 1;
+}
+.cta:hover { color: var(--gold-bright); }
+.cta span { transition: transform .2s; }
+.cta:hover span { transform: translateX(4px); }
+
+/* on very small screens, hide desc to save space */
+@media (max-width: 480px) {
+  .desc { display: none; }
+  .stats { gap: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <p class="hdr-eyebrow">Strategic Advisory Group</p>
+  <h1 class="hdr-title">Precision <em>Partnership</em><br>at Every Scale</h1>
+</div>
+
+<div class="accordion-wrap">
+  <div class="accordion">
+
+    <div class="panel active" data-i="0">
+      <div class="tab">
+        <span class="tab-num">01</span>
+        <div class="tab-gem">◈</div>
+        <span class="tab-name">Strategy</span>
+      </div>
+      <div class="content">
+        <div class="ghost-num">01</div>
+        <div class="content-top">
+          <p class="eyebrow">01 — Corporate Strategy</p>
+          <h2 class="title">Transforming Vision Into Competitive Advantage</h2>
+          <p class="desc">We work alongside leadership teams to redefine market positioning, unlock new revenue streams, and build organizational resilience for the decade ahead. Battle-tested frameworks, measurable outcomes.</p>
+        </div>
+        <div>
+          <div class="stats">
+            <div class="stat"><span class="stat-lbl">Clients</span><span class="stat-val">240+</span></div>
+            <div class="stat"><span class="stat-lbl">Avg ROI</span><span class="stat-val">3.8×</span></div>
+            <div class="stat"><span class="stat-lbl">Years</span><span class="stat-val">18</span></div>
+          </div>
+        </div>
+        <button class="cta">Explore Strategy <span>→</span></button>
+      </div>
+    </div>
+
+    <div class="panel" data-i="1">
+      <div class="tab">
+        <span class="tab-num">02</span>
+        <div class="tab-gem">◇</div>
+        <span class="tab-name">Technology</span>
+      </div>
+      <div class="content">
+        <div class="ghost-num">02</div>
+        <div class="content-top">
+          <p class="eyebrow">02 — Digital Transformation</p>
+          <h2 class="title">Infrastructure Built for Scale and Longevity</h2>
+          <p class="desc">From cloud migration to AI integration, we architect systems that reduce technical debt and accelerate product velocity. Embedded engineers who deliver outcomes that last generations.</p>
+        </div>
+        <div>
+          <div class="stats">
+            <div class="stat"><span class="stat-lbl">Systems</span><span class="stat-val">180+</span></div>
+            <div class="stat"><span class="stat-lbl">Uptime</span><span class="stat-val">99.9%</span></div>
+          </div>
+        </div>
+        <button class="cta">View Technology <span>→</span></button>
+      </div>
+    </div>
+
+    <div class="panel" data-i="2">
+      <div class="tab">
+        <span class="tab-num">03</span>
+        <div class="tab-gem">○</div>
+        <span class="tab-name">Operations</span>
+      </div>
+      <div class="content">
+        <div class="ghost-num">03</div>
+        <div class="content-top">
+          <p class="eyebrow">03 — Operational Excellence</p>
+          <h2 class="title">Precision Processes That Eliminate Waste</h2>
+          <p class="desc">Lean principles meet modern automation. We audit, redesign, and automate critical workflows to free your people for high-value work. Measurable efficiency gains within 90 days.</p>
+        </div>
+        <div>
+          <div class="stats">
+            <div class="stat"><span class="stat-lbl">Cost Save</span><span class="stat-val">34%</span></div>
+            <div class="stat"><span class="stat-lbl">Projects</span><span class="stat-val">310+</span></div>
+          </div>
+        </div>
+        <button class="cta">See Operations <span>→</span></button>
+      </div>
+    </div>
+
+    <div class="panel" data-i="3">
+      <div class="tab">
+        <span class="tab-num">04</span>
+        <div class="tab-gem">△</div>
+        <span class="tab-name">Growth</span>
+      </div>
+      <div class="content">
+        <div class="ghost-num">04</div>
+        <div class="content-top">
+          <p class="eyebrow">04 — Revenue Growth</p>
+          <h2 class="title">Data-Led Strategies for Sustained Market Growth</h2>
+          <p class="desc">Market intelligence fused with behavioral analytics to unlock acquisition, retention, and expansion levers your team hasn't yet explored. Growth isn't luck — it's engineered.</p>
+        </div>
+        <div>
+          <div class="stats">
+            <div class="stat"><span class="stat-lbl">Revenue</span><span class="stat-val">$2B+</span></div>
+            <div class="stat"><span class="stat-lbl">CAGR</span><span class="stat-val">41%</span></div>
+          </div>
+        </div>
+        <button class="cta">Drive Growth <span>→</span></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.panel').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

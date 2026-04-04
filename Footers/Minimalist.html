@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Footer 03 — Startup / Minimalist</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --ink: #0e0e0e;
+    --muted: #888;
+    --border: #e8e8e8;
+    --accent: #0e0e0e;
+    --green: #16a34a;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { font-size: 16px; }
+  body { background: #f4f4f4; font-family: var(--font-body); min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; }
+
+  .demo-page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; }
+  .demo-page p { font-size: 13px; color: #aaa; letter-spacing: 0.08em; text-transform: uppercase; border: 1px dashed #ddd; padding: 12px 24px; border-radius: 8px; background: #fff; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--bg); border-top: 1px solid var(--border); }
+
+  .footer-inner { max-width: 1100px; margin: 0 auto; padding: 56px 40px 0; }
+
+  /* Hero row */
+  .footer-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 52px;
+    border-bottom: 1px solid var(--border);
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .brand-area { max-width: 340px; }
+  .logo-wrap {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .logo-mark {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 14px; height: 14px; fill: #fff; }
+  .logo-name { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -0.04em; }
+
+  .brand-area p { font-size: 14px; line-height: 1.7; color: var(--muted); margin-bottom: 24px; }
+
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--ink);
+    color: #fff;
+    border: none; border-radius: 100px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-family: var(--font-body); font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.15s, opacity 0.2s;
+  }
+  .cta-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .cta-arrow { display: inline-block; transition: transform 0.2s; }
+  .cta-btn:hover .cta-arrow { transform: translateX(3px); }
+
+  /* Links area */
+  .links-area {
+    display: flex;
+    gap: 52px;
+    flex-wrap: wrap;
+  }
+  .link-group-title {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: #bbb;
+    margin-bottom: 16px;
+  }
+  .link-group ul { list-style: none; }
+  .link-group li { margin-bottom: 11px; }
+  .link-group a {
+    font-size: 14px; color: var(--muted);
+    text-decoration: none;
+    transition: color 0.18s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .link-group a:hover { color: var(--ink); }
+  .badge-sm {
+    font-size: 9px; font-weight: 700;
+    background: #f0f0f0; color: #666;
+    border-radius: 4px; padding: 2px 6px;
+  }
+  .badge-new {
+    font-size: 9px; font-weight: 700;
+    background: #dcfce7; color: #16a34a;
+    border-radius: 4px; padding: 2px 6px;
+  }
+
+  /* Bottom */
+  .footer-bottom {
+    max-width: 1100px; margin: 0 auto;
+    padding: 22px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 14px;
+  }
+  .copyright { font-size: 12.5px; color: #ccc; }
+  .status-pill {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 12.5px; color: var(--muted);
+    cursor: default;
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 3px rgba(22,163,74,0.2);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(22,163,74,0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(22,163,74,0.08); }
+  }
+
+  .footer-legal { display: flex; gap: 18px; flex-wrap: wrap; }
+  .footer-legal a { font-size: 12.5px; color: #ccc; text-decoration: none; transition: color 0.2s; }
+  .footer-legal a:hover { color: var(--ink); }
+
+  /* Theme toggle */
+  .theme-toggle {
+    width: 36px; height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+  }
+  .theme-toggle.dark { background: var(--ink); }
+  .theme-toggle::after {
+    content: '';
+    width: 14px; height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px; left: 3px;
+    transition: transform 0.3s;
+  }
+  .theme-toggle.dark::after { transform: translateX(16px); }
+
+  /* Dark mode */
+  body.dark { background: #0a0a0a; }
+  body.dark .demo-page p { background: #111; border-color: #222; color: #666; }
+  body.dark footer { background: #111; border-top-color: #222; }
+  body.dark .logo-name { color: #f0f0f0; }
+  body.dark .brand-area p { color: #666; }
+  body.dark .cta-btn { background: #f0f0f0; color: #0e0e0e; }
+  body.dark .link-group-title { color: #444; }
+  body.dark .link-group a { color: #555; }
+  body.dark .link-group a:hover { color: #f0f0f0; }
+  body.dark .badge-sm { background: #222; color: #555; }
+  body.dark .footer-bottom { border: none; }
+  body.dark .copyright, body.dark .footer-legal a { color: #333; }
+  body.dark .footer-legal a:hover { color: #f0f0f0; }
+  body.dark .status-pill { color: #444; }
+  body.dark .footer-hero { border-bottom-color: #1e1e1e; }
+  body.dark .logo-mark { background: #f0f0f0; }
+  body.dark .logo-mark svg { fill: #0e0e0e; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 840px) {
+    .footer-hero { flex-direction: column; gap: 36px; }
+    .brand-area { max-width: 100%; }
+    .links-area { gap: 36px; }
+  }
+  @media (max-width: 600px) {
+    .footer-inner { padding: 40px 20px 0; }
+    .footer-bottom { padding: 18px 20px; flex-direction: column; align-items: flex-start; }
+    .links-area { gap: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-page"><p>← Page content above footer →</p></div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-hero">
+
+      <div class="brand-area">
+        <div class="logo-wrap">
+          <div class="logo-mark">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <span class="logo-name">Orbit</span>
+        </div>
+        <p>Built for developers who care about speed. Zero config, maximum DX. Ship in seconds, not hours.</p>
+        <a class="cta-btn" href="#">
+          Start for free <span class="cta-arrow">→</span>
+        </a>
+      </div>
+
+      <div class="links-area">
+        <div class="link-group">
+          <p class="link-group-title">Product</p>
+          <ul>
+            <li><a href="#">Overview</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Changelog <span class="badge-new">New</span></a></li>
+            <li><a href="#">Docs</a></li>
+            <li><a href="#">API</a></li>
+          </ul>
+        </div>
+        <div class="link-group">
+          <p class="link-group-title">Company</p>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers <span class="badge-sm">2 open</span></a></li>
+            <li><a href="#">Open Source</a></li>
+          </ul>
+        </div>
+        <div class="link-group">
+          <p class="link-group-title">Connect</p>
+          <ul>
+            <li><a href="#">Twitter / X</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">LinkedIn</a></li>
+          </ul>
+        </div>
+        <div class="link-group">
+          <p class="link-group-title">Legal</p>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Security</a></li>
+            <li><a href="#">DPA</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="copyright">© 2026 Orbit Technologies, Inc.</p>
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      All systems operational
+    </div>
+    <div class="footer-legal">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Cookies</a>
+    </div>
+    <button class="theme-toggle" id="theme-btn" aria-label="Toggle dark mode" onclick="toggleTheme()"></button>
+  </div>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById('theme-btn');
+    body.classList.toggle('dark');
+    btn.classList.toggle('dark');
+  }
+</script>
+</body>
+</html>

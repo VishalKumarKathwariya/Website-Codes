@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Marquee Sections</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --wine:        #8B1A2B;
+    --wine-deep:   #5C1020;
+    --wine-light:  #B03040;
+    --wine-glow:   #C94455;
+    --dark-bg:     #0A0A0B;
+    --dark-surface:#111114;
+    --dark-card:   #17171B;
+    --dark-border: #2A2A30;
+    --text-primary:#F0EAE8;
+    --text-muted:  #8A8490;
+    --text-dim:    #4A4550;
+  }
+
+  body {
+    background: var(--dark-bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  /* ─── SHARED SECTION STYLES ─────────────────────────── */
+  .section-wrapper {
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(139,26,43,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 80% 100%, rgba(92,16,32,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .section-label {
+    text-align: center;
+    margin-bottom: 48px;
+    padding: 0 24px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(139,26,43,0.18);
+    border: 1px solid rgba(139,26,43,0.5);
+    color: var(--wine-glow);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 42px);
+    font-weight: 400;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+
+  .section-title span {
+    color: var(--wine-glow);
+    font-style: italic;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--wine-deep) 30%, var(--wine) 50%, var(--wine-deep) 70%, transparent);
+    margin: 20px auto;
+    max-width: 200px;
+  }
+
+  /* ─── MARQUEE FADE EDGES ─────────────────────────────── */
+  .marquee-outer {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .marquee-outer::before,
+  .marquee-outer::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: clamp(60px, 10vw, 140px);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .marquee-outer::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--dark-bg), transparent);
+  }
+
+  .marquee-outer::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--dark-bg), transparent);
+  }
+
+  /* ─── BRAND CARD ─────────────────────────────────────── */
+  .brand-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 4px;
+    padding: 16px 28px;
+    margin: 0 10px;
+    white-space: nowrap;
+    transition: border-color 0.3s, background 0.3s;
+    flex-shrink: 0;
+  }
+
+  .brand-card:hover {
+    border-color: rgba(139,26,43,0.6);
+    background: rgba(139,26,43,0.08);
+  }
+
+  /* ══════════════════════════════════════════
+     ★  WHERE TO ADD LOGO IMAGES  ★
+     Replace the .brand-icon div inside each
+     .brand-card with an <img> tag:
+
+     <img
+       src="your-logo.svg"
+       alt="Brand Name"
+       class="brand-icon"
+       style="width:32px; height:32px; object-fit:contain;"
+     />
+
+     For rectangular logos (e.g. 120×40 wordmarks):
+     <img
+       src="your-logo.svg"
+       alt="Brand Name"
+       style="height:28px; width:auto; object-fit:contain; filter:brightness(0.9);"
+     />
+  ══════════════════════════════════════════ */
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 3px;
+    background: var(--wine-deep);
+    border: 1px solid rgba(139,26,43,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wine-glow);
+    letter-spacing: 0;
+    flex-shrink: 0;
+  }
+
+  .brand-name {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+
+  /* ─── SECTION SEPARATOR ─────────────────────────────── */
+  .section-sep {
+    height: 1px;
+    background: var(--dark-border);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ════════════════════════════════════════
+     SECTION 1 — PURE CSS MARQUEE
+  ════════════════════════════════════════ */
+  .css-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-slide 32s linear infinite;
+    padding: 8px 0;
+  }
+
+  .css-marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-slide {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Second row — reverse */
+  .css-marquee-track.reverse {
+    animation: marquee-reverse 28s linear infinite;
+    margin-top: 12px;
+  }
+
+  .css-marquee-track.reverse:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-reverse {
+    0%   { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  /* ════════════════════════════════════════
+     SECTION 2 — JS MARQUEE
+  ════════════════════════════════════════ */
+  .js-section {
+    background: var(--dark-surface);
+  }
+
+  .js-marquee-outer {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .js-marquee-outer::before,
+  .js-marquee-outer::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: clamp(60px, 10vw, 140px);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .js-marquee-outer::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--dark-surface), transparent);
+  }
+
+  .js-marquee-outer::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--dark-surface), transparent);
+  }
+
+  .js-marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    padding: 8px 0;
+  }
+
+  .js-marquee-track.second-row {
+    margin-top: 12px;
+  }
+
+  /* Speed controls */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    padding: 0 16px;
+  }
+
+  .ctrl-btn {
+    background: transparent;
+    border: 1px solid var(--dark-border);
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--wine);
+    color: var(--wine-glow);
+    background: rgba(139,26,43,0.08);
+  }
+
+  .ctrl-btn.active {
+    background: var(--wine-deep);
+    border-color: var(--wine);
+    color: var(--wine-glow);
+  }
+
+  .speed-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ─── PAGE HEADER ────────────────────────────────────── */
+  .page-header {
+    text-align: center;
+    padding: 64px 24px 40px;
+    border-bottom: 1px solid var(--dark-border);
+    margin-bottom: 0;
+  }
+
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .page-header p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ─── TECH TAG ───────────────────────────────────────── */
+  .tech-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+
+  .tech-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--wine-glow);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  /* ─── RESPONSIVE ─────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .section-wrapper { padding: 56px 0; }
+    .brand-card { padding: 13px 20px; margin: 0 7px; }
+    .css-marquee-track { animation-duration: 22s; }
+    .css-marquee-track.reverse { animation-duration: 18s; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── PAGE HEADER ──────────────────────────────────────── -->
+<header class="page-header">
+  <h1>Infinite Brand Marquee — Demo</h1>
+  <p>Section 1: Pure CSS &nbsp;·&nbsp; Section 2: JavaScript</p>
+</header>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 1 — PURE CSS MARQUEE
+════════════════════════════════════════════════════════ -->
+<section class="section-wrapper">
+
+  <div class="section-label">
+    <div class="badge">Pure CSS</div>
+    <h2 class="section-title">Trusted by <span>Industry Leaders</span></h2>
+    <div class="divider"></div>
+    <div class="tech-tag">
+      <span class="tech-dot"></span>
+      CSS animation · No JavaScript · Hover to pause
+    </div>
+  </div>
+
+  <!-- ROW 1 -->
+  <div class="marquee-outer">
+    <div class="css-marquee-track" id="css-row1">
+
+      <!-- ★ LOGO SLOT — Replace .brand-icon with your <img> tag -->
+      <div class="brand-card">
+        <div class="brand-icon">Ac</div>
+        <span class="brand-name">Acme Corp</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Nx</div>
+        <span class="brand-name">Nexora</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Vx</div>
+        <span class="brand-name">Vexus Labs</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Ql</div>
+        <span class="brand-name">Qualex</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Or</div>
+        <span class="brand-name">Orbitel</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Sn</div>
+        <span class="brand-name">Synthos</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Rv</div>
+        <span class="brand-name">Revanta</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Dp</div>
+        <span class="brand-name">Deepvault</span>
+      </div>
+
+      <!-- DUPLICATE SET for seamless loop -->
+      <div class="brand-card">
+        <div class="brand-icon">Ac</div>
+        <span class="brand-name">Acme Corp</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Nx</div>
+        <span class="brand-name">Nexora</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Vx</div>
+        <span class="brand-name">Vexus Labs</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Ql</div>
+        <span class="brand-name">Qualex</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Or</div>
+        <span class="brand-name">Orbitel</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Sn</div>
+        <span class="brand-name">Synthos</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Rv</div>
+        <span class="brand-name">Revanta</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Dp</div>
+        <span class="brand-name">Deepvault</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ROW 2 (reverse direction) -->
+  <div class="marquee-outer">
+    <div class="css-marquee-track reverse" id="css-row2">
+
+      <div class="brand-card">
+        <div class="brand-icon">Zn</div>
+        <span class="brand-name">Zenith Co.</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Pr</div>
+        <span class="brand-name">Prismatic</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Lx</div>
+        <span class="brand-name">Luxeon</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Hv</div>
+        <span class="brand-name">Hivemind</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Cr</div>
+        <span class="brand-name">Cruxis</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Vm</div>
+        <span class="brand-name">Vortmax</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Et</div>
+        <span class="brand-name">Etherion</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Kb</div>
+        <span class="brand-name">Kobalt</span>
+      </div>
+
+      <!-- DUPLICATE for loop -->
+      <div class="brand-card">
+        <div class="brand-icon">Zn</div>
+        <span class="brand-name">Zenith Co.</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Pr</div>
+        <span class="brand-name">Prismatic</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Lx</div>
+        <span class="brand-name">Luxeon</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Hv</div>
+        <span class="brand-name">Hivemind</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Cr</div>
+        <span class="brand-name">Cruxis</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Vm</div>
+        <span class="brand-name">Vortmax</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Et</div>
+        <span class="brand-name">Etherion</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Kb</div>
+        <span class="brand-name">Kobalt</span>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<div class="section-sep"></div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 2 — JAVASCRIPT MARQUEE
+════════════════════════════════════════════════════════ -->
+<section class="section-wrapper js-section">
+
+  <div class="section-label">
+    <div class="badge">JavaScript</div>
+    <h2 class="section-title">Our <span>Global Partners</span></h2>
+    <div class="divider"></div>
+    <div class="tech-tag">
+      <span class="tech-dot"></span>
+      requestAnimationFrame · Dynamic speed control
+    </div>
+  </div>
+
+  <!-- ROW 1 (left → right) -->
+  <div class="js-marquee-outer">
+    <div class="js-marquee-track" id="js-row1">
+
+      <!-- ★ LOGO SLOT — Replace .brand-icon with your <img> tag -->
+      <div class="brand-card">
+        <div class="brand-icon">Af</div>
+        <span class="brand-name">Afolux</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Bn</div>
+        <span class="brand-name">Bionex</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Cx</div>
+        <span class="brand-name">Coxtera</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Dv</div>
+        <span class="brand-name">Devora</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Ex</div>
+        <span class="brand-name">Exalto</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Fq</div>
+        <span class="brand-name">Frequa</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Gx</div>
+        <span class="brand-name">Graxis</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Hz</div>
+        <span class="brand-name">Horizn</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ROW 2 (right → left) -->
+  <div class="js-marquee-outer">
+    <div class="js-marquee-track second-row" id="js-row2">
+
+      <div class="brand-card">
+        <div class="brand-icon">Im</div>
+        <span class="brand-name">Impuls</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Jx</div>
+        <span class="brand-name">Jexar</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Kn</div>
+        <span class="brand-name">Knovex</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Lm</div>
+        <span class="brand-name">Lumira</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Mn</div>
+        <span class="brand-name">Mantos</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">No</div>
+        <span class="brand-name">Norrex</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Ox</div>
+        <span class="brand-name">Oxtura</span>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-icon">Pv</div>
+        <span class="brand-name">Pivox</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Speed Controls -->
+  <div class="controls">
+    <span class="speed-label">Speed:</span>
+    <button class="ctrl-btn" onclick="setSpeed(0.4)">Slow</button>
+    <button class="ctrl-btn active" onclick="setSpeed(0.9)">Normal</button>
+    <button class="ctrl-btn" onclick="setSpeed(2.0)">Fast</button>
+    <button class="ctrl-btn" id="pauseBtn" onclick="togglePause()">Pause</button>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT ENGINE
+════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+
+  /* ─── CONFIG ────────────────────────────────────────── */
+  const ROWS = [
+    { el: document.getElementById('js-row1'), dir: -1 },   // left
+    { el: document.getElementById('js-row2'), dir:  1 },   // right
+  ];
+
+  let speed   = 0.9;   // px per frame
+  let paused  = false;
+  let rafId   = null;
+
+  /* ─── CLONE CARDS for seamless loop ─────────────────── */
+  ROWS.forEach(({ el }) => {
+    const originals = Array.from(el.children);
+    originals.forEach(card => el.appendChild(card.cloneNode(true)));
+  });
+
+  /* ─── ANIMATION LOOP ─────────────────────────────────── */
+  const positions = ROWS.map(() => 0);
+
+  function tick () {
+    if (!paused) {
+      ROWS.forEach(({ el, dir }, i) => {
+        const halfW = el.scrollWidth / 2;
+        positions[i] += speed * dir;
+
+        /* wrap */
+        if (dir < 0 && positions[i] <= -halfW) positions[i] = 0;
+        if (dir > 0 && positions[i] >= 0)       positions[i] = -halfW;
+
+        el.style.transform = `translateX(${positions[i]}px)`;
+      });
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+
+  tick();
+
+  /* ─── PAUSE ON HOVER ─────────────────────────────────── */
+  document.querySelectorAll('.js-marquee-track').forEach(el => {
+    el.addEventListener('mouseenter', () => { paused = true;  });
+    el.addEventListener('mouseleave', () => { paused = false; });
+  });
+
+  /* ─── PUBLIC CONTROLS ────────────────────────────────── */
+  window.setSpeed = function (s) {
+    speed = s;
+    document.querySelectorAll('.ctrl-btn').forEach(b => {
+      b.classList.remove('active');
+      if (b.textContent.trim() !== 'Pause' && b.textContent.trim() !== 'Resume') {
+        const map = { 'Slow': 0.4, 'Normal': 0.9, 'Fast': 2.0 };
+        if (map[b.textContent.trim()] === s) b.classList.add('active');
+      }
+    });
+  };
+
+  window.togglePause = function () {
+    paused = !paused;
+    const btn = document.getElementById('pauseBtn');
+    btn.textContent = paused ? 'Resume' : 'Pause';
+    btn.classList.toggle('active', paused);
+  };
+
+})();
+</script>
+
+</body>
+</html>

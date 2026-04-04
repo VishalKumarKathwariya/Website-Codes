@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 06 — Inline Spinner</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(35,131,226,0.07) 0%, transparent 60%);
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3rem;
+    padding: 3rem 2rem; text-align: center;
+  }
+
+  .label-block { display: flex; flex-direction: column; gap: 8px; }
+
+  .tag {
+    display: inline-block; padding: 4px 12px;
+    background: rgba(35,131,226,0.08);
+    border: 1px solid rgba(35,131,226,0.2);
+    border-radius: 50px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #2383e2;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700; color: #1a1a1a; line-height: 1.1;
+  }
+
+  p { font-size: 15px; color: #6b7280; max-width: 400px; line-height: 1.6; }
+
+  /* ── STATES DEMO ── */
+  .states-grid {
+    display: flex; flex-direction: column; gap: 1rem; align-items: center; width: 100%;
+    max-width: 420px;
+  }
+
+  .state-row {
+    width: 100%; display: flex; align-items: center; gap: 1rem;
+  }
+
+  .state-label {
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    color: #9ca3af; width: 70px; text-align: right; flex-shrink: 0;
+  }
+
+  /* Base button */
+  .btn-notion {
+    flex: 1; padding: 12px 20px;
+    border: none; border-radius: 8px;
+    background: #2383e2; color: #fff;
+    font-size: 15px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background 0.18s, opacity 0.18s;
+    min-width: 200px;
+  }
+
+  .btn-notion:hover:not(:disabled) { background: #1a6ec7; }
+
+  /* Loading state */
+  .btn-notion.is-loading { cursor: not-allowed; opacity: 0.85; }
+  .btn-notion.is-loading:hover { background: #2383e2; }
+
+  /* Success state */
+  .btn-notion.is-success { background: #059669; cursor: default; }
+  .btn-notion.is-success:hover { background: #059669; }
+
+  /* Error state */
+  .btn-notion.is-error { background: #dc2626; cursor: default; }
+  .btn-notion.is-error:hover { background: #dc2626; }
+
+  /* Disabled */
+  .btn-notion:disabled { opacity: 0.4; cursor: not-allowed; background: #6b7280; }
+
+  /* Spinner */
+  .spinner {
+    width: 16px; height: 16px; flex-shrink: 0;
+    border: 2.5px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.65s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Dots spinner */
+  .dots { display: flex; gap: 4px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.8);
+    animation: dot-bounce 1.2s ease-in-out infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.15s; }
+  .dot:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes dot-bounce {
+    0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Interactive demo */
+  .demo-area {
+    background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 14px;
+    padding: 1.5rem; width: 100%; max-width: 420px;
+    display: flex; flex-direction: column; gap: 1rem; align-items: center;
+  }
+  .demo-label { font-size: 13px; color: #6b7280; font-weight: 500; }
+
+  .btn-interactive {
+    padding: 13px 32px; border: none; border-radius: 8px;
+    background: #2383e2; color: #fff;
+    font-size: 15px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 220px; transition: background 0.2s;
+  }
+  .btn-interactive:hover { background: #1a6ec7; }
+
+  .info {
+    display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;
+  }
+  .info-item {
+    background: rgba(35,131,226,0.05);
+    border: 1px solid rgba(35,131,226,0.1);
+    border-radius: 10px; padding: 12px 20px;
+    font-size: 13px; color: #6b7280;
+    display: flex; flex-direction: column; gap: 4px; min-width: 130px;
+  }
+  .info-item strong { color: #1a1a1a; font-size: 14px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 06 / 10</span>
+    <h1>Inline Spinner</h1>
+    <p>Loading states woven directly into the button — idle → loading → success → error. Prevents double-clicks and communicates progress.</p>
+  </div>
+
+  <!-- States showcase -->
+  <div class="states-grid">
+    <div class="state-row">
+      <span class="state-label">Idle</span>
+      <button class="btn-notion">Save Changes</button>
+    </div>
+    <div class="state-row">
+      <span class="state-label">Loading</span>
+      <button class="btn-notion is-loading">
+        <span class="spinner"></span> Saving...
+      </button>
+    </div>
+    <div class="state-row">
+      <span class="state-label">Dots</span>
+      <button class="btn-notion is-loading">
+        Uploading <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+      </button>
+    </div>
+    <div class="state-row">
+      <span class="state-label">Success</span>
+      <button class="btn-notion is-success">✓ Saved!</button>
+    </div>
+    <div class="state-row">
+      <span class="state-label">Error</span>
+      <button class="btn-notion is-error">✕ Failed — retry</button>
+    </div>
+    <div class="state-row">
+      <span class="state-label">Disabled</span>
+      <button class="btn-notion" disabled>Save Changes</button>
+    </div>
+  </div>
+
+  <!-- Interactive demo -->
+  <div class="demo-area">
+    <span class="demo-label">↓ Click to simulate the full flow</span>
+    <button class="btn-interactive" id="demo-btn">
+      <span id="demo-inner">Save Document</span>
+    </button>
+  </div>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Notion, Figma, Atlassian</div>
+    <div class="info-item"><strong>Technique</strong>JS state machine + CSS</div>
+    <div class="info-item"><strong>Feel</strong>Trustworthy, responsive</div>
+    <div class="info-item"><strong>Best for</strong>Forms, save actions</div>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById('demo-btn');
+  const inner = document.getElementById('demo-inner');
+  let state = 'idle';
+
+  btn.addEventListener('click', function() {
+    if (state !== 'idle') return;
+    state = 'loading';
+    inner.innerHTML = '<span class="spinner" style="width:16px;height:16px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.65s linear infinite;display:inline-block;"></span> Saving...';
+    btn.style.cursor = 'not-allowed';
+
+    setTimeout(() => {
+      state = 'success';
+      btn.style.background = '#059669';
+      inner.textContent = '✓ Saved!';
+      btn.style.cursor = 'default';
+
+      setTimeout(() => {
+        state = 'idle';
+        btn.style.background = '#2383e2';
+        inner.textContent = 'Save Document';
+        btn.style.cursor = 'pointer';
+      }, 2000);
+    }, 2200);
+  });
+</script>
+</body>
+</html>

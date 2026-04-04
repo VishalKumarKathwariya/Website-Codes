@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accordion 6 — Image Reveal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0c0c;
+    --text: #f0ede6;
+    --muted: #888070;
+    --gold: #c9a84c;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+  }
+
+  .container { width: 100%; max-width: 760px; }
+
+  .header { margin-bottom: 52px; text-align: center; }
+
+  .header .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.1;
+    color: var(--text);
+  }
+
+  /* ── ACCORDION ── */
+  .accordion { list-style: none; display: flex; flex-direction: column; gap: 0; }
+
+  .accordion-item {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .accordion-item:last-child { border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+  /* ── TRIGGER ── */
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    text-align: left;
+    position: relative;
+    z-index: 2;
+    transition: background 0.3s;
+  }
+
+  .trigger-thumb {
+    width: 80px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .trigger-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(60%) brightness(0.7);
+    transition: filter 0.5s;
+  }
+
+  .accordion-item.open .trigger-thumb img,
+  .accordion-trigger:hover .trigger-thumb img {
+    filter: grayscale(0%) brightness(0.85);
+  }
+
+  .trigger-main {
+    flex: 1;
+    padding: 24px 22px 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .dest-number {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .dest-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.65rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.1;
+    transition: color 0.3s;
+  }
+
+  .accordion-item.open .dest-name { color: var(--gold); }
+
+  .dest-region {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 300;
+  }
+
+  .trigger-meta {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-shrink: 0;
+  }
+
+  .dest-stat {
+    text-align: right;
+    display: none;
+  }
+  @media(min-width: 520px){ .dest-stat { display: block; } }
+
+  .dest-stat-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .dest-stat-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .acc-chevron {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: transform 0.45s cubic-bezier(0.4,0,0.2,1), border-color 0.3s, color 0.3s;
+  }
+
+  .accordion-item.open .acc-chevron {
+    transform: rotate(180deg);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* ── BODY ── */
+  .accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .accordion-item.open .accordion-body { grid-template-rows: 1fr; }
+  .accordion-body-inner { overflow: hidden; }
+
+  /* ── IMAGE + CONTENT LAYOUT ── */
+  .acc-media-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  @media(max-width: 600px){
+    .acc-media-content { grid-template-columns: 1fr; }
+  }
+
+  .acc-image-panel {
+    position: relative;
+    overflow: hidden;
+    min-height: 260px;
+  }
+
+  .acc-image-panel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.08);
+    transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .accordion-item.open .acc-image-panel img { transform: scale(1); }
+
+  .acc-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent 40%, rgba(12,12,12,0.6) 100%);
+  }
+
+  .acc-image-badge {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 5px 12px;
+    border-radius: 100px;
+  }
+
+  .acc-text-panel {
+    padding: 28px 28px 32px;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .acc-description {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .acc-highlights {
+    margin-top: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: rgba(240,237,230,0.7);
+  }
+
+  .highlight-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .acc-cta {
+    margin-top: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    cursor: pointer;
+    transition: gap 0.2s;
+    text-decoration: none;
+  }
+  .acc-cta:hover { gap: 14px; }
+  .acc-cta::after { content: '→'; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="eyebrow">Curated Destinations</div>
+    <h1>Where will you<br>go next?</h1>
+  </div>
+
+  <ul class="accordion">
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="trigger-thumb">
+          <img src="https://images.unsplash.com/photo-1538485399081-7191377e8241?w=160&q=60" alt="Kyoto">
+        </div>
+        <div class="trigger-main">
+          <div class="trigger-text">
+            <div class="dest-number">01 · Asia</div>
+            <div class="dest-name">Kyoto</div>
+            <div class="dest-region">Kansai, Japan</div>
+          </div>
+          <div class="trigger-meta">
+            <div class="dest-stat">
+              <div class="dest-stat-val">12</div>
+              <div class="dest-stat-label">Days ideal</div>
+            </div>
+            <span class="acc-chevron">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+          </div>
+        </div>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="acc-media-content">
+            <div class="acc-image-panel">
+              <img src="https://images.unsplash.com/photo-1538485399081-7191377e8241?w=600&q=80" alt="Kyoto">
+              <div class="acc-image-overlay"></div>
+              <span class="acc-image-badge">🌸 Spring — Peak season</span>
+            </div>
+            <div class="acc-text-panel">
+              <div>
+                <div class="acc-description">Ancient temples wrapped in bamboo groves, streets still walked by geisha at dusk. Kyoto is Japan distilled — 17 UNESCO sites, 1,600 Buddhist temples, and a reverence for impermanence that permeates every tatami room and garden stone.  </div>
+                <div class="acc-highlights">
+                  <div class="highlight-item"><span class="highlight-icon">⛩️</span>Fushimi Inari gates at sunrise</div>
+                  <div class="highlight-item"><span class="highlight-icon">🍵</span>Authentic matcha ceremony in Uji</div>
+                  <div class="highlight-item"><span class="highlight-icon">🌙</span>Gion district by night</div>
+                </div>
+              </div>
+              <a class="acc-cta">Explore itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="trigger-thumb">
+          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=160&q=60" alt="Lisbon">
+        </div>
+        <div class="trigger-main">
+          <div class="trigger-text">
+            <div class="dest-number">02 · Europe</div>
+            <div class="dest-name">Lisbon</div>
+            <div class="dest-region">Estremadura, Portugal</div>
+          </div>
+          <div class="trigger-meta">
+            <div class="dest-stat">
+              <div class="dest-stat-val">7</div>
+              <div class="dest-stat-label">Days ideal</div>
+            </div>
+            <span class="acc-chevron">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+          </div>
+        </div>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="acc-media-content">
+            <div class="acc-image-panel">
+              <img src="https://images.unsplash.com/photo-1558370781-d6196949e317?w=600&q=80" alt="Lisbon">
+              <div class="acc-image-overlay"></div>
+              <span class="acc-image-badge">☀️ Year-round warmth</span>
+            </div>
+            <div class="acc-text-panel">
+              <div>
+                <div class="acc-description">Seven hills of golden light, tiled facades, and the melancholy of fado drifting from open doorways. Lisbon rewards the slow traveler — get lost in Alfama's medieval maze, watch the sun sink into the Tagus from Miradouro das Portas do Sol.</div>
+                <div class="acc-highlights">
+                  <div class="highlight-item"><span class="highlight-icon">🚋</span>Tram 28 through Alfama</div>
+                  <div class="highlight-item"><span class="highlight-icon">🥐</span>Pastéis de Belém at the source</div>
+                  <div class="highlight-item"><span class="highlight-icon">🎶</span>Live fado in a tasca</div>
+                </div>
+              </div>
+              <a class="acc-cta">Explore itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="trigger-thumb">
+          <img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=160&q=60" alt="Marrakech">
+        </div>
+        <div class="trigger-main">
+          <div class="trigger-text">
+            <div class="dest-number">03 · Africa</div>
+            <div class="dest-name">Marrakech</div>
+            <div class="dest-region">Tensift, Morocco</div>
+          </div>
+          <div class="trigger-meta">
+            <div class="dest-stat">
+              <div class="dest-stat-val">5</div>
+              <div class="dest-stat-label">Days ideal</div>
+            </div>
+            <span class="acc-chevron">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+          </div>
+        </div>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="acc-media-content">
+            <div class="acc-image-panel">
+              <img src="https://images.unsplash.com/photo-1548771945-0024b9979799?w=600&q=80" alt="Marrakech">
+              <div class="acc-image-overlay"></div>
+              <span class="acc-image-badge">🌴 Oct–Apr best season</span>
+            </div>
+            <div class="acc-text-panel">
+              <div>
+                <div class="acc-description">A city that ambushes the senses — cinnamon and cedar in the air, the call to prayer echoing over terracotta rooftops, souks spilling bolts of indigo silk into labyrinthine lanes. The medina is a living museum with no map that fully works.</div>
+                <div class="acc-highlights">
+                  <div class="highlight-item"><span class="highlight-icon">🏛️</span>Bahia Palace hidden gardens</div>
+                  <div class="highlight-item"><span class="highlight-icon">🫖</span>Mint tea ritual in a riad</div>
+                  <div class="highlight-item"><span class="highlight-icon">🌅</span>Atlas Mountains day trip</div>
+                </div>
+              </div>
+              <a class="acc-cta">Explore itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <div class="trigger-thumb">
+          <img src="https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=160&q=60" alt="Patagonia">
+        </div>
+        <div class="trigger-main">
+          <div class="trigger-text">
+            <div class="dest-number">04 · Americas</div>
+            <div class="dest-name">Patagonia</div>
+            <div class="dest-region">Southern Chile & Argentina</div>
+          </div>
+          <div class="trigger-meta">
+            <div class="dest-stat">
+              <div class="dest-stat-val">14</div>
+              <div class="dest-stat-label">Days ideal</div>
+            </div>
+            <span class="acc-chevron">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+          </div>
+        </div>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="acc-media-content">
+            <div class="acc-image-panel">
+              <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80" alt="Patagonia">
+              <div class="acc-image-overlay"></div>
+              <span class="acc-image-badge">🏔️ Nov–Feb best season</span>
+            </div>
+            <div class="acc-text-panel">
+              <div>
+                <div class="acc-description">The end of the world — glaciers calving into milky lakes, condors riding thermals above granite needles, and a silence so complete it becomes sound. Torres del Paine and Los Glaciares together form one of Earth's last true wilderness corridors.</div>
+                <div class="acc-highlights">
+                  <div class="highlight-item"><span class="highlight-icon">🗻</span>W Trek in Torres del Paine</div>
+                  <div class="highlight-item"><span class="highlight-icon">🧊</span>Perito Moreno glacier walk</div>
+                  <div class="highlight-item"><span class="highlight-icon">🦙</span>Guanaco & puma sightings</div>
+                </div>
+              </div>
+              <a class="acc-cta">Explore itinerary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.accordion-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item.open').forEach(el => {
+        el.classList.remove('open');
+        el.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+</script>
+</body>
+</html>

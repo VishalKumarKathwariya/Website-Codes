@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accordion 4 — Soft Pastel</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f0edf8;
+    --surface: #f5f2fc;
+    --shadow-light: rgba(255,255,255,0.9);
+    --shadow-dark: rgba(180,165,215,0.45);
+    --ink: #3d3550;
+    --muted: #8c82a8;
+    --accent: #7c5cbf;
+    --accent-soft: rgba(124,92,191,0.12);
+    --rose: #e87ea1;
+    --mint: #6bcfb0;
+    --sun: #f5a623;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    background-image: radial-gradient(circle at 20% 20%, rgba(124,92,191,0.08) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, rgba(232,126,161,0.07) 0%, transparent 50%);
+  }
+
+  .container {
+    width: 100%;
+    max-width: 660px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .header .icon-wrap {
+    width: 68px;
+    height: 68px;
+    border-radius: 24px;
+    background: var(--surface);
+    box-shadow: 6px 6px 14px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 20px;
+  }
+
+  .header h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .header p {
+    margin-top: 10px;
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.65;
+    font-weight: 400;
+  }
+
+  .accordion {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .accordion-item {
+    background: var(--surface);
+    border-radius: 20px;
+    box-shadow: 8px 8px 18px var(--shadow-dark), -5px -5px 12px var(--shadow-light);
+    transition: box-shadow 0.35s, transform 0.25s;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.6);
+  }
+
+  .accordion-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 10px 10px 24px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
+  }
+
+  .accordion-item.open {
+    box-shadow: inset 4px 4px 10px var(--shadow-dark), inset -3px -3px 8px var(--shadow-light);
+  }
+
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+  }
+
+  .acc-emoji {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    background: var(--bg);
+    box-shadow: 4px 4px 8px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+    transition: box-shadow 0.3s;
+  }
+
+  .accordion-item.open .acc-emoji {
+    box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+  }
+
+  .acc-title {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .acc-arrow {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: 3px 3px 7px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), background 0.3s, box-shadow 0.3s;
+    color: var(--muted);
+  }
+
+  .accordion-item.open .acc-arrow {
+    transform: rotate(180deg);
+    background: var(--accent);
+    color: white;
+    box-shadow: 3px 3px 10px rgba(124,92,191,0.4);
+  }
+
+  .accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .accordion-item.open .accordion-body {
+    grid-template-rows: 1fr;
+  }
+
+  .accordion-body-inner {
+    overflow: hidden;
+  }
+
+  .accordion-content {
+    padding: 0 24px 22px 84px;
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .pill-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 100px;
+  }
+
+  .pill.rose { background: rgba(232,126,161,0.15); color: var(--rose); }
+  .pill.mint { background: rgba(107,207,176,0.15); color: var(--mint); }
+  .pill.sun  { background: rgba(245,166,35,0.15);  color: var(--sun); }
+  .pill.purple { background: var(--accent-soft); color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="icon-wrap">🌿</div>
+    <h1>Your wellness questions, answered</h1>
+    <p>Everything you need to begin your mindfulness journey with clarity and confidence.</p>
+  </div>
+
+  <ul class="accordion">
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-emoji">🧘</span>
+        <span class="acc-title">How do I start meditating?</span>
+        <span class="acc-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Start with just 5 minutes a day. Find a quiet spot, sit comfortably, and focus on your breath. When your mind wanders (it will), gently return your attention without judgment. Consistency matters far more than duration. Most people notice a difference within two weeks of daily practice.
+            <div class="pill-row">
+              <span class="pill mint">Beginner</span>
+              <span class="pill purple">5 min/day</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-emoji">🌙</span>
+        <span class="acc-title">What's the best time to meditate?</span>
+        <span class="acc-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            The best time is the time you'll actually do it consistently. Morning sessions help set the tone for the day, while evening sessions can aid in processing and winding down. Avoid meditating immediately after meals when you're most likely to feel drowsy. Experiment for two weeks and trust what your body tells you.
+            <div class="pill-row">
+              <span class="pill rose">Morning</span>
+              <span class="pill sun">Evening</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-emoji">💨</span>
+        <span class="acc-title">How does breathwork reduce stress?</span>
+        <span class="acc-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Slow, deep breathing activates the parasympathetic nervous system — the opposite of your fight-or-flight response. The 4-7-8 technique (inhale 4s, hold 7s, exhale 8s) is clinically shown to reduce cortisol within minutes. Your breath is the only autonomic function you can consciously control, making it the fastest path to calm.
+            <div class="pill-row">
+              <span class="pill mint">Science-backed</span>
+              <span class="pill purple">Instant</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-emoji">📱</span>
+        <span class="acc-title">Should I use an app or go app-free?</span>
+        <span class="acc-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Apps are scaffolding — use them to build the habit, then gradually reduce dependency. Guided sessions are excellent for beginners, and the streaks and reminders boost consistency. But the goal is to meditate anywhere, anytime, without a phone. Treat apps as training wheels, not the destination.
+            <div class="pill-row">
+              <span class="pill rose">Guided</span>
+              <span class="pill sun">App-free goal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="acc-emoji">✨</span>
+        <span class="acc-title">How long until I see real benefits?</span>
+        <span class="acc-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <div class="accordion-content">
+            Most people feel calmer and more focused after 1-2 weeks of consistent daily practice. Measurable changes in stress reactivity and sleep quality appear at the 4-8 week mark. Brain scans show structural changes in the amygdala (the stress center) after as few as 8 weeks. Think of it like exercise — the compound returns are real and lasting.
+            <div class="pill-row">
+              <span class="pill purple">2 weeks</span>
+              <span class="pill mint">Compound growth</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.accordion-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item.open').forEach(el => {
+        el.classList.remove('open');
+        el.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+</script>
+</body>
+</html>

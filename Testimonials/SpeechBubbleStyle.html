@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testimonials · Design 08 · Speech Bubbles</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #101214;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      padding: 2rem 1rem;
+      color: #ececec;
+    }
+
+    .bubble-section {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .bubble-section h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 500;
+      margin-bottom: 2.5rem;
+      color: #fff;
+    }
+
+    .bubble-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    /* each bubble row */
+    .bubble-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    /* avatar + bubble */
+    .bubble-wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .bubble-avatar {
+      width: 56px;
+      height: 56px;
+      background: #2c2f36;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      border: 2px solid #3f434b;
+    }
+
+    .bubble-content {
+      background: #1e2128;
+      border-radius: 28px 28px 28px 8px; /* bubble shape */
+      padding: 1.5rem 1.8rem;
+      position: relative;
+      flex: 1;
+      border: 1px solid #333842;
+      box-shadow: 0 8px 0 #0b0d0f;
+    }
+
+    /* tail (little triangle) */
+    .bubble-content::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 20px;
+      width: 0;
+      height: 0;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      border-right: 12px solid #1e2128;
+      filter: drop-shadow(-2px 2px 0 #333842);
+    }
+
+    /* rating inside bubble */
+    .bubble-stars {
+      color: #fbbf24;
+      margin-bottom: 0.5rem;
+    }
+
+    .bubble-quote {
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      color: #e0e0e0;
+    }
+
+    .bubble-author {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .bubble-role {
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+
+    /* on larger screens we can alternate or keep left */
+    @media (min-width: 700px) {
+      .bubble-wrapper {
+        max-width: 85%;
+      }
+      /* optional: right aligned for variety */
+      .bubble-row:nth-child(even) .bubble-wrapper {
+        margin-left: auto;
+        flex-direction: row-reverse;
+      }
+      .bubble-row:nth-child(even) .bubble-content::before {
+        left: auto;
+        right: -10px;
+        border-right: none;
+        border-left: 12px solid #1e2128;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="bubble-section">
+    <h2>Real talk</h2>
+
+    <div class="bubble-grid">
+      <!-- bubble 1 -->
+      <div class="bubble-row">
+        <div class="bubble-wrapper">
+          <div class="bubble-avatar">JD</div>
+          <div class="bubble-content">
+            <div class="bubble-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <p class="bubble-quote">“The speech bubble design is so fresh! It makes our testimonials feel like real conversations.”</p>
+            <span class="bubble-author">Jessie Du</span> <span class="bubble-role">· Designer</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- bubble 2 -->
+      <div class="bubble-row">
+        <div class="bubble-wrapper">
+          <div class="bubble-avatar">MC</div>
+          <div class="bubble-content">
+            <div class="bubble-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <p class="bubble-quote">“I love how the bubbles point to the avatar. Very engaging and human.”</p>
+            <span class="bubble-author">Marcus Chen</span> <span class="bubble-role">· Developer</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- bubble 3 -->
+      <div class="bubble-row">
+        <div class="bubble-wrapper">
+          <div class="bubble-avatar">SV</div>
+          <div class="bubble-content">
+            <div class="bubble-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+            <p class="bubble-quote">“Finally a testimonial section that doesn't look like every other website. Dark + bubble = win.”</p>
+            <span class="bubble-author">Samira V.</span> <span class="bubble-role">· Founder</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 12 — Typewriter</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#0a0e17;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Sans',sans-serif;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background-image:
+      linear-gradient(rgba(0,188,212,0.04) 1px, transparent 1px),
+      linear-gradient(90deg,rgba(0,188,212,0.04) 1px, transparent 1px);
+    background-size:28px 28px;
+  }
+  .page{
+    position:relative;z-index:1;
+    display:flex;flex-direction:column;align-items:center;gap:3.5rem;
+    padding:3rem 2rem;text-align:center;
+  }
+  .label-block{display:flex;flex-direction:column;gap:10px;align-items:center}
+  .tag{
+    display:inline-block;padding:5px 14px;
+    background:rgba(0,188,212,0.1);border:1px solid rgba(0,188,212,0.28);
+    border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:#00bcd4;
+  }
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;color:#fff;line-height:1.1}
+  p{font-size:15px;color:rgba(255,255,255,0.4);max-width:420px;line-height:1.65}
+
+  /* ── TERMINAL WINDOW ── */
+  .terminal{
+    width:100%;max-width:520px;
+    background:#0f1923;border:1px solid rgba(0,188,212,0.15);
+    border-radius:12px;overflow:hidden;
+  }
+  .term-bar{
+    display:flex;align-items:center;gap:7px;padding:12px 16px;
+    background:#0c151e;border-bottom:1px solid rgba(0,188,212,0.1);
+  }
+  .dot{width:12px;height:12px;border-radius:50%}
+  .dot-r{background:#ff5f56}.dot-y{background:#ffbd2e}.dot-g{background:#27c93f}
+  .term-title{font-size:12px;color:rgba(255,255,255,0.25);font-family:'DM Mono',monospace;margin-left:auto}
+  .term-body{padding:1.5rem;display:flex;flex-direction:column;gap:1.2rem}
+  .term-prompt{font-family:'DM Mono',monospace;font-size:13px;color:rgba(255,255,255,0.3)}
+  .term-prompt span{color:#00bcd4}
+
+  /* ── BUTTONS ── */
+  .btn-group{display:flex;flex-direction:column;gap:1rem;align-items:flex-start}
+
+  .btn-tw{
+    padding:11px 20px;
+    border:1.5px solid #00bcd4;border-radius:6px;
+    background:transparent;color:#00bcd4;
+    font-size:13px;font-weight:500;font-family:'DM Mono',monospace;
+    cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px;
+    transition:background .2s;
+    min-width:240px;
+  }
+  .btn-tw:hover{background:rgba(0,188,212,0.08)}
+
+  .tw-prefix{color:rgba(0,188,212,0.5);font-size:13px}
+  .tw-text{display:inline-block;min-width:4ch}
+  .tw-cursor{
+    display:inline-block;width:2px;height:1em;
+    background:#00bcd4;margin-left:1px;vertical-align:middle;
+    animation:blink .75s step-end infinite;
+  }
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+  /* green variant */
+  .btn-tw-green{border-color:#27c93f;color:#27c93f}
+  .btn-tw-green:hover{background:rgba(39,201,63,0.08)}
+  .btn-tw-green .tw-cursor{background:#27c93f}
+
+  /* white variant */
+  .btn-tw-white{border-color:rgba(255,255,255,0.25);color:rgba(255,255,255,0.7)}
+  .btn-tw-white:hover{background:rgba(255,255,255,0.05)}
+  .btn-tw-white .tw-cursor{background:rgba(255,255,255,0.7)}
+
+  .output-line{
+    font-family:'DM Mono',monospace;font-size:12px;
+    color:rgba(255,255,255,0.22);text-align:left;
+    animation:fade-in .4s ease forwards;
+  }
+  @keyframes fade-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+  .info{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+  .info-item{
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
+    border-radius:10px;padding:12px 20px;font-size:13px;color:rgba(255,255,255,0.38);
+    display:flex;flex-direction:column;gap:4px;min-width:130px;
+  }
+  .info-item strong{color:rgba(255,255,255,0.75);font-size:14px;font-weight:600}
+  .hint{font-size:12px;color:rgba(255,255,255,0.2);letter-spacing:.05em}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 12 / 20</span>
+    <h1>Typewriter</h1>
+    <p>Text cycles through commands with a blinking cursor — a staple of CLI-inspired design used in developer tools and terminal UIs.</p>
+  </div>
+
+  <div class="terminal">
+    <div class="term-bar">
+      <span class="dot dot-r"></span>
+      <span class="dot dot-y"></span>
+      <span class="dot dot-g"></span>
+      <span class="term-title">bash — 80×24</span>
+    </div>
+    <div class="term-body">
+      <span class="term-prompt"><span>user@machine</span> ~ %</span>
+      <div class="btn-group">
+        <button class="btn-tw">
+          <span class="tw-prefix">$</span>
+          <span class="tw-text" id="tw1"></span>
+          <span class="tw-cursor" id="c1"></span>
+        </button>
+        <button class="btn-tw btn-tw-green">
+          <span class="tw-prefix">→</span>
+          <span class="tw-text" id="tw2"></span>
+          <span class="tw-cursor" id="c2"></span>
+        </button>
+        <button class="btn-tw btn-tw-white">
+          <span class="tw-prefix">#</span>
+          <span class="tw-text" id="tw3"></span>
+          <span class="tw-cursor" id="c3"></span>
+        </button>
+      </div>
+      <div class="output-line">✓ Connected to remote — latency 12ms</div>
+      <div class="output-line">✓ Environment ready — node v20.11</div>
+    </div>
+  </div>
+
+  <span class="hint">↑ Watch the commands type themselves</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Raycast, Warp, Vercel CLI</div>
+    <div class="info-item"><strong>Technique</strong>JS interval + setInterval</div>
+    <div class="info-item"><strong>Feel</strong>Technical, alive, hacker</div>
+    <div class="info-item"><strong>Best for</strong>Dev tools, CLI apps</div>
+  </div>
+</div>
+
+<script>
+  function typewriter(elId, words, speed){
+    const el = document.getElementById(elId);
+    let wi=0,ci=0,del=false;
+    function tick(){
+      const w=words[wi];
+      if(!del){ el.textContent=w.slice(0,++ci); if(ci===w.length){del=true;setTimeout(tick,1600);return;} }
+      else { el.textContent=w.slice(0,--ci); if(ci===0){del=false;wi=(wi+1)%words.length;} }
+      setTimeout(tick,del?50:speed||90);
+    }
+    tick();
+  }
+  typewriter('tw1',['npm run deploy','git push origin main','./build.sh --prod','vercel --prod'],85);
+  typewriter('tw2',['cd /projects/app','ls -la src/','cat package.json','open localhost:3000'],100);
+  typewriter('tw3',['# install dependencies','# run dev server','# check git status','# build for prod'],110);
+</script>
+</body>
+</html>

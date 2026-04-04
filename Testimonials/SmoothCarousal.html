@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Testimonials</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --wine:       #7B1C3A;
+      --wine-light: #9E2449;
+      --wine-pale:  #C0466A;
+      --wine-glow:  rgba(123,28,58,0.35);
+      --bg:         #0D0A0B;
+      --card:       #1A1118;
+      --border:     rgba(123,28,58,0.25);
+      --text:       #F0E6EA;
+      --muted:      #9A8590;
+      --gold:       #C9A96E;
+      --gap:        22px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(123,28,58,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(123,28,58,0.12) 0%, transparent 55%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ─── SECTION ─── */
+    .testimonials-section {
+      position: relative; z-index: 1;
+      padding: clamp(60px, 8vw, 120px) 0;
+    }
+
+    /* ─── HEADER ROW ─── */
+    .header-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 clamp(20px, 5vw, 80px);
+      margin-bottom: clamp(36px, 5vw, 60px);
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--wine-pale);
+      margin-bottom: 14px;
+    }
+    .eyebrow::before, .eyebrow::after {
+      content: ''; display: block; width: 24px; height: 1px;
+      background: var(--wine-pale); opacity: 0.6;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 5vw, 60px);
+      font-weight: 300; line-height: 1.1;
+    }
+    .section-title em { font-style: italic; color: var(--wine-pale); }
+
+    .section-subtitle {
+      margin-top: 10px;
+      font-size: clamp(13px, 1.5vw, 15px);
+      color: var(--muted); font-weight: 300;
+      line-height: 1.7; max-width: 420px;
+    }
+
+    /* ─── NAV BUTTONS ─── */
+    .nav-buttons { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+
+    .nav-btn {
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card); color: var(--text);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .25s, border-color .25s, box-shadow .25s, transform .2s;
+    }
+    .nav-btn:hover {
+      background: var(--wine); border-color: var(--wine-light);
+      box-shadow: 0 4px 20px var(--wine-glow); transform: scale(1.08);
+    }
+    .nav-btn:active { transform: scale(0.94); }
+    .nav-btn svg {
+      width: 18px; height: 18px; stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ─── CAROUSEL ─── */
+    .carousel-outer {
+      position: relative; width: 100%; overflow: hidden;
+    }
+    .carousel-outer::before,
+    .carousel-outer::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0;
+      width: clamp(32px, 5vw, 90px);
+      z-index: 2; pointer-events: none;
+    }
+    .carousel-outer::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--bg), transparent);
+    }
+    .carousel-outer::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--bg), transparent);
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: var(--gap);
+      padding: 16px clamp(20px, 5vw, 80px) 24px;
+      overflow-x: scroll;
+      /* -webkit-overflow-scrolling: touch; */
+      cursor: grab;
+      -webkit-user-select: none;
+      user-select: none;
+      /* scrollbar-width: none; */
+      -ms-overflow-style: none;
+      /* NO scroll-behavior here — we handle it manually */
+    }
+    .carousel-track::-webkit-scrollbar { display: none; }
+    .carousel-track.dragging { cursor: grabbing; }
+
+    /* ─── CARD ─── */
+    .card {
+      flex-shrink: 0;
+      width: clamp(270px, 28vw, 350px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: clamp(20px, 2.5vw, 30px);
+      position: relative; overflow: hidden;
+      cursor: pointer;
+      transition: border-color .35s, box-shadow .35s, transform .35s;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--wine), transparent);
+      opacity: 0; transition: opacity .35s;
+    }
+    .card:hover,
+    .card.active {
+      border-color: var(--wine-light);
+      box-shadow: 0 8px 40px var(--wine-glow), 0 2px 12px rgba(0,0,0,.5);
+      transform: translateY(-5px);
+    }
+    .card:hover::before,
+    .card.active::before { opacity: 1; }
+
+    .card-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 68px; line-height: 0.6;
+      color: var(--wine); opacity: 0.35;
+      margin-bottom: 8px;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .card-stars { display: flex; gap: 3px; margin-bottom: 12px; }
+    .star { color: var(--gold); font-size: 12px; }
+    .card-text {
+      font-size: clamp(13px, 1.3vw, 14px);
+      line-height: 1.85; color: #C8B8BF;
+      font-weight: 300; font-style: italic;
+    }
+    .card-divider {
+      width: 28px; height: 1px;
+      background: var(--wine); opacity: 0.5; margin: 16px 0;
+    }
+    .card-author { display: flex; align-items: center; gap: 11px; }
+    .author-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--wine), var(--wine-light));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px; color: #fff; font-weight: 600; flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .author-name { font-size: 13px; font-weight: 500; letter-spacing: 0.03em; }
+    .author-role { font-size: 11px; color: var(--muted); margin-top: 2px; letter-spacing: 0.04em; }
+
+    /* ─── DOTS ─── */
+    .dots-row {
+      display: flex; justify-content: center; align-items: center;
+      gap: 8px; margin-top: 24px;
+    }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border);
+      transition: background .3s, transform .3s, width .3s;
+      cursor: pointer;
+    }
+    .dot.active {
+      background: var(--wine-pale);
+      width: 22px; border-radius: 3px;
+    }
+
+    /* ─── STATS ─── */
+    .stats-row {
+      display: flex; justify-content: center; align-items: center;
+      gap: clamp(24px, 5vw, 80px);
+      margin-top: clamp(40px, 6vw, 68px);
+      padding: 0 clamp(20px, 5vw, 80px);
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 4vw, 50px);
+      font-weight: 300; color: var(--wine-pale); line-height: 1;
+    }
+    .stat-label {
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.15em; color: var(--muted); margin-top: 6px;
+    }
+    .stat-sep { width: 1px; height: 44px; background: var(--border); }
+
+    @media (max-width: 600px) {
+      .stat-sep { display: none; }
+      .stats-row { gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="testimonials-section">
+
+  <div class="header-row">
+    <div>
+      <p class="eyebrow">Client Stories</p>
+      <h2 class="section-title">Words That <em>Define</em> Us</h2>
+      <p class="section-subtitle">Real experiences from the people who matter most — our clients, partners, and community.</p>
+    </div>
+    <div class="nav-buttons">
+      <button class="nav-btn" id="prevBtn" aria-label="Previous">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="nav-btn" id="nextBtn" aria-label="Next">
+        <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="carousel-outer">
+    <div class="carousel-track" id="track"></div>
+  </div>
+
+  <div class="dots-row" id="dots"></div>
+
+  <div class="stats-row">
+    <div class="stat"><div class="stat-number">4.9★</div><div class="stat-label">Average Rating</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat"><div class="stat-number">12K+</div><div class="stat-label">Happy Clients</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat"><div class="stat-number">98%</div><div class="stat-label">Satisfaction Rate</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat"><div class="stat-number">8yr</div><div class="stat-label">In Business</div></div>
+  </div>
+
+</section>
+
+<script>
+/* ── DATA (4 cards) ── */
+const DATA = [
+  { name:"Sophia Laurent",  role:"Creative Director, Lumière Studio", stars:5,
+    text:"Working with this team felt like collaborating with artists. Every deliverable exceeded our expectations. The attention to craft is something I haven't seen elsewhere." },
+  { name:"Marcus Chen",     role:"Founder, Elevate Ventures",         stars:5,
+    text:"From strategy to execution, the process was seamless. They understood our vision intuitively and translated it into something truly extraordinary for our brand." },
+  { name:"Isabella Moreau", role:"Head of Brand, Velour Co.",         stars:5,
+    text:"The final result left our entire board speechless. It's rare to find a partner that can blend aesthetics with business outcomes this elegantly and consistently." },
+  { name:"Dmitri Volkov",   role:"CTO, Axiom Systems",                stars:5,
+    text:"I was skeptical at first, but the depth of thinking they brought to our technical challenges was remarkable. A genuinely transformative partnership from day one." },
+];
+
+const N   = DATA.length;          // 4
+const GAP = 22;                   // px — must match CSS --gap
+
+const track   = document.getElementById('track');
+const dotsRow = document.getElementById('dots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+/* ── BUILD 3 SETS: [clones | originals | clones] ── */
+// We render 3 × N = 12 cards. Indices 0..N-1 = first clones,
+// N..2N-1 = originals (set 2), 2N..3N-1 = last clones.
+const allCards = [];
+
+[0, 1, 2].forEach(setIdx => {
+  DATA.forEach((t, i) => {
+    const initials = t.name.split(' ').map(w => w[0]).join('').slice(0,2);
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.dataset.origIdx = i;      // which original card (0-3)
+    el.innerHTML = `
+      <div class="card-quote">"</div>
+      <div class="card-stars">${'<span class="star">★</span>'.repeat(t.stars)}</div>
+      <p class="card-text">${t.text}</p>
+      <div class="card-divider"></div>
+      <div class="card-author">
+        <div class="author-avatar">${initials}</div>
+        <div>
+          <div class="author-name">${t.name}</div>
+          <div class="author-role">${t.role}</div>
+        </div>
+      </div>`;
+    track.appendChild(el);
+    allCards.push(el);
+  });
+});
+
+/* ── DOTS (4 dots for 4 originals) ── */
+const dotEls = DATA.map((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.addEventListener('click', () => scrollToOriginal(i));
+  dotsRow.appendChild(d);
+  return d;
+});
+
+/* ── HELPERS ── */
+function cardStep() {
+  return allCards[0].offsetWidth + GAP;
+}
+function setWidth() {
+  return N * cardStep();
+}
+function trackPadLeft() {
+  return parseFloat(getComputedStyle(track).paddingLeft) || 0;
+}
+
+// originBase = scrollLeft that shows the start of set-2 (the "real" cards)
+function originBase() {
+  return allCards[N].offsetLeft - trackPadLeft();
+}
+
+/* ── SMOOTH SCROLL via requestAnimationFrame ── */
+let animId = null;
+let jumping = false;
+
+function smoothScrollTo(target, duration = 420) {
+  if (animId) cancelAnimationFrame(animId);
+  const start = track.scrollLeft;
+  const dist  = target - start;
+  if (Math.abs(dist) < 1) return;
+  const t0 = performance.now();
+
+  function step(now) {
+    const elapsed = now - t0;
+    const progress = Math.min(elapsed / duration, 1);
+    // ease-in-out cubic
+    const ease = progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+    track.scrollLeft = start + dist * ease;
+    if (progress < 1) {
+      animId = requestAnimationFrame(step);
+    } else {
+      animId = null;
+      checkBounds(true);   // snap after animation completes
+    }
+  }
+  animId = requestAnimationFrame(step);
+}
+
+/* ── INFINITE LOOP BOUNDS CHECK ── */
+function checkBounds(force = false) {
+  const ob  = originBase();
+  const sw  = setWidth();
+  const sl  = track.scrollLeft;
+
+  if (sl >= ob + sw) {
+    jumping = true;
+    track.scrollLeft = sl - sw;
+    jumping = false;
+  } else if (sl < ob) {
+    jumping = true;
+    track.scrollLeft = sl + sw;
+    jumping = false;
+  }
+}
+
+/* ── UPDATE DOTS & ACTIVE CARD ── */
+function getActiveIdx() {
+  const ob = originBase();
+  const sw = setWidth();
+  const cs = cardStep();
+  // relative position within one set
+  let rel = ((track.scrollLeft - ob) % sw + sw) % sw;
+  return Math.round(rel / cs) % N;
+}
+
+function updateDots() {
+  const idx = getActiveIdx();
+  dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+function updateActiveCard() {
+  const idx = getActiveIdx();
+  allCards.forEach(c => {
+    c.classList.toggle('active', parseInt(c.dataset.origIdx) === idx);
+  });
+}
+
+/* ── SCROLL LISTENER ── */
+track.addEventListener('scroll', () => {
+  if (jumping) return;
+  checkBounds();
+  updateDots();
+  updateActiveCard();
+}, { passive: true });
+
+/* ── CLICK TO CENTER ── */
+allCards.forEach(card => {
+  card.addEventListener('click', () => {
+    if (isDragging) return;
+    const trackRect  = track.getBoundingClientRect();
+    const cardRect   = card.getBoundingClientRect();
+    const offset = cardRect.left + cardRect.width / 2
+                 - (trackRect.left + trackRect.width / 2);
+    smoothScrollTo(track.scrollLeft + offset);
+  });
+});
+
+/* ── BUTTON NAV ── */
+prevBtn.addEventListener('click', () => {
+  smoothScrollTo(track.scrollLeft - cardStep());
+});
+nextBtn.addEventListener('click', () => {
+  smoothScrollTo(track.scrollLeft + cardStep());
+});
+
+/* ── DOT CLICK ── */
+function scrollToOriginal(idx) {
+  if (animId) cancelAnimationFrame(animId);
+  const ob = originBase();
+  const cs = cardStep();
+  // center the target card
+  const cardLeft   = ob + idx * cs;
+  const centerOff  = (track.clientWidth - allCards[0].offsetWidth) / 2;
+  smoothScrollTo(cardLeft - centerOff);
+}
+
+/* ── DRAG TO SCROLL ── */
+let isDragging = false, dragStartX = 0, dragScrollStart = 0, dragMoved = false;
+
+track.addEventListener('mousedown', e => {
+  if (animId) { cancelAnimationFrame(animId); animId = null; }
+  isDragging = true; dragMoved = false;
+  dragStartX = e.pageX; dragScrollStart = track.scrollLeft;
+  track.classList.add('dragging');
+});
+document.addEventListener('mouseup', () => {
+  isDragging = false;
+  track.classList.remove('dragging');
+  setTimeout(() => { dragMoved = false; }, 50);
+});
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  e.preventDefault();
+  const dx = e.pageX - dragStartX;
+  if (Math.abs(dx) > 4) dragMoved = true;
+  track.scrollLeft = dragScrollStart - dx;
+  checkBounds();
+  updateDots();
+  updateActiveCard();
+});
+
+/* Touch drag */
+let touchStartX = 0, touchScrollStart = 0;
+track.addEventListener('touchstart', e => {
+  if (animId) { cancelAnimationFrame(animId); animId = null; }
+  touchStartX = e.touches[0].pageX;
+  touchScrollStart = track.scrollLeft;
+}, { passive: true });
+track.addEventListener('touchmove', e => {
+  const dx = e.touches[0].pageX - touchStartX;
+  track.scrollLeft = touchScrollStart - dx;
+  checkBounds();
+  updateDots();
+  updateActiveCard();
+}, { passive: true });
+
+/* ── INIT ── */
+function init() {
+  // Start showing the beginning of set-2, centred on card 0
+  const ob = originBase();
+  const cs = cardStep();
+  const centerOff = (track.clientWidth - allCards[0].offsetWidth) / 2;
+  jumping = true;
+  track.scrollLeft = ob - centerOff;
+  jumping = false;
+  updateDots();
+  updateActiveCard();
+}
+
+// Wait for fonts / layout
+requestAnimationFrame(() => requestAnimationFrame(init));
+window.addEventListener('resize', () => requestAnimationFrame(init));
+</script>
+</body>
+</html>

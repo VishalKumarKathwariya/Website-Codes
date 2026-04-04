@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 — Stripe Feature Carousel</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple: #635bff;
+    --purple-light: #ede9fe;
+    --dark: #0a2540;
+    --text: #425466;
+    --border: #e6ebf1;
+    --white: #ffffff;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: #f6f9fc;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+  }
+
+  .page-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .page-title {
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 10px;
+    text-align: center;
+    line-height: 1.15;
+  }
+
+  .page-sub {
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 60px;
+    text-align: center;
+    max-width: 480px;
+  }
+
+  /* Container */
+  .feature-car {
+    width: 100%;
+    max-width: 980px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--white);
+    box-shadow: 0 8px 40px rgba(10,37,64,.08), 0 1px 4px rgba(10,37,64,.04);
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 420px;
+  }
+
+  /* Tab sidebar */
+  .tab-sidebar {
+    background: #fafbfc;
+    border-right: 1px solid var(--border);
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sidebar-header {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #94a0b1;
+    padding: 6px 16px 10px;
+  }
+
+  .tab-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    position: relative;
+    transition: background .2s;
+    font-family: inherit;
+  }
+
+  .tab-btn:hover { background: #f0f2f5; }
+
+  .tab-btn.active {
+    background: var(--white);
+    box-shadow: 0 1px 6px rgba(10,37,64,.08);
+  }
+
+  .tab-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    background: var(--purple-light);
+    transition: background .2s;
+  }
+
+  .tab-btn.active .tab-icon { background: var(--purple); }
+
+  .tab-labels { flex: 1; }
+  .tab-name { font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 2px; display: block; }
+  .tab-desc { font-size: 12px; color: var(--text); line-height: 1.4; }
+
+  .tab-progress {
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+
+  .tab-btn.active .tab-progress { opacity: 1; }
+
+  .tab-progress-fill {
+    height: 100%;
+    background: var(--purple);
+    border-radius: 1px;
+    width: 0%;
+  }
+
+  /* Content panel */
+  .content-panel {
+    padding: 48px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .panel { display: none; animation: panelIn .35s cubic-bezier(.23,1,.32,1); }
+  .panel.active { display: flex; flex-direction: column; gap: 20px; }
+
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateX(16px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .panel-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+
+  .panel-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+
+  .panel-body {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.75;
+    max-width: 440px;
+  }
+
+  .panel-features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .feat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--dark);
+    font-weight: 500;
+  }
+
+  .feat-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #d4f4e3;
+    color: #15803d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .code-block {
+    background: #0a2540;
+    border-radius: 12px;
+    padding: 20px 22px;
+    font-family: 'SFMono-Regular', 'Fira Code', 'Courier New', monospace;
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: #a8c0d6;
+    position: relative;
+    overflow: hidden;
+    max-width: 480px;
+  }
+
+  .code-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 36px;
+    background: rgba(255,255,255,.05);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+    padding-top: 2px;
+  }
+
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .c-red { background: #ff5f57; }
+  .c-yellow { background: #febc2e; }
+  .c-green { background: #28c840; }
+
+  .code-keyword { color: #c792ea; }
+  .code-string { color: #c3e88d; }
+  .code-key { color: #82aaff; }
+  .code-num { color: #f78c6c; }
+  .code-comment { color: #546e7a; font-style: italic; }
+
+  /* Bottom CTA */
+  .car-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 52px;
+    border-top: 1px solid var(--border);
+    background: #fafbfc;
+  }
+
+  .footer-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--purple);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .footer-link:hover { text-decoration: underline; }
+
+  .footer-nav { display: flex; gap: 8px; }
+
+  .f-nav-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--dark);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color .2s, background .2s;
+  }
+
+  .f-nav-btn:hover { border-color: var(--purple); background: var(--purple-light); }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 40px;
+    margin-top: 40px;
+    padding-top: 36px;
+    border-top: 1px solid var(--border);
+    max-width: 980px;
+    width: 100%;
+  }
+
+  .stat { text-align: center; flex: 1; }
+  .stat-num { font-size: 36px; font-weight: 700; color: var(--dark); }
+  .stat-label { font-size: 13px; color: var(--text); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<p class="page-label">Pattern 04 — Stripe / Linear / Vercel</p>
+<h1 class="page-title">Feature Tab Carousel</h1>
+<p class="page-sub">Vertical tab list · animated panel swap · auto-advance with progress bar · code previews</p>
+
+<div class="feature-car">
+  <!-- Sidebar -->
+  <div class="tab-sidebar">
+    <div class="sidebar-header">Products</div>
+    <div id="tab-list"></div>
+  </div>
+
+  <!-- Content -->
+  <div>
+    <div class="content-panel" id="panel-area"></div>
+    <div class="car-footer">
+      <span class="footer-link" id="doc-link">Read the docs →</span>
+      <div class="footer-nav">
+        <button class="f-nav-btn" id="prev-btn">&#8249;</button>
+        <button class="f-nav-btn" id="next-btn">&#8250;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-num">135+</div><div class="stat-label">Currencies supported</div></div>
+  <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Payment methods</div></div>
+  <div class="stat"><div class="stat-num">99.99%</div><div class="stat-label">API uptime SLA</div></div>
+  <div class="stat"><div class="stat-num">$1T+</div><div class="stat-label">Processed annually</div></div>
+</div>
+
+<script>
+  const FEATURES = [
+    {
+      icon: '💳', name: 'Payments', desc: 'Accept any payment',
+      eyebrow: 'Global Payments', title: 'Accept payments worldwide',
+      body: 'Stripe supports 135+ currencies and dozens of payment methods out of the box — from cards to wallets to bank redirects — with zero configuration.',
+      features: ['135+ currencies, one integration', '40+ payment methods globally', 'PCI DSS Level 1 compliant by default', 'Smart retries & failure recovery'],
+      code: `<span class="code-comment">// Create a PaymentIntent</span>
+<span class="code-keyword">const</span> intent = <span class="code-keyword">await</span> stripe
+  .paymentIntents.<span class="code-key">create</span>({
+    amount: <span class="code-num">2000</span>,
+    currency: <span class="code-string">'usd'</span>,
+    payment_method_types: [<span class="code-string">'card'</span>],
+    customer: <span class="code-string">'cus_xyz'</span>,
+  });`,
+      doc: 'https://stripe.com/docs/payments'
+    },
+    {
+      icon: '🔁', name: 'Subscriptions', desc: 'Recurring billing',
+      eyebrow: 'Billing Engine', title: 'Revenue that compounds',
+      body: 'Build any subscription model — fixed, metered, tiered, or hybrid. Handle trials, upgrades, downgrades, cancellations, and dunning logic automatically.',
+      features: ['Metered & seat-based billing', 'Smart dunning & failure logic', 'Revenue recovery automation', 'Customer portal included'],
+      code: `<span class="code-comment">// Create a Subscription</span>
+<span class="code-keyword">const</span> sub = <span class="code-keyword">await</span> stripe
+  .subscriptions.<span class="code-key">create</span>({
+    customer: <span class="code-string">'cus_xyz'</span>,
+    items: [{ price: <span class="code-string">'price_monthly'</span> }],
+    trial_period_days: <span class="code-num">14</span>,
+    cancel_at_period_end: <span class="code-keyword">false</span>,
+  });`,
+      doc: 'https://stripe.com/docs/billing'
+    },
+    {
+      icon: '🛡️', name: 'Fraud & Risk', desc: 'Radar protection',
+      eyebrow: 'Stripe Radar', title: 'Block fraud before it lands',
+      body: 'Machine learning trained on hundreds of billions of dollars of transactions. Radar stops fraudulent charges while letting real customers through — no rules to write.',
+      features: ['ML on every single transaction', 'Custom rule builder', 'Chargeback protection guarantee', '3D Secure orchestration'],
+      code: `<span class="code-comment">// Custom Radar Rule</span>
+<span class="code-keyword">block</span> <span class="code-key">if</span> :risk_score: > <span class="code-num">75</span>
+<span class="code-keyword">review</span> <span class="code-key">if</span> :ip_country: != :card_country:
+<span class="code-keyword">allow</span> <span class="code-key">if</span> :customer:trusted: = <span class="code-keyword">true</span>
+
+<span class="code-comment">// Risk evaluation returned</span>
+risk_level: <span class="code-string">"elevated"</span> | <span class="code-string">"normal"</span>`,
+      doc: 'https://stripe.com/docs/radar'
+    },
+    {
+      icon: '🔗', name: 'Connect', desc: 'Marketplace platform',
+      eyebrow: 'Stripe Connect', title: 'Power your marketplace',
+      body: 'Route payments to sellers, freelancers, and platforms. Handle onboarding, compliance, KYC, and payouts across 40+ countries — all automated.',
+      features: ['Split & route payments', 'Instant payouts to sellers', 'Built-in KYC / AML compliance', 'Multi-currency support'],
+      code: `<span class="code-comment">// Transfer to a connected account</span>
+<span class="code-keyword">const</span> transfer = <span class="code-keyword">await</span> stripe
+  .transfers.<span class="code-key">create</span>({
+    amount: <span class="code-num">1500</span>,
+    currency: <span class="code-string">'usd'</span>,
+    destination: <span class="code-string">'acct_seller_xyz'</span>,
+    transfer_group: <span class="code-string">'ORDER_95'</span>,
+  });`,
+      doc: 'https://stripe.com/docs/connect'
+    },
+    {
+      icon: '📊', name: 'Sigma', desc: 'Custom reports',
+      eyebrow: 'Stripe Sigma', title: 'Query your payments data',
+      body: 'Write SQL directly against your Stripe data. Build custom reports, financial reconciliation, and business intelligence dashboards without exporting anything.',
+      features: ['Full SQL access to Stripe data', 'Scheduled report delivery', 'Pre-built report templates', 'Direct export to Redshift / BigQuery'],
+      code: `<span class="code-comment">-- Monthly revenue by country</span>
+<span class="code-keyword">SELECT</span>
+  DATE_TRUNC(<span class="code-string">'month'</span>, created) <span class="code-keyword">AS</span> month,
+  billing_address_country    <span class="code-keyword">AS</span> country,
+  SUM(amount) / <span class="code-num">100.0</span>        <span class="code-keyword">AS</span> revenue_usd
+<span class="code-keyword">FROM</span> charges
+<span class="code-keyword">WHERE</span> status = <span class="code-string">'succeeded'</span>
+<span class="code-keyword">GROUP BY</span> <span class="code-num">1</span>, <span class="code-num">2</span>
+<span class="code-keyword">ORDER BY</span> month <span class="code-keyword">DESC</span>`,
+      doc: 'https://stripe.com/docs/sigma'
+    }
+  ];
+
+  let cur = 0, autoTimer, DURATION = 6000;
+  const tabList = document.getElementById('tab-list');
+  const panelArea = document.getElementById('panel-area');
+  const docLink = document.getElementById('doc-link');
+
+  // Build tabs
+  FEATURES.forEach((f, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+    btn.innerHTML = `
+      <div class="tab-icon">${f.icon}</div>
+      <div class="tab-labels">
+        <span class="tab-name">${f.name}</span>
+        <span class="tab-desc">${f.desc}</span>
+      </div>
+      <div class="tab-progress"><div class="tab-progress-fill" id="prog-${i}"></div></div>`;
+    btn.addEventListener('click', () => { goTo(i); resetTimer(); });
+    tabList.appendChild(btn);
+  });
+
+  function goTo(n) {
+    const tabs = tabList.querySelectorAll('.tab-btn');
+    const fills = document.querySelectorAll('.tab-progress-fill');
+    tabs[cur].classList.remove('active');
+    fills[cur].style.transition = 'none'; fills[cur].style.width = '0%';
+    cur = (n + FEATURES.length) % FEATURES.length;
+    tabs[cur].classList.add('active');
+
+    const f = FEATURES[cur];
+    panelArea.innerHTML = `<div class="panel active">
+      <div class="panel-eyebrow">${f.eyebrow}</div>
+      <div class="panel-title">${f.title}</div>
+      <div class="panel-body">${f.body}</div>
+      <div class="panel-features">${f.features.map(ft => `<div class="feat-item"><div class="feat-check">✓</div>${ft}</div>`).join('')}</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dot c-red"></div>
+          <div class="code-dot c-yellow"></div>
+          <div class="code-dot c-green"></div>
+        </div>
+        ${f.code}
+      </div>
+    </div>`;
+    docLink.textContent = `Read ${f.name} docs →`;
+
+    // Start progress
+    const fill = document.getElementById(`prog-${cur}`);
+    fill.style.transition = 'none'; fill.style.width = '0%';
+    requestAnimationFrame(() => {
+      fill.style.transition = `width ${DURATION}ms linear`;
+      fill.style.width = '100%';
+    });
+  }
+
+  function resetTimer() {
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(() => { goTo(cur + 1); resetTimer(); }, DURATION);
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', () => { goTo(cur - 1); resetTimer(); });
+  document.getElementById('next-btn').addEventListener('click', () => { goTo(cur + 1); resetTimer(); });
+
+  goTo(0); resetTimer();
+</script>
+</body>
+</html>

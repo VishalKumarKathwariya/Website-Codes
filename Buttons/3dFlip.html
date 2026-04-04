@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 11 — 3D Flip</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    min-height:100vh;
+    background:#0d0d1a;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Sans',sans-serif;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background:
+      radial-gradient(ellipse 55% 45% at 30% 40%, rgba(224,64,251,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 70% 60%, rgba(26,26,46,0.8) 0%, transparent 60%);
+  }
+  body::after{
+    content:'';position:fixed;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size:40px 40px;
+  }
+  .page{
+    position:relative;z-index:1;
+    display:flex;flex-direction:column;align-items:center;gap:3.5rem;
+    padding:3rem 2rem;text-align:center;
+  }
+  .label-block{display:flex;flex-direction:column;gap:10px;align-items:center}
+  .tag{
+    display:inline-block;padding:5px 14px;
+    background:rgba(224,64,251,0.12);border:1px solid rgba(224,64,251,0.3);
+    border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:#e040fb;
+  }
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;color:#fff;line-height:1.1}
+  p{font-size:15px;color:rgba(255,255,255,0.42);max-width:400px;line-height:1.65}
+
+  /* ── DEMO AREA ── */
+  .demo-area{
+    display:flex;flex-direction:column;align-items:center;gap:2.5rem;
+  }
+  .row{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+
+  /* ── BUTTON ── */
+  .flip-wrap{perspective:700px;display:inline-block}
+  .btn-flip{
+    position:relative;width:190px;height:52px;
+    transform-style:preserve-3d;
+    transition:transform .55s cubic-bezier(.4,0,.2,1);
+    cursor:pointer;border:none;background:none;padding:0;
+  }
+  .flip-wrap:hover .btn-flip{transform:rotateX(180deg)}
+  .flip-front,.flip-back{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:10px;font-size:15px;font-weight:600;
+    font-family:'DM Sans',sans-serif;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+  }
+  .flip-front{background:#1a1a2e;color:#fff;border:1px solid rgba(255,255,255,0.1)}
+  .flip-back{background:#e040fb;color:#fff;transform:rotateX(180deg)}
+
+  /* Y-axis flip variant */
+  .flip-y:hover .btn-flip{transform:rotateY(180deg)}
+  .flip-y .flip-back{transform:rotateY(180deg)}
+
+  /* diagonal flip */
+  .flip-d:hover .btn-flip{transform:rotate3d(1,1,0,180deg)}
+  .flip-d .flip-back{transform:rotate3d(1,1,0,180deg);background:#00bcd4}
+
+  /* code note */
+  .code-note{
+    font-size:12px;color:rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.07);
+    border-radius:8px;padding:10px 18px;
+    font-family:'DM Mono',monospace;letter-spacing:.02em;max-width:380px;line-height:1.6;
+  }
+  .code-note strong{color:rgba(255,255,255,0.55);font-weight:500}
+
+  /* info */
+  .info{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+  .info-item{
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
+    border-radius:10px;padding:12px 20px;font-size:13px;color:rgba(255,255,255,0.38);
+    display:flex;flex-direction:column;gap:4px;min-width:130px;
+  }
+  .info-item strong{color:rgba(255,255,255,0.75);font-size:14px;font-weight:600}
+  .hint{font-size:12px;color:rgba(255,255,255,0.2);letter-spacing:.05em}
+  .sub{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.2);font-weight:600}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 11 / 20</span>
+    <h1>3D Flip</h1>
+    <p>The button rotates in 3D space to reveal a second face — perfect for cart confirmations, toggle states, and surprising secondary actions.</p>
+  </div>
+
+  <div class="demo-area">
+    <span class="sub">X-axis flip</span>
+    <div class="row">
+      <div class="flip-wrap">
+        <button class="btn-flip">
+          <span class="flip-front">Add to Cart</span>
+          <span class="flip-back">✓ Added!</span>
+        </button>
+      </div>
+      <div class="flip-wrap">
+        <button class="btn-flip">
+          <span class="flip-front">Subscribe</span>
+          <span class="flip-back">🎉 Welcome!</span>
+        </button>
+      </div>
+    </div>
+
+    <span class="sub">Y-axis flip</span>
+    <div class="row">
+      <div class="flip-wrap flip-y">
+        <button class="btn-flip">
+          <span class="flip-front">Follow</span>
+          <span class="flip-back">✓ Following</span>
+        </button>
+      </div>
+      <div class="flip-wrap flip-y">
+        <button class="btn-flip">
+          <span class="flip-front">Like Post</span>
+          <span class="flip-back">❤ Liked!</span>
+        </button>
+      </div>
+    </div>
+
+    <span class="sub">Diagonal flip</span>
+    <div class="row">
+      <div class="flip-wrap flip-d">
+        <button class="btn-flip">
+          <span class="flip-front">View More</span>
+          <span class="flip-back">→ Explore</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-note">
+    <strong>Key CSS:</strong> transform-style: preserve-3d · backface-visibility: hidden · rotateX(180deg) on hover wrapper
+  </div>
+
+  <span class="hint">↑ Hover any button to see the 3D flip</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Stripe, card UIs, e-com</div>
+    <div class="info-item"><strong>Technique</strong>CSS preserve-3d</div>
+    <div class="info-item"><strong>Feel</strong>Surprising, physical</div>
+    <div class="info-item"><strong>Best for</strong>Toggle / confirm states</div>
+  </div>
+</div>
+</body>
+</html>

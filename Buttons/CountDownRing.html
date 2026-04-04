@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Button 18 — Countdown Ring</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#f0fdf4;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Sans',sans-serif;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;
+    background:radial-gradient(ellipse 70% 60% at 50% 30%, rgba(5,150,105,0.06) 0%, transparent 60%);
+  }
+  .page{
+    position:relative;z-index:1;
+    display:flex;flex-direction:column;align-items:center;gap:3.5rem;
+    padding:3rem 2rem;text-align:center;
+  }
+  .label-block{display:flex;flex-direction:column;gap:10px;align-items:center}
+  .tag{
+    display:inline-block;padding:5px 14px;
+    background:rgba(5,150,105,0.1);border:1px solid rgba(5,150,105,0.25);
+    border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:#047857;
+  }
+  h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:700;color:#0f172a;line-height:1.1}
+  p{font-size:15px;color:#64748b;max-width:420px;line-height:1.65}
+
+  /* ── BUTTONS ── */
+  .demo-area{display:flex;flex-direction:column;align-items:center;gap:2.5rem;width:100%;max-width:600px}
+  .row{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+
+  .btn-cd{
+    padding:13px 28px;border:none;border-radius:10px;
+    font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;
+    cursor:pointer;display:inline-flex;align-items:center;gap:12px;
+    transition:opacity .2s,transform .1s;
+  }
+  .btn-cd:active{transform:scale(.97)}
+
+  .btn-green{background:#059669;color:#fff}
+  .btn-green:hover{background:#047857}
+  .btn-blue{background:#2563eb;color:#fff}
+  .btn-blue:hover{background:#1d4ed8}
+  .btn-orange{background:#ea580c;color:#fff}
+  .btn-orange:hover{background:#c2410c}
+  .btn-purple{background:#7c3aed;color:#fff}
+  .btn-purple:hover{background:#6d28d9}
+
+  /* SVG ring */
+  .ring-svg{flex-shrink:0}
+  .ring-bg{fill:none;stroke:rgba(255,255,255,0.3);stroke-width:2.5}
+  .ring-prog{
+    fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;
+    transform-origin:center;transform:rotate(-90deg);
+    transition:stroke-dashoffset .18s linear;
+  }
+
+  /* progress bar variant */
+  .btn-progress{
+    padding:0;border:none;border-radius:10px;
+    overflow:hidden;cursor:pointer;width:260px;height:52px;
+    position:relative;background:#e2e8f0;
+    font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;
+    transition:opacity .15s;
+  }
+  .progress-fill{
+    position:absolute;left:0;top:0;height:100%;
+    background:#059669;
+    transition:width .18s linear;
+    border-radius:0;
+  }
+  .progress-text{position:relative;z-index:1;color:#fff;width:100%;text-align:center;line-height:52px}
+
+  /* hold-to-confirm variant */
+  .btn-hold{
+    padding:14px 32px;border:none;border-radius:10px;
+    background:#7c3aed;color:#fff;
+    font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;
+    cursor:pointer;position:relative;overflow:hidden;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .hold-fill{
+    position:absolute;left:0;top:0;bottom:0;width:0%;
+    background:rgba(255,255,255,0.2);pointer-events:none;
+    transition:width .05s linear;
+  }
+  .hold-text{position:relative;z-index:1}
+
+  .sub{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#94a3b8;font-weight:600}
+  .divider{width:100%;height:1px;background:rgba(0,0,0,0.06)}
+
+  .info{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+  .info-item{
+    background:rgba(5,150,105,0.06);border:1px solid rgba(5,150,105,0.12);
+    border-radius:10px;padding:12px 20px;font-size:13px;color:#64748b;
+    display:flex;flex-direction:column;gap:4px;min-width:130px;
+  }
+  .info-item strong{color:#0f172a;font-size:14px;font-weight:600}
+  .hint{font-size:12px;color:#94a3b8;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="label-block">
+    <span class="tag">Button 18 / 20</span>
+    <h1>Countdown Ring</h1>
+    <p>An SVG progress ring counts down inside the button — used for timed actions, undo windows, and confirming destructive operations.</p>
+  </div>
+
+  <div class="demo-area">
+    <span class="sub">Click to start countdown</span>
+    <div class="row">
+      <!-- Green 5s -->
+      <button class="btn-cd btn-green" id="cd1" data-sec="5" data-circ="56.5">
+        <svg class="ring-svg" width="24" height="24" viewBox="0 0 24 24">
+          <circle class="ring-bg" cx="12" cy="12" r="9"/>
+          <circle class="ring-prog" id="rp1" cx="12" cy="12" r="9"/>
+        </svg>
+        <span id="cl1">Save (5s)</span>
+      </button>
+      <!-- Blue 10s -->
+      <button class="btn-cd btn-blue" id="cd2" data-sec="10" data-circ="56.5">
+        <svg class="ring-svg" width="24" height="24" viewBox="0 0 24 24">
+          <circle class="ring-bg" cx="12" cy="12" r="9"/>
+          <circle class="ring-prog" id="rp2" cx="12" cy="12" r="9"/>
+        </svg>
+        <span id="cl2">Submit (10s)</span>
+      </button>
+    </div>
+    <div class="row">
+      <!-- Orange auto-delete -->
+      <button class="btn-cd btn-orange" id="cd3" data-sec="3" data-circ="56.5">
+        <svg class="ring-svg" width="24" height="24" viewBox="0 0 24 24">
+          <circle class="ring-bg" cx="12" cy="12" r="9"/>
+          <circle class="ring-prog" id="rp3" cx="12" cy="12" r="9"/>
+        </svg>
+        <span id="cl3">Delete (3s)</span>
+      </button>
+    </div>
+
+    <div class="divider"></div>
+    <span class="sub">Progress bar variant</span>
+    <button class="btn-progress" id="prog-btn">
+      <div class="progress-fill" id="prog-fill"></div>
+      <span class="progress-text" id="prog-text">Click to Upload</span>
+    </button>
+
+    <div class="divider"></div>
+    <span class="sub">Hold to confirm</span>
+    <button class="btn-hold" id="hold-btn">
+      <div class="hold-fill" id="hold-fill"></div>
+      <span class="hold-text" id="hold-text">Hold to Confirm Delete</span>
+    </button>
+  </div>
+
+  <span class="hint">↑ Click the ring buttons — hold the last one for 2 seconds</span>
+
+  <div class="info">
+    <div class="info-item"><strong>Used by</strong>Notion, Slack, productivity apps</div>
+    <div class="info-item"><strong>Technique</strong>SVG stroke-dashoffset + JS timer</div>
+    <div class="info-item"><strong>Feel</strong>Trustworthy, precise, careful</div>
+    <div class="info-item"><strong>Best for</strong>Undo, destructive actions</div>
+  </div>
+</div>
+
+<script>
+  /* Ring countdown buttons */
+  ['1','2','3'].forEach(i => {
+    const btn = document.getElementById('cd'+i);
+    const ring = document.getElementById('rp'+i);
+    const lbl = document.getElementById('cl'+i);
+    const totalSec = parseInt(btn.dataset.sec);
+    const circ = parseFloat(btn.dataset.circ);
+    const origText = lbl.textContent;
+    let running = false, timer = null, secs = 0;
+    btn.addEventListener('click', () => {
+      if(running){ clearInterval(timer); running=false; ring.style.strokeDashoffset=0; lbl.textContent=origText; return; }
+      running=true; secs=totalSec; lbl.textContent=secs+'s';
+      ring.style.strokeDashoffset=0;
+      timer=setInterval(()=>{
+        secs--;
+        if(secs<=0){
+          clearInterval(timer);running=false;
+          ring.style.strokeDashoffset=circ;
+          lbl.textContent='✓ Done!';
+          btn.style.opacity='.7';
+          setTimeout(()=>{ btn.style.opacity='1'; lbl.textContent=origText; ring.style.strokeDashoffset=0; },1800);
+          return;
+        }
+        ring.style.strokeDashoffset = circ*(1-secs/totalSec);
+        lbl.textContent=secs+'s';
+      },1000);
+    });
+  });
+
+  /* Progress bar */
+  const progBtn = document.getElementById('prog-btn');
+  const progFill = document.getElementById('prog-fill');
+  const progText = document.getElementById('prog-text');
+  let progRunning = false;
+  progBtn.addEventListener('click', () => {
+    if(progRunning) return;
+    progRunning=true; let pct=0;
+    const iv=setInterval(()=>{
+      pct+=2;
+      progFill.style.width=pct+'%';
+      progText.textContent=pct<100?'Uploading... '+pct+'%':'✓ Complete!';
+      if(pct>=100){ clearInterval(iv); setTimeout(()=>{ progFill.style.width='0%'; progText.textContent='Click to Upload'; progRunning=false; },2000); }
+    },40);
+  });
+
+  /* Hold to confirm */
+  const holdBtn = document.getElementById('hold-btn');
+  const holdFill = document.getElementById('hold-fill');
+  const holdText = document.getElementById('hold-text');
+  let holdTimer=null, holdPct=0, holdDone=false;
+  function startHold(){ if(holdDone) return; holdTimer=setInterval(()=>{ holdPct+=2; holdFill.style.width=holdPct+'%'; holdText.textContent=holdPct<100?'Hold... '+holdPct+'%':'✓ Confirmed!'; if(holdPct>=100){ clearInterval(holdTimer); holdDone=true; setTimeout(()=>{ holdFill.style.width='0%'; holdText.textContent='Hold to Confirm Delete'; holdPct=0; holdDone=false; },2000); } },20); }
+  function stopHold(){ clearInterval(holdTimer); if(!holdDone){ holdFill.style.width='0%'; holdPct=0; holdText.textContent='Hold to Confirm Delete'; } }
+  holdBtn.addEventListener('mousedown', startHold);
+  holdBtn.addEventListener('touchstart', startHold);
+  holdBtn.addEventListener('mouseup', stopHold);
+  holdBtn.addEventListener('mouseleave', stopHold);
+  holdBtn.addEventListener('touchend', stopHold);
+</script>
+</body>
+</html>

@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SVG Border Buttons — All Variants</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafaf8;
+    --text: #1a1a1a;
+    --text-muted: #6b7280;
+    --text-hint: #9ca3af;
+    --surface: rgba(0,0,0,0.04);
+    --surface-border: rgba(0,0,0,0.07);
+    --purple: #8b5cf6;
+    --purple-dark: #7c3aed;
+    --orange: #f97316;
+    --orange-dark: #ea6c11;
+    --teal: #0d9488;
+    --teal-dark: #0d7377;
+    --tag-bg: rgba(139,92,246,0.08);
+    --tag-border: rgba(139,92,246,0.22);
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(139,92,246,0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+
+  /* ── Layout ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 4rem 2rem 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+    text-align: center;
+  }
+
+  /* ── Header ── */
+  .header { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
+  .tag {
+    display: inline-block;
+    padding: 5px 16px;
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--purple-dark);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 480px;
+    line-height: 1.65;
+  }
+
+  /* ── Sections ── */
+  .sections { display: flex; flex-direction: column; gap: 3.5rem; width: 100%; }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .section-head { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+
+  .section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--text-hint);
+    font-weight: 600;
+  }
+
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    max-width: 400px;
+    line-height: 1.5;
+  }
+
+  .row { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+
+  /* ── Base Button ── */
+  .btn {
+    position: relative;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color .2s;
+  }
+
+  .bsvg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .bp {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* ── Color Variants ── */
+  .btn-purple { color: var(--purple-dark); }
+  .btn-orange { color: var(--orange-dark); }
+  .btn-teal   { color: var(--teal-dark); }
+  .btn-black  { color: var(--text); }
+
+  /* ════════════════════════════════════════
+     A — Draw on Hover (original)
+  ════════════════════════════════════════ */
+  .bp-hover {
+    stroke: var(--purple);
+    stroke-dasharray: var(--perim);
+    stroke-dashoffset: var(--perim);
+    transition: stroke-dashoffset .55s cubic-bezier(.4,0,.2,1);
+  }
+  .bp-hover-orange {
+    stroke: var(--orange);
+    stroke-dasharray: var(--perim);
+    stroke-dashoffset: var(--perim);
+    transition: stroke-dashoffset .6s cubic-bezier(.4,0,.2,1);
+  }
+  .bp-hover-teal {
+    stroke: var(--teal);
+    stroke-dasharray: var(--perim);
+    stroke-dashoffset: var(--perim);
+    transition: stroke-dashoffset .5s cubic-bezier(.4,0,.2,1);
+  }
+  .bp-hover-black {
+    stroke: var(--text);
+    stroke-dasharray: var(--perim);
+    stroke-dashoffset: var(--perim);
+    transition: stroke-dashoffset .65s cubic-bezier(.4,0,.2,1);
+  }
+  .bp-hover-outer {
+    stroke: var(--purple);
+    stroke-width: 2;
+    stroke-dasharray: var(--perim);
+    stroke-dashoffset: var(--perim);
+    transition: stroke-dashoffset .55s cubic-bezier(.4,0,.2,1);
+  }
+  .bp-hover-inner {
+    stroke: #e9d5ff;
+    stroke-width: 1;
+    stroke-dasharray: var(--perim);
+    stroke-dashoffset: var(--perim);
+    transition: stroke-dashoffset .55s cubic-bezier(.4,0,.2,1) .1s;
+  }
+  .btn:hover .bp-hover,
+  .btn:hover .bp-hover-orange,
+  .btn:hover .bp-hover-teal,
+  .btn:hover .bp-hover-black,
+  .btn:hover .bp-hover-outer,
+  .btn:hover .bp-hover-inner {
+    stroke-dashoffset: 0;
+  }
+
+  /* ════════════════════════════════════════
+     B — Rotating Segment (continuous)
+  ════════════════════════════════════════ */
+  @keyframes rotate-dash {
+    from { stroke-dashoffset: var(--perim); }
+    to   { stroke-dashoffset: 0; }
+  }
+  .bp-rotate {
+    stroke: var(--purple);
+    stroke-dasharray: calc(var(--perim) * 0.35) calc(var(--perim) * 0.65);
+    stroke-dashoffset: var(--perim);
+    animation: rotate-dash 2s linear infinite;
+  }
+  .bp-rotate-orange {
+    stroke: var(--orange);
+    stroke-dasharray: calc(var(--perim) * 0.35) calc(var(--perim) * 0.65);
+    stroke-dashoffset: var(--perim);
+    animation: rotate-dash 1.6s linear infinite;
+  }
+  .bp-rotate-teal {
+    stroke: var(--teal);
+    stroke-dasharray: calc(var(--perim) * 0.35) calc(var(--perim) * 0.65);
+    stroke-dashoffset: var(--perim);
+    animation: rotate-dash 2.4s linear infinite;
+  }
+
+  /* ════════════════════════════════════════
+     C — Marching Ants (keyframes injected by JS)
+  ════════════════════════════════════════ */
+  .bp-march        { stroke: var(--purple); stroke-dasharray: 12 8; }
+  .bp-march-orange { stroke: var(--orange); stroke-dasharray: 8 6; }
+  .bp-march-teal   { stroke: var(--teal);   stroke-dasharray: 18 6; }
+
+  /* ════════════════════════════════════════
+     D — Draw → Hold → Erase Loop
+  ════════════════════════════════════════ */
+  @keyframes draw-loop {
+    0%   { stroke-dashoffset: var(--perim); }
+    45%  { stroke-dashoffset: 0; }
+    55%  { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: var(--perim); }
+  }
+  .bp-loop {
+    stroke: var(--teal);
+    stroke-dasharray: var(--perim);
+    animation: draw-loop 3s ease-in-out infinite;
+  }
+  .bp-loop-purple {
+    stroke: var(--purple);
+    stroke-dasharray: var(--perim);
+    animation: draw-loop 2.5s ease-in-out infinite;
+  }
+  .bp-loop-orange {
+    stroke: var(--orange);
+    stroke-dasharray: var(--perim);
+    animation: draw-loop 3.5s ease-in-out infinite;
+  }
+
+  /* ════════════════════════════════════════
+     E — Chasing Dots (keyframes injected by JS)
+  ════════════════════════════════════════ */
+  .bp-chase1 { stroke: var(--purple); }
+  .bp-chase2 { stroke: var(--orange); }
+  .bp-tri1   { stroke: var(--purple); }
+  .bp-tri2   { stroke: var(--orange); }
+  .bp-tri3   { stroke: var(--teal); }
+
+  /* ── Divider ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139,92,246,0.2), transparent);
+  }
+
+  /* ── Info Grid ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+  }
+  .info-card strong { color: var(--text); font-size: 14px; font-weight: 600; }
+
+  .hint {
+    font-size: 12px;
+    color: var(--text-hint);
+    letter-spacing: .05em;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <span class="tag">5 Variants / SVG Border</span>
+    <h1>SVG Border Buttons</h1>
+    <p class="subtitle">Five ways to animate an SVG stroke around a button — from hover-triggered draws to continuous loops, marching dashes, and chasing dots.</p>
+  </header>
+
+  <div class="sections">
+
+    <!-- ══ A: Draw on Hover ══ -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-label">A — Draw on Hover</span>
+        <p class="section-desc">stroke-dashoffset transitions from full perimeter → 0 when you hover. Pauses until the next hover.</p>
+      </div>
+      <div class="row">
+        <button class="btn btn-purple" id="bA1">
+          <svg class="bsvg"><rect class="bp bp-hover" id="rA1" rx="10"/></svg>
+          <span>Hover to Trace</span>
+        </button>
+        <button class="btn btn-orange" id="bA2">
+          <svg class="bsvg"><rect class="bp bp-hover-orange" id="rA2" rx="10"/></svg>
+          <span>View Portfolio</span>
+        </button>
+        <button class="btn btn-teal" id="bA3">
+          <svg class="bsvg"><rect class="bp bp-hover-teal" id="rA3" rx="10"/></svg>
+          <span>Start Project</span>
+        </button>
+      </div>
+      <div class="row">
+        <button class="btn btn-purple" id="bA4">
+          <svg class="bsvg">
+            <rect class="bp bp-hover-outer" id="rA4o" rx="10"/>
+            <rect class="bp bp-hover-inner" id="rA4i" rx="10"/>
+          </svg>
+          <span>Double Stroke</span>
+        </button>
+        <button class="btn btn-black" id="bA5">
+          <svg class="bsvg"><rect class="bp bp-hover-black" id="rA5" rx="0"/></svg>
+          <span>Brutalist Style</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══ B: Rotating Segment ══ -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-label">B — Rotating Segment</span>
+        <p class="section-desc">A partial arc (35% of perimeter) continuously orbits the button using a linear infinite animation.</p>
+      </div>
+      <div class="row">
+        <button class="btn btn-purple" id="bB1">
+          <svg class="bsvg"><rect class="bp bp-rotate" id="rB1" rx="10"/></svg>
+          <span>Loading State</span>
+        </button>
+        <button class="btn btn-orange" id="bB2">
+          <svg class="bsvg"><rect class="bp bp-rotate-orange" id="rB2" rx="10"/></svg>
+          <span>Processing</span>
+        </button>
+        <button class="btn btn-teal" id="bB3">
+          <svg class="bsvg"><rect class="bp bp-rotate-teal" id="rB3" rx="10"/></svg>
+          <span>Generating</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══ C: Marching Ants ══ -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-label">C — Marching Ants</span>
+        <p class="section-desc">Evenly-spaced dashes travel around the border in a continuous loop. Classic selection-style animation.</p>
+      </div>
+      <div class="row">
+        <button class="btn btn-purple" id="bC1">
+          <svg class="bsvg"><rect class="bp bp-march" id="rC1" rx="10"/></svg>
+          <span>Selected State</span>
+        </button>
+        <button class="btn btn-orange" id="bC2">
+          <svg class="bsvg"><rect class="bp bp-march-orange" id="rC2" rx="10"/></svg>
+          <span>Fine Dashes</span>
+        </button>
+        <button class="btn btn-teal" id="bC3">
+          <svg class="bsvg"><rect class="bp bp-march-teal" id="rC3" rx="10"/></svg>
+          <span>Long Dashes</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══ D: Draw → Hold → Erase ══ -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-label">D — Draw → Hold → Erase Loop</span>
+        <p class="section-desc">The border fully draws itself, holds for a beat, then erases — on a seamless infinite loop with ease-in-out timing.</p>
+      </div>
+      <div class="row">
+        <button class="btn btn-teal" id="bD1">
+          <svg class="bsvg"><rect class="bp bp-loop" id="rD1" rx="10"/></svg>
+          <span>Teal Loop</span>
+        </button>
+        <button class="btn btn-purple" id="bD2">
+          <svg class="bsvg"><rect class="bp bp-loop-purple" id="rD2" rx="10"/></svg>
+          <span>Purple Loop</span>
+        </button>
+        <button class="btn btn-orange" id="bD3">
+          <svg class="bsvg"><rect class="bp bp-loop-orange" id="rD3" rx="10"/></svg>
+          <span>Orange Loop</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ══ E: Chasing Dots ══ -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-label">E — Chasing Dots</span>
+        <p class="section-desc">Tiny dot segments chase each other around the border, each offset by an equal fraction of the perimeter.</p>
+      </div>
+      <div class="row">
+        <button class="btn" id="bE1">
+          <svg class="bsvg">
+            <rect class="bp bp-chase1" id="rE1a" rx="10"/>
+            <rect class="bp bp-chase2" id="rE1b" rx="10"/>
+          </svg>
+          <span>Two Chasers</span>
+        </button>
+        <button class="btn" id="bE2">
+          <svg class="bsvg">
+            <rect class="bp bp-tri1" id="rE2a" rx="10"/>
+            <rect class="bp bp-tri2" id="rE2b" rx="10"/>
+            <rect class="bp bp-tri3" id="rE2c" rx="10"/>
+          </svg>
+          <span>Three Chasers</span>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <p class="hint">↑ Sections B – E animate continuously &nbsp;·&nbsp; Section A animates on hover</p>
+
+  <div class="info-grid">
+    <div class="info-card"><strong>Technique</strong>SVG stroke-dashoffset</div>
+    <div class="info-card"><strong>Dependencies</strong>None — pure CSS + SVG</div>
+    <div class="info-card"><strong>Browser support</strong>All modern browsers</div>
+    <div class="info-card"><strong>Feel</strong>Precise, editorial, crafted</div>
+    <div class="info-card"><strong>Best for</strong>Portfolio, agency, SaaS</div>
+  </div>
+
+</div>
+
+<script>
+  // Shared injected <style> tag for dynamic keyframes
+  const dynStyle = document.createElement('style');
+  document.head.appendChild(dynStyle);
+
+  // ── Sections A, B, D: use CSS custom property --perim (works fine for transition + dasharray)
+  function initBorder(btnId, rectIds) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    function measure() {
+      const w = btn.offsetWidth, h = btn.offsetHeight;
+      const perim = 2 * (w - 3 + h - 3);
+      rectIds.forEach(rId => {
+        const rect = document.getElementById(rId);
+        if (!rect) return;
+        rect.setAttribute('x', '1.5');
+        rect.setAttribute('y', '1.5');
+        rect.setAttribute('width',  w - 3);
+        rect.setAttribute('height', h - 3);
+        rect.style.setProperty('--perim', perim);
+      });
+    }
+    setTimeout(measure, 80);
+    window.addEventListener('resize', measure);
+  }
+
+  // ── Section C: Marching Ants
+  // @keyframes can't use CSS custom properties, so we inject a named keyframe per element
+  function initMarch(btnId, rectId, dashOn, dashOff, duration) {
+    const btn = document.getElementById(btnId);
+    const rect = document.getElementById(rectId);
+    if (!btn || !rect) return;
+    const kfName = 'march_' + rectId;
+
+    function measure() {
+      const w = btn.offsetWidth, h = btn.offsetHeight;
+      const perim = 2 * (w - 3 + h - 3);
+      rect.setAttribute('x', '1.5');
+      rect.setAttribute('y', '1.5');
+      rect.setAttribute('width',  w - 3);
+      rect.setAttribute('height', h - 3);
+      // Remove old rule if any, then add updated one
+      const rules = dynStyle.sheet.cssRules;
+      for (let i = rules.length - 1; i >= 0; i--) {
+        if (rules[i].name === kfName) dynStyle.sheet.deleteRule(i);
+      }
+      dynStyle.sheet.insertRule(
+        `@keyframes ${kfName} { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -${perim}px; } }`,
+        dynStyle.sheet.cssRules.length
+      );
+      rect.style.strokeDasharray = `${dashOn} ${dashOff}`;
+      rect.style.animation = `${kfName} ${duration} linear infinite`;
+    }
+    setTimeout(measure, 80);
+    window.addEventListener('resize', measure);
+  }
+
+  // ── Section E: Chasing Dots
+  // Each dot = tiny dash (dotSize) + huge gap (perim - dotSize), offset by fraction of perim
+  function initChase(btnId, rectDefs) {
+    // rectDefs: array of { id, dotSize, fraction, duration }
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+
+    function measure() {
+      const w = btn.offsetWidth, h = btn.offsetHeight;
+      const perim = 2 * (w - 3 + h - 3);
+
+      rectDefs.forEach(({ id, dotSize, fraction, duration }) => {
+        const rect = document.getElementById(id);
+        if (!rect) return;
+        rect.setAttribute('x', '1.5');
+        rect.setAttribute('y', '1.5');
+        rect.setAttribute('width',  w - 3);
+        rect.setAttribute('height', h - 3);
+
+        const kfName = 'chase_' + id;
+        const startOffset = perim * fraction;
+        const endOffset   = startOffset - perim; // moves forward by one full loop
+
+        const rules = dynStyle.sheet.cssRules;
+        for (let i = rules.length - 1; i >= 0; i--) {
+          if (rules[i].name === kfName) dynStyle.sheet.deleteRule(i);
+        }
+        dynStyle.sheet.insertRule(
+          `@keyframes ${kfName} {
+            from { stroke-dashoffset: ${startOffset}px; }
+            to   { stroke-dashoffset: ${endOffset}px; }
+          }`,
+          dynStyle.sheet.cssRules.length
+        );
+
+        const gap = Math.max(perim - dotSize, 0);
+        rect.style.strokeDasharray = `${dotSize} ${gap}`;
+        rect.style.animation = `${kfName} ${duration} linear infinite`;
+      });
+    }
+    setTimeout(measure, 80);
+    window.addEventListener('resize', measure);
+  }
+
+  // ── A: Draw on Hover
+  initBorder('bA1', ['rA1']);
+  initBorder('bA2', ['rA2']);
+  initBorder('bA3', ['rA3']);
+  initBorder('bA4', ['rA4o', 'rA4i']);
+  initBorder('bA5', ['rA5']);
+
+  // ── B: Rotating Segment
+  initBorder('bB1', ['rB1']);
+  initBorder('bB2', ['rB2']);
+  initBorder('bB3', ['rB3']);
+
+  // ── C: Marching Ants (dashOn, dashOff, duration)
+  initMarch('bC1', 'rC1', 12, 8,  '1.5s');
+  initMarch('bC2', 'rC2', 8,  6,  '1.2s');
+  initMarch('bC3', 'rC3', 18, 6,  '2s');
+
+  // ── D: Draw → Hold → Erase
+  initBorder('bD1', ['rD1']);
+  initBorder('bD2', ['rD2']);
+  initBorder('bD3', ['rD3']);
+
+  // ── E: Chasing Dots
+  // Two chasers: offset 0 and 0.5 of perim
+  initChase('bE1', [
+    { id: 'rE1a', dotSize: 10, fraction: 0,   duration: '2s' },
+    { id: 'rE1b', dotSize: 10, fraction: 0.5, duration: '2s' },
+  ]);
+  // Three chasers: offset 0, 0.333, 0.667 of perim
+  initChase('bE2', [
+    { id: 'rE2a', dotSize: 8, fraction: 0,     duration: '2s' },
+    { id: 'rE2b', dotSize: 8, fraction: 0.333, duration: '2s' },
+    { id: 'rE2c', dotSize: 8, fraction: 0.667, duration: '2s' },
+  ]);
+</script>
+</body>
+</html>

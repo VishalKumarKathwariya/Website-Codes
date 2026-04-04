@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12 — 3D Ring Carousel | Luxury Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: none;
+    user-select: none; /* prevents accidental text selection while dragging */
+  }
+
+  :root {
+    --bg: #0c0a08;
+    --gold: #c9a84c;
+    --gold-light: #e8c87a;
+    --gold-glow: rgba(201, 168, 76, 0.3);
+    --card-w: 260px;
+    --card-h: 360px;
+    --ring-r: 400px;
+    --transition-smooth: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  /* premium grain & atmosphere */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.5;
+  }
+
+  .atmo {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 800px 500px at 50% 60%, rgba(201, 168, 76, 0.08) 0%, transparent 70%),
+                radial-gradient(ellipse at 20% 80%, rgba(201, 168, 76, 0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .gold-line {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--gold));
+    z-index: 10;
+    opacity: 0.6;
+  }
+
+  .ui {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  /* header typography */
+  .header {
+    text-align: center;
+    margin-bottom: 52px;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 5vw, 68px);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+  }
+
+  .sub {
+    font-size: 14px;
+    color: #6b6456;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+  }
+
+  /* 3D STAGE */
+  .scene {
+    width: min(90vw, 700px);
+    height: 480px;
+    perspective: 1400px;
+    perspective-origin: 50% 45%;
+    position: relative;
+    margin-bottom: 52px;
+    cursor: grab;
+    touch-action: none; /* prevents scroll interference on drag */
+  }
+
+  .scene:active {
+    cursor: grabbing;
+  }
+
+  .ring {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s var(--transition-smooth);
+    will-change: transform;
+  }
+
+  .ring-card {
+    position: absolute;
+    width: var(--card-w);
+    height: var(--card-h);
+    left: 50%;
+    top: 50%;
+    margin-left: calc(var(--card-w) / -2);
+    margin-top: calc(var(--card-h) / -2);
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, outline 0.2s ease;
+    backface-visibility: visible;
+    transform-style: preserve-3d;
+    will-change: transform;
+    background: rgba(0, 0, 0, 0.2);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+
+  .ring-card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 28px 24px;
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+
+  .rc-media {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 92px;
+    overflow: hidden;
+    opacity: 0.85;
+    transition: transform 0.5s ease;
+  }
+
+  .ring-card:hover .rc-media {
+    transform: scale(1.03);
+  }
+
+  .rc-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.3) 55%, rgba(0, 0, 0, 0.1) 100%);
+    border-radius: 20px;
+    pointer-events: none;
+  }
+
+  .rc-category {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .rc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .rc-price {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .rc-price strong {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+
+  /* active card glow + frame */
+  .ring-card.is-active {
+    outline: 1.5px solid rgba(201, 168, 76, 0.7);
+    box-shadow: 0 0 45px rgba(201, 168, 76, 0.3), 0 25px 40px rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+  }
+
+  /* controls */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 28px;
+  }
+
+  .arc-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 168, 76, 0.4);
+    background: rgba(10, 8, 6, 0.6);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    color: var(--gold);
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .arc-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(201, 168, 76, 0.25), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .arc-btn:hover::before {
+    opacity: 1;
+  }
+
+  .arc-btn:hover {
+    border-color: var(--gold);
+    transform: scale(1.08);
+    background: rgba(201, 168, 76, 0.1);
+  }
+
+  .arc-btn:active {
+    transform: scale(0.96);
+  }
+
+  .count-display {
+    text-align: center;
+    min-width: 80px;
+  }
+
+  .count-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: 2px;
+  }
+
+  .count-small {
+    font-size: 12px;
+    color: #6b6456;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* premium indicator */
+  .indicator-track {
+    width: 240px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+
+  .indicator-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transition: width 0.8s var(--transition-smooth);
+    border-radius: 2px;
+  }
+
+  .selected-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    margin-top: 18px;
+    text-align: center;
+    min-height: 32px;
+    transition: opacity 0.3s ease;
+    letter-spacing: -0.2px;
+  }
+
+  .selected-sub {
+    font-size: 12px;
+    color: #b8aa8a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 5px;
+    font-weight: 300;
+  }
+
+  /* responsiveness */
+  @media (max-width: 620px) {
+    .scene {
+      height: 400px;
+    }
+    .ring-card {
+      --card-w: 220px;
+      --card-h: 310px;
+    }
+    .rc-title {
+      font-size: 18px;
+    }
+    .rc-media {
+      font-size: 70px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="atmo"></div>
+<div class="gold-line"></div>
+
+<div class="ui">
+  <div class="header">
+    <div class="eyebrow">Design 12 — Used by Porsche · Ferrari · Luxury Maison</div>
+    <h1>3D Ring <em>Carousel</em></h1>
+    <p class="sub">CSS 3D ring · outward-facing elegance · drag/spin · autoplay</p>
+  </div>
+
+  <div class="scene" id="scene">
+    <div class="ring" id="ring"></div>
+  </div>
+
+  <div class="controls">
+    <button class="arc-btn" id="prev" aria-label="Previous">←</button>
+    <div class="count-display">
+      <div class="count-big" id="count">01</div>
+      <div class="count-small">of 06</div>
+    </div>
+    <button class="arc-btn" id="next" aria-label="Next">→</button>
+  </div>
+
+  <div class="indicator-track"><div class="indicator-fill" id="ind-fill"></div></div>
+
+  <div class="selected-label" id="sel-label">Essence Noire</div>
+  <div class="selected-sub" id="sel-sub">Luxury Fragrance · ₹14,500</div>
+</div>
+
+<script>
+  (function() {
+    // ----- LUXURY COLLECTION -----
+    const CARDS = [
+      { emoji: '🌹', bg: 'linear-gradient(160deg, #1a0a0a, #3d1010)', cat: 'Fragrance', title: 'Essence Noire', price: '₹14,500' },
+      { emoji: '⌚', bg: 'linear-gradient(160deg, #0a0a1a, #10103d)', cat: 'Timepiece', title: 'Chronos Elite', price: '₹2,85,000' },
+      { emoji: '👜', bg: 'linear-gradient(160deg, #1a1205, #3d2d10)', cat: 'Leather Goods', title: 'Palazzo Tote', price: '₹48,000' },
+      { emoji: '💎', bg: 'linear-gradient(160deg, #0a1a0a, #10311a)', cat: 'Jewellery', title: 'Lumière Ring', price: '₹1,20,000' },
+      { emoji: '🥃', bg: 'linear-gradient(160deg, #1a0e05, #3d2010)', cat: 'Spirits', title: 'Reserve 25yr', price: '₹22,000' },
+      { emoji: '🎩', bg: 'linear-gradient(160deg, #0a0a0a, #252525)', cat: 'Couture', title: 'Midnight Tux', price: '₹85,000' }
+    ];
+    const N = CARDS.length;
+    const ANGLE_STEP = 360 / N;        // degrees per card
+    const RADIUS = 390;                // ring radius (px)
+
+    const ringContainer = document.getElementById('ring');
+    const countEl = document.getElementById('count');
+    const indFill = document.getElementById('ind-fill');
+    const selLabel = document.getElementById('sel-label');
+    const selSub = document.getElementById('sel-sub');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const sceneEl = document.getElementById('scene');
+
+    let currentIndex = 0;              // active card index (front-facing)
+    let baseRotation = 0;              // total ring rotation in degrees
+    let autoInterval = null;
+
+    // ----- BUILD RING CARDS (CORRECT OUTWARD-FACING ORIENTATION) -----
+    // Each card is positioned on a circle and rotated to face RADIALLY OUTWARD.
+    // Formula: angleRad = i * ANGLE_STEP_rad
+    // x = sin(angleRad) * RADIUS, z = cos(angleRad) * RADIUS
+    // rotateY = i * ANGLE_STEP (degrees) → so the card's front faces outward (away from center)
+    CARDS.forEach((card, idx) => {
+      const angleRad = (ANGLE_STEP * idx) * Math.PI / 180;
+      const x = Math.sin(angleRad) * RADIUS;
+      const z = Math.cos(angleRad) * RADIUS;
+      const rotateY = ANGLE_STEP * idx;   // outward radial orientation (critical fix)
+      
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'ring-card';
+      cardDiv.setAttribute('data-index', idx);
+      cardDiv.innerHTML = `
+        <div class="ring-card-inner" style="background: ${card.bg};">
+          <div class="rc-media">${card.emoji}</div>
+          <div class="rc-shade"></div>
+          <div class="rc-category">${card.cat}</div>
+          <div class="rc-title">${card.title}</div>
+          <div class="rc-price">Starting at <strong>${card.price}</strong></div>
+        </div>
+      `;
+      // apply 3D position and orientation
+      cardDiv.style.transform = `translateX(${x}px) translateZ(${z}px) rotateY(${rotateY}deg)`;
+      cardDiv.addEventListener('click', (e) => {
+        e.stopPropagation();
+        goToCard(idx);
+        resetAutoplay();
+      });
+      ringContainer.appendChild(cardDiv);
+    });
+
+    // ----- CORE CAROUSEL LOGIC (rotate ring to bring 'index' to front) -----
+    function goToCard(index) {
+      // normalize index
+      const newIndex = ((index % N) + N) % N;
+      currentIndex = newIndex;
+      // required ring rotation: bring card at angle (currentIndex * ANGLE_STEP) to 0° (front)
+      // target rotation = -(currentIndex * ANGLE_STEP)
+      baseRotation = -currentIndex * ANGLE_STEP;
+      ringContainer.style.transform = `rotateY(${baseRotation}deg)`;
+      
+      // update active visual state
+      const allCards = document.querySelectorAll('.ring-card');
+      allCards.forEach((card, i) => {
+        if (i === currentIndex) {
+          card.classList.add('is-active');
+        } else {
+          card.classList.remove('is-active');
+        }
+      });
+      
+      // update UI indicators
+      countEl.textContent = String(currentIndex + 1).padStart(2, '0');
+      const percent = ((currentIndex + 1) / N) * 100;
+      indFill.style.width = `${percent}%`;
+      
+      // fade effect for selected details
+      selLabel.style.opacity = '0';
+      setTimeout(() => {
+        selLabel.textContent = CARDS[currentIndex].title;
+        selSub.textContent = `${CARDS[currentIndex].cat} · ${CARDS[currentIndex].price}`;
+        selLabel.style.opacity = '1';
+      }, 200);
+    }
+    
+    // ----- AUTOPLAY & TIMER RESET -----
+    function startAutoplay() {
+      if (autoInterval) clearInterval(autoInterval);
+      autoInterval = setInterval(() => {
+        goToCard(currentIndex + 1);
+      }, 3800);
+    }
+    
+    function resetAutoplay() {
+      if (autoInterval) {
+        clearInterval(autoInterval);
+      }
+      startAutoplay();
+    }
+    
+    // ----- BUTTON CONTROLS -----
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToCard(currentIndex - 1);
+      resetAutoplay();
+    });
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToCard(currentIndex + 1);
+      resetAutoplay();
+    });
+    
+    // ----- KEYBOARD SUPPORT (arrow keys) -----
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goToCard(currentIndex - 1);
+        resetAutoplay();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        goToCard(currentIndex + 1);
+        resetAutoplay();
+      }
+    });
+    
+    // ----- PREMIUM DRAG-TO-SPIN (touch + mouse with smooth threshold) -----
+    let dragStartX = null;
+    let isDragging = false;
+    let dragThreshold = 45; // pixels sensitivity
+    
+    function onDragStart(clientX) {
+      dragStartX = clientX;
+      isDragging = true;
+      // halt autoplay during manual interaction
+      if (autoInterval) clearInterval(autoInterval);
+      sceneEl.style.cursor = 'grabbing';
+    }
+    
+    function onDragEnd(clientX) {
+      if (!isDragging || dragStartX === null) {
+        dragStartX = null;
+        isDragging = false;
+        sceneEl.style.cursor = 'grab';
+        return;
+      }
+      const delta = clientX - dragStartX;
+      if (Math.abs(delta) > dragThreshold) {
+        if (delta > 0) {
+          // drag right -> previous card
+          goToCard(currentIndex - 1);
+        } else {
+          // drag left -> next card
+          goToCard(currentIndex + 1);
+        }
+        resetAutoplay();
+      } else {
+        // if small movement, just restart autoplay without changing index
+        startAutoplay();
+      }
+      dragStartX = null;
+      isDragging = false;
+      sceneEl.style.cursor = 'grab';
+    }
+    
+    // Mouse events on scene (prevents conflict with buttons)
+    sceneEl.addEventListener('mousedown', (e) => {
+      // avoid if click on button children
+      if (e.target.closest('.arc-btn')) return;
+      e.preventDefault();
+      onDragStart(e.clientX);
+      window.addEventListener('mousemove', (moveEvent) => {
+        // optional: we don't need live feedback, but we prevent default while dragging
+        if (isDragging) moveEvent.preventDefault();
+      });
+      window.addEventListener('mouseup', (upEvent) => {
+        onDragEnd(upEvent.clientX);
+        window.removeEventListener('mouseup', this);
+      }, { once: true });
+    });
+    
+    // Touch events for mobile (smooth)
+    sceneEl.addEventListener('touchstart', (e) => {
+      if (e.target.closest('.arc-btn')) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      onDragStart(touch.clientX);
+    }, { passive: false });
+    
+    window.addEventListener('touchend', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const changed = e.changedTouches[0];
+      if (changed) onDragEnd(changed.clientX);
+    });
+    
+    window.addEventListener('touchcancel', () => {
+      if (isDragging) {
+        dragStartX = null;
+        isDragging = false;
+        sceneEl.style.cursor = 'grab';
+        startAutoplay();
+      }
+    });
+    
+    // also prevent accidental drag outside while dragging
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        // fallback: if mouseup without drag end (rare), reset but no action
+        dragStartX = null;
+        isDragging = false;
+        sceneEl.style.cursor = 'grab';
+        startAutoplay();
+      }
+    });
+    
+    // ----- INITIAL SETUP: apply correct first card and full state -----
+    goToCard(0);
+    startAutoplay();
+    
+    // optional: add subtle shadow toggles for active
+    // force initial indicator fill width set properly
+    // fix any remaining style inconsistencies
+    setTimeout(() => {
+      const activeCard = document.querySelector('.ring-card.is-active');
+      if (activeCard) activeCard.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+    }, 10);
+    
+    // small luxury: pause autoplay when hovering over carousel, resume on leave
+    sceneEl.addEventListener('mouseenter', () => {
+      if (autoInterval) clearInterval(autoInterval);
+    });
+    sceneEl.addEventListener('mouseleave', () => {
+      if (!isDragging) startAutoplay();
+    });
+    
+    // ensure that after touch drag reset state without glitch
+    document.body.addEventListener('touchmove', (e) => {
+      if (isDragging) e.preventDefault();
+    }, { passive: false });
+    
+    // final polishing: correct perspective for all browser
+    ringContainer.style.transformStyle = 'preserve-3d';
+  })();
+</script>
+</body>
+</html>

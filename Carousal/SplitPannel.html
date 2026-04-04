@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 — Split-Panel Carousel</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafaf9;
+    --text: #1c1917;
+    --muted: #78716c;
+    --border: #e7e5e4;
+    --white: #ffffff;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Nav */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .nav-logo { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -.02em; }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-link { font-size: 14px; color: var(--muted); cursor: pointer; transition: color .2s; }
+  .nav-link:hover { color: var(--text); }
+  .nav-link.active { color: var(--text); font-weight: 600; }
+  .nav-cta { background: var(--text); color: #fff; font-size: 14px; font-weight: 600; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-family: inherit; transition: background .2s; }
+  .nav-cta:hover { background: #44403c; }
+
+  /* Page hero */
+  .page-hero {
+    text-align: center;
+    padding: 72px 20px 56px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: .03em;
+  }
+
+  .hero-title {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.05;
+    letter-spacing: -.03em;
+    margin-bottom: 14px;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 28px;
+  }
+
+  /* Carousel */
+  .carousel-outer {
+    max-width: 1100px;
+    width: calc(100% - 48px);
+    margin: 0 auto 60px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 32px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.04);
+    background: var(--white);
+  }
+
+  /* Track */
+  .carousel-track {
+    display: flex;
+    transition: transform .6s cubic-bezier(.23,1,.32,1);
+    will-change: transform;
+  }
+
+  /* Slide */
+  .slide {
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 700px) {
+    .slide { grid-template-columns: 1fr; }
+    .slide-visual { display: none; }
+  }
+
+  /* Visual */
+  .slide-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 48px;
+    min-height: 400px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .visual-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+
+  .visual-icon {
+    font-size: 100px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: .08;
+    line-height: 1;
+  }
+
+  .visual-main {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .visual-emoji { font-size: 80px; margin-bottom: 20px; display: block; }
+
+  .visual-card {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 14px;
+    padding: 18px 22px;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    text-align: left;
+    min-width: 220px;
+  }
+
+  .vc-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.6); margin-bottom: 8px; }
+  .vc-value { font-size: 28px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 6px; }
+  .vc-sub { font-size: 12px; color: rgba(255,255,255,.65); }
+
+  .vc-sparkline {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 30px;
+    margin-top: 12px;
+  }
+
+  .vc-bar {
+    flex: 1;
+    background: rgba(255,255,255,.3);
+    border-radius: 2px;
+    transition: height .3s;
+  }
+
+  .vc-bar.active { background: rgba(255,255,255,.9); }
+
+  /* Text panel */
+  .slide-text {
+    padding: 52px 52px 52px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 1px solid var(--border);
+  }
+
+  .slide-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .eyebrow-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .slide-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    margin-bottom: 16px;
+  }
+
+  .slide-body {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 28px;
+    max-width: 380px;
+  }
+
+  .slide-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+
+  .feat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .feat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--text);
+  }
+
+  .slide-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    border-bottom: 2px solid var(--text);
+    padding-bottom: 2px;
+    width: fit-content;
+    transition: gap .2s;
+    text-decoration: none;
+  }
+
+  .slide-cta:hover { gap: 10px; }
+
+  /* Nav bar */
+  .carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-top: 1px solid var(--border);
+    background: #fafaf9;
+  }
+
+  .indicator-row { display: flex; gap: 10px; align-items: center; }
+
+  .indicator {
+    height: 3px;
+    border-radius: 2px;
+    background: var(--border);
+    cursor: pointer;
+    transition: width .35s cubic-bezier(.23,1,.32,1), background .3s;
+    width: 28px;
+    border: none;
+  }
+
+  .indicator.active { width: 48px; background: var(--text); }
+
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+
+  .auto-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .auto-toggle-dot {
+    width: 26px;
+    height: 14px;
+    border-radius: 7px;
+    background: var(--border);
+    position: relative;
+    transition: background .25s;
+  }
+
+  .auto-toggle-dot::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform .25s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  }
+
+  .auto-toggle-dot.on { background: var(--text); }
+  .auto-toggle-dot.on::after { transform: translateX(12px); }
+
+  .nav-arrows { display: flex; gap: 8px; }
+
+  .nav-arr {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color .2s, background .2s;
+  }
+
+  .nav-arr:hover { border-color: var(--text); background: var(--bg); }
+
+  /* Thumbnail strip */
+  .thumb-strip {
+    max-width: 1100px;
+    width: calc(100% - 48px);
+    margin: 0 auto 80px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 600px) { .thumb-strip { grid-template-columns: repeat(2, 1fr); } }
+
+  .thumb-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    background: var(--white);
+    transition: border-color .2s, background .2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .thumb-card:hover { border-color: #a8a29e; }
+  .thumb-card.active { border-color: var(--text); background: var(--text); }
+  .thumb-card.active .thumb-name { color: #fff; }
+  .thumb-card.active .thumb-sub { color: rgba(255,255,255,.6); }
+
+  .thumb-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .thumb-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .thumb-sub { font-size: 11px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-logo">Frame</div>
+  <div class="nav-links">
+    <span class="nav-link active">Product</span>
+    <span class="nav-link">Pricing</span>
+    <span class="nav-link">Docs</span>
+    <span class="nav-link">Blog</span>
+  </div>
+  <button class="nav-cta">Get started →</button>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="hero-badge">✦ Pattern 10 — Webflow / Framer / Linear</div>
+  <h1 class="hero-title">Split-Panel Carousel</h1>
+  <p class="hero-sub">Full-slide transitions · visual + content panels · indicator strip · auto-advance toggle</p>
+</div>
+
+<!-- Main Carousel -->
+<div class="carousel-outer">
+  <div class="carousel-track" id="track"></div>
+  <div class="carousel-nav">
+    <div class="indicator-row" id="indicators"></div>
+    <div class="nav-right">
+      <div class="auto-toggle" id="auto-toggle">
+        <span>Auto</span>
+        <div class="auto-toggle-dot on" id="toggle-dot"></div>
+      </div>
+      <div class="nav-arrows">
+        <button class="nav-arr" id="prev-btn">&#8249;</button>
+        <button class="nav-arr" id="next-btn">&#8250;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Thumbnail strip -->
+<div class="thumb-strip" id="thumbs"></div>
+
+<script>
+  const SLIDES = [
+    {
+      visualBg: '#0a0a1a',
+      visualIcon: '✦',
+      badgeText: 'Design System',
+      badgeColor: '#a78bfa',
+      badgeBg: 'rgba(167,139,250,.18)',
+      emoji: '◈',
+      cardLabel: 'Components shipped',
+      cardValue: '2,847',
+      cardSub: '+312 this week',
+      sparkBars: [3, 5, 4, 7, 6, 8, 10, 9, 8, 10],
+      eyebrow: 'Design System',
+      title: 'Build with a system that never breaks',
+      body: 'Every component is designed with constraints that make inconsistency impossible. Ship pixel-perfect interfaces without a single design review.',
+      features: ['340+ production-ready components', 'Auto dark mode on every token', 'Figma ↔ Code sync built in'],
+      cta: 'Explore components',
+      thumbIcon: '◈', thumbBg: '#1a1a3a', thumbName: 'Design', thumbSub: 'Components & tokens'
+    },
+    {
+      visualBg: '#001a0a',
+      visualIcon: '⬡',
+      badgeText: 'Performance',
+      badgeColor: '#34d399',
+      badgeBg: 'rgba(52,211,153,.18)',
+      emoji: '⬡',
+      cardLabel: 'Avg response time',
+      cardValue: '48ms',
+      cardSub: 'P99 across all regions',
+      sparkBars: [8, 6, 7, 5, 4, 6, 5, 3, 4, 3],
+      eyebrow: 'Edge Performance',
+      title: 'Sub-50ms on every single request',
+      body: 'Our edge network spans 200 cities worldwide. Every user connects to the nearest node automatically — no configuration, no trade-offs.',
+      features: ['200 global edge locations', 'Automatic anycast routing', 'Zero cold starts on serverless'],
+      cta: 'See the benchmarks',
+      thumbIcon: '⬡', thumbBg: '#001a0a', thumbName: 'Performance', thumbSub: 'Speed & latency'
+    },
+    {
+      visualBg: '#1a0800',
+      visualIcon: '◉',
+      badgeText: 'Collaboration',
+      badgeColor: '#fb923c',
+      badgeBg: 'rgba(251,146,60,.18)',
+      emoji: '◉',
+      cardLabel: 'Active collaborators',
+      cardValue: '12,041',
+      cardSub: 'Right now, live',
+      sparkBars: [4, 5, 6, 7, 8, 9, 7, 10, 9, 10],
+      eyebrow: 'Real-time Collaboration',
+      title: 'Real-time everything, for every team',
+      body: 'Presence indicators, live cursors, conflict-free editing. Built on CRDTs so every collaborator always sees the same version of truth.',
+      features: ['Live cursors & presence', 'CRDT-based merge resolution', 'Comment threads on anything'],
+      cta: 'See it in action',
+      thumbIcon: '◉', thumbBg: '#1a0800', thumbName: 'Collaboration', thumbSub: 'Realtime editing'
+    },
+    {
+      visualBg: '#1a001a',
+      visualIcon: '▣',
+      badgeText: 'Analytics',
+      badgeColor: '#f472b6',
+      badgeBg: 'rgba(244,114,182,.18)',
+      emoji: '▣',
+      cardLabel: 'Revenue this month',
+      cardValue: '$284K',
+      cardSub: '↑ 34% vs last month',
+      sparkBars: [3, 4, 5, 4, 6, 7, 8, 9, 10, 10],
+      eyebrow: 'Revenue Analytics',
+      title: 'Decisions made with full context',
+      body: 'Not just pageviews — funnel cohorts, retention curves, and revenue attribution in a single view. No SQL required, no waiting for the data team.',
+      features: ['Funnel & cohort analysis', 'Revenue attribution modeling', 'Real-time alerts & anomalies'],
+      cta: 'View demo dashboard',
+      thumbIcon: '▣', thumbBg: '#1a001a', thumbName: 'Analytics', thumbSub: 'Revenue & funnels'
+    }
+  ];
+
+  let cur = 0, autoTimer, autoOn = true;
+  const DURATION = 6000;
+  const track = document.getElementById('track');
+  const indsEl = document.getElementById('indicators');
+  const thumbsEl = document.getElementById('thumbs');
+
+  // Build slides
+  SLIDES.forEach((s, i) => {
+    const bars = s.sparkBars.map((h, j) => `<div class="vc-bar${j === s.sparkBars.length - 1 ? ' active' : ''}" style="height:${h * 3}px"></div>`).join('');
+
+    const slide = document.createElement('div');
+    slide.className = 'slide';
+    slide.innerHTML = `
+      <div class="slide-visual" style="background:${s.visualBg}">
+        <span class="visual-icon">${s.visualIcon}</span>
+        <span class="visual-badge" style="background:${s.badgeBg};color:${s.badgeColor}">${s.badgeText}</span>
+        <div class="visual-main">
+          <div class="visual-card">
+            <div class="vc-label">${s.cardLabel}</div>
+            <div class="vc-value">${s.cardValue}</div>
+            <div class="vc-sub">${s.cardSub}</div>
+            <div class="vc-sparkline">${bars}</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-text">
+        <div class="slide-eyebrow">
+          <span class="eyebrow-num">${i + 1}</span>
+          ${s.eyebrow}
+        </div>
+        <h2 class="slide-title">${s.title}</h2>
+        <p class="slide-body">${s.body}</p>
+        <div class="slide-features">
+          ${s.features.map(f => `<div class="feat-row"><div class="feat-dot"></div>${f}</div>`).join('')}
+        </div>
+        <a class="slide-cta" href="#">${s.cta} →</a>
+      </div>`;
+    track.appendChild(slide);
+
+    // Indicator
+    const ind = document.createElement('button');
+    ind.className = 'indicator' + (i === 0 ? ' active' : '');
+    ind.addEventListener('click', () => goTo(i));
+    indsEl.appendChild(ind);
+
+    // Thumbnail
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb-card' + (i === 0 ? ' active' : '');
+    thumb.innerHTML = `<div class="thumb-icon" style="background:${s.thumbBg};font-size:18px;color:#fff">${s.thumbIcon}</div>
+      <div><div class="thumb-name">${s.thumbName}</div><div class="thumb-sub">${s.thumbSub}</div></div>`;
+    thumb.addEventListener('click', () => goTo(i));
+    thumbsEl.appendChild(thumb);
+  });
+
+  function goTo(n) {
+    const inds = indsEl.querySelectorAll('.indicator');
+    const thmbs = thumbsEl.querySelectorAll('.thumb-card');
+    inds[cur].classList.remove('active');
+    thmbs[cur].classList.remove('active');
+    cur = (n + SLIDES.length) % SLIDES.length;
+    track.style.transform = `translateX(-${cur * 100}%)`;
+    inds[cur].classList.add('active');
+    thmbs[cur].classList.add('active');
+  }
+
+  function resetAuto() {
+    clearTimeout(autoTimer);
+    if (autoOn) autoTimer = setTimeout(() => { goTo(cur + 1); resetAuto(); }, DURATION);
+  }
+
+  // Auto toggle
+  const toggleDot = document.getElementById('toggle-dot');
+  document.getElementById('auto-toggle').addEventListener('click', () => {
+    autoOn = !autoOn;
+    toggleDot.className = 'auto-toggle-dot' + (autoOn ? ' on' : '');
+    resetAuto();
+  });
+
+  document.getElementById('prev-btn').addEventListener('click', () => { goTo(cur - 1); resetAuto(); });
+  document.getElementById('next-btn').addEventListener('click', () => { goTo(cur + 1); resetAuto(); });
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { goTo(cur - 1); resetAuto(); }
+    if (e.key === 'ArrowRight') { goTo(cur + 1); resetAuto(); }
+  });
+
+  // Touch
+  let touchX = null;
+  track.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+  track.addEventListener('touchend', e => {
+    if (!touchX) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) { goTo(dx < 0 ? cur + 1 : cur - 1); resetAuto(); }
+    touchX = null;
+  });
+
+  resetAuto();
+</script>
+</body>
+</html>

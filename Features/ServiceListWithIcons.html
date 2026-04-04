@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design 6 · Service List</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #131313;
+      font-family: system-ui, sans-serif;
+      color: #ececec;
+    }
+
+    .section {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      border-bottom: 2px solid #333;
+      padding-bottom: 0.75rem;
+    }
+
+    .services-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      background: #1e1e1e;
+      padding: 1.5rem;
+      border-radius: 24px;
+      border-left: 4px solid #5f9ea0;
+      transition: background 0.2s;
+    }
+
+    .list-item:hover {
+      background: #2a2a2a;
+    }
+
+    .list-icon {
+      font-size: 2.2rem;
+      color: #7ac5c9;
+      min-width: 3rem;
+      text-align: center;
+    }
+
+    .list-content h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .list-content p {
+      color: #aaa;
+      font-size: 0.95rem;
+    }
+
+    /* tablet/desktop -> two columns */
+    @media (min-width: 700px) {
+      .services-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .list-item {
+        flex: 1 1 calc(50% - 1rem);
+      }
+    }
+
+    @media (min-width: 1000px) {
+      .list-item {
+        flex: 1 1 calc(50% - 1rem);
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <h2 class="section-title">Our services</h2>
+    <div class="services-list">
+      <div class="list-item">
+        <i class="fas fa-cloud-upload-alt list-icon"></i>
+        <div class="list-content">
+          <h3>Cloud deployment</h3>
+          <p>One‑click deploy to AWS, GCP, Azure.</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <i class="fas fa-shield-alt list-icon"></i>
+        <div class="list-content">
+          <h3>Security audit</h3>
+          <p>Regular penetration tests and monitoring.</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <i class="fas fa-headset list-icon"></i>
+        <div class="list-content">
+          <h3>24/7 support</h3>
+          <p>Human‑powered help whenever you need.</p>
+        </div>
+      </div>
+      <div class="list-item">
+        <i class="fas fa-chart-bar list-icon"></i>
+        <div class="list-content">
+          <h3>Advanced analytics</h3>
+          <p>Real‑time dashboards and insights.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design 16 · Split Screen</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0d0d0d;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #eee;
+    }
+
+    .split-section {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 900px) {
+      .split-section {
+        flex-direction: row;
+        align-items: center;
+        gap: 3rem;
+      }
+    }
+
+    .split-left {
+      flex: 1;
+      padding: 2rem 0;
+    }
+
+    .split-left h2 {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1.1;
+      background: linear-gradient(145deg, #fff, #aaa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .split-left p {
+      font-size: 1.2rem;
+      color: #aaa;
+      margin-top: 1rem;
+      max-width: 400px;
+    }
+
+    .split-right {
+      flex: 1.5;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .split-card {
+      background: #1a1a24;
+      padding: 2rem;
+      border-radius: 24px;
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+      border-left: 4px solid #6c5ce7;
+      transition: background 0.2s;
+    }
+
+    .split-card:hover {
+      background: #252535;
+    }
+
+    .split-icon {
+      font-size: 2.2rem;
+      color: #6c5ce7;
+      min-width: 3rem;
+    }
+
+    .split-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .split-content p {
+      color: #aaa;
+    }
+
+    @media (min-width: 640px) {
+      .split-right {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .split-right {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="split-section">
+    <div class="split-left">
+      <h2>Powerful <br>features for <br>modern teams</h2>
+      <p>Everything you need to build, scale, and succeed.</p>
+    </div>
+    <div class="split-right">
+      <div class="split-card">
+        <i class="fas fa-bolt split-icon"></i>
+        <div class="split-content">
+          <h3>Lightning fast</h3>
+          <p>Optimized stack with sub‑second responses.</p>
+        </div>
+      </div>
+      <div class="split-card">
+        <i class="fas fa-lock split-icon"></i>
+        <div class="split-content">
+          <h3>Enterprise security</h3>
+          <p>SSO, audit logs, and compliance ready.</p>
+        </div>
+      </div>
+      <div class="split-card">
+        <i class="fas fa-cloud split-icon"></i>
+        <div class="split-content">
+          <h3>Multi‑cloud</h3>
+          <p>Deploy to AWS, Azure, or GCP.</p>
+        </div>
+      </div>
+      <div class="split-card">
+        <i class="fas fa-chart-simple split-icon"></i>
+        <div class="split-content">
+          <h3>Real‑time analytics</h3>
+          <p>Live dashboards and custom reports.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

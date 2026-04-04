@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 51 — Newsletter Subscription Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.5);--wine-tint:rgba(139,26,56,.13);--wine-tint2:rgba(139,26,56,.07);
+  --bg0:#06060B;--bg1:#0A0A11;--bg2:#0F0F18;--bg3:#151520;--bg4:#1C1C28;--bg5:#242432;
+  --chalk:#F4EEF2;--chalk2:#C8BCC8;--chalk3:#8C8090;--chalk4:#524A60;--chalk5:#2E2838;
+  --bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.11);--bdr3:rgba(255,255,255,.17);
+  --bdr-w:rgba(139,26,56,.4);--bdr-w2:rgba(139,26,56,.65);
+  --r4:4px;--r8:8px;--r:12px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;--r-3xl:44px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --ff-d:'Cormorant Garamond',Georgia,serif;--ff-s:'Syne',sans-serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior: smooth;}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-s);font-size:15px;line-height:1.65;min-height:100dvh;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input,select{font:inherit;color:inherit;border:none;outline:none}
+
+/* ── Noise texture overlay ── */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.22;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E")}
+
+/* ── Page shell ── */
+.page{position:relative;z-index:1;min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
+
+/* ── NAV ── */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:clamp(1rem,3vw,1.4rem) clamp(1.2rem,5vw,2.5rem);border-bottom:1px solid var(--bdr)}
+.nav-logo{font-family:var(--ff-d);font-size:1.25rem;font-weight:700;letter-spacing:-.01em}
+.nav-logo span{color:var(--wine-xl);font-style:italic}
+.nav-links{display:flex;align-items:center;gap:clamp(.8rem,2vw,1.8rem)}
+.nav-links a{font-size:13px;color:var(--chalk3);transition:color .2s}
+.nav-links a:hover{color:var(--chalk)}
+.nav-cta{padding:8px 18px;border-radius:var(--r-3xl);background:var(--wine-tint);border:1.5px solid var(--bdr-w);font-size:12px;font-weight:700;color:var(--wine-xl);transition:all .2s;white-space:nowrap}
+.nav-cta:hover{background:rgba(139,26,56,.22)}
+@media(max-width:560px){.nav-links a:not(.nav-cta){display:none}}
+
+/* ── HERO SPLIT ── */
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100dvh - 4rem);align-items:center;gap:0}
+@media(max-width:860px){.hero{grid-template-columns:1fr;min-height:fit-content}}
+
+/* Left — editorial panel */
+.hero-left{
+  padding:clamp(2.5rem,6vw,5rem) clamp(1.5rem,5vw,3.5rem) clamp(2.5rem,6vw,5rem) clamp(1.5rem,5vw,2.5rem);
+  position:relative;overflow:hidden;
+}
+.hero-left::after{content:'';position:absolute;top:0;right:0;width:1px;height:100%;background:linear-gradient(to bottom,transparent,var(--bdr-w),transparent);opacity:.6}
+@media(max-width:860px){.hero-left::after{display:none}}
+
+/* Floating decoration */
+.hl-deco{position:absolute;top:-80px;left:-60px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(139,26,56,.1) 0%,transparent 65%);pointer-events:none}
+
+.issue-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;background:var(--wine-tint);border:1px solid var(--bdr-w);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--wine-xl);margin-bottom:1.6rem;font-family:var(--ff-m)}
+.ic-dot{width:6px;height:6px;border-radius:50%;background:var(--wine-xl);box-shadow:0 0 8px var(--wine-xl);animation:icPulse 1.8s ease-in-out infinite}
+@keyframes icPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.4}}
+
+.hero-title{font-family:var(--ff-d);font-size:clamp(2.4rem,5.5vw,4.8rem);font-weight:700;line-height:1.05;letter-spacing:-.02em;margin-bottom:1.2rem}
+.hero-title em{font-style:italic;color:var(--wine-xl)}
+.hero-title .line2{display:block;margin-left:clamp(1.5rem,4vw,3rem)}
+.hero-body{font-size:clamp(.9rem,1.8vw,1.05rem);color:var(--chalk3);max-width:44ch;line-height:1.8;margin-bottom:2rem}
+
+/* Social proof strip */
+.proof-strip{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.proof-avs{display:flex}
+.proof-av{width:30px;height:30px;border-radius:50%;border:2px solid var(--bg2);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-left:-9px;background:var(--bg5)}
+.proof-av:first-child{margin-left:0}
+.proof-av-1{background:linear-gradient(135deg,#3A4A9A,#6070C8)}
+.proof-av-2{background:linear-gradient(135deg,#5A3A2A,#8A6050)}
+.proof-av-3{background:linear-gradient(135deg,#3A5A3A,#609060)}
+.proof-av-4{background:linear-gradient(135deg,#5A3A5A,#907090)}
+.proof-text strong{font-size:14px;font-weight:700;color:var(--chalk)}
+.proof-text small{font-size:12px;color:var(--chalk4);display:block;font-family:var(--ff-m)}
+
+/* Sample issue preview */
+.issue-preview{margin-top:2.2rem;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r-xl);overflow:hidden}
+.ip-bar{background:var(--bg4);padding:.6rem 1rem;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--bdr)}
+.ip-dots{display:flex;gap:5px}
+.ip-dot{width:10px;height:10px;border-radius:50%}
+.ip-dot:nth-child(1){background:#FF5F57}
+.ip-dot:nth-child(2){background:#FEBC2E}
+.ip-dot:nth-child(3){background:#28C840}
+.ip-url{flex:1;text-align:center;font-size:10px;color:var(--chalk4);font-family:var(--ff-m)}
+.ip-body{padding:1.2rem}
+.ip-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--wine-xl);font-family:var(--ff-m);margin-bottom:.5rem}
+.ip-headline{font-family:var(--ff-d);font-size:1.05rem;font-weight:700;margin-bottom:.4rem;color:var(--chalk2)}
+.ip-excerpt{font-size:11px;color:var(--chalk4);line-height:1.6}
+
+/* Right — Form panel */
+.hero-right{
+  padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,3rem);
+  display:flex;flex-direction:column;justify-content:center;
+  background:rgba(15,15,24,.5);
+}
+@media(max-width:860px){.hero-right{background:var(--bg1);border-top:1px solid var(--bdr)}}
+
+.form-card{background:var(--bg3);border:1px solid var(--bdr2);border-radius:var(--r-2xl);overflow:hidden;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03)}
+.form-card::before{content:'';display:block;height:2px;background:linear-gradient(90deg,transparent,var(--wine),transparent)}
+
+.fc-head{padding:clamp(1.4rem,3vw,1.8rem) clamp(1.5rem,4vw,2rem) 0}
+.fc-kicker{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--wine-xl);font-family:var(--ff-m);margin-bottom:.6rem}
+.fc-title{font-family:var(--ff-d);font-size:clamp(1.15rem,2.5vw,1.5rem);font-weight:700;line-height:1.2;margin-bottom:.3rem}
+.fc-sub{font-size:12px;color:var(--chalk3)}
+
+.fc-body{padding:clamp(1.2rem,3vw,1.5rem) clamp(1.5rem,4vw,2rem) clamp(1.5rem,4vw,2rem)}
+.f-stack{display:flex;flex-direction:column;gap:13px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:440px){.frow{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:5px}
+.lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);font-family:var(--ff-m)}
+.ipt{background:var(--bg5);border:1.5px solid var(--bdr);border-radius:var(--r);padding:13px 16px;font-size:14px;transition:all .22s;color:var(--chalk);width:100%}
+.ipt:focus{background:rgba(36,36,50,.9);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.ipt::placeholder{color:var(--chalk4)}
+
+/* Frequency selector */
+.freq-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ft-opt{padding:10px 6px;text-align:center;background:var(--bg5);border:1.5px solid var(--bdr);border-radius:var(--r);cursor:pointer;transition:all .2s;-webkit-user-select: none; user-select:none}
+.ft-opt:hover{border-color:var(--bdr-w)}
+.ft-opt.sel{background:var(--wine-tint);border-color:var(--bdr-w2);box-shadow:inset 0 0 0 1px rgba(139,26,56,.2)}
+.ft-emoji{font-size:1.2rem;display:block;margin-bottom:3px}
+.ft-name{font-size:11px;font-weight:700;color:var(--chalk3)}
+.ft-opt.sel .ft-name{color:var(--wine-xl)}
+.ft-freq{font-size:9px;color:var(--chalk4);font-family:var(--ff-m)}
+
+/* Submit */
+.sub-wrap{position:relative;margin-top:4px}
+.sub-btn{
+  width:100%;height:52px;border-radius:var(--r-lg);font-size:15px;font-weight:800;
+  letter-spacing:.04em;overflow:hidden;
+  background:linear-gradient(135deg,var(--wine-xd),var(--wine) 50%,var(--wine-l));
+  color:#fff;box-shadow:0 6px 26px var(--wine-glow);transition:all .25s var(--ease);
+  position:relative;
+}
+.sub-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.16) 0%,transparent 55%);opacity:0;transition:opacity .25s}
+.sub-btn:hover{transform:translateY(-3px);box-shadow:0 12px 34px rgba(139,26,56,.68)}
+.sub-btn:hover::after{opacity:1}
+.sub-btn:active{transform:none}
+.sub-btn .ldr{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .7s linear infinite;display:none}
+.sub-btn.loading .btn-txt{opacity:0}
+.sub-btn.loading .ldr{display:block}
+.sub-btn.loading{pointer-events:none}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+.fc-foot{padding:0 clamp(1.5rem,4vw,2rem) clamp(1.2rem,3vw,1.4rem);display:flex;align-items:center;gap:8px;font-size:11px;color:var(--chalk4)}
+
+/* ── BENEFITS STRIP ── */
+.benefits{display:flex;align-items:center;justify-content:center;gap:clamp(1rem,3vw,2.5rem);padding:clamp(1rem,3vw,1.4rem) clamp(1rem,4vw,2.5rem);border-top:1px solid var(--bdr);flex-wrap:wrap}
+.benefit-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--chalk3)}
+.bi-icon{color:var(--wine-xl);flex-shrink:0}
+
+/* ── SUCCESS STATE ── */
+.success-overlay{position:absolute;inset:0;background:var(--bg3);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.5rem;gap:1rem;animation:fadeIn .4s var(--ease)}
+@keyframes fadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.success-overlay.show{display:flex}
+.so-ring{width:64px;height:64px;border-radius:50%;background:linear-gradient(145deg,var(--wine-d),var(--wine));display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px var(--wine-glow);animation:popIn .5s var(--spring) both}
+@keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+.so-title{font-family:var(--ff-d);font-size:1.5rem;font-weight:700}
+.so-sub{font-size:13px;color:var(--chalk3);max-width:30ch}
+.so-back{font-size:12px;color:var(--wine-xl);border-bottom:1px dashed var(--bdr-w);margin-top:.3rem;transition:color .2s}
+.so-back:hover{color:var(--wine-l)}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg4);border:1px solid var(--bdr-w);padding:13px 22px;border-radius:var(--r);font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:9px;box-shadow:0 10px 36px rgba(0,0,0,.6);opacity:0;pointer-events:none;white-space:nowrap;transition:transform .4s var(--spring),opacity .35s;max-width:calc(100vw - 2rem)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.t-dot{width:8px;height:8px;border-radius:50%;background:var(--wine-xl);animation:blink 1.4s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"><span class="t-dot"></span><span id="tmsg">Subscribed! ✦</span></div>
+
+<div class="page">
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-logo">Meridian<span>.</span></div>
+    <div class="nav-links">
+      <a href="#">Articles</a>
+      <a href="#">Podcast</a>
+      <a href="#">Archive</a>
+      <a class="nav-cta" href="#">Sign in</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <!-- Left -->
+    <div class="hero-left">
+      <div class="hl-deco"></div>
+      <div class="issue-chip"><span class="ic-dot"></span>Issue #142 out now</div>
+      <h1 class="hero-title">
+        Ideas worth<br/>
+        <em>reading</em>
+        <span class="line2">every week.</span>
+      </h1>
+      <p class="hero-body">A curated newsletter for designers, builders, and thinkers. Sharp analysis, no filler — delivered to 40,000 readers every Tuesday morning.</p>
+      <div class="proof-strip">
+        <div class="proof-avs">
+          <div class="proof-av proof-av-1">JC</div>
+          <div class="proof-av proof-av-2">AR</div>
+          <div class="proof-av proof-av-3">SK</div>
+          <div class="proof-av proof-av-4">ML</div>
+        </div>
+        <div class="proof-text">
+          <strong>40,000+ readers</strong>
+          <small>96% open rate · Free forever</small>
+        </div>
+      </div>
+      <div class="issue-preview">
+        <div class="ip-bar">
+          <div class="ip-dots"><div class="ip-dot"></div><div class="ip-dot"></div><div class="ip-dot"></div></div>
+          <div class="ip-url">meridian.so/issue/142</div>
+        </div>
+        <div class="ip-body">
+          <div class="ip-label">This week's lead story</div>
+          <div class="ip-headline">Why the best designers ship faster, not slower</div>
+          <div class="ip-excerpt">The counterintuitive truth about quality: velocity and craft aren't in conflict. Here's the system three-person teams use to outship 40-person departments...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right — form -->
+    <div class="hero-right">
+      <div class="form-card">
+        <!-- Success overlay -->
+        <div class="success-overlay" id="successOverlay">
+          <div class="so-ring"><svg width="26" height="26" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h3 class="so-title">You're in! 🎉</h3>
+          <p class="so-sub">Check your inbox for a welcome email. First issue arrives Tuesday.</p>
+          <button class="so-back" onclick="resetForm()">← Subscribe with another email</button>
+        </div>
+
+        <div class="fc-head">
+          <div class="fc-kicker">Free newsletter</div>
+          <div class="fc-title">Start reading smarter today.</div>
+          <div class="fc-sub">No spam. Unsubscribe anytime. Takes 30 seconds.</div>
+        </div>
+        <div class="fc-body">
+          <form class="f-stack" id="subForm" onsubmit="handleSubmit(event)">
+            <div class="frow">
+              <div class="fld"><label class="lbl">First Name</label><input class="ipt" id="fn" type="text" placeholder="Jane" autocomplete="given-name" required/></div>
+              <div class="fld"><label class="lbl">Last Name</label><input class="ipt" id="ln" type="text" placeholder="Doe" autocomplete="family-name"/></div>
+            </div>
+            <div class="fld"><label class="lbl">Email Address</label><input class="ipt" id="em" type="email" placeholder="jane@example.com" autocomplete="email" required/></div>
+            <div class="fld">
+              <label class="lbl">Delivery frequency</label>
+              <div class="freq-tabs">
+                <div class="ft-opt sel" onclick="selFreq(this)"><span class="ft-emoji">📅</span><div class="ft-name">Weekly</div><div class="ft-freq">Every Tue</div></div>
+                <div class="ft-opt" onclick="selFreq(this)"><span class="ft-emoji">☀️</span><div class="ft-name">Daily</div><div class="ft-freq">Mon–Fri</div></div>
+                <div class="ft-opt" onclick="selFreq(this)"><span class="ft-emoji">🗓</span><div class="ft-name">Monthly</div><div class="ft-freq">Deep dive</div></div>
+              </div>
+            </div>
+            <div class="sub-wrap">
+              <button class="sub-btn" id="subBtn" type="submit">
+                <span class="btn-txt">Subscribe Free →</span>
+                <span class="ldr"></span>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="fc-foot">
+          <svg class="bi-icon" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Private &amp; secure · No credit card · Cancel anytime
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <div class="benefits">
+    <div class="benefit-item"><svg class="bi-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> No sponsored content</div>
+    <div class="benefit-item"><svg class="bi-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> 96% open rate</div>
+    <div class="benefit-item"><svg class="bi-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Free forever</div>
+    <div class="benefit-item"><svg class="bi-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Unsubscribe in 1 click</div>
+  </div>
+</div>
+
+<script>
+function selFreq(el){document.querySelectorAll('.ft-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel')}
+function handleSubmit(e){
+  e.preventDefault();
+  const btn=document.getElementById('subBtn');
+  btn.classList.add('loading');
+  setTimeout(()=>{
+    btn.classList.remove('loading');
+    document.getElementById('successOverlay').classList.add('show');
+  },1200);
+}
+function resetForm(){
+  document.getElementById('successOverlay').classList.remove('show');
+  document.getElementById('subForm').reset();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 34 — Scroll-triggered Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.45);--wine-tint:rgba(139,26,56,.14);
+  --bg0:#080810;--bg1:#0D0D15;--bg2:#12121A;--bg3:#181820;--bg4:#20202A;--bg5:#282835;
+  --chalk:#F0E8EE;--chalk2:#C0B4C2;--chalk3:#84788A;--chalk4:#4C4458;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.12);--bdr-w:rgba(139,26,56,.45);
+  --r:12px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --ff-d:'Cormorant Garamond',Georgia,serif;--ff-o:'Outfit',sans-serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-o);font-size:15px;line-height:1.7;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input,select{font:inherit;color:inherit}
+input:focus,select:focus{outline:none}
+
+/* PROGRESS BAR */
+.progress-bar{position:fixed;top:0;left:0;z-index:100;height:3px;background:linear-gradient(90deg,var(--wine-d),var(--wine),var(--wine-xl));width:0%;transition:width .1s;border-radius:0 99px 99px 0}
+
+/* ARTICLE PAGE */
+.article-wrap{max-width:680px;margin:0 auto;padding:0 clamp(1rem,5vw,2rem)}
+.art-header{padding:clamp(3rem,8vw,5rem) 0 clamp(2rem,5vw,3rem);border-bottom:1px solid var(--bdr)}
+.art-chip{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:99px;border:1px solid var(--bdr-w);background:var(--wine-tint);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--wine-xl);margin-bottom:1.2rem;font-family:var(--ff-m)}
+.art-dot{width:5px;height:5px;border-radius:50%;background:var(--wine-xl);box-shadow:0 0 6px var(--wine-xl);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.art-title{font-family:var(--ff-d);font-size:clamp(2rem,5.5vw,3.4rem);font-weight:700;line-height:1.1;letter-spacing:-.02em;margin-bottom:.8rem}
+.art-title em{font-style:italic;color:var(--wine-xl)}
+.art-meta{font-size:12px;color:var(--chalk4);font-family:var(--ff-m);display:flex;align-items:center;gap:12px}
+.art-meta-sep{width:3px;height:3px;border-radius:50%;background:var(--chalk4)}
+.art-body{padding:clamp(2rem,5vw,3rem) 0}
+.art-p{font-size:clamp(.9rem,2vw,1.05rem);color:var(--chalk2);margin-bottom:1.4rem;line-height:1.85}
+.art-h2{font-family:var(--ff-d);font-size:clamp(1.3rem,3.5vw,1.8rem);font-weight:700;margin:2rem 0 1rem;letter-spacing:-.01em}
+.art-quote{border-left:3px solid var(--wine);padding:1rem 1.2rem;margin:1.5rem 0;background:var(--bg2);border-radius:0 var(--r) var(--r) 0}
+.art-quote p{font-family:var(--ff-d);font-style:italic;font-size:clamp(1rem,2.5vw,1.2rem);color:var(--chalk);margin:0}
+.scroll-hint{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--chalk4);font-family:var(--ff-m);margin-bottom:1rem;letter-spacing:.06em}
+.scroll-hint svg{animation:bounce 1.5s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+/* SCROLL TRIGGER ZONE */
+.scroll-trigger-zone{padding:1.5rem 0;position:relative}
+
+/* INLINE TRIGGERED FORM */
+.scroll-form-block{
+  background:var(--bg2);border:1px solid var(--bdr-w);border-radius:var(--r-2xl);
+  overflow:hidden;transform:translateY(40px);opacity:0;
+  transition:transform .7s var(--spring),opacity .6s var(--ease);
+  box-shadow:0 0 60px var(--wine-tint)}
+.scroll-form-block.visible{transform:translateY(0);opacity:1}
+.scroll-form-block::before{content:'';display:block;height:2px;background:linear-gradient(90deg,transparent,var(--wine),transparent)}
+.sfb-grid{display:grid;grid-template-columns:1fr 1fr}
+@media(max-width:580px){.sfb-grid{grid-template-columns:1fr}}
+.sfb-left{background:linear-gradient(145deg,var(--wine-xd) 0%,var(--wine-d) 60%,#1A0A14 100%);padding:clamp(1.8rem,4vw,2.4rem);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.sfb-left::before{content:'';position:absolute;bottom:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(176,35,71,.3) 0%,transparent 70%)}
+.sfb-tag{display:inline-block;padding:4px 10px;border-radius:var(--r);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:10px;font-family:var(--ff-m)}
+.sfb-title{font-family:var(--ff-d);font-size:clamp(1.1rem,3vw,1.45rem);font-weight:700;line-height:1.25;position:relative;z-index:1}
+.sfb-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:8px;line-height:1.6;position:relative;z-index:1}
+.sfb-stats{display:flex;gap:16px;margin-top:1rem;position:relative;z-index:1}
+.sfb-stat-n{font-family:var(--ff-d);font-size:1.1rem;font-weight:800}
+.sfb-stat-l{font-size:10px;color:rgba(255,255,255,.45);font-family:var(--ff-m)}
+.sfb-right{padding:clamp(1.5rem,4vw,2rem)}
+.sfb-form{display:flex;flex-direction:column;gap:12px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);font-family:var(--ff-m)}
+.ipt{background:var(--bg4);border:1.5px solid var(--bdr);border-radius:var(--r);padding:12px 15px;font-size:13px;transition:all .2s}
+.ipt:focus{background:var(--bg5);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.ipt::placeholder{color:var(--chalk4)}
+.sub-btn{width:100%;height:48px;border-radius:var(--r-lg);font-size:14px;font-weight:800;letter-spacing:.04em;background:linear-gradient(135deg,var(--wine-xd),var(--wine) 55%,var(--wine-l));color:#fff;box-shadow:0 4px 20px var(--wine-glow);transition:all .2s;margin-top:4px}
+.sub-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(139,26,56,.65)}
+.sfb-note{text-align:center;font-size:11px;color:var(--chalk4);margin-top:2px}
+
+/* FLOATING TRIGGERED FORM (bottom-right corner) */
+.float-form{position:fixed;bottom:24px;right:24px;width:320px;max-width:calc(100vw - 32px);background:var(--bg2);border:1px solid var(--bdr-w);border-radius:var(--r-xl);overflow:hidden;z-index:200;transform:translateY(20px) scale(.95);opacity:0;pointer-events:none;transition:all .45s var(--spring);box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.float-form.show{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+.float-form::before{content:'';display:block;height:2px;background:linear-gradient(90deg,var(--wine-d),var(--wine),var(--wine-l))}
+.ff-head{padding:1rem 1rem .5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.ff-title{font-family:var(--ff-d);font-size:1rem;font-weight:700;line-height:1.2}
+.ff-sub{font-size:11px;color:var(--chalk3);margin-top:2px}
+.ff-x{width:28px;height:28px;border-radius:50%;background:var(--bg4);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--chalk3);font-size:13px;flex-shrink:0;transition:all .2s}
+.ff-x:hover{background:var(--wine-tint);border-color:var(--bdr-w);color:var(--wine-xl)}
+.ff-body{padding:.5rem 1rem 1rem}
+.ff-form{display:flex;flex-direction:column;gap:8px}
+.ff-ipt{background:var(--bg4);border:1.5px solid var(--bdr);border-radius:var(--r-sm);padding:10px 13px;font-size:13px;width:100%;transition:all .2s}
+.ff-ipt:focus{border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.ff-ipt::placeholder{color:var(--chalk4)}
+.ff-btn{width:100%;height:42px;border-radius:var(--r);font-size:13px;font-weight:700;background:linear-gradient(135deg,var(--wine-xd),var(--wine),var(--wine-l));color:#fff;box-shadow:0 3px 14px var(--wine-glow);transition:all .2s}
+.ff-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(139,26,56,.6)}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg4);border:1px solid var(--bdr-w);padding:13px 22px;border-radius:var(--r);font-size:14px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:9px;box-shadow:0 10px 36px rgba(0,0,0,.6);opacity:0;pointer-events:none;white-space:nowrap;transition:transform .4s var(--spring),opacity .35s}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.t-dot{width:8px;height:8px;border-radius:50%;background:var(--wine-xl);animation:blink2 1.4s infinite;flex-shrink:0}
+@keyframes blink2{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<div class="toast" id="toast"><span class="t-dot"></span><span id="toast-msg">Subscribed! ✦</span></div>
+
+<!-- FLOATING CORNER FORM -->
+<div class="float-form" id="floatForm">
+  <div class="ff-head">
+    <div>
+      <div class="ff-title">Enjoying the read?</div>
+      <div class="ff-sub">Get more like this every week.</div>
+    </div>
+    <button class="ff-x" onclick="dismissFloat()">✕</button>
+  </div>
+  <div class="ff-body">
+    <form class="ff-form" onsubmit="handleFloatSubmit(event)">
+      <input class="ff-ipt" type="email" placeholder="your@email.com" autocomplete="email" required/>
+      <button class="ff-btn" type="submit">Subscribe Free →</button>
+    </form>
+  </div>
+</div>
+
+<div class="article-wrap">
+  <header class="art-header">
+    <div class="art-chip"><span class="art-dot"></span> Design 34 · Scroll-triggered</div>
+    <h1 class="art-title">Scroll to <em>reveal</em> the<br/>subscription form.</h1>
+    <div class="art-meta">
+      <span>The Editorial</span>
+      <span class="art-meta-sep"></span>
+      <span>5 min read</span>
+      <span class="art-meta-sep"></span>
+      <span>Design 34</span>
+    </div>
+  </header>
+
+  <div class="art-body">
+    <p class="art-p">This page demonstrates two scroll-triggered subscription patterns. The first is an inline form that fades in when it enters the viewport. The second is a floating corner form that appears after you've scrolled 40% down the page.</p>
+
+    <h2 class="art-h2">Why scroll-triggered forms work</h2>
+    <p class="art-p">Timing is everything in conversion. A form that appears before a reader has had a chance to decide if your content is worth their email address will be ignored or dismissed. Scroll-triggered forms respect the reader's attention — showing up only after they've demonstrated genuine interest by reading.</p>
+
+    <div class="art-quote">
+      <p>"Show the ask only after you've proven the value. Scroll-depth is the clearest signal of engagement you have."</p>
+    </div>
+
+    <p class="art-p">Research consistently shows that scroll-depth-triggered CTAs outperform time-based and exit-intent triggers for content-heavy pages like articles, long-form sales pages, and documentation. The reader has already demonstrated commitment through sustained engagement.</p>
+
+    <h2 class="art-h2">Implementation patterns</h2>
+    <p class="art-p">Modern implementations use the Intersection Observer API to detect when a form placeholder enters the viewport, or use a simple scroll percentage threshold to trigger floating corner widgets. Both approaches are demonstrated on this page.</p>
+    <p class="art-p">The corner widget appears after 40% scroll depth — you may have already seen it appear. The inline form below will animate into view when you reach it.</p>
+
+    <p class="art-p">Keep scrolling to see the inline scroll-triggered form animate in below this text. Notice how the form slides and fades into view when it enters your viewport — this is the Intersection Observer at work.</p>
+
+    <div class="scroll-hint">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      Scroll down to reveal the form
+    </div>
+
+    <div class="scroll-trigger-zone" id="formZone">
+      <div class="scroll-form-block" id="scrollForm">
+        <div class="sfb-grid">
+          <div class="sfb-left">
+            <div class="sfb-tag">📬 Scroll Triggered</div>
+            <h3 class="sfb-title">You made it this far. Stay subscribed.</h3>
+            <p class="sfb-sub">Delivered every Tuesday. Zero filler.</p>
+            <div class="sfb-stats">
+              <div><div class="sfb-stat-n">32K+</div><div class="sfb-stat-l">Readers</div></div>
+              <div><div class="sfb-stat-n">96%</div><div class="sfb-stat-l">Open rate</div></div>
+            </div>
+          </div>
+          <div class="sfb-right">
+            <form class="sfb-form" onsubmit="handleInlineSubmit(event)">
+              <div class="fld"><label class="lbl">Full Name</label><input class="ipt" type="text" placeholder="Jane Doe" autocomplete="name" required/></div>
+              <div class="fld"><label class="lbl">Email Address</label><input class="ipt" type="email" placeholder="jane@example.com" autocomplete="email" required/></div>
+              <button class="sub-btn" type="submit">Subscribe Now →</button>
+              <p class="sfb-note">Free · No spam · Unsubscribe anytime</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div></div>
+  </div>
+</div>
+
+<script>
+// Progress bar
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const pct=d.scrollTop/(d.scrollHeight-d.clientHeight)*100;
+  document.getElementById('progressBar').style.width=pct+'%';
+  // 40% triggers float form
+  if(pct>40&&!floatDismissed)document.getElementById('floatForm').classList.add('show');
+  else if(pct<=40)document.getElementById('floatForm').classList.remove('show');
+});
+
+// Intersection observer for inline form
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.15});
+obs.observe(document.getElementById('scrollForm'));
+
+let floatDismissed=false;
+function dismissFloat(){floatDismissed=true;document.getElementById('floatForm').classList.remove('show')}
+
+function showToast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500)}
+function handleInlineSubmit(e){e.preventDefault();showToast('Subscribed via scroll trigger! ✦');e.target.reset()}
+function handleFloatSubmit(e){e.preventDefault();dismissFloat();showToast('Subscribed! See you Tuesday. ✦');e.target.reset()}
+</script>
+</body>
+</html>

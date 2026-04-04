@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Footer 05 — Enterprise / Corporate</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #162033;
+    --navy-light: #1e2d45;
+    --navy-border: #2a3a55;
+    --text: #c8d4e8;
+    --muted: #6a7d99;
+    --accent: #3b82f6;
+    --accent-light: #60a5fa;
+    --font: 'Outfit', sans-serif;
+  }
+
+  html { font-size: 16px; }
+  body { background: #0f1722; color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; }
+
+  .demo-page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; }
+  .demo-page p { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; border: 1px dashed var(--navy-border); padding: 12px 24px; border-radius: 6px; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--navy); border-top: 1px solid var(--navy-border); }
+
+  /* Top strip */
+  .footer-top-strip {
+    background: var(--navy-light);
+    border-bottom: 1px solid var(--navy-border);
+  }
+  .strip-inner {
+    max-width: 1240px; margin: 0 auto; padding: 20px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .strip-left { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+  .strip-label { font-size: 12.5px; color: var(--muted); }
+  .strip-ctas { display: flex; gap: 12px; }
+  .strip-btn {
+    font-size: 13px; font-weight: 500;
+    font-family: var(--font);
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .strip-btn.primary {
+    background: var(--accent);
+    color: #fff; border: none;
+  }
+  .strip-btn.primary:hover { background: var(--accent-light); }
+  .strip-btn.outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--navy-border);
+  }
+  .strip-btn.outline:hover { border-color: var(--accent); color: var(--accent-light); }
+  .strip-right { display: flex; gap: 24px; align-items: center; }
+  .strip-right a { font-size: 12.5px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .strip-right a:hover { color: var(--accent-light); }
+  .phone-icon { font-size: 14px; }
+
+  /* Main grid */
+  .footer-inner { max-width: 1240px; margin: 0 auto; padding: 56px 40px 0; }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 32px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--navy-border);
+  }
+
+  /* Brand */
+  .brand-logo {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .logo-box {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: #fff;
+    flex-shrink: 0;
+  }
+  .logo-text {
+    font-size: 16px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; color: #fff;
+  }
+  .brand-desc { font-size: 13px; line-height: 1.7; color: var(--muted); margin-bottom: 22px; }
+  .certs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .cert-badge {
+    font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    border: 1px solid var(--navy-border);
+    border-radius: 4px; padding: 4px 10px; color: var(--muted);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .cert-badge:hover { border-color: var(--accent); color: var(--accent-light); }
+
+  /* Search */
+  .search-wrap { position: relative; }
+  .search-wrap input {
+    width: 100%;
+    background: var(--navy-light);
+    border: 1px solid var(--navy-border);
+    border-radius: 8px;
+    padding: 9px 36px 9px 12px;
+    font-size: 13px;
+    color: var(--text);
+    font-family: var(--font);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-icon {
+    position: absolute; right: 10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted); font-size: 14px; pointer-events: none;
+  }
+  #search-results {
+    display: none;
+    position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+    background: var(--navy-light);
+    border: 1px solid var(--navy-border);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+  }
+  .search-result-item {
+    padding: 10px 14px;
+    font-size: 13px; color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid var(--navy-border);
+  }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:hover { background: rgba(59,130,246,0.1); color: var(--accent-light); }
+
+  /* Cols */
+  .col-title {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #fff; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .col-links { list-style: none; }
+  .col-links li { margin-bottom: 11px; }
+  .col-links a {
+    font-size: 13.5px; color: var(--muted); text-decoration: none;
+    transition: color 0.18s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .col-links a:hover { color: var(--text); }
+  .ext-icon { font-size: 10px; opacity: 0.5; }
+
+  /* Awards */
+  .award-badges { display: flex; flex-direction: column; gap: 10px; }
+  .award-badge {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--navy-light);
+    border: 1px solid var(--navy-border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: border-color 0.2s;
+  }
+  .award-badge:hover { border-color: var(--accent); }
+  .award-icon { font-size: 18px; }
+  .award-title { font-size: 12px; font-weight: 600; color: #fff; }
+  .award-sub { font-size: 11px; color: var(--muted); }
+
+  /* Region selector */
+  .region-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .region-tab {
+    font-size: 11px; font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--navy-border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    font-family: var(--font);
+  }
+  .region-tab.active, .region-tab:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .region-content { display: none; }
+  .region-content.active { display: block; }
+  .region-content ul { list-style: none; }
+  .region-content li { margin-bottom: 9px; }
+  .region-content a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.18s; }
+  .region-content a:hover { color: var(--text); }
+
+  /* Bottom */
+  .footer-bottom {
+    max-width: 1240px; margin: 0 auto;
+    padding: 24px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .copyright { font-size: 12px; color: var(--muted); }
+  .legal { display: flex; gap: 18px; flex-wrap: wrap; }
+  .legal a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .legal a:hover { color: var(--text); }
+  .lang-wrap { display: flex; align-items: center; gap: 8px; }
+  .lang-wrap select {
+    background: var(--navy-light);
+    border: 1px solid var(--navy-border);
+    border-radius: 6px; padding: 5px 10px;
+    font-size: 12px; color: var(--text);
+    font-family: var(--font); cursor: pointer; outline: none;
+    transition: border-color 0.2s;
+  }
+  .lang-wrap select:hover { border-color: var(--accent); }
+  .globe { font-size: 14px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) {
+    .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
+    .awards-col { display: none; }
+  }
+  @media (max-width: 860px) {
+    .footer-grid { grid-template-columns: 1fr 1fr 1fr; }
+    .brand-col { grid-column: 1 / -1; }
+    .footer-inner { padding: 48px 28px 0; }
+    .strip-inner { padding: 16px 28px; }
+    .footer-bottom { padding: 20px 28px; }
+  }
+  @media (max-width: 600px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .brand-col { grid-column: 1 / -1; }
+    .strip-inner { flex-direction: column; align-items: flex-start; }
+    .strip-ctas { flex-wrap: wrap; }
+    .footer-inner { padding: 40px 20px 0; }
+    .strip-inner { padding: 14px 20px; }
+    .footer-bottom { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
+    .region-col { grid-column: 1 / -1; }
+  }
+  @media (max-width: 380px) {
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-page"><p>← Page content above footer →</p></div>
+
+<footer>
+  <!-- CTA Strip -->
+  <div class="footer-top-strip">
+    <div class="strip-inner">
+      <div class="strip-left">
+        <span class="strip-label">Ready to scale your enterprise?</span>
+        <div class="strip-ctas">
+          <a class="strip-btn primary" href="#">Request Demo</a>
+          <a class="strip-btn outline" href="#">Talk to Sales</a>
+        </div>
+      </div>
+      <div class="strip-right">
+        <a href="tel:+18001234567">📞 +1 800 123 4567</a>
+        <a href="#">Live Chat</a>
+        <a href="#">Support Portal</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-inner">
+    <div class="footer-grid">
+
+      <!-- Brand -->
+      <div class="brand-col">
+        <div class="brand-logo">
+          <div class="logo-box">A</div>
+          <span class="logo-text">Axiom Corp</span>
+        </div>
+        <p class="brand-desc">Enterprise-grade infrastructure and security solutions trusted by Fortune 500 companies across 80+ countries. Powering digital transformation at scale.</p>
+        <div class="certs">
+          <span class="cert-badge">ISO 27001</span>
+          <span class="cert-badge">HIPAA</span>
+          <span class="cert-badge">SOC 2 Type II</span>
+          <span class="cert-badge">FedRAMP</span>
+          <span class="cert-badge">PCI DSS</span>
+        </div>
+        <div class="search-wrap">
+          <input type="text" id="site-search" placeholder="Search documentation..." oninput="doSearch(this.value)" autocomplete="off" />
+          <span class="search-icon">🔍</span>
+          <div id="search-results"></div>
+        </div>
+      </div>
+
+      <!-- Solutions -->
+      <div>
+        <p class="col-title">Solutions</p>
+        <ul class="col-links">
+          <li><a href="#">Analytics & BI</a></li>
+          <li><a href="#">Security Suite</a></li>
+          <li><a href="#">Compliance Hub</a></li>
+          <li><a href="#">Workflow Automation</a></li>
+          <li><a href="#">API Integration</a></li>
+          <li><a href="#">Cloud Migration</a></li>
+          <li><a href="#">Data Governance</a></li>
+        </ul>
+      </div>
+
+      <!-- Industries -->
+      <div>
+        <p class="col-title">Industries</p>
+        <ul class="col-links">
+          <li><a href="#">Financial Services</a></li>
+          <li><a href="#">Healthcare</a></li>
+          <li><a href="#">Government</a></li>
+          <li><a href="#">Retail & CPG</a></li>
+          <li><a href="#">Manufacturing</a></li>
+          <li><a href="#">Telecom</a></li>
+          <li><a href="#">Energy</a></li>
+        </ul>
+      </div>
+
+      <!-- Resources -->
+      <div>
+        <p class="col-title">Resources</p>
+        <ul class="col-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">API Docs <span class="ext-icon">↗</span></a></li>
+          <li><a href="#">Community Forum</a></li>
+          <li><a href="#">Training & Certs</a></li>
+          <li><a href="#">Partner Portal</a></li>
+          <li><a href="#">System Status</a></li>
+          <li><a href="#">Release Notes</a></li>
+        </ul>
+      </div>
+
+      <!-- Awards -->
+      <div class="awards-col">
+        <p class="col-title">Recognition</p>
+        <div class="award-badges">
+          <div class="award-badge">
+            <span class="award-icon">🏆</span>
+            <div class="award-text">
+              <p class="award-title">Gartner Magic Quadrant</p>
+              <p class="award-sub">Leader 2025</p>
+            </div>
+          </div>
+          <div class="award-badge">
+            <span class="award-icon">⭐</span>
+            <div class="award-text">
+              <p class="award-title">G2 Best Software</p>
+              <p class="award-sub">Enterprise 2026</p>
+            </div>
+          </div>
+          <div class="award-badge">
+            <span class="award-icon">🛡️</span>
+            <div class="award-text">
+              <p class="award-title">Forbes Cloud 100</p>
+              <p class="award-sub">#14 · 2025</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Second row: regional offices -->
+  <div>
+    <div>
+      <div>
+        <p>Regional Offices</p>
+        <div class="region-tabs">
+          <button class="region-tab active" onclick="switchRegion('na', this)">North America</button>
+          <button class="region-tab" onclick="switchRegion('eu', this)">Europe</button>
+          <button class="region-tab" onclick="switchRegion('apac', this)">APAC</button>
+        </div>
+        <div id="reg-na" class="region-content active">
+          <ul>
+            <li><a href="#">New York — HQ</a></li>
+            <li><a href="#">San Francisco</a></li>
+            <li><a href="#">Chicago</a></li>
+            <li><a href="#">Toronto</a></li>
+          </ul>
+        </div>
+        <div id="reg-eu" class="region-content">
+          <ul>
+            <li><a href="#">London</a></li>
+            <li><a href="#">Berlin</a></li>
+            <li><a href="#">Amsterdam</a></li>
+            <li><a href="#">Paris</a></li>
+          </ul>
+        </div>
+        <div id="reg-apac" class="region-content">
+          <ul>
+            <li><a href="#">Singapore</a></li>
+            <li><a href="#">Tokyo</a></li>
+            <li><a href="#">Mumbai</a></li>
+            <li><a href="#">Sydney</a></li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div>
+          <span></span>
+          <span>All Systems Operational</span>
+        </div>
+        <div>
+          <a href="#" onmouseover="this.style.color='#60a5fa'" onmouseout="this.style.color='var(--muted)'">LinkedIn</a>
+          <a href="#" onmouseover="this.style.color='#60a5fa'" onmouseout="this.style.color='var(--muted)'">Twitter</a>
+          <a href="#" onmouseover="this.style.color='#60a5fa'" onmouseout="this.style.color='var(--muted)'">YouTube</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="copyright">© 2026 Axiom Corporation. All rights reserved. Axiom® is a registered trademark.</p>
+    <div class="legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Cookie Policy</a>
+      <a href="#">Accessibility</a>
+      <a href="#">Sitemap</a>
+      <a href="#">Modern Slavery Act</a>
+    </div>
+    <div class="lang-wrap">
+      <span class="globe">🌐</span>
+      <select  title="Language" onchange="alert('Language changed to: ' + this.options[this.selectedIndex].text)">
+        <option>English (US)</option>
+        <option>Deutsch</option>
+        <option>Français</option>
+        <option>日本語</option>
+        <option>हिंदी</option>
+        <option>中文</option>
+        <option>Español</option>
+      </select>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const searchData = [
+    'Getting Started Guide', 'API Authentication', 'Compliance Documentation',
+    'Security Whitepaper', 'Integration Tutorials', 'Release Notes v4.2',
+    'HIPAA Configuration', 'FedRAMP Documentation', 'Billing & Invoices',
+    'SSO Setup Guide', 'Data Retention Policies', 'Webhook Reference'
+  ];
+
+  function doSearch(val) {
+    const box = document.getElementById('search-results');
+    if (!val.trim()) { box.style.display = 'none'; return; }
+    const matches = searchData.filter(s => s.toLowerCase().includes(val.toLowerCase())).slice(0, 5);
+    if (!matches.length) { box.style.display = 'none'; return; }
+    box.innerHTML = matches.map(m =>
+      `<div class="search-result-item" onclick="document.getElementById('site-search').value='${m}'; document.getElementById('search-results').style.display='none'">📄 ${m}</div>`
+    ).join('');
+    box.style.display = 'block';
+  }
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.search-wrap')) document.getElementById('search-results').style.display = 'none';
+  });
+
+  function switchRegion(region, btn) {
+    document.querySelectorAll('.region-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.region-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('reg-' + region).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>

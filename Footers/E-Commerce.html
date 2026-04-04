@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Footer 02 — E-Commerce / Retail</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #faf7f2;
+    --surface: #f3ede4;
+    --ink: #1a1410;
+    --muted: #8a7f72;
+    --border: #ddd5c8;
+    --accent: #c4562a;
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { font-size: 16px; }
+  body { background: #ede8e0; font-family: var(--font-body); min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; }
+
+  .demo-page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; }
+  .demo-page p { font-size: 13px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; border: 1px dashed var(--border); padding: 12px 24px; border-radius: 4px; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--bg); border-top: 3px solid var(--ink); color: var(--ink); }
+
+  /* Announcement bar */
+  .announce-bar {
+    background: var(--ink);
+    color: #f5efe6;
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .announce-bar span { opacity: 0.6; }
+
+  .footer-inner { max-width: 1200px; margin: 0 auto; padding: 64px 40px 0; }
+
+  /* Main grid */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr 1.3fr;
+    gap: 48px;
+    padding-bottom: 52px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Brand */
+  .brand-logo {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .brand-tagline {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .brand-desc { font-size: 13.5px; line-height: 1.75; color: var(--muted); margin-bottom: 24px; max-width: 250px; }
+
+  .trust-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .trust-badge {
+    font-size: 10px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: var(--ink);
+  }
+
+  /* Newsletter */
+  .nl-label { font-size: 13px; font-weight: 500; margin-bottom: 10px; }
+  .nl-form { display: flex; flex-direction: column; gap: 8px; }
+  .nl-form input {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 11px 14px;
+    font-size: 13.5px;
+    color: var(--ink);
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .nl-form input::placeholder { color: var(--muted); }
+  .nl-form input:focus { border-color: var(--ink); }
+  .nl-form button {
+    background: var(--ink);
+    color: #faf7f2;
+    border: none;
+    border-radius: 6px;
+    padding: 11px;
+    font-size: 13.5px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .nl-form button:hover { opacity: 0.85; }
+  #ec-success { display: none; font-size: 12px; color: var(--accent); margin-top: 6px; font-style: italic; }
+
+  /* Cols */
+  .col-title {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-links { list-style: none; }
+  .col-links li { margin-bottom: 12px; }
+  .col-links a {
+    font-size: 14px; color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .col-links a:hover { color: var(--ink); }
+  .new-tag { font-size: 9px; background: var(--accent); color: #fff; padding: 2px 5px; border-radius: 3px; font-weight: 600; }
+
+  /* Payment */
+  .pay-title { font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); margin-bottom: 14px; }
+  .pay-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .pay-icon {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 11.5px; font-weight: 600;
+    color: #444;
+    display: flex; align-items: center;
+  }
+
+  .follow-title { font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); margin-bottom: 12px; }
+  .social-row { display: flex; gap: 10px; }
+  .soc-link {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+  }
+  .soc-link:hover { color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* Bottom */
+  .footer-bottom {
+    max-width: 1200px; margin: 0 auto;
+    padding: 24px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 14px;
+  }
+  .copyright { font-size: 12.5px; color: var(--muted); }
+  .legal-links { display: flex; gap: 20px; flex-wrap: wrap; }
+  .legal-links a { font-size: 12.5px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .legal-links a:hover { color: var(--ink); }
+  .country-sel {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12.5px; color: var(--muted);
+  }
+  .country-sel select {
+    background: transparent; border: none;
+    font-size: 12.5px; color: var(--muted);
+    font-family: var(--font-body); cursor: pointer;
+    outline: none;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 960px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+    .brand-col { grid-column: 1 / -1; }
+    .brand-desc { max-width: 100%; }
+    .nl-form { flex-direction: row; }
+    .nl-form input { flex: 1; }
+    .nl-form button { white-space: nowrap; }
+  }
+  @media (max-width: 600px) {
+    .footer-inner { padding: 48px 20px 0; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .brand-col { grid-column: 1 / -1; }
+    .footer-bottom { padding: 20px; flex-direction: column; align-items: flex-start; }
+    .nl-form { flex-direction: column; }
+    .announce-bar { font-size: 11px; }
+  }
+  @media (max-width: 380px) {
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-page"><p>← Page content above footer →</p></div>
+
+<footer>
+  <div class="announce-bar">
+    ✦ Free shipping on orders over ₹2,999 &nbsp;<span>|</span>&nbsp; Free returns, always &nbsp;<span>|</span>&nbsp; New collection live now ✦
+  </div>
+
+  <div class="footer-inner">
+    <div class="footer-grid">
+
+      <!-- Brand -->
+      <div class="brand-col">
+        <div class="brand-logo">MAISON</div>
+        <p class="brand-tagline">Considered Fashion Since 2016</p>
+        <p class="brand-desc">Thoughtfully crafted essentials for the modern wardrobe. Sustainably made, beautifully worn.</p>
+        <div class="trust-row">
+          <span class="trust-badge">Free Returns</span>
+          <span class="trust-badge">Secure Pay</span>
+          <span class="trust-badge">Sustainably Made</span>
+        </div>
+        <p class="nl-label">Get 10% off your first order</p>
+        <div class="nl-form">
+          <input type="email" id="ec-email" placeholder="Your email address" />
+          <button onclick="ecSubscribe()">Get My Discount →</button>
+        </div>
+        <p id="ec-success">Thank you! Check your inbox for your code.</p>
+      </div>
+
+      <!-- Shop -->
+      <div>
+        <p class="col-title">Shop</p>
+        <ul class="col-links">
+          <li><a href="#">New Arrivals <span class="new-tag">New</span></a></li>
+          <li><a href="#">Women</a></li>
+          <li><a href="#">Men</a></li>
+          <li><a href="#">Accessories</a></li>
+          <li><a href="#">Home & Living</a></li>
+          <li><a href="#">Sale</a></li>
+          <li><a href="#">Gift Cards</a></li>
+        </ul>
+      </div>
+
+      <!-- Help -->
+      <div>
+        <p class="col-title">Help</p>
+        <ul class="col-links">
+          <li><a href="#">Track My Order</a></li>
+          <li><a href="#">Returns & Exchanges</a></li>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">Size Guide</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Store Locator</a></li>
+        </ul>
+      </div>
+
+      <!-- Payment + Social -->
+      <div>
+        <p class="pay-title">We Accept</p>
+        <div class="pay-grid">
+          <span class="pay-icon">VISA</span>
+          <span class="pay-icon">MC</span>
+          <span class="pay-icon">AMEX</span>
+          <span class="pay-icon">PayPal</span>
+          <span class="pay-icon">UPI</span>
+          <span class="pay-icon">Klarna</span>
+          <span class="pay-icon">Apple Pay</span>
+        </div>
+        <p class="follow-title">Follow Us</p>
+        <div class="social-row">
+          <a class="soc-link" href="#">Instagram</a>
+          <a class="soc-link" href="#">Pinterest</a>
+          <a class="soc-link" href="#">TikTok</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="copyright">© 2026 Maison Ltd. All rights reserved.</p>
+    <div class="legal-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Cookie Settings</a>
+      <a href="#">Accessibility</a>
+    </div>
+    <div class="country-sel">
+      🌍
+      <select title="L">
+        <option>India (INR)</option>
+        <option>United Kingdom (GBP)</option>
+        <option>United States (USD)</option>
+        <option>Europe (EUR)</option>
+      </select>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function ecSubscribe() {
+    const input = document.getElementById('ec-email');
+    const success = document.getElementById('ec-success');
+    const val = input.value.trim();
+    if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      input.style.borderColor = '#c4562a';
+      input.focus();
+      setTimeout(() => input.style.borderColor = '', 1400);
+      return;
+    }
+    input.parentElement.style.display = 'none';
+    success.style.display = 'block';
+  }
+  document.getElementById('ec-email').addEventListener('keydown', e => { if (e.key === 'Enter') ecSubscribe(); });
+</script>
+</body>
+</html>

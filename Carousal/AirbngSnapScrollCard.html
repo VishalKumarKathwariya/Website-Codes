@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 — Airbnb Snap-Scroll Carousel</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Circular', 'Segoe UI', sans-serif;
+    background: #fff;
+    min-height: 100vh;
+    padding: 60px 40px;
+  }
+
+  .page-header {
+    margin-bottom: 40px;
+  }
+
+  .page-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #FF385C;
+    margin-bottom: 8px;
+  }
+
+  .page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 6px;
+  }
+
+  .page-sub {
+    font-size: 15px;
+    color: #717171;
+  }
+
+  /* Category pills */
+  .category-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .category-bar::-webkit-scrollbar { display: none; }
+
+  .cat-pill {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: border-color .2s;
+    font-size: 12px;
+    font-weight: 500;
+    color: #717171;
+    white-space: nowrap;
+  }
+
+  .cat-pill:hover { color: #222; border-bottom-color: #ddd; }
+  .cat-pill.active { color: #222; border-bottom-color: #222; }
+  .cat-pill-icon { font-size: 22px; }
+
+  /* Carousel wrapper */
+  .carousel-section {
+    position: relative;
+    margin-bottom: 48px;
+  }
+
+  .carousel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #222;
+  }
+
+  .arrow-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  .arr-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #222;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .arr-btn:hover { border-color: #222; box-shadow: 0 1px 6px rgba(0,0,0,.12); }
+  .arr-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* Track */
+  .track-wrap { overflow: hidden; }
+
+  .track {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+  }
+
+  .track::-webkit-scrollbar { display: none; }
+
+  /* Card */
+  .ab-card {
+    flex: 0 0 260px;
+    scroll-snap-align: start;
+    cursor: pointer;
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform .2s;
+  }
+
+  .ab-card:hover { transform: scale(1.02); }
+
+  .ab-img {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .ab-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #fff;
+    color: #222;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  }
+
+  .heart-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,.3));
+    transition: transform .2s;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .heart-btn:hover { transform: scale(1.15); }
+  .heart-btn.liked { color: #FF385C; }
+
+  .ab-info { padding: 14px 2px 4px; }
+
+  .ab-loc-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 3px;
+  }
+
+  .ab-loc { font-size: 14px; font-weight: 600; color: #222; }
+
+  .ab-rating {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #222;
+  }
+
+  .ab-dist { font-size: 13px; color: #717171; margin-bottom: 2px; }
+  .ab-dates { font-size: 13px; color: #717171; margin-bottom: 8px; }
+
+  .ab-price-row { font-size: 14px; color: #222; }
+  .ab-price-row strong { font-weight: 700; }
+  .ab-price-row span { font-weight: 400; color: #717171; }
+
+  /* Show map button */
+  .show-map {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 24px;
+    border-radius: 980px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    font-family: inherit;
+    transition: background .2s;
+  }
+
+  .show-map:hover { background: #333; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <p class="page-label">Pattern 02 — Airbnb / Booking.com</p>
+  <h1 class="page-title">Snap-Scroll Card Carousel</h1>
+  <p class="page-sub">CSS scroll-snap · drag & touch · arrow navigation · wishlisted hearts</p>
+</div>
+
+<!-- Category bar -->
+<div class="category-bar">
+  <div class="cat-pill active"><span class="cat-pill-icon">🏔️</span>Mountains</div>
+  <div class="cat-pill"><span class="cat-pill-icon">🏖️</span>Beachfront</div>
+  <div class="cat-pill"><span class="cat-pill-icon">🌿</span>Countryside</div>
+  <div class="cat-pill"><span class="cat-pill-icon">🏯</span>Heritage</div>
+  <div class="cat-pill"><span class="cat-pill-icon">🌊</span>Islands</div>
+  <div class="cat-pill"><span class="cat-pill-icon">🏕️</span>Camping</div>
+  <div class="cat-pill"><span class="cat-pill-icon">🎿</span>Skiing</div>
+  <div class="cat-pill"><span class="cat-pill-icon">🛖</span>Cabins</div>
+</div>
+
+<!-- Carousel 1 -->
+<div class="carousel-section">
+  <div class="carousel-header">
+    <h2 class="section-title">Trending destinations</h2>
+    <div class="arrow-group">
+      <button class="arr-btn" id="arr-p1">&#8249;</button>
+      <button class="arr-btn" id="arr-n1">&#8250;</button>
+    </div>
+  </div>
+  <div class="track-wrap">
+    <div class="track" id="track1"></div>
+  </div>
+</div>
+
+<!-- Carousel 2 -->
+<div class="carousel-section">
+  <div class="carousel-header">
+    <h2 class="section-title">Stays near you</h2>
+    <div class="arrow-group">
+      <button class="arr-btn" id="arr-p2">&#8249;</button>
+      <button class="arr-btn" id="arr-n2">&#8250;</button>
+    </div>
+  </div>
+  <div class="track-wrap">
+    <div class="track" id="track2"></div>
+  </div>
+</div>
+
+<button class="show-map">🗺 Show map</button>
+
+<script>
+  const CARDS = [
+    { emoji:'🏔️', bg:'#C5E3F7', label:'Superhost', loc:'Manali, India', dist:'3 hrs away', dates:'May 12–17', price:'₹8,400', rating:'4.97', reviews:128 },
+    { emoji:'🏖️', bg:'#FDE8C8', label:'New', loc:'Goa, India', dist:'1 hr flight', dates:'Apr 20–25', price:'₹6,200', rating:'4.88', reviews:74 },
+    { emoji:'🌿', bg:'#D4EDDA', label:'Rare find', loc:'Coorg, Karnataka', dist:'4 hrs away', dates:'Jun 2–7', price:'₹5,800', rating:'4.92', reviews:211 },
+    { emoji:'🏯', bg:'#E8D5F5', label:'Superhost', loc:'Jaipur, Rajasthan', dist:'5 hrs away', dates:'May 28–Jun 2', price:'₹12,000', rating:'4.99', reviews:63 },
+    { emoji:'🌊', bg:'#C8E6F8', label:'New', loc:'Andaman Islands', dist:'2 hr flight', dates:'Jul 10–15', price:'₹9,500', rating:'4.85', reviews:42 },
+    { emoji:'🌋', bg:'#FFE0D6', label:'Superhost', loc:'Munnar, Kerala', dist:'6 hrs away', dates:'Apr 28–May 3', price:'₹7,100', rating:'4.96', reviews:189 },
+    { emoji:'🏕️', bg:'#DDF5E8', label:'New', loc:'Spiti Valley', dist:'8 hrs away', dates:'Jun 15–20', price:'₹4,200', rating:'4.90', reviews:31 },
+    { emoji:'🌅', bg:'#FFF3C8', label:'Guest fav', loc:'Rann of Kutch', dist:'5 hr flight', dates:'Nov 10–15', price:'₹10,500', rating:'4.95', reviews:97 },
+  ];
+
+  const CARDS2 = [
+    { emoji:'🛖', bg:'#F5E6D5', label:'Superhost', loc:'Rishikesh, UK', dist:'45 min away', dates:'Any week', price:'₹3,800', rating:'4.93', reviews:156 },
+    { emoji:'🏡', bg:'#E5F5E5', label:'New', loc:'Agra, UP', dist:'25 min away', dates:'Available', price:'₹2,900', rating:'4.78', reviews:28 },
+    { emoji:'🌿', bg:'#E8F4D4', label:'Guest fav', loc:'Mathura, UP', dist:'1 hr away', dates:'Any week', price:'₹4,100', rating:'4.87', reviews:64 },
+    { emoji:'🎪', bg:'#F5EBF5', label:'Superhost', loc:'Fatehpur Sikri', dist:'1.5 hrs away', dates:'Available', price:'₹5,600', rating:'4.94', reviews:112 },
+    { emoji:'🌄', bg:'#EBF5FB', label:'Rare find', loc:'Bharatpur, Raj', dist:'2 hrs away', dates:'Any week', price:'₹3,300', rating:'4.91', reviews:47 },
+    { emoji:'🏰', bg:'#FEF5E7', label:'Superhost', loc:'Vrindavan, UP', dist:'1.5 hrs away', dates:'Available', price:'₹6,800', rating:'4.98', reviews:83 },
+  ];
+
+  function buildTrack(trackId, cards) {
+    const track = document.getElementById(trackId);
+    cards.forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'ab-card';
+      card.innerHTML = `
+        <div class="ab-img" style="background:${d.bg}">
+          <span>${d.emoji}</span>
+          <span class="ab-badge">${d.label}</span>
+          <button class="heart-btn" title="Save to wishlist">♡</button>
+        </div>
+        <div class="ab-info">
+          <div class="ab-loc-row">
+            <span class="ab-loc">${d.loc}</span>
+            <span class="ab-rating">★ ${d.rating}</span>
+          </div>
+          <div class="ab-dist">${d.dist} · ${d.reviews} reviews</div>
+          <div class="ab-dates">${d.dates}</div>
+          <div class="ab-price-row"><strong>${d.price}</strong> <span>/ night</span></div>
+        </div>`;
+
+      // Heart toggle
+      const heart = card.querySelector('.heart-btn');
+      heart.addEventListener('click', e => {
+        e.stopPropagation();
+        heart.classList.toggle('liked');
+        heart.textContent = heart.classList.contains('liked') ? '♥' : '♡';
+      });
+      track.appendChild(card);
+    });
+  }
+
+  buildTrack('track1', CARDS);
+  buildTrack('track2', CARDS2);
+
+  function setupArrows(prevId, nextId, trackId) {
+    const track = document.getElementById(trackId);
+    const SCROLL = 280;
+    document.getElementById(prevId).addEventListener('click', () => track.scrollBy({ left: -SCROLL, behavior: 'smooth' }));
+    document.getElementById(nextId).addEventListener('click', () => track.scrollBy({ left: SCROLL, behavior: 'smooth' }));
+  }
+
+  setupArrows('arr-p1', 'arr-n1', 'track1');
+  setupArrows('arr-p2', 'arr-n2', 'track2');
+</script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Design 48 — OTP / Verification Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --wine:#8B1A38;--wine-l:#B02347;--wine-xl:#D4365A;--wine-d:#5C0F24;--wine-xd:#3A0818;
+  --wine-glow:rgba(139,26,56,.5);--wine-tint:rgba(139,26,56,.14);
+  --bg0:#06060C;--bg2:#10101A;--bg3:#16162A;--bg4:#1E1E30;--bg5:#262640;
+  --chalk:#F0E8EE;--chalk2:#C0B4C0;--chalk3:#857880;--chalk4:#4A4258;
+  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.12);--bdr-w:rgba(139,26,56,.45);
+  --r:12px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+  --ff-d:'Cormorant Garamond',Georgia,serif;--ff-s:'Syne',sans-serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg0);color:var(--chalk);font-family:var(--ff-s);min-height:100dvh;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input{font:inherit;color:inherit;border:none;outline:none}
+
+.page{min-height:100dvh;display:grid;place-items:center;padding:clamp(1rem,4vw,2rem);position:relative}
+.page::before{content:'';position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);width:500px;height:400px;background:radial-gradient(ellipse,rgba(139,26,56,.1) 0%,transparent 65%);pointer-events:none}
+
+/* Screen switcher */
+.screen{display:none;animation:scIn .4s var(--ease) both}
+.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%}
+@keyframes scIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* Card */
+.card{width:100%;max-width:440px;background:var(--bg2);border:1px solid var(--bdr2);border-radius:var(--r-2xl);overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.03);position:relative;z-index:1}
+.card::before{content:'';display:block;height:2px;background:linear-gradient(90deg,transparent,var(--wine),transparent)}
+
+/* Card header */
+.card-head{padding:clamp(1.6rem,4vw,2.2rem) clamp(1.5rem,4vw,2rem) clamp(1.2rem,3vw,1.6rem);text-align:center}
+.card-icon{width:56px;height:56px;border-radius:var(--r-lg);background:linear-gradient(145deg,var(--wine-d),var(--wine));margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px var(--wine-glow)}
+.card-title{font-family:var(--ff-d);font-size:clamp(1.3rem,4vw,1.7rem);font-weight:700;margin-bottom:.4rem}
+.card-sub{font-size:13px;color:var(--chalk3)}
+.card-email-tag{display:inline-block;margin-top:.6rem;padding:4px 12px;border-radius:99px;background:var(--wine-tint);border:1px solid var(--bdr-w);font-size:12px;font-weight:600;color:var(--wine-xl);font-family:var(--ff-m)}
+
+/* Card body */
+.card-body{padding:0 clamp(1.5rem,4vw,2rem) clamp(1.5rem,4vw,2rem)}
+
+/* Email input (screen 1) */
+.email-field{
+  background:var(--bg4);border:1.5px solid var(--bdr);border-radius:var(--r-lg);
+  padding:14px 18px;font-size:15px;transition:all .22s;color:var(--chalk);
+  width:100%;text-align:center;letter-spacing:.04em;
+}
+.email-field:focus{background:var(--bg5);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint)}
+.email-field::placeholder{color:var(--chalk4);letter-spacing:0}
+
+/* OTP boxes */
+.otp-wrap{display:flex;align-items:center;justify-content:center;gap:clamp(8px,2vw,12px);margin-bottom:.2rem}
+.otp-box{
+  width:clamp(48px,12vw,56px);height:clamp(56px,14vw,68px);
+  background:var(--bg4);border:2px solid var(--bdr);border-radius:var(--r-lg);
+  font-family:var(--ff-m);font-size:clamp(1.4rem,4vw,1.8rem);font-weight:700;
+  text-align:center;color:var(--chalk);caret-color:var(--wine-xl);
+  transition:all .2s;
+}
+.otp-box:focus{background:var(--bg5);border-color:var(--wine);box-shadow:0 0 0 3px var(--wine-tint);outline:none}
+.otp-box.filled{border-color:var(--bdr-w);color:var(--wine-xl)}
+.otp-box.error{border-color:#F87171;box-shadow:0 0 0 3px rgba(248,113,113,.15);animation:shake .4s var(--spring)}
+.otp-box.success{border-color:#22C55E;box-shadow:0 0 0 3px rgba(34,197,94,.15)}
+.otp-sep{color:var(--chalk4);font-family:var(--ff-m);font-size:1.2rem;margin:0 -2px}
+@keyframes shake{0%,100%{transform:none}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+
+/* Resend section */
+.resend-area{text-align:center;margin-top:.8rem}
+.resend-timer{font-size:12px;color:var(--chalk4);font-family:var(--ff-m)}
+.resend-btn{font-size:13px;color:var(--wine-xl);border-bottom:1px dashed var(--bdr-w);display:none;transition:color .2s}
+.resend-btn.show{display:inline-block}
+.resend-btn:hover{color:var(--wine-l)}
+
+/* Buttons */
+.primary-btn{
+  width:100%;height:52px;border-radius:var(--r-lg);font-size:15px;font-weight:800;
+  letter-spacing:.04em;background:linear-gradient(135deg,var(--wine-xd),var(--wine) 55%,var(--wine-l));
+  color:#fff;box-shadow:0 5px 22px var(--wine-glow);transition:all .22s;margin-top:1rem;
+}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(139,26,56,.65)}
+.primary-btn:disabled{opacity:.4;pointer-events:none}
+.back-link{font-size:12px;color:var(--chalk3);margin-top:.8rem;display:block;text-align:center;transition:color .2s}
+.back-link:hover{color:var(--chalk2)}
+
+/* Success screen */
+.success-card{width:100%;max-width:440px;text-align:center;background:var(--bg2);border:1px solid var(--bdr2);border-radius:var(--r-2xl);padding:clamp(2.5rem,6vw,3.5rem) 2rem;box-shadow:0 32px 80px rgba(0,0,0,.85);position:relative;z-index:1;overflow:hidden}
+.success-card::before{content:'';display:block;height:2px;background:linear-gradient(90deg,transparent,#22C55E,transparent);position:absolute;top:0;left:0;right:0}
+.success-animation{position:relative;width:80px;height:80px;margin:0 auto 1.4rem}
+.success-circle{fill:none;stroke:#22C55E;stroke-width:2;stroke-dasharray:220;stroke-dashoffset:220;animation:drawCircle .8s var(--ease) .2s forwards;transform-origin:center;transform:rotate(-90deg)}
+@keyframes drawCircle{to{stroke-dashoffset:0}}
+.success-check{fill:none;stroke:#22C55E;stroke-width:2.5;stroke-dasharray:100;stroke-dashoffset:100;animation:drawCheck .4s var(--ease) 1s forwards}
+@keyframes drawCheck{to{stroke-dashoffset:0}}
+.s-title{font-family:var(--ff-d);font-size:clamp(1.4rem,4vw,1.9rem);font-weight:700;margin-bottom:.5rem;animation:scIn .4s var(--ease) 1s both}
+.s-sub{font-size:13px;color:var(--chalk3);margin-bottom:1.5rem;animation:scIn .4s var(--ease) 1.1s both}
+.s-info{display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem;animation:scIn .4s var(--ease) 1.2s both}
+.s-info-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);font-size:13px}
+.s-info-key{color:var(--chalk3);font-family:var(--ff-m);font-size:11px;flex:0 0 70px}
+.s-info-val{color:var(--chalk);font-weight:600}
+.s-restart{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:var(--r-lg);background:var(--wine-tint);border:1.5px solid var(--bdr-w);color:var(--wine-xl);font-size:13px;font-weight:700;transition:all .2s;animation:scIn .4s var(--ease) 1.3s both}
+.s-restart:hover{background:rgba(139,26,56,.22)}
+
+/* Progress dots */
+.step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:1.8rem}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--bdr2);transition:all .3s}
+.sdot.active{background:var(--wine);box-shadow:0 0 8px var(--wine);width:24px;border-radius:99px}
+.sdot.done{background:var(--wine-d)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Screen 1 — Email -->
+  <div class="screen active" id="s1">
+    <div class="step-dots">
+      <div class="sdot active" id="dot0"></div>
+      <div class="sdot" id="dot1"></div>
+      <div class="sdot" id="dot2"></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon"><svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+        <h1 class="card-title">Subscribe to Meridian</h1>
+        <p class="card-sub">Enter your email — we'll send a verification code.</p>
+      </div>
+      <div class="card-body">
+        <input class="email-field" id="emailInput" type="email" placeholder="your@email.com" autocomplete="email"/>
+        <button class="primary-btn" onclick="sendOTP()">Send Verification Code →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2 — OTP -->
+  <div class="screen" id="s2">
+    <div class="step-dots">
+      <div class="sdot done" id="dot0b"></div>
+      <div class="sdot active" id="dot1b"></div>
+      <div class="sdot" id="dot2b"></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon"><svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <h1 class="card-title">Enter the code</h1>
+        <p class="card-sub">We sent a 6-digit code to:</p>
+        <div class="card-email-tag" id="emailDisplay">—</div>
+      </div>
+      <div class="card-body">
+        <div class="otp-wrap" id="otpWrap">
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <span class="otp-sep">·</span>
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+          <input class="otp-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+        </div>
+        <div class="resend-area">
+          <div class="resend-timer" id="resendTimer">Resend in <span id="timerCount">30</span>s</div>
+          <button class="resend-btn" id="resendBtn" onclick="resendOTP()">Resend code</button>
+        </div>
+        <button class="primary-btn" id="verifyBtn" onclick="verifyOTP()" disabled>Verify Code →</button>
+        <a class="back-link" onclick="showScreen(1)">← Use a different email</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3 — Profile -->
+  <div class="screen" id="s3">
+    <div class="step-dots">
+      <div class="sdot done"></div>
+      <div class="sdot done"></div>
+      <div class="sdot active"></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon"><svg width="24" height="24" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h1 class="card-title">Email verified!</h1>
+        <p class="card-sub">Tell us a little about yourself to finish up.</p>
+      </div>
+      <div class="card-body">
+        <div>
+          <label >Full Name</label>
+          <input id="nameInput" type="text" placeholder="Jane Doe" autocomplete="name"/>
+        </div>
+        <div>
+          <label>Topics of Interest</label>
+          <input id="topicsInput" type="text" placeholder="Design, technology, business…"/>
+        </div>
+        <button class="primary-btn" onclick="finish()">Complete Subscription →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4 — Success -->
+  <div class="screen" id="s4">
+    <div class="success-card">
+      <div class="success-animation">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+          <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(34,197,94,.15)" stroke-width="2"/>
+          <circle class="success-circle" cx="40" cy="40" r="34"/>
+          <path class="success-check" d="M25 40 L35 50 L55 30"/>
+        </svg>
+      </div>
+      <h2 class="s-title">All done! You're in. 🎉</h2>
+      <p class="s-sub">Your subscription has been confirmed. First issue arrives Tuesday.</p>
+      <div class="s-info">
+        <div class="s-info-row"><span class="s-info-key">Email</span><span class="s-info-val" id="s4-email">—</span></div>
+        <div class="s-info-row"><span class="s-info-key">Name</span><span class="s-info-val" id="s4-name">—</span></div>
+      </div>
+      <button class="s-restart" onclick="restart()">↩ Subscribe another email</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let generatedOTP='';
+let timerInterval;
+
+function showScreen(n){
+  document.querySelectorAll('.screen').forEach((s,i)=>{
+    s.classList.toggle('active',i===n-1);
+  });
+  if(n===2)startTimer();
+}
+
+function sendOTP(){
+  const email=document.getElementById('emailInput').value.trim();
+  if(!email||!/\S+@\S+\.\S+/.test(email)){alert('Please enter a valid email.');return;}
+  // Generate "OTP" for demo
+  generatedOTP=Math.floor(100000+Math.random()*900000).toString();
+  document.getElementById('emailDisplay').textContent=email;
+  alert(`Demo OTP (would be emailed): ${generatedOTP}`);
+  showScreen(2);
+}
+
+function startTimer(){
+  let t=30;document.getElementById('timerCount').textContent=t;
+  document.getElementById('resendTimer').style.display='block';
+  document.getElementById('resendBtn').classList.remove('show');
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    t--;document.getElementById('timerCount').textContent=t;
+    if(t<=0){
+      clearInterval(timerInterval);
+      document.getElementById('resendTimer').style.display='none';
+      document.getElementById('resendBtn').classList.add('show');
+    }
+  },1000);
+}
+
+function resendOTP(){
+  generatedOTP=Math.floor(100000+Math.random()*900000).toString();
+  alert(`New demo OTP: ${generatedOTP}`);
+  startTimer();
+  document.querySelectorAll('.otp-box').forEach(b=>{b.value='';b.classList.remove('filled','error','success')});
+  document.getElementById('verifyBtn').disabled=true;
+}
+
+// OTP box behaviour
+const boxes=document.querySelectorAll('.otp-box');
+boxes.forEach((box,i)=>{
+  box.addEventListener('input',e=>{
+    const v=e.target.value.replace(/\D/,'');
+    e.target.value=v;
+    box.classList.toggle('filled',!!v);
+    if(v&&i<boxes.length-1)boxes[i+1].focus();
+    checkAllFilled();
+  });
+  box.addEventListener('keydown',e=>{
+    if(e.key==='Backspace'&&!box.value&&i>0){boxes[i-1].focus();boxes[i-1].value='';boxes[i-1].classList.remove('filled');}
+  });
+  box.addEventListener('paste',e=>{
+    e.preventDefault();
+    const pasted=e.clipboardData.getData('text').replace(/\D/g,'').slice(0,6);
+    boxes.forEach((b,j)=>{if(pasted[j]){b.value=pasted[j];b.classList.add('filled');}});
+    if(pasted.length>0)boxes[Math.min(pasted.length,boxes.length-1)].focus();
+    checkAllFilled();
+  });
+});
+
+function checkAllFilled(){
+  const allFilled=[...boxes].every(b=>b.value);
+  document.getElementById('verifyBtn').disabled=!allFilled;
+}
+
+function verifyOTP(){
+  const entered=[...boxes].map(b=>b.value).join('');
+  if(entered===generatedOTP){
+    boxes.forEach(b=>b.classList.add('success'));
+    setTimeout(()=>showScreen(3),600);
+  } else {
+    boxes.forEach(b=>b.classList.add('error'));
+    setTimeout(()=>{boxes.forEach(b=>{b.classList.remove('error');b.value='';b.classList.remove('filled')});boxes[0].focus();document.getElementById('verifyBtn').disabled=true;},1000);
+  }
+}
+
+function finish(){
+  const email=document.getElementById('emailInput').value;
+  const name=document.getElementById('nameInput').value||'—';
+  document.getElementById('s4-email').textContent=email;
+  document.getElementById('s4-name').textContent=name;
+  showScreen(4);
+}
+
+function restart(){
+  ['emailInput','nameInput','topicsInput'].forEach(id=>document.getElementById(id).value='');
+  boxes.forEach(b=>{b.value='';b.classList.remove('filled','success','error')});
+  document.getElementById('verifyBtn').disabled=true;
+  clearInterval(timerInterval);
+  showScreen(1);
+}
+
+// focus style
+document.querySelectorAll('.otp-box,.email-field,[id$=Input]').forEach(el=>{
+  el.addEventListener('focus',e=>e.target.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--wine'));
+  el.addEventListener('blur',e=>e.target.style.borderColor='');
+});
+</script>
+</body>
+</html>
