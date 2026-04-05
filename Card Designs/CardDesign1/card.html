@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Cards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5rem 1rem;
+        background-color: #f0f0f0;
+        font-family: 'DM Sans', sans-serif;
+      }
+
+      /* ── Section ── */
+      .cards-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.5rem;
+        width: 100%;
+        max-width: 1100px;
+      }
+
+      /* ── Card ── */
+      .bg-light {
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        width: min(300px, 90vw);
+        aspect-ratio: 3 / 4;
+        position: relative;
+        overflow: hidden;
+        border: 1.5px solid rgb(24, 24, 78);
+        flex-shrink: 0;
+        cursor: pointer;
+      }
+
+      .bg-gradient {
+        border-radius: 8px;
+        height: 100%;
+        width: 50%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Card 1 */
+      .card-1 .bg-gradient {
+        background: linear-gradient(to bottom, #251269, #4737d6);
+      }
+
+      /* Card 2 */
+      .card-2 .bg-gradient {
+        background: linear-gradient(to bottom, #160701, #30110c);
+      }
+
+      /* Card 3 */
+      .card-3 .bg-gradient {
+        background: linear-gradient(to bottom, #134e5e, #71b280);
+      }
+
+      h3 {
+        position: absolute;
+        top: 5%;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2rem, 10vw, 5rem);
+        padding: 1rem 3rem;
+        white-space: nowrap;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        background-size: 300px 100%;
+        background-position: left center;
+        text-shadow: 2px 2px 4px rgba(186, 183, 183, 0.3);
+        transition: opacity 0.3s ease;
+        z-index: 1;
+      }
+
+      /* Card 1 heading */
+      .card-1 h3 {
+        background-image: linear-gradient(
+          to right,
+          rgb(31, 23, 90) 0%,
+          rgb(48, 48, 143) 50%,
+          #ffffff 50%,
+          #ffffff 100%
+        );
+      }
+
+      /* Card 2 heading */
+      .card-2 h3 {
+        background-image: linear-gradient(
+          to right,
+          rgb(39, 38, 42) 0%,
+          rgb(54, 54, 63) 50%,
+          #ffffff 50%,
+          #ffffff 100%
+        );
+      }
+
+      /* Card 3 heading */
+      .card-3 h3 {
+        background-image: linear-gradient(
+          to right,
+          #0a2e2e 0%,
+          #1a5c3a 50%,
+          #ffffff 50%,
+          #ffffff 100%
+        );
+      }
+
+      img {
+        position: absolute;
+        bottom: 5%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70%;
+        height: auto;
+        border-radius: 10px;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                    bottom 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1;
+      }
+
+      /* ── Hover Info Overlay ── */
+      .hover-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 1.4rem 1.4rem 1.6rem;
+        transform: translateY(100%);
+        transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 10;
+        border-top: 1px solid rgba(255,255,255,0.15);
+      }
+
+      /* Card 1 overlay */
+      .card-1 .hover-info {
+        background: linear-gradient(to top, rgba(17, 7, 80, 0.97), rgba(37, 18, 105, 0.93));
+      }
+
+      /* Card 2 overlay */
+      .card-2 .hover-info {
+        background: linear-gradient(to top, rgba(10, 3, 1, 0.97), rgba(30, 10, 7, 0.93));
+      }
+
+      /* Card 3 overlay */
+      .card-3 .hover-info {
+        background: linear-gradient(to top, rgba(5, 28, 28, 0.97), rgba(20, 70, 55, 0.93));
+      }
+
+      .hover-info .product-tag {
+        font-size: 0.62rem;
+        font-weight: 500;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.5);
+        margin-bottom: 0.4rem;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s;
+      }
+
+      .hover-info .product-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        color: #fff;
+        margin-bottom: 0.4rem;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.35s ease 0.15s, transform 0.35s ease 0.15s;
+      }
+
+      .hover-info .product-desc {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.65);
+        line-height: 1.5;
+        margin-bottom: 1rem;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.35s ease 0.2s, transform 0.35s ease 0.2s;
+      }
+
+      .hover-info .product-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.35s ease 0.25s, transform 0.35s ease 0.25s;
+      }
+
+      .hover-info .price {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #fff;
+        letter-spacing: 0.02em;
+      }
+
+      .hover-info .price span {
+        font-size: 0.7rem;
+        font-weight: 300;
+        color: rgba(255,255,255,0.5);
+        margin-left: 2px;
+      }
+
+      .hover-info .cta-btn {
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.45rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+      }
+
+      .hover-info .cta-btn:hover {
+        background: rgba(255,255,255,0.22);
+        border-color: rgba(255,255,255,0.6);
+      }
+
+      /* ── Hover triggers ── */
+      .bg-light:hover .bg-gradient {
+        width: 100%;
+      }
+
+      .bg-light:hover img {
+        bottom: 42%;
+        transform: translateX(-50%) scale(0.9);
+      }
+
+      .bg-light:hover h3 {
+        opacity: 0;
+      }
+
+      .bg-light:hover .hover-info {
+        transform: translateY(0);
+      }
+
+      .bg-light:hover .hover-info .product-tag,
+      .bg-light:hover .hover-info .product-name,
+      .bg-light:hover .hover-info .product-desc,
+      .bg-light:hover .hover-info .product-footer {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 500px) {
+        .bg-light {
+          width: 90vw;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="cards-section">
+
+      <!-- Card 1 -->
+      <div class="bg-light card-1">
+        <div class="bg-gradient"></div>
+        <h3>Black</h3>
+        <img src="Black.png" alt="Black Shirt" />
+        <div class="hover-info">
+          <p class="product-tag">New Arrival</p>
+          <p class="product-name">Black Edition Shirt</p>
+          <p class="product-desc">Premium heavyweight cotton with a relaxed oversized fit. Perfect for layering or wearing solo.</p>
+          <div class="product-footer">
+            <div class="price">$49.00 <span>USD</span></div>
+            <button class="cta-btn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="bg-light card-2">
+        <div class="bg-gradient"></div>
+        <h3>Blue</h3>
+        <img src="Blue.png" alt="Blue Jacket" />
+        <div class="hover-info">
+          <p class="product-tag">Bestseller</p>
+          <p class="product-name">Blue Midnight Jacket</p>
+          <p class="product-desc">Water-resistant outer shell with a soft fleece lining. Built for all-day comfort and style.</p>
+          <div class="product-footer">
+            <div class="price">$89.00 <span>USD</span></div>
+            <button class="cta-btn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="bg-light card-3">
+        <div class="bg-gradient"></div>
+        <h3>Cayn</h3>
+        <img src="Cayn.png" alt="Cyan Pants" />
+        <div class="hover-info">
+          <p class="product-tag">Limited Drop</p>
+          <p class="product-name">Cayn Utility Pants</p>
+          <p class="product-desc">Tapered slim-fit with dual cargo pockets. Stretch-woven fabric for unrestricted movement.</p>
+          <div class="product-footer">
+            <div class="price">$65.00 <span>USD</span></div>
+            <button class="cta-btn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </body>
+</html>
