@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0b;
+      --card-bg: #16161a;
+      --border: rgba(255,255,255,0.07);
+      --text-primary: #f0f0f2;
+      --text-secondary: #9b9ba8;
+      --accent: #7c6af7;
+      --tag-bg: rgba(255,255,255,0.08);
+      --overlay-end: rgba(10,10,11,0.92);
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    .gallery {
+      display: grid;
+      width: 100vw;
+      height: 100vh;
+      padding: 12px;
+      gap: 10px;
+      grid-template-columns: 5fr 3fr 4fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    .card:nth-child(1) { grid-column: 1; grid-row: 1 / 3; }
+    .card:nth-child(2) { grid-column: 2; grid-row: 1; }
+    .card:nth-child(3) { grid-column: 2; grid-row: 2; }
+    .card:nth-child(4) { grid-column: 3; grid-row: 1; }
+    .card:nth-child(5) { grid-column: 3; grid-row: 2; }
+
+    .card {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  filter 0.5s ease;
+      filter: brightness(0.85) saturate(0.9);
+    }
+
+    .card-overlay {
+      position: absolute; inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 22px;
+      background: linear-gradient(to top, var(--overlay-end) 0%, rgba(10,10,11,0.35) 50%, transparent 100%);
+      transition: background 0.4s ease;
+    }
+
+    .card-info {
+      transform: translateY(6px);
+      transition: transform 0.45s cubic-bezier(0.34,1.4,0.64,1);
+    }
+
+    .card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+    .card-tag {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      background: var(--tag-bg);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 3px 9px;
+      border-radius: 100px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .card-tag:nth-child(2) { transition-delay: 0.04s; }
+    .card-tag:nth-child(3) { transition-delay: 0.08s; }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+    .card:nth-child(1) .card-title { font-size: 1.35rem; }
+
+    .card-description {
+      font-size: 0.78rem;
+      color: rgba(240,240,242,0.68);
+      line-height: 1.55;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.38s ease 0.05s, transform 0.38s ease 0.05s;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.42s ease 0.09s, transform 0.42s ease 0.09s;
+    }
+    .card-meta-item {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .card-meta-item svg { opacity: 0.7; }
+
+    .card-cta {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-left: auto;
+      font-size: 0.73rem; font-weight: 600;
+      color: var(--text-primary);
+      background: rgba(124,106,247,0.2);
+      border: 1px solid rgba(124,106,247,0.35);
+      padding: 6px 13px;
+      border-radius: 100px;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.42s ease 0.11s, transform 0.42s ease 0.11s, background 0.2s;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .card-cta svg { transition: transform 0.22s ease; }
+
+    .card:hover img {
+      transform: scale(1.07);
+      filter: brightness(0.68) saturate(1.1);
+    }
+    .card:hover .card-overlay {
+      background: linear-gradient(to top, rgba(10,10,11,0.97) 0%, rgba(10,10,11,0.5) 55%, transparent 100%);
+    }
+    .card:hover .card-info        { transform: translateY(0); }
+    .card:hover .card-tag         { opacity: 1; transform: translateY(0); }
+    .card:hover .card-description { opacity: 1; transform: translateY(0); }
+    .card:hover .card-meta        { opacity: 1; transform: translateY(0); }
+    .card:hover .card-cta         { opacity: 1; transform: translateY(0); }
+    .card:hover .card-cta:hover   { background: rgba(124,106,247,0.38); }
+    .card:hover .card-cta:hover svg { transform: translate(2px,-2px); }
+
+    .card::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0);
+      transition: border-color 0.4s ease;
+      pointer-events: none;
+    }
+    .card:hover::after { border-color: rgba(255,255,255,0.1); }
+    .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    @media (max-width: 768px) {
+      html, body { overflow: auto; }
+      .gallery {
+        height: auto;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(3, 240px);
+      }
+      .card:nth-child(1) { grid-column: 1 / 3; grid-row: 1; }
+      .card:nth-child(2) { grid-column: 1;     grid-row: 2; }
+      .card:nth-child(3) { grid-column: 2;     grid-row: 2; }
+      .card:nth-child(4) { grid-column: 1;     grid-row: 3; }
+      .card:nth-child(5) { grid-column: 2;     grid-row: 3; }
+    }
+
+    @media (max-width: 480px) {
+      .gallery { grid-template-columns: 1fr; grid-template-rows: repeat(5, 220px); }
+      .card:nth-child(1) { grid-column: 1; grid-row: 1; }
+      .card:nth-child(2) { grid-column: 1; grid-row: 2; }
+      .card:nth-child(3) { grid-column: 1; grid-row: 3; }
+      .card:nth-child(4) { grid-column: 1; grid-row: 4; }
+      .card:nth-child(5) { grid-column: 1; grid-row: 5; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="gallery" aria-label="Project gallery">
+
+    <article class="card" tabindex="0" role="button" aria-label="Horizon — Spatial Interface">
+      <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=1400&q=80" alt="Abstract gradient light forms" loading="eager" />
+      <div class="card-overlay">
+        <div class="card-info">
+          <div class="card-tags">
+            <span class="card-tag">3D Design</span>
+            <span class="card-tag">WebGL</span>
+            <span class="card-tag">Featured</span>
+          </div>
+          <h2 class="card-title">Horizon — Spatial Interface</h2>
+          <p class="card-description">An immersive 3D interface system exploring depth, light, and interaction in real-time environments built on WebGL.</p>
+          <div class="card-meta">
+            <span class="card-meta-item">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              6 min read
+            </span>
+            <span class="card-meta-item">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              4.2k views
+            </span>
+            <a class="card-cta">
+              View project
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" tabindex="0" role="button" aria-label="Lumina Design System">
+      <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=900&q=80" alt="Colorful abstract digital art" loading="eager" />
+      <div class="card-overlay">
+        <div class="card-info">
+          <div class="card-tags">
+            <span class="card-tag">UI Kit</span>
+            <span class="card-tag">Figma</span>
+          </div>
+          <h2 class="card-title">Lumina Design System</h2>
+          <p class="card-description">A complete design system with 600+ components built for dark interfaces.</p>
+          <div class="card-meta">
+            <span class="card-meta-item">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              2.1k saves
+            </span>
+            <a class="card-cta">
+              Explore
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" tabindex="0" role="button" aria-label="Neon Cityscape">
+      <img src="https://images.unsplash.com/photo-1555448248-2571daf6344b?w=900&q=80" alt="Neon city lights at night" loading="lazy" />
+      <div class="card-overlay">
+        <div class="card-info">
+          <div class="card-tags">
+            <span class="card-tag">Photography</span>
+            <span class="card-tag">Urban</span>
+          </div>
+          <h2 class="card-title">Neon Cityscape</h2>
+          <p class="card-description">Long-exposure series capturing the electric pulse of modern cities after dark.</p>
+          <div class="card-meta">
+            <span class="card-meta-item">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              32 shots
+            </span>
+            <a class="card-cta">
+              View
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" tabindex="0" role="button" aria-label="Void — Motion Study">
+      <img src="https://images.unsplash.com/photo-1545987796-200677ee1011?w=900&q=80" alt="Minimal geometric forms" loading="lazy" />
+      <div class="card-overlay">
+        <div class="card-info">
+          <div class="card-tags">
+            <span class="card-tag">Motion</span>
+            <span class="card-tag">GSAP</span>
+          </div>
+          <h2 class="card-title">Void — Motion Study</h2>
+          <p class="card-description">Micro-interaction experiments exploring silence and movement in UI.</p>
+          <div class="card-meta">
+            <span class="card-meta-item">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              2:34
+            </span>
+            <a class="card-cta">
+              Watch
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" tabindex="0" role="button" aria-label="Aurora — Brand Identity">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80" alt="Aurora borealis over digital landscape" loading="lazy" />
+      <div class="card-overlay">
+        <div class="card-info">
+          <div class="card-tags">
+            <span class="card-tag">Branding</span>
+            <span class="card-tag">Identity</span>
+          </div>
+          <h2 class="card-title">Aurora — Brand Identity</h2>
+          <p class="card-description">Full brand identity for a next-gen climate tech startup — visual language to digital presence.</p>
+          <div class="card-meta">
+            <span class="card-meta-item">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              8 min read
+            </span>
+            <span class="card-meta-item">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              7.8k
+            </span>
+            <a class="card-cta">
+              Case study
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+</body>
+</html>

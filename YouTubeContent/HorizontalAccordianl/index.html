@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Accordion</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #06080f;
+        --surface: #0c0f1a;
+        --collapsed-w: 48px;
+        --text: #edeae4;
+        --muted: #6b7280;
+        --border: rgba(255,255,255,0.07);
+        --border-on: rgba(255,255,255,0.18);
+
+        /* Per-panel gradient tokens — overridden inline */
+        --g1: #7c3aed;
+        --g2: #06b6d4;
+        --accent: #a78bfa;
+        --accent-bright: #c4b5fd;
+        --glow: rgba(124,58,237,0.18);
+      }
+
+      body {
+        background: var(--bg);
+        font-family: "DM Sans", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 16px;
+        gap: 40px;
+        /* subtle noise-like radial glow */
+        background-image:
+          radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,58,237,0.10) 0%, transparent 70%),
+          radial-gradient(ellipse 50% 40% at 80% 80%, rgba(6,182,212,0.07) 0%, transparent 60%);
+      }
+
+      /* ── Header ── */
+      .hdr { text-align: center; }
+      .hdr-eyebrow {
+        font-size: 0.65rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        background: linear-gradient(90deg, #a78bfa, #22d3ee);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 12px;
+      }
+      .hdr-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(1.8rem, 5vw, 3.2rem);
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.1;
+      }
+      .hdr-title em {
+        font-style: italic;
+        background: linear-gradient(100deg, #a78bfa 0%, #38bdf8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* ── Accordion shell ── */
+      .accordion-wrap { width: 100%; max-width: 1100px; }
+
+      .accordion {
+        display: flex;
+        flex-direction: row;
+        height: clamp(300px, 52vw, 500px);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--surface);
+        box-shadow:
+          0 40px 100px rgba(0,0,0,0.75),
+          0 0 0 1px rgba(255,255,255,0.04) inset;
+      }
+
+      /* ── Panel ── */
+      .panel {
+        position: relative;
+        flex: 0 0 var(--collapsed-w);
+        border-right: 1px solid var(--border);
+        cursor: pointer;
+        transition:
+          flex 0.6s cubic-bezier(0.77, 0, 0.18, 1),
+          border-color 0.4s;
+        overflow: hidden;
+      }
+      .panel:last-child { border-right: none; }
+      .panel.active {
+        flex: 1 1 auto;
+        border-color: var(--border-on);
+      }
+
+      /* gradient background wash on active */
+      .panel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, var(--g1), var(--g2));
+        opacity: 0;
+        transition: opacity 0.5s;
+        z-index: 0;
+      }
+      .panel.active::after { opacity: 0.09; }
+
+      /* gradient left edge on active */
+      .panel.active::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 2px;
+        background: linear-gradient(
+          to bottom,
+          transparent 8%,
+          var(--g1) 40%,
+          var(--g2) 70%,
+          transparent 92%
+        );
+        z-index: 6;
+      }
+
+      /* per-panel color tokens */
+      .panel[data-i="0"] { --g1:#7c3aed; --g2:#06b6d4; --accent:#a78bfa; --accent-bright:#c4b5fd; --glow:rgba(124,58,237,0.22); }
+      .panel[data-i="1"] { --g1:#db2777; --g2:#f59e0b; --accent:#f472b6; --accent-bright:#fbcfe8; --glow:rgba(219,39,119,0.22); }
+      .panel[data-i="2"] { --g1:#059669; --g2:#3b82f6; --accent:#34d399; --accent-bright:#6ee7b7; --glow:rgba(5,150,105,0.22); }
+      .panel[data-i="3"] { --g1:#f97316; --g2:#ec4899; --accent:#fb923c; --accent-bright:#fed7aa; --glow:rgba(249,115,22,0.22); }
+
+      /* ── Tab (collapsed view) ── */
+      .tab {
+        position: absolute;
+        inset: 0;
+        width: var(--collapsed-w);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        z-index: 3;
+        transition: opacity 0.25s;
+      }
+      .panel.active .tab { opacity: 0; pointer-events: none; }
+
+      .tab-num {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 0.65rem;
+        color: var(--accent);
+        letter-spacing: 0.18em;
+      }
+      .tab-gem {
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--accent);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        color: var(--accent);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      .panel:hover:not(.active) .tab-gem {
+        transform: scale(1.15);
+        box-shadow: 0 0 10px var(--glow);
+      }
+      .tab-name {
+        font-size: 0.55rem;
+        font-weight: 500;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+      }
+
+      /* ── Content ── */
+      .content {
+        position: absolute;
+        top: 0;
+        left: var(--collapsed-w);
+        right: 0;
+        bottom: 0;
+        padding: clamp(20px, 3.5vw, 48px) clamp(18px, 3.5vw, 48px);
+        opacity: 0;
+        transform: translateX(18px);
+        transition:
+          opacity 0.38s 0.18s,
+          transform 0.38s 0.18s;
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+        z-index: 2;
+      }
+      .panel.active .content {
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+      }
+
+      /* big ghost number */
+      .ghost-num {
+        position: absolute;
+        right: -12px;
+        bottom: -24px;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(6rem, 16vw, 14rem);
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--g1), var(--g2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        opacity: 0.07;
+        line-height: 1;
+        pointer-events: none;
+        -webkit-user-select: none;
+        user-select: none;
+        z-index: 0;
+      }
+
+      .content-top { position: relative; z-index: 1; }
+
+      .eyebrow {
+        font-size: clamp(0.6rem, 1.2vw, 0.68rem);
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        background: linear-gradient(90deg, var(--g1), var(--g2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+      }
+      .title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(1.2rem, 3.2vw, 2.6rem);
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.15;
+        margin-bottom: 14px;
+      }
+      .desc {
+        font-size: clamp(0.75rem, 1.4vw, 0.88rem);
+        line-height: 1.8;
+        color: var(--muted);
+        max-width: 400px;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        line-clamp: 4;
+        overflow: hidden;
+      }
+
+      /* badge pill */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.6rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent-bright);
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 100px;
+        padding: 3px 10px;
+        margin-bottom: 10px;
+      }
+      .badge::before {
+        content: "";
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--g1), var(--g2));
+        flex-shrink: 0;
+      }
+
+      .stats {
+        display: flex;
+        gap: clamp(16px, 3vw, 36px);
+        position: relative;
+        z-index: 1;
+      }
+      .stat { display: flex; flex-direction: column; gap: 3px; }
+      .stat-lbl {
+        font-size: 0.58rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .stat-val {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(1.1rem, 2.5vw, 1.7rem);
+        font-weight: 700;
+        background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--accent);
+        background: none;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.15);
+        padding-bottom: 3px;
+        cursor: pointer;
+        transition: color 0.2s;
+        position: relative;
+        z-index: 1;
+      }
+      .cta:hover { color: var(--accent-bright); }
+      .cta span { transition: transform 0.2s; }
+      .cta:hover span { transform: translateX(4px); }
+
+      @media (max-width: 480px) {
+        .desc { display: none; }
+        .stats { gap: 14px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hdr">
+      <p class="hdr-eyebrow">Product Suite — 2025</p>
+      <h1 class="hdr-title">
+        Build Faster with <em>Powerful</em><br />Products
+      </h1>
+    </div>
+
+    <div class="accordion-wrap">
+      <div class="accordion">
+
+        <!-- Panel 1: Design -->
+        <div class="panel active" data-i="0">
+          <div class="tab">
+            <span class="tab-num">01</span>
+            <div class="tab-gem">◈</div>
+            <span class="tab-name">Design</span>
+          </div>
+          <div class="content">
+            <div class="ghost-num">01</div>
+            <div class="content-top">
+              <span class="badge">UI / UX Studio</span>
+              <p class="eyebrow">01 — Design System</p>
+              <h2 class="title">Craft Stunning Interfaces at Warp Speed</h2>
+              <p class="desc">
+                A fully token-driven design system with 400+ components, responsive grids, and real-time collaboration. From wireframe to pixel-perfect production in hours, not sprints.
+              </p>
+            </div>
+            <div>
+              <div class="stats">
+                <div class="stat">
+                  <span class="stat-lbl">Components</span>
+                  <span class="stat-val">400+</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-lbl">Themes</span>
+                  <span class="stat-val">12</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-lbl">Users</span>
+                  <span class="stat-val">85K</span>
+                </div>
+              </div>
+            </div>
+            <button class="cta">Explore Design <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- Panel 2: Analytics -->
+        <div class="panel" data-i="1">
+          <div class="tab">
+            <span class="tab-num">02</span>
+            <div class="tab-gem">◇</div>
+            <span class="tab-name">Analytics</span>
+          </div>
+          <div class="content">
+            <div class="ghost-num">02</div>
+            <div class="content-top">
+              <span class="badge">Data Intelligence</span>
+              <p class="eyebrow">02 — Analytics Engine</p>
+              <h2 class="title">Turn Raw Data Into Real-Time Decisions</h2>
+              <p class="desc">
+                Stream billions of events, visualize user journeys, and surface anomalies before they cost you. Unified dashboards that connect product, revenue, and support data in one view.
+              </p>
+            </div>
+            <div>
+              <div class="stats">
+                <div class="stat">
+                  <span class="stat-lbl">Events/sec</span>
+                  <span class="stat-val">1M+</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-lbl">Latency</span>
+                  <span class="stat-val">&lt;50ms</span>
+                </div>
+              </div>
+            </div>
+            <button class="cta">View Analytics <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- Panel 3: Collaborate -->
+        <div class="panel" data-i="2">
+          <div class="tab">
+            <span class="tab-num">03</span>
+            <div class="tab-gem">○</div>
+            <span class="tab-name">Collaborate</span>
+          </div>
+          <div class="content">
+            <div class="ghost-num">03</div>
+            <div class="content-top">
+              <span class="badge">Team Workspace</span>
+              <p class="eyebrow">03 — Collaboration Hub</p>
+              <h2 class="title">Every Team, One Seamless Workspace</h2>
+              <p class="desc">
+                Multiplayer editing, threaded reviews, and AI-assisted task routing — built for distributed teams. Reduce tool sprawl and keep context alive across async and live sessions.
+              </p>
+            </div>
+            <div>
+              <div class="stats">
+                <div class="stat">
+                  <span class="stat-lbl">Teams</span>
+                  <span class="stat-val">22K+</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-lbl">Uptime</span>
+                  <span class="stat-val">99.9%</span>
+                </div>
+              </div>
+            </div>
+            <button class="cta">Start Collaborating <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- Panel 4: Deploy -->
+        <div class="panel" data-i="3">
+          <div class="tab">
+            <span class="tab-num">04</span>
+            <div class="tab-gem">△</div>
+            <span class="tab-name">Deploy</span>
+          </div>
+          <div class="content">
+            <div class="ghost-num">04</div>
+            <div class="content-top">
+              <span class="badge">Cloud Infrastructure</span>
+              <p class="eyebrow">04 — Deployment Platform</p>
+              <h2 class="title">Ship Confidently, Roll Back Instantly</h2>
+              <p class="desc">
+                Zero-downtime deploys with automated canary releases, feature flags, and one-click rollback. Supports multi-region, edge, and serverless targets — all from a single CLI.
+              </p>
+            </div>
+            <div>
+              <div class="stats">
+                <div class="stat">
+                  <span class="stat-lbl">Deploys/day</span>
+                  <span class="stat-val">500K</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-lbl">Regions</span>
+                  <span class="stat-val">28</span>
+                </div>
+              </div>
+            </div>
+            <button class="cta">Deploy Now <span>→</span></button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll(".panel").forEach((p) => {
+        p.addEventListener("click", () => {
+          document.querySelectorAll(".panel").forEach((x) => x.classList.remove("active"));
+          p.classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSAP Scroll Footer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { padding: 0; margin: 0; box-sizing: border-box; }
+    :root { --bg: #0e100f; --cream: #fffce1; --orange: rgb(255,135,9); --pink: rgb(247,189,248); }
+    html, body { background: var(--bg); color: var(--cream); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+    .hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; position: relative; z-index: 2; }
+    .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 10vw, 9rem); letter-spacing: 0.06em; line-height: 1; background: linear-gradient(135deg, var(--orange) 20%, var(--pink) 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-align: center; }
+    .hero p { font-size: clamp(0.85rem, 2vw, 1.1rem); font-weight: 300; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.45; }
+
+    .scroll-hint { position: absolute; bottom: 2.4rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0.35; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; }
+    .scroll-hint .arrow { width: 1px; height: 40px; background: linear-gradient(to bottom, transparent, var(--cream)); animation: scrollPulse 1.8s ease-in-out infinite; }
+    @keyframes scrollPulse { 0%,100% { opacity:.2; transform:scaleY(1); } 50% { opacity:.7; transform:scaleY(1.15); } }
+
+    .spacer { height: 60vh; display: flex; align-items: center; justify-content: center; }
+    .spacer-text { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.2rem,4vw,2.8rem); letter-spacing: 0.2em; opacity: 0.1; text-align: center; padding: 0 2rem; }
+
+    .footer-scene { position: relative; min-height: 100vh; display: flex; flex-direction: column; }
+    .transition-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+    .footer-content { position: relative; z-index: 3; margin-top: auto; padding: clamp(4rem,10vw,8rem) clamp(1.5rem,6vw,6rem) clamp(2rem,5vw,3.5rem); display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3rem 2rem; opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s; }
+    .footer-content.visible { opacity: 1; transform: translateY(0); }
+    .footer-brand { grid-column: 1 / -1; }
+    .footer-brand .logo { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem,6vw,5rem); letter-spacing: 0.08em; line-height: 1; color: var(--bg); }
+    .footer-brand .tagline { font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--bg); opacity: 0.6; margin-top: 0.4rem; }
+    .footer-col h4 { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.25em; color: var(--bg); margin-bottom: 1rem; opacity: 0.5; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+    .footer-col ul li a { text-decoration: none; color: var(--bg); font-size: 0.95rem; font-weight: 500; opacity: 0.85; transition: opacity 0.2s; }
+    .footer-col ul li a:hover { opacity: 1; }
+
+    .footer-bottom { position: relative; z-index: 3; padding: 1.2rem clamp(1.5rem,6vw,6rem); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; border-top: 1px solid rgba(14,16,15,0.15); }
+    .footer-bottom p { font-size: 0.78rem; letter-spacing: 0.12em; color: var(--bg); opacity: 0.5; }
+    .socials { display: flex; gap: 1.2rem; }
+    .socials a { font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; color: var(--bg); opacity: 0.5; transition: opacity 0.2s; }
+    .socials a:hover { opacity: 1; }
+
+    @media (max-width: 700px) { .footer-content { grid-template-columns: 1fr 1fr; } .footer-brand { grid-column: 1/-1; } }
+    @media (max-width: 420px) { .footer-content { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <h1>Scroll Down</h1>
+    <p>The footer rises to meet you</p>
+    <div class="scroll-hint"><div class="arrow"></div><span>scroll</span></div>
+  </section>
+
+  <div class="spacer"><p class="spacer-text">Keep scrolling — the wave is waiting</p></div>
+
+  <div class="footer-scene" id="footerScene">
+    <svg class="transition-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMin slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad" x1="0" y1="0" x2="99" y2="99" gradientUnits="userSpaceOnUse">
+          <stop offset="0.2" stop-color="rgb(255,135,9)" />
+          <stop offset="0.7" stop-color="rgb(247,189,248)" />
+        </linearGradient>
+      </defs>
+      <path class="path" stroke="url(#grad)" fill="url(#grad)" stroke-width="2px" vector-effect="non-scaling-stroke" d="M 0 100 V 100 Q 50 100 100 100 V 100 z"/>
+    </svg>
+
+    <div class="footer-content" id="footerContent">
+      <div class="footer-brand">
+        <div class="logo">Studio</div>
+        <div class="tagline">Crafting digital experiences since forever</div>
+      </div>
+      <div class="footer-col">
+        <h4>Work</h4>
+        <ul><li><a href="#">Selected Projects</a></li><li><a href="#">Case Studies</a></li><li><a href="#">Awards</a></li><li><a href="#">Open Source</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Studio</h4>
+        <ul><li><a href="#">About Us</a></li><li><a href="#">Team</a></li><li><a href="#">Careers</a></li><li><a href="#">Journal</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul><li><a href="#">hello@studio.co</a></li><li><a href="#">+1 (555) 000-0000</a></li><li><a href="#">New York</a></li><li><a href="#">Tokyo</a></li></ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Studio. All rights reserved.</p>
+      <div class="socials"><a href="#">Twitter</a><a href="#">Instagram</a><a href="#">LinkedIn</a><a href="#">Dribbble</a></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const pathEl = document.querySelector(".path");
+    const footerContent = document.getElementById("footerContent");
+
+    // Interpolatable path params: M 0 100 V {v1} Q 50 {cy} 100 {v2} V 100 z
+    const shapes = {
+      flat:   { v1: 100, cy: 100, v2: 100 },
+      bulge:  { v1:  50, cy:   0, v2:  50 },
+      filled: { v1:   0, cy:   0, v2:   0 },
+    };
+
+    const proxy = { ...shapes.flat };
+
+    function updatePath() {
+      pathEl.setAttribute("d", `M 0 100 V ${proxy.v1} Q 50 ${proxy.cy} 100 ${proxy.v2} V 100 z`);
+    }
+
+    const tl = gsap.timeline({ paused: true, onUpdate: updatePath })
+      .to(proxy, { v1: shapes.bulge.v1,  cy: shapes.bulge.cy,  v2: shapes.bulge.v2,  ease: "power2.in",  duration: 0.5 })
+      .to(proxy, { v1: shapes.filled.v1, cy: shapes.filled.cy, v2: shapes.filled.v2, ease: "power2.out", duration: 0.5 });
+
+    let contentShown = false;
+
+    ScrollTrigger.create({
+      trigger: "#footerScene",
+      start: "top 90%",
+      end: "top 5%",
+      scrub: 1.2,
+      onUpdate(self) {
+        tl.progress(self.progress);
+        if (self.progress > 0.5 && !contentShown) {
+          contentShown = true;
+          footerContent.classList.add("visible");
+        } else if (self.progress <= 0.5 && contentShown) {
+          contentShown = false;
+          footerContent.classList.remove("visible");
+        }
+      }
+    });
+  </script>
+</body>
+</html>

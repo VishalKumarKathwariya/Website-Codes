@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How It Works | Infographic Cards</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* RESET & BASE */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #E8E8E8;
+      font-family: 'Open Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    /* HOW IT WORKS SECTION */
+    .how-section {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-title h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #0a0c31;
+      letter-spacing: -0.5px;
+      position: relative;
+      display: inline-block;
+      padding-bottom: 12px;
+    }
+
+    .section-title h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      width: 60%;
+      height: 3px;
+      background: #0a0c31;
+      border-radius: 3px;
+    }
+
+    /* CARD GRID — fully responsive */
+    .cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+      gap: 2rem 1.8rem;
+    }
+
+    /* ── CARD SHELL (exactly as original, slightly enhanced) ── */
+    .info-card {
+      width: 260px;
+      max-width: 100%;
+      background: #ffffff;
+      border-radius: 5rem 0px 0px 0px;      /* dramatic top-left curve */
+      box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.15), 0 5px 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+      border-top: 2.5px solid #1d239a;
+      border-right: 2.5px solid #1d239a;
+      border-bottom: 2.5px solid #111893;
+      transition: transform 0.25s ease, box-shadow 0.3s ease;
+      height: 100%;
+    }
+
+    .info-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 22px 45px -10px rgba(10, 12, 49, 0.25);
+    }
+
+    /* card top content */
+    .card-top {
+      width: 100%;
+      padding: 2rem 1rem 1rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+      flex: 1
+    }
+
+    /* icon wrapper */
+    .icon-wrap {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0a0c31;
+    }
+
+    /* title */
+    .card-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a1a2e;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* body text */
+    .card-body {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.7;
+      padding: 0 4px;
+      font-weight: 400;
+    }
+
+    /* bottom wave container */
+    .card-bottom {
+      position: relative;
+      width: 100%;
+      height: 58px;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .card-bottom svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* RESPONSIVE FINE-TUNING */
+    @media screen and (max-width: 700px) {
+      .cards-grid {
+        gap: 2rem 1.2rem;
+      }
+      .section-title h2 {
+        font-size: 1.9rem;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      .info-card {
+        width: 280px;
+        max-width: 95%;
+        margin: 0 auto;
+      }
+      .card-top {
+        padding: 28px 16px 16px;
+      }
+    }
+
+    /* for very small screens, cards take full width but keep proportions */
+    @media screen and (max-width: 380px) {
+      .info-card {
+        width: 100%;
+      }
+      .section-title h2 {
+        font-size: 1.7rem;
+      }
+    }
+
+    /* optional: keep icon consistent */
+    .icon-wrap svg {
+      width: auto;
+      height: 100%;
+      max-width: 44px;
+      max-height: 44px;
+    }
+  </style>
+</head>
+<body>
+
+<section class="how-section">
+  <!-- section heading -->
+  <div class="section-title">
+    <h2>How it works</h2>
+  </div>
+
+  <!-- 4 cards grid -->
+  <div class="cards-grid">
+    
+    <!-- CARD 1 — Discover / Research -->
+    <div class="info-card">
+      <div class="card-top">
+        <div class="icon-wrap">
+          <!-- magnifying glass / discover icon -->
+          <svg width="40" height="40" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="15" cy="15" r="9" stroke="#0a0c31" stroke-width="1.8" fill="none"/>
+            <line x1="21.5" y1="21.5" x2="28" y2="28" stroke="#0a0c31" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="card-title">Discover</p>
+        <p class="card-body">
+          Explore insights & gather requirements. We map your vision to clear, actionable steps.
+        </p>
+      </div>
+      <div class="card-bottom">
+        <svg viewBox="0 0 1440 300">
+          <path fill="#2d2d8d" fill-opacity="1"
+            d="M0,224L80,192C160,160,320,96,480,106.7C640,117,800,203,960,208C1120,213,1280,139,1360,101.3L1440,64V320H0Z">
+          </path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- CARD 2 — Design / Strategy -->
+    <div class="info-card">
+      <div class="card-top">
+        <div class="icon-wrap">
+          <!-- pencil / design icon -->
+          <svg width="40" height="40" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 26.5L16 14.5L21.5 20L9.5 32H4V26.5Z" stroke="#0a0c31" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+            <line x1="19" y1="17.5" x2="26" y2="10.5" stroke="#0a0c31" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="13.5" y1="23" x2="16.5" y2="20" stroke="#0a0c31" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M28 7L31 10" stroke="#0a0c31" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="card-title">Design</p>
+        <p class="card-body">
+          Craft intuitive experiences. Wireframes, prototypes & visual identity tailored to your brand.
+        </p>
+      </div>
+      <div class="card-bottom">
+        <svg viewBox="0 0 1440 300">
+          <path fill="#2d2d8d" fill-opacity="1"
+            d="M0,224L80,192C160,160,320,96,480,106.7C640,117,800,203,960,208C1120,213,1280,139,1360,101.3L1440,64V320H0Z">
+          </path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- CARD 3 — Build / Develop -->
+    <div class="info-card">
+      <div class="card-top">
+        <div class="icon-wrap">
+          <!-- code brackets icon -->
+          <svg width="40" height="40" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 10L5 18L12 26" stroke="#0a0c31" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M24 10L31 18L24 26" stroke="#0a0c31" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <line x1="18" y1="8" x2="18" y2="28" stroke="#0a0c31" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="card-title">Develop</p>
+        <p class="card-body">
+          Robust, scalable code. We build with modern stacks, ensuring performance & security.
+        </p>
+      </div>
+      <div class="card-bottom">
+        <svg viewBox="0 0 1440 300">
+          <path fill="#2d2d8d" fill-opacity="1"
+            d="M0,224L80,192C160,160,320,96,480,106.7C640,117,800,203,960,208C1120,213,1280,139,1360,101.3L1440,64V320H0Z">
+          </path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- CARD 4 — Launch / Deliver -->
+    <div class="info-card">
+      <div class="card-top">
+        <div class="icon-wrap">
+          <!-- rocket / launch icon -->
+          <svg width="40" height="40" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 4L18 15" stroke="#0a0c31" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M12 10L18 4L24 10" stroke="#0a0c31" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="18" cy="19" r="3" stroke="#0a0c31" stroke-width="1.8" fill="none"/>
+            <path d="M10 28C10 28 14 23 18 23C22 23 26 28 26 28" stroke="#0a0c31" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            <line x1="8" y1="30" x2="28" y2="30" stroke="#0a0c31" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="card-title">Launch</p>
+        <p class="card-body">
+          Seamless deployment & ongoing support. Your project goes live with confidence.
+        </p>
+      </div>
+      <div class="card-bottom">
+        <svg viewBox="0 0 1440 300">
+          <path fill="#2d2d8d" fill-opacity="1"
+            d="M0,224L80,192C160,160,320,96,480,106.7C640,117,800,203,960,208C1120,213,1280,139,1360,101.3L1440,64V320H0Z">
+          </path>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <!-- subtle extra note: the wave + border design is preserved -->
+</section>
+
+<!-- no extra scripts — pure responsive design -->
+</body>
+</html>
