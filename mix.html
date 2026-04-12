@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vishal Kumar</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --nav-bg: #0d0d0d;
+    --nav-border: rgba(255,255,255,0.07);
+    --text-primary: #f0f0f0;
+    --text-muted: #555;
+    --accent: #ffffff;
+    --link-hover: rgba(255,255,255,0.07);
+    --tr: 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+    --bar-w: 4rem;
+    --panel-w: 240px;
+    --footer-h: 260px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0d0d0d;
+    color: #111;
+  }
+
+  /* ════════════════════════════════
+     DESKTOP SIDEBAR
+  ════════════════════════════════ */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    z-index: 1000;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .sidebar-bar {
+    width: var(--bar-w);
+    background: var(--nav-bg);
+    border-right: 1px solid var(--nav-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .sidebar-toggle {
+    width: 32px;
+    height: 32px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--nav-border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .sidebar-toggle:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.18);
+  }
+  .toggle-icon {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .toggle-icon span {
+    display: block;
+    height: 1.5px;
+    background: #aaa;
+    border-radius: 2px;
+    transition: width 0.25s ease, opacity 0.2s, transform 0.28s ease;
+    transform-origin: center;
+  }
+  .toggle-icon span:nth-child(1) { width: 14px; }
+  .toggle-icon span:nth-child(2) { width: 10px; }
+  .toggle-icon span:nth-child(3) { width: 14px; }
+  .sidebar.open .toggle-icon span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+  .sidebar.open .toggle-icon span:nth-child(2) { opacity: 0; width: 0; }
+  .sidebar.open .toggle-icon span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+  .sidebar-panel {
+    position: absolute;
+    left: var(--bar-w);
+    top: 0;
+    height: 100vh;
+    width: 0;
+    overflow: hidden;
+    background: var(--nav-bg);
+    border-right: 1px solid transparent;
+    border-radius: 0rem 0.5rem 0.5rem 0rem;
+    display: flex;
+    flex-direction: column;
+    transition: width var(--tr), border-color var(--tr);
+    white-space: nowrap;
+  }
+  .sidebar.open .sidebar-panel {
+    width: var(--panel-w);
+    border-color: var(--nav-border);
+  }
+
+  .sidebar-panel-inner {
+    width: var(--panel-w);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0;
+    opacity: 0;
+    transition: opacity 0.15s ease 0s;
+  }
+  .sidebar.open .sidebar-panel-inner {
+    opacity: 1;
+    transition: opacity 0.25s ease 0.2s;
+  }
+
+  .sidebar-brand {
+    text-align: center;
+    padding: 0 1.25rem 2rem;
+    border-bottom: 1px solid var(--nav-border);
+    margin-bottom: 1.5rem;
+  }
+  .sidebar-brand span {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--accent);
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    padding: 0 0.75rem;
+  }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    border-radius: 7px;
+    color: #999;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    transition: background 0.18s, color 0.18s;
+  }
+  .nav-link:hover { background: var(--link-hover); color: var(--text-primary); }
+  .nav-link svg { flex-shrink: 0; opacity: 0.7; }
+  .nav-link:hover svg { opacity: 1; }
+
+  .sidebar-social {
+    padding: 1.5rem 0.75rem 0;
+    border-top: 1px solid var(--nav-border);
+    margin-top: auto;
+  }
+  .social-label {
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 0 0.5rem;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .social-row {
+    display: flex;
+    gap: 8px;
+    padding: 0 0.25rem;
+  }
+  .social-link {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--nav-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .social-link:hover { border-color: #444; color: var(--text-primary); background: var(--link-hover); }
+
+  .main-content {
+    margin-left: var(--bar-w);
+    transition: margin-left var(--tr);
+    min-height: 100vh;
+  }
+
+  /* ════════════════════════════════
+     FIX 1: MOBILE / TABLET NAVBAR
+     — Card now caps at (100vw - 2rem)
+       so it never bleeds off screen
+  ════════════════════════════════ */
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    /* FIX: cap width so it never overflows viewport */
+    max-width: calc(100vw - 2rem);
+    transition: opacity 0.28s ease;
+  }
+  .mobile-nav.hidden { opacity: 0; pointer-events: none; }
+
+  .mobile-card {
+    background: var(--nav-bg);
+    border: 1.5px solid rgb(14, 14, 50);
+    border-radius: 8px;
+    overflow: hidden;               /* FIX: clip any inner overflow */
+    width: 48px;
+    max-height: 48px;
+    /* FIX: cap card width to viewport minus margins */
+    max-width: calc(100vw - 2rem);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    transition:
+      width 1s cubic-bezier(0.2, 0.9, 0.4, 1.05),
+      max-height 1.3s cubic-bezier(0.2, 0.9, 0.4, 1.05),
+      border-radius 0.3s ease;
+  }
+  .mobile-card.open {
+    /* FIX: use min() so on tiny screens it shrinks safely */
+    width: min(280px, calc(100vw - 2rem));
+    max-height: 600px;
+  }
+
+  .mobile-toggle {
+    width: 46px;
+    height: 46px;
+    min-height: 46px;
+    min-width: 46px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+    align-self: flex-end;
+    flex-shrink: 0;
+  }
+  .hamburger-line {
+    width: 18px;
+    height: 1.5px;
+    background: #999;
+    border-radius: 2px;
+    transition: all 0.28s ease;
+    transform-origin: center;
+  }
+  .mobile-toggle.active .hamburger-line:nth-child(1) { transform: translateY(6.5px) rotate(45deg); background: #ccc; }
+  .mobile-toggle.active .hamburger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .mobile-toggle.active .hamburger-line:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); background: #ccc; }
+
+  .mobile-card-content {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease 0s;
+    overflow: hidden;
+    width: 100%;                    /* FIX: fill card width, not fixed px */
+  }
+  .mobile-card.open .mobile-card-content {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.25s ease 0.25s;
+  }
+
+  .mobile-brand {
+    text-align: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--nav-border);
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent);
+  }
+
+  .mobile-panel-inner {
+    padding: 0.5rem 0rem 1rem 0rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .mobile-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.65rem 0.8rem;
+    margin: 0rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--nav-border);
+    border-radius: 8px;
+    color: #999;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 400;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+    /* FIX: prevent text overflow breaking layout */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mobile-nav-link:hover { background: rgba(255,255,255,0.09); color: var(--text-primary); border-color: rgba(255,255,255,0.15); }
+
+  .mobile-social-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 0.75rem 1rem 1rem;
+    border-top: 1px solid var(--nav-border);
+    /* FIX: wrap icons if card is very narrow */
+    flex-wrap: wrap;
+  }
+  .mobile-social-link {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--nav-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    flex-shrink: 0;                 /* FIX: icons don't shrink weirdly */
+  }
+  .mobile-social-link:hover { border-color: #555; color: var(--text-primary); background: var(--link-hover); }
+
+  /* ════════════════════════════════
+     DEMO SECTIONS
+  ════════════════════════════════ */
+  .section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    /* FIX: use clamp so padding shrinks gracefully on narrow screens */
+    padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 5vw, 3rem);
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .section h2 {
+    font-size: clamp(1.5rem, 5vw, 2.5rem); /* FIX: fluid heading size */
+    font-weight: 700;
+    color: #111;
+    text-align: center;
+  }
+  .section p {
+    font-size: clamp(0.875rem, 2.5vw, 1rem); /* FIX: fluid body size */
+    color: #777;
+    max-width: 480px;
+    text-align: center;
+    padding: 0 0.5rem;             /* FIX: prevent text touching edges */
+  }
+  .section:nth-child(even) { background: #fff; }
+  .section:nth-child(odd)  { background: #f4f4f4; }
+
+  /* ════════════════════════════════
+     STACKING FOOTER
+  ════════════════════════════════ */
+  .site-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--footer-h);
+    z-index: 0;
+    background: #0d0d0d;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2.5rem 3rem 1.5rem 3rem;
+    /* FIX: add overflow so content doesn't bleed on small screens */
+    overflow: hidden;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .footer-brand-name {
+    font-family: fantasy;
+    font-size: clamp(2.5rem, 6vw, 5rem); /* FIX: fluid footer brand */
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-top: 3rem;
+  }
+
+  .footer-brand p {
+    font-size: 0.8rem;
+    color: #444;
+    line-height: 1.65;
+    max-width: 200px;
+  }
+
+  .footer-col a {
+    display: block;
+    font-size: 0.8rem;
+    color: #444;
+    text-decoration: none;
+    margin-bottom: 0.4rem;
+    transition: color 0.15s;
+    /* FIX: long email/address lines wrap cleanly */
+    word-break: break-word;
+  }
+  .footer-col a:hover { color: #fff; }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+    color: #333;
+    /* FIX: wrap copyright + icons on narrow viewports */
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 8px;
+  }
+  .footer-social a {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .footer-social a:hover { border-color: #555; color: #fff; }
+
+  /* ════════════════════════════════
+     PAGE WRAP
+  ════════════════════════════════ */
+  .page-wrap {
+    position: relative;
+    z-index: 10;
+    background: #f4f4f4;
+    margin-bottom: var(--footer-h);
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+
+  /* ════════════════════════════════
+     RESPONSIVE BREAKPOINTS
+  ════════════════════════════════ */
+
+  /* Tablet + Mobile: hide sidebar, show mobile nav */
+  @media (max-width: 900px) {
+    .sidebar      { display: none; }
+    .mobile-nav   { display: block; }
+    .main-content { margin-left: 0 !important; padding-top: 0; }
+    .mobile-card.open {
+      width: min(260px, calc(100vw - 1.5rem));
+      max-width: calc(90vw - 1.5rem);
+    }
+    /* Footer 2-col grid on tablet */
+    .footer-grid  { grid-template-columns: 1fr 1fr; }
+    .site-footer  { padding: 2rem 1.5rem 1.25rem; }
+  }
+
+  /* Mobile landscape / small tablets */
+  @media (max-width: 600px) {
+    :root { --footer-h: 380px; }
+    .mobile-card.open {
+      width: min(260px, calc(100vw - 1.5rem));
+      max-width: calc(90vw - 1.5rem);
+    }
+    .footer-grid  { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .site-footer  { padding: 1.5rem 1rem 1rem; }
+    .footer-brand-name { margin-top: 1rem; }
+  }
+
+  /* Small phones */
+  @media (max-width: 480px) {
+    :root { --footer-h: 480px; }
+
+    /* FIX: single-column footer on small phones */
+    .footer-grid  { grid-template-columns: 1fr; gap: 0.75rem; }
+    .site-footer  { padding: 1.25rem 0.875rem 1rem; }
+
+    /* FIX: compact mobile nav card on tiny screens */
+    .mobile-nav   { top: 0.75rem; right: 0.75rem; }
+    .mobile-card.open {
+      width: min(260px, calc(100vw - 1.5rem));
+      max-width: calc(90vw - 1.5rem);
+    }
+
+    .mobile-brand { font-size: 1.5rem; }
+    .mobile-nav-link { font-size: 0.75rem; padding: 0.55rem 0.7rem; margin: 0 0.75rem; }
+
+    .mobile-social-link { width: 34px; height: 34px; }
+  }
+
+  /* Very small phones (e.g. iPhone SE 1st gen: 320px) */
+  @media (max-width: 360px) {
+    :root { --footer-h: 520px; }
+
+    .mobile-card.open {
+      width: calc(90vw - 1.5rem);
+    }
+    .mobile-panel-inner { gap: 0.35rem; }
+    .mobile-nav-link { padding: 0.5rem 0.6rem; margin: 0 0.5rem; gap: 6px; }
+    .mobile-social-row { gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     DESKTOP SIDEBAR
+══════════════════════════════ -->
+<nav class="sidebar" id="sidebar" aria-label="Site navigation">
+
+  <div class="sidebar-bar">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="false">
+      <div class="toggle-icon">
+        <span></span><span></span><span></span>
+      </div>
+    </button>
+  </div>
+
+  <div class="sidebar-panel">
+    <div class="sidebar-panel-inner">
+
+      <div class="sidebar-brand"><span>VISHAL.</span></div>
+
+      <nav class="sidebar-nav">
+        <a href="#about" class="nav-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>About
+        </a>
+        <a href="#skills" class="nav-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>Skills
+        </a>
+        <a href="#projects" class="nav-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>Projects
+        </a>
+        <a href="#contact" class="nav-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>Contact
+        </a>
+      </nav>
+
+      <div class="sidebar-social">
+        <span class="social-label">Connect</span>
+        <div class="social-row">
+          <a href="#" class="social-link" target="_blank" aria-label="WhatsApp">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+          <a href="mailto:you@gmail.com" class="social-link" aria-label="Gmail">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+          </a>
+          <a href="#" class="social-link" target="_blank" aria-label="GitHub">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </a>
+          <a href="#" class="social-link" target="_blank" aria-label="Instagram">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════
+     MOBILE / TABLET NAVBAR
+══════════════════════════════ -->
+<nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+  <div class="mobile-card" id="mobileCard">
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu" aria-expanded="false">
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+    </button>
+
+    <div class="mobile-card-content">
+      <div class="mobile-brand">Vishal</div>
+      <div class="mobile-panel-inner">
+        <a href="#about" class="mobile-nav-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>About
+        </a>
+        <a href="#skills" class="mobile-nav-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>Skills
+        </a>
+        <a href="#projects" class="mobile-nav-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>Projects
+        </a>
+        <a href="#contact" class="mobile-nav-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>Contact
+        </a>
+      </div>
+      <div class="mobile-social-row">
+        <a href="#" class="mobile-social-link" target="_blank" aria-label="WhatsApp">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </a>
+        <a href="mailto:you@gmail.com" class="mobile-social-link" aria-label="Gmail">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+        </a>
+        <a href="#" class="mobile-social-link" target="_blank" aria-label="GitHub">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        </a>
+        <a href="#" class="mobile-social-link" target="_blank" aria-label="Instagram">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════
+     STACKING FOOTER (behind page)
+══════════════════════════════ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-name">VISHAL</div>
+    </div>
+    <div class="footer-col">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Blog</a>
+    </div>
+    <div class="footer-col">
+      <a href="#">123 Main St, City, State 12345</a>
+      <a href="#">gamgamking@gami.com</a>
+      <a href="#">0123456789</a>
+    </div>
+    <div class="footer-col">
+      <a href="mailto:you@gmail.com">Let's Create Unique</a>
+      <a href="#">Created - Vishal Kumar</a>
+      <a href="#">License - MIT 2023</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2023 Vishal Kumar. All rights reserved.</span>
+    <div class="footer-social">
+      <a href="#" aria-label="GitHub">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      <a href="#" aria-label="Instagram">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      </a>
+      <a href="mailto:you@gmail.com" aria-label="Email">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════
+     PAGE WRAP — floats above footer
+══════════════════════════════ -->
+<div class="page-wrap">
+  <main class="main-content" id="mainContent">
+    <section class="section" id="about">
+      <h2>About</h2>
+      <p>Hi, I'm Vishal — a full-stack developer who builds fast, modern, and beautiful web experiences.</p>
+    </section>
+    <section class="section" id="skills">
+      <h2>Skills</h2>
+      <p>React, Node.js, TypeScript, Python, UI/UX Design, and more.</p>
+    </section>
+    <section class="section" id="projects">
+      <h2>Projects</h2>
+      <p>A curated selection of work spanning SaaS products, open-source tools, and design systems.</p>
+    </section>
+    <section class="section" id="contact">
+      <h2>Contact</h2>
+      <p>Available for freelance, full-time, and consulting opportunities. Let's talk.</p>
+    </section>
+  </main>
+</div>
+
+<script>
+  /* ── DESKTOP SIDEBAR ── */
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  sidebarToggle.addEventListener('click', () => {
+    const isOpen = sidebar.classList.toggle('open');
+    sidebarToggle.setAttribute('aria-expanded', isOpen);
+  });
+
+  /* ── MOBILE TOGGLE ── */
+  const mobileToggle = document.getElementById('mobileToggle');
+  const mobileCard   = document.getElementById('mobileCard');
+
+  mobileToggle.addEventListener('click', e => {
+    e.stopPropagation();
+    const isOpen = mobileCard.classList.toggle('open');
+    mobileToggle.classList.toggle('active', isOpen);
+    mobileToggle.setAttribute('aria-expanded', isOpen);
+  });
+
+  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileCard.classList.remove('open');
+      mobileToggle.classList.remove('active');
+      mobileToggle.setAttribute('aria-expanded', false);
+    });
+  });
+
+  document.addEventListener('click', e => {
+    if (!document.getElementById('mobileNav').contains(e.target)) {
+      mobileCard.classList.remove('open');
+      mobileToggle.classList.remove('active');
+      mobileToggle.setAttribute('aria-expanded', false);
+    }
+  });
+
+  const mobileNav = document.getElementById('mobileNav');
+  let lastScrollY = 0;
+
+  window.addEventListener('scroll', () => {
+    if (window.innerWidth > 900) return;
+    const cur = window.scrollY;
+    if (cur > lastScrollY && cur > 60) {
+      mobileNav.classList.add('hidden');
+    } else {
+      mobileNav.classList.remove('hidden');
+    }
+    lastScrollY = cur;
+  });
+</script>
+</body>
+</html>
