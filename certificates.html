@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Certificates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --border: #252525;
+      --accent: #c9a84c;
+      --text-primary: #f0ece2;
+      --text-secondary: #6b6560;
+      --text-muted: #3a3630;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      min-height: 200vh; /* enough to scroll */
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 120px 60px;
+    }
+
+    /* =====================
+       SECTION — 2 col desktop
+       ===================== */
+    .section {
+      width: 100%;
+      max-width: 1080px;
+      display: grid;
+      grid-template-columns: 280px 1fr;   /* narrow left, wide right */
+      gap: 0 72px;
+      align-items: start;
+      position: relative;
+    }
+
+    /* =====================
+       LEFT — heading
+       ===================== */
+    .left {
+      position: sticky;
+      top: 100px;
+      padding-right: 0;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .section-label::after {
+      content: '';
+      height: 1px;
+      width: 28px;
+      background: var(--accent);
+      opacity: 0.45;
+    }
+    .section-label.in { opacity: 1; transform: translateY(0); }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 3vw, 2.7rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease 0.1s, transform 0.55s ease 0.1s;
+    }
+    .section-title span { color: var(--accent); }
+    .section-title.in { opacity: 1; transform: translateY(0); }
+
+    .section-sub {
+      margin-top: 16px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      font-weight: 300;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.55s ease 0.2s, transform 0.55s ease 0.2s;
+    }
+    .section-sub.in { opacity: 1; transform: translateY(0); }
+
+
+    /* =====================
+       RIGHT — list
+       ===================== */
+    .right { position: relative; }
+
+    .cert-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* =====================
+       CERT ITEM
+       ===================== */
+    .cert-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+
+      /* drop-in start */
+      opacity: 0;
+      transform: translateY(-24px);
+      transition: opacity 0.42s ease, transform 0.42s ease;
+    }
+
+    .cert-item:first-child { border-top: 1px solid var(--border); }
+
+    .cert-item.landed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* gold left-bar on hover */
+    .cert-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 2px;
+      height: 0;
+      background: var(--accent);
+      transition: height 0.35s ease;
+    }
+    .cert-item:hover::before { height: 100%; }
+
+    /* number */
+    .cert-num {
+      font-family: var(--font-display);
+      font-size: 11px;
+      color: var(--text-muted);
+      min-width: 20px;
+      flex-shrink: 0;
+      transition: color 0.3s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .cert-item:hover .cert-num { color: var(--accent); }
+
+    /* name */
+    .cert-name {
+      font-family: var(--font-display);
+      font-size: clamp(0.92rem, 1.5vw, 1.05rem);
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.35;
+      flex: 1;
+      background-image: linear-gradient(var(--accent), var(--accent));
+      background-size: 0% 1px;
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      transition: color 0.3s, background-size 0.38s ease;
+    }
+    .cert-item:hover .cert-name {
+      color: var(--accent);
+      background-size: 100% 1px;
+    }
+
+    /* =====================
+       INSTITUTE LOGO
+       ===================== */
+    .cert-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: #1e1c18;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      padding: 3px;
+      filter: grayscale(0.3);
+      transition: filter 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    }
+    .cert-item:hover .cert-logo {
+      filter: grayscale(0);
+      border-color: var(--accent);
+      transform: scale(1.12);
+    }
+
+    /* arrow */
+    .cert-arrow {
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.3s, transform 0.3s;
+      color: var(--accent);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .cert-item:hover .cert-arrow { opacity: 1; transform: translateX(0); }
+
+    /* =====================
+       FLOATING PREVIEW
+       ===================== */
+    .cert-preview {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.15);
+      width: 270px;
+      background: #111;
+    }
+    .cert-preview.visible { opacity: 1; }
+    .cert-preview img {
+      width: 100%;
+      display: block;
+      opacity: 0.68;
+      filter: sepia(0.2) contrast(1.05);
+    }
+
+    /* =====================
+       TABLET — 1 column
+       ===================== */
+    @media (max-width: 900px) {
+      body { padding: 80px 32px; }
+
+      .section {
+        grid-template-columns: 1fr;
+        gap: 48px 0;
+      }
+
+      .section::after { display: none; }
+
+      .left { position: static; }
+
+      .section-title { font-size: 2.2rem; }
+      .section-sub { max-width: 100%; }
+
+      .cert-preview { width: 210px; }
+    }
+
+    /* =====================
+       MOBILE — 1 column
+       ===================== */
+    @media (max-width: 520px) {
+      body { padding: 56px 18px; }
+
+      .section-title { font-size: 1.9rem; }
+
+      .cert-preview { display: none; }
+      .cert-arrow   { display: none; }
+
+      .cert-logo { width: 24px; height: 24px; }
+    }
+
+    /* =====================
+       LARGE DESKTOP
+       ===================== */
+    @media (min-width: 1280px) {
+      body { padding: 130px 80px; }
+      .section { max-width: 1160px; grid-template-columns: 300px 1fr; gap: 0 88px; }
+      .section::after { left: 300px; transform: translateX(44px); }
+      .cert-preview { width: 300px; }
+      .cert-logo { width: 32px; height: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating preview -->
+  <div class="cert-preview" id="certPreview">
+    <img src="" id="previewImg" alt="" />
+  </div>
+
+  <section class="section">
+
+    <!-- LEFT -->
+    <div class="left">
+      <div class="section-label" id="lbl">Credentials</div>
+      <h2 class="section-title" id="ttl">My<br><span>Certificates</span></h2>
+      <p class="section-sub" id="sub">Professional certifications and verified credentials earned across disciplines.</p>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+      <div class="cert-list">
+
+        <div class="cert-item" data-img="https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=600&q=80">
+          <span class="cert-num">01</span>
+          <span class="cert-name">AWS Certified Solutions Architect – Associate</span>
+          <img class="cert-logo"
+               src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg"
+               alt="AWS" />
+          <span class="cert-arrow">→</span>
+        </div>
+
+        <div class="cert-item" data-img="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80">
+          <span class="cert-num">02</span>
+          <span class="cert-name">Google Data Analytics Professional Certificate</span>
+          <img class="cert-logo"
+               src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+               alt="Google" />
+          <span class="cert-arrow">→</span>
+        </div>
+
+        <div class="cert-item" data-img="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80">
+          <span class="cert-num">03</span>
+          <span class="cert-name">Meta Front-End Developer Professional Certificate</span>
+          <img class="cert-logo"
+               src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg"
+               alt="Meta" />
+          <span class="cert-arrow">→</span>
+        </div>
+
+        <div class="cert-item" data-img="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=600&q=80">
+          <span class="cert-num">04</span>
+          <span class="cert-name">TensorFlow Developer Certificate</span>
+          <img class="cert-logo"
+               src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Tensorflow_logo.svg"
+               alt="TensorFlow" />
+          <span class="cert-arrow">→</span>
+        </div>
+
+        <div class="cert-item" data-img="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&q=80">
+          <span class="cert-num">05</span>
+          <span class="cert-name">CompTIA Security+ Certification</span>
+          <img class="cert-logo"
+               src="https://upload.wikimedia.org/wikipedia/commons/6/6e/CompTIA_logo.svg"
+               alt="CompTIA" />
+          <span class="cert-arrow">→</span>
+        </div>
+
+        <div class="cert-item" data-img="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80">
+          <span class="cert-num">06</span>
+          <span class="cert-name">Project Management Professional (PMP)</span>
+          <img class="cert-logo"
+               src="https://upload.wikimedia.org/wikipedia/commons/f/f5/PMI_logo.svg"
+               alt="PMI" />
+          <span class="cert-arrow">→</span>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <script>
+    /* ── Heading fade-in ── */
+    const headObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.2 });
+
+    ['lbl','ttl','sub','cnt'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) headObs.observe(el);
+    });
+
+    /* ── Cert drop-in, one by one, permanent ── */
+    const items = document.querySelectorAll('.cert-item');
+
+    const certObs = new IntersectionObserver(entries => {
+      const hitting = [...entries]
+        .filter(e => e.isIntersecting && !e.target.classList.contains('landed'))
+        .sort((a, b) => [...items].indexOf(a.target) - [...items].indexOf(b.target));
+
+      hitting.forEach((e, i) => {
+        setTimeout(() => {
+          e.target.classList.add('landed');
+          certObs.unobserve(e.target);
+        }, i * 110);
+      });
+    }, { threshold: 0.12 });
+
+    items.forEach(item => certObs.observe(item));
+
+    /* ── Floating preview ── */
+    const preview    = document.getElementById('certPreview');
+    const previewImg = document.getElementById('previewImg');
+
+    document.addEventListener('mousemove', e => {
+      const pw = preview.offsetWidth  || 270;
+      const ph = preview.offsetHeight || 180;
+      const gap = 22;
+      let left = e.clientX + gap;
+      let top  = e.clientY - ph / 2;
+      if (left + pw > window.innerWidth  - 12) left = e.clientX - pw - gap;
+      if (top < 12)                             top  = 12;
+      if (top + ph > window.innerHeight  - 12) top  = window.innerHeight - ph - 12;
+      preview.style.left = left + 'px';
+      preview.style.top  = top  + 'px';
+    });
+
+    items.forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        previewImg.src = item.dataset.img;
+        preview.classList.add('visible');
+      });
+      item.addEventListener('mouseleave', () => {
+        preview.classList.remove('visible');
+      });
+    });
+  </script>
+</body>
+</html>

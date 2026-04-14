@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Client Reviews</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --bg: #f2efe8;
+    --card-bg: #ffffff;
+    --accent: #e0330c;
+    --text-dark: #141414;
+    --text-mid: #555048;
+    --text-muted: #9e9a93;
+    --border: rgba(0,0,0,0.08);
+    --radius-card: 18px;
+    --gap: 18px;
+    --card-h: 260px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 40px;
+  }
+
+  .section {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 72px;
+    max-width: 1200px;
+    width: 100%;
+    align-items: center;
+  }
+
+  /* ── LEFT PANEL ── */
+  .left {
+    position: sticky;
+    top: 80px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .eyebrow::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .left h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 3.4vw, 58px);
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text-dark);
+    letter-spacing: -.02em;
+    margin-bottom: 20px;
+  }
+
+  .left h2 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .left p {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--text-mid);
+    margin-bottom: 1.8rem;
+    max-width: 300px;
+  }
+
+  .clutch-block {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--card-bg);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+
+  .clutch-wordmark {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--text-dark);
+    letter-spacing: -.04em;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+  }
+  .clutch-wordmark span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-left: 2px;
+    margin-bottom: -1px;
+  }
+
+  .clutch-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+  }
+
+  .clutch-right {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .clutch-stars {
+    display: flex;
+    gap: 2px;
+  }
+  .clutch-stars span {
+    color: var(--accent);
+    font-size: 13px;
+    line-height: 1;
+  }
+  .clutch-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: .04em;
+  }
+
+  /* ── RIGHT PANEL ── */
+  .right { min-width: 0; }
+
+  .carousel-outer {
+    overflow: hidden;
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .carousel-outer.dragging { cursor: grabbing; }
+
+  .track {
+    display: flex;
+    gap: var(--gap);
+    will-change: transform;
+    align-items: stretch;
+    margin-top: 2rem;
+  }
+
+  /* ── CARD ── */
+  .card {
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--border);
+    padding: 28px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    height: var(--card-h);
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: rgba(0,0,0,.15); }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    letter-spacing: .04em;
+  }
+
+  .reviewer-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+    line-height: 1.3;
+  }
+  .reviewer-role {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+
+  .g-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: auto;
+    flex-shrink: 0;
+    opacity: .85;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-stars {
+    display: flex;
+    gap: 1px;
+  }
+  .card-stars span {
+    color: #f4b400;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .card-date {
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+
+  .card-text {
+    font-size: 13.5px;
+    line-height: 1.72;
+    color: var(--text-mid);
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ── NAVIGATION ── */
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .nbtn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0,0,0,.18);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .18s, border-color .18s, transform .12s;
+    flex-shrink: 0;
+  }
+  .nbtn:hover {
+    background: rgba(0,0,0,.06);
+    border-color: rgba(0,0,0,.3);
+  }
+  .nbtn:active { transform: scale(.93); }
+  .nbtn.fill {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .nbtn.fill:hover { background: #c42a08; border-color: #c42a08; }
+  .nbtn svg { width: 17px; height: 17px; display: block; }
+
+  /* ── TABLET & MOBILE ── */
+  @media (max-width: 900px) {
+    body {
+      padding: 52px 24px;
+      align-items: flex-start;
+    }
+
+    .section {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .left {
+      position: static;
+    }
+    .track {
+      margin-top: 1.5rem;
+    }
+
+    .left h2 {
+      font-size: clamp(32px, 7vw, 48px);
+    }
+
+    .left p {
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    :root {
+      --card-h: 240px;
+    }
+
+    .nav-row {
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    body {
+      padding: 36px 16px;
+    }
+
+    .left h2 {
+      font-size: clamp(28px, 9vw, 38px);
+    }
+
+    .left p {
+      font-size: 13.5px;
+    }
+
+    :root {
+      --card-h: 240px;
+      --gap: 14px;
+    }
+    .track {
+      margin-top: 0rem;
+    }
+    .card {
+      padding: 20px 18px;
+      gap: 14px;
+    }
+
+    .card-text {
+      font-size: 13px;
+      -webkit-line-clamp: 4;
+      line-clamp: 4;
+    }
+
+    .clutch-block {
+      padding: 13px 16px;
+    }
+    .nav-row {
+      justify-content: center;
+    }
+    .nbtn {
+      width: 44px;
+      height: 44px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<section class="section">
+
+  <div class="left">
+    <div class="eyebrow">Client testimonials</div>
+    <h2>Kind words from our <em>clients</em></h2>
+    <p>We won't just be executors — we'll be your partners. Check out verified testimonials from clients around the world about working with us.</p>
+
+    <div class="clutch-block">
+      <div class="clutch-wordmark">GoOgle<span></span></div>
+      <div class="clutch-divider"></div>
+      <div class="clutch-right">
+        <div class="clutch-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        <div class="clutch-label">5.0 / 5.0 · Verified</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="carousel-outer" id="outer">
+      <div class="track" id="track"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nbtn" id="prevBtn" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="nbtn fill" id="nextBtn" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M9 18l6-6-6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+</section>
+
+<script>
+const DATA = [
+  { name:"Liza Tikher",    role:"CMO, Startech",           color:"#5c6bc0", text:"Collaborating with adelt was like discovering the secret sauce to branding. They turned our vision into something truly creative with a dash of humor that made the whole process a delight.",                                       date:"2 months ago" },
+  { name:"Diana Alieva",   role:"Fashion & Beauty Expert", color:"#e91e8c", text:"We at Davines are thoroughly impressed. Their creative approach resulted in a seamless experience that perfectly mirrors our brand's ethos. Highly recommended to anyone serious about digital presence.",                             date:"3 months ago" },
+  { name:"Marcus Klein",   role:"CEO, NovaTech",           color:"#00897b", text:"Adelt completely transformed our online presence. The team's passion is evident in every pixel. We saw a 40% uptick in engagement since the new site went live — remarkable results.",                                               date:"1 month ago"  },
+  { name:"Sofia Renner",   role:"Head of Marketing",       color:"#f4511e", text:"What sets adelt apart is their ability to truly listen. They took our vague ideas and turned them into a cohesive, stunning brand identity. Fast, collaborative, and genuinely fun to work with.",                                   date:"3 weeks ago"  },
+  { name:"James Okafor",   role:"Product Lead, Bloom",     color:"#7b1fa2", text:"Working with adelt was seamless from kickoff to launch. The team understood our vision immediately and delivered beyond expectations. Users keep complimenting the new design — a testament to their craft.",                         date:"5 months ago" },
+  { name:"Aiko Tanaka",    role:"Founder, Studio Kira",    color:"#0288d1", text:"Adelt brought our brand to life in a way we never imagined possible. Professional, creative, and deeply collaborative — they are our go-to studio for all things design going forward.",                                             date:"6 months ago" },
+];
+
+const outer = document.getElementById('outer');
+const track = document.getElementById('track');
+const N = DATA.length;
+
+function getGap() {
+  return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gap')) || 18;
+}
+
+function cardW() {
+  const ow = outer.offsetWidth;
+  const gap = getGap();
+  if (ow < 400) return ow - 52;
+  if (ow < 640) return Math.floor((ow - gap * 1.5) / 1.5);
+  return Math.floor((ow - gap * 1.5) / 1.5);
+}
+
+function step() { return cardW() + getGap(); }
+
+function buildTrack() {
+  track.innerHTML = '';
+  const w = cardW();
+  [...DATA, ...DATA, ...DATA].forEach(r => {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.style.width = w + 'px';
+    const ini = r.name.split(' ').map(x => x[0]).join('').slice(0,2).toUpperCase();
+    c.innerHTML = `
+      <div class="card-head">
+        <div class="avatar" style="background:${r.color}">${ini}</div>
+        <div style="flex:1;min-width:0">
+          <div class="reviewer-name">${r.name}</div>
+          <div class="reviewer-role">${r.role}</div>
+        </div>
+        <svg class="g-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21.8 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.5c-.2 1.2-.9 2.2-2 2.9v2.4h3.2c1.9-1.7 3-4.3 3-7.1z" fill="#4285F4"/>
+          <path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.5C4.7 19.9 8.1 22 12 22z" fill="#34A853"/>
+          <path d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.5H3.1C2.4 8.9 2 10.4 2 12s.4 3.1 1.1 4.5L6.4 14z" fill="#FBBC04"/>
+          <path d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.8-2.8C17 2.9 14.7 2 12 2 8.1 2 4.7 4.1 3.1 7.5l3.3 2.5C7.2 7.7 9.4 5.9 12 5.9z" fill="#EA4335"/>
+        </svg>
+      </div>
+      <div class="card-meta">
+        <div class="card-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="card-date">${r.date}</div>
+      </div>
+      <div class="card-text">${r.text}</div>`;
+    track.appendChild(c);
+  });
+}
+
+let pos = 0;
+
+function snap(raw) { return Math.round(raw / step()) * step(); }
+
+function jumpMid() {
+  pos = N * step();
+  track.style.transition = 'none';
+  track.style.transform = `translateX(-${pos}px)`;
+}
+
+function slideTo(p) {
+  pos = p;
+  track.style.transition = 'transform .42s cubic-bezier(.4,0,.2,1)';
+  track.style.transform = `translateX(-${pos}px)`;
+}
+
+track.addEventListener('transitionend', () => {
+  const mid = N * step();
+  if (pos < mid - step() * .5) { pos += N * step(); track.style.transition = 'none'; track.style.transform = `translateX(-${pos}px)`; }
+  else if (pos > mid + (N - 1) * step() + step() * .5) { pos -= N * step(); track.style.transition = 'none'; track.style.transform = `translateX(-${pos}px)`; }
+});
+
+document.getElementById('nextBtn').onclick = () => slideTo(snap(pos) + step());
+document.getElementById('prevBtn').onclick = () => slideTo(snap(pos) - step());
+
+let drag = { on:false, sx:0, sp:0, lx:0, vx:0, lt:0 };
+
+function dstart(x) { drag = { on:true, sx:x, sp:pos, lx:x, vx:0, lt:Date.now() }; outer.classList.add('dragging'); track.style.transition = 'none'; }
+function dmove(x)  { if (!drag.on) return; const now = Date.now(); drag.vx = (drag.lx - x) / Math.max(1, now - drag.lt); drag.lx = x; drag.lt = now; pos = drag.sp + (drag.sx - x); track.style.transform = `translateX(-${pos}px)`; }
+function dend()    { if (!drag.on) return; drag.on = false; outer.classList.remove('dragging'); slideTo(snap(pos + drag.vx * 100)); }
+
+outer.addEventListener('mousedown',  e => dstart(e.clientX));
+window.addEventListener('mousemove', e => dmove(e.clientX));
+window.addEventListener('mouseup',   dend);
+outer.addEventListener('touchstart', e => dstart(e.touches[0].clientX), { passive:true });
+outer.addEventListener('touchmove',  e => dmove(e.touches[0].clientX),  { passive:true });
+outer.addEventListener('touchend',   dend);
+
+function init() { buildTrack(); jumpMid(); }
+window.addEventListener('resize', init);
+init();
+</script>
+</body>
+</html>
