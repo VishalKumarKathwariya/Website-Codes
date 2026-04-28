@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How I Work Section</title>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    /* --- Base Styles --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+        background: #0e0e10; /* Added body background to match section */
+    }
+
+    .how-i-work-section {
+      padding: 100px 24px;
+      max-width: 1280px;
+      margin: 0 auto;
+      background: #0e0e10;
+      overflow: hidden; /* Prevents scrollbars during animation */
+    }
+
+    /* --- Modern Split Header Styles --- */
+    .section-header {
+      display: flex;
+      flex-direction: row-reverse; /* Moves Title to the right, Text to the left */
+      justify-content: space-between; 
+      align-items: flex-end;
+      margin-bottom: 70px;
+      gap: 40px;
+    }
+
+    .section-title {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end; /* Aligns the words "How" and "I Work" to the right edge */
+      line-height: 1;
+      padding: 0rem 3rem;
+    }
+
+    /* "How" on top with different color */
+    .title-how {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #7c6dfa; /* Vibrant Indigo Accent */
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    /* "I Work" on bottom with light color for dark background */
+    .title-i-work {
+      font-family: Times, serif;
+      font-size: 4.5rem;
+      font-weight: 900;
+      color: #f0f0f0; 
+      letter-spacing: -1px;
+    }
+
+    /* Text positioned at the start (left) */
+    .section-subtitle {
+      font-size: 1.15rem;
+      color: #9ca3af; /* Lightened gray for readability */
+      max-width: 450px;
+      text-align: left; /* Changed to left alignment */
+      line-height: 1.6;
+      margin-bottom: 8px; 
+    }
+
+    /* --- Responsive Grid Layout --- */
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 24px;
+    }
+
+    /* --- Card Styles --- */
+    .how-card {
+      position: relative;
+      height: 380px;       
+      background-color: #1e1a3a;
+      border-radius: 16px; 
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease; 
+      cursor: pointer;
+      /* Elements are hidden initially by GSAP, but it's good practice to ensure they don't break layout */
+      will-change: transform, opacity; 
+    }
+
+    .how-card:hover {
+      transform: translateY(-6px) !important; /* !important ensures hover overrides GSAP's inline styles */
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Gradient overlay for readability */
+    .how-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* --- Heading Styles Inside Cards --- */
+    .how-card h2 {
+      
+      position: absolute;
+      bottom: 24px;        
+      left: 24px;
+      z-index: 10;         
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffffff;      
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .how-card h2 span {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #a8b2d1;      
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 4px;
+    }
+
+    /* --- Lottie Background --- */
+    .lottie-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;          
+      pointer-events: none;
+      object-fit: cover;
+      transform: scale(1.15); 
+    }
+
+    /* =========================================
+       RESPONSIVE BREAKPOINTS
+       ========================================= */
+
+    /* --- Tablet Layout (Max 1024px) --- */
+    @media screen and (max-width: 1024px) {
+      .how-i-work-section {
+        padding: 80px 20px;
+      }
+
+      .title-i-work {
+        font-size: 3.5rem;
+      }
+      
+      .cards-container {
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 20px;
+      }
+
+      .how-card {
+        height: 320px; 
+      }
+    }
+
+    /* --- Mobile Layout (Max 600px) --- */
+    @media screen and (max-width: 600px) {
+      .how-i-work-section {
+        padding: 60px 16px;
+      }
+
+      .section-header {
+        flex-direction: column; /* Stacks normally on mobile */
+        align-items: flex-end; /* Resets everything to the left side */
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .section-title {
+        padding: 0rem 1rem;
+      }
+
+      .title-how {
+        font-size: 1.5rem;
+        margin-bottom: 4px;
+      }
+
+      .title-i-work {
+        font-size: 3rem;
+      }
+
+      .section-subtitle {
+        text-align: left;
+        font-size: 1rem;
+      }
+
+      .cards-container {
+        grid-template-columns: 1fr; 
+        gap: 16px;
+      }
+
+      .how-card {
+        height: 280px; 
+      }
+      
+      .how-card h2 {
+        font-size: 1.3rem;
+        bottom: 20px;
+        left: 20px;
+      }
+
+      .how-card h2 span {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="how-i-work-section">
+    
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="title-how">How</span>
+        <span class="title-i-work">I Work</span>
+      </h2>
+    </div>
+
+    <div class="cards-container">
+      
+      <div class="how-card">
+        <lottie-player 
+          src="/Animated Dashboards.json" 
+          background="transparent" 
+          speed="1" 
+          loop autoplay 
+          class="lottie-bg">
+        </lottie-player>
+        <h2><span>Step 1</span> Research</h2>
+      </div>
+
+      <div class="how-card">
+        <lottie-player 
+          src="/animation.json" 
+          background="transparent" 
+          speed="1" 
+          loop autoplay 
+          class="lottie-bg">
+        </lottie-player>
+        <h2><span>Step 2</span> Structure</h2>
+      </div>
+
+      <div class="how-card">
+        <lottie-player 
+          src="Animated Dashboards.json" 
+          background="transparent" 
+          speed="1" 
+          loop autoplay 
+          class="lottie-bg">
+        </lottie-player>
+        <h2><span>Step 3</span> Design</h2>
+      </div>
+
+      <div class="how-card">
+        <lottie-player 
+          src="/animation.json" 
+          background="transparent" 
+          speed="1" 
+          loop autoplay 
+          class="lottie-bg">
+        </lottie-player>
+        <h2><span>Step 4</span> Built</h2>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", (event) => {
+      // Register the ScrollTrigger plugin
+      gsap.registerPlugin(ScrollTrigger);
+
+      // 1. Animate Header Elements
+      const tlHeader = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".how-i-work-section",
+          start: "top 80%", // Triggers when the top of the section hits 80% of the viewport height
+          toggleActions: "play none none none"
+        }
+      });
+
+      tlHeader.from(".title-how", {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out"
+      })
+      .from(".title-i-work", {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out"
+      }, "-=0.6"); // Starts slightly before the previous animation ends
+
+      // 2. Animate Cards with a Stagger
+      gsap.from(".how-card", {
+        scrollTrigger: {
+          trigger: ".cards-container",
+          start: "top 85%", // Triggers when the top of the cards container hits 85% of viewport
+          toggleActions: "play none none none"
+        },
+        y: 80,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.2, // 0.2 seconds between each card animating in
+        ease: "power3.out",
+        clearProps: "all" // Clears GSAP styles after animation so hover transforms work perfectly
+      });
+    });
+  </script>
+
+</body>
+</html>

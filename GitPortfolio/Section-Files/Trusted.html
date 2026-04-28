@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trusted Brands</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #fff;
+    color: #111;
+  }
+
+  /* ── Section ── */
+  .brands-section {
+    padding: 3.5rem 1rem;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .brands-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 0.6rem;
+  }
+
+  .brands-heading {
+    font-size: clamp(1.25rem, 5vw, 1.75rem);
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 0.4rem;
+    line-height: 1.3;
+  }
+
+  .brands-sub {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 2.5rem;
+  }
+
+  /* ── Marquee track ── */
+  .track-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  /* Fade edges */
+  .track-wrapper::before,
+  .track-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 60px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .track-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, #fff, transparent);
+  }
+  .track-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, #fff, transparent);
+  }
+
+  .track {
+    display: flex;
+    gap: 0;
+    width: max-content;
+    animation: scroll-left 22s linear infinite;
+  }
+  .track:hover { animation-play-state: paused; }
+
+  .track-row-2 {
+    animation: scroll-right 26s linear infinite;
+    margin-top: 12px;
+  }
+  .track-row-2:hover { animation-play-state: paused; }
+
+  @keyframes scroll-left {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @keyframes scroll-right {
+    from { transform: translateX(-50%); }
+    to   { transform: translateX(0); }
+  }
+
+  /* ── Logo pill ── */
+  .logo-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    margin: 0 8px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    cursor: default;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .logo-pill:hover {
+    border-color: #c9cbd0;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  }
+
+  .logo-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .logo-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-num {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  /* ── Dark mode ── */
+  @media (prefers-color-scheme: dark) {
+    body { background: #0a0a0a; color: #f1f1f1; }
+    .brands-eyebrow { color: #666; }
+    .brands-heading { color: #f1f1f1; }
+    .brands-sub { color: #888; }
+    .track-wrapper::before { background: linear-gradient(to right, #0a0a0a, transparent); }
+    .track-wrapper::after  { background: linear-gradient(to left,  #0a0a0a, transparent); }
+    .logo-pill { background: #111; border-color: #2a2a2a; }
+    .logo-pill:hover { border-color: #444; box-shadow: none; }
+    .logo-name { color: #e5e5e5; }
+    .stat-num { color: #f1f1f1; }
+    .stat-label { color: #666; }
+  }
+</style>
+</head>
+<body>
+
+<section class="brands-section" aria-label="Trusted by leading companies">
+  <p class="brands-eyebrow">Trusted by the best</p>
+  <h2 class="brands-heading">Powering teams at 500+ companies</h2>
+  <p class="brands-sub">From early-stage startups to Fortune 500 enterprises</p>
+
+  <div class="track-wrapper">
+    <div class="track" id="row1"></div>
+  </div>
+  <div class="track-wrapper">
+    <div class="track track-row-2" id="row2"></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-item"><span class="stat-num">500+</span><span class="stat-label">Companies</span></div>
+    <div class="stat-item"><span class="stat-num">99.9%</span><span class="stat-label">Uptime SLA</span></div>
+    <div class="stat-item"><span class="stat-num">2M+</span><span class="stat-label">Users served</span></div>
+  </div>
+</section>
+
+<script>
+  const brands1 = [
+    { name: "Stripe",   bg: "#635BFF", letter: "S" },
+    { name: "Notion",   bg: "#000000", letter: "N" },
+    { name: "Vercel",   bg: "#111111", letter: "V" },
+    { name: "Linear",   bg: "#5E6AD2", letter: "L" },
+    { name: "Figma",    bg: "#F24E1E", letter: "F" },
+    { name: "Slack",    bg: "#4A154B", letter: "S" },
+    { name: "GitHub",   bg: "#24292F", letter: "G" },
+    { name: "Shopify",  bg: "#96BF48", letter: "S" },
+  ];
+
+  const brands2 = [
+    { name: "Loom",     bg: "#625DF5", letter: "L" },
+    { name: "Intercom", bg: "#1F8DED", letter: "I" },
+    { name: "Twilio",   bg: "#F22F46", letter: "T" },
+    { name: "Dropbox",  bg: "#0061FF", letter: "D" },
+    { name: "Airtable", bg: "#FCB400", letter: "A" },
+    { name: "Webflow",  bg: "#4353FF", letter: "W" },
+    { name: "Framer",   bg: "#0099F7", letter: "F" },
+    { name: "Retool",   bg: "#3D3D3D", letter: "R" },
+  ];
+
+  function buildPill({ name, bg, letter }) {
+    return `<div class="logo-pill" role="img" aria-label="${name}">
+      <div class="logo-icon" style="background:${bg};">${letter}</div>
+      <span class="logo-name">${name}</span>
+    </div>`;
+  }
+
+  function fillTrack(id, list) {
+    const el = document.getElementById(id);
+    // Duplicate twice so the loop is truly seamless at -50%
+    const html = [...list, ...list].map(buildPill).join('');
+    el.innerHTML = html + html;
+  }
+
+  fillTrack('row1', brands1);
+  fillTrack('row2', brands2);
+</script>
+</body>
+</html>

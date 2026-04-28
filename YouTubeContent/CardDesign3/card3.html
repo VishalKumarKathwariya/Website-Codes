@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Options Cards | Layered Design</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, Arial, sans-serif;
+    background: #eef2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+  }
+
+  /* responsive cards grid */
+  .cards-wrap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem 2.2rem;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    overflow: visible;
+  }
+
+  /* tablet layout */
+  @media (max-width: 960px) {
+    .cards-wrap {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem 2rem;
+    }
+    body {
+      padding: 2rem 1.5rem;
+    }
+  }
+
+  /* mobile layout */
+  @media (max-width: 580px) {
+    .cards-wrap {
+      grid-template-columns: 1fr;
+      gap: 2.8rem;
+    }
+    body {
+      padding: 1.8rem 1.2rem;
+    }
+  }
+
+  /* card container — relative anchor for absolute decorative layers */
+  .card-outer {
+    position: relative;
+    display: flex;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* ensures no clipping for protruding elements */
+    overflow: visible;
+  }
+
+  /* DECORATIVE LAYER 1: top-left bordered card (outside the white card) */
+  .card-border {
+    position: absolute;
+    top: -14px;
+    left: -14px;
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
+    border-radius: 18px;
+    background: transparent;
+    z-index: 1;
+    pointer-events: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+  }
+
+  /* DECORATIVE LAYER 2: bottom-right full coloured card (outside white card) */
+  .card-bg {
+    position: absolute;
+    bottom: -14px;
+    right: -14px;
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
+    border-radius: 18px;
+    z-index: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+  }
+
+  /* main white content card — sits on top, elevated */
+  .card-main {
+    position: relative;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 28px 22px 26px;
+    z-index: 3;
+    width: 100%;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+    transition: all 0.25s ease;
+    -webkit-backdrop-filter: blur(0px);
+    backdrop-filter: blur(0px);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+
+  /* subtle hover lift for interactivity */
+  .card-outer:hover .card-main {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-outer:hover .card-bg {
+    transform: scale(1.02);
+    filter: brightness(0.98);
+  }
+
+  .card-outer:hover .card-border {
+    transform: scale(1.01);
+  }
+
+  /* icon styling */
+  .card-icon {
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .card-icon svg {
+    width: 38px;
+    height: 38px;
+    transition: transform 0.2s;
+  }
+
+  .card-outer:hover .card-icon svg {
+    transform: scale(1.02);
+  }
+
+  /* typography */
+  .card-title {
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 12px 0;
+    font-family: inherit;
+  }
+
+  .card-text {
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: #5a6874;
+    font-weight: 450;
+    word-break: break-word;
+  }
+
+  /* ========== COLOUR THEMES ========== */
+  /* Card 1 - Green */
+  .card1 .card-bg {
+    background: #6abf4b;
+    box-shadow: 0 12px 22px rgba(106, 191, 75, 0.25);
+  }
+  .card1 .card-border {
+    border: 2.8px solid #6abf4b;
+    box-shadow: 0 4px 12px rgba(106, 191, 75, 0.2);
+  }
+  .card1 .card-title {
+    color: #4c9c2e;
+  }
+  .card1 .ip {
+    stroke: #6abf4b;
+  }
+
+  /* Card 2 - Teal */
+  .card2 .card-bg {
+    background: #2abfb0;
+    box-shadow: 0 12px 22px rgba(42, 191, 176, 0.25);
+  }
+  .card2 .card-border {
+    border: 2.8px solid #2abfb0;
+    box-shadow: 0 4px 12px rgba(42, 191, 176, 0.2);
+  }
+  .card2 .card-title {
+    color: #1f9e90;
+  }
+  .card2 .ip {
+    stroke: #2abfb0;
+  }
+
+  /* Card 3 - Deep Blue */
+  .card3 .card-bg {
+    background: #2060a8;
+    box-shadow: 0 12px 22px rgba(32, 96, 168, 0.25);
+  }
+  .card3 .card-border {
+    border: 2.8px solid #2060a8;
+    box-shadow: 0 4px 12px rgba(32, 96, 168, 0.2);
+  }
+  .card3 .card-title {
+    color: #184a82;
+  }
+  .card3 .ip {
+    stroke: #2060a8;
+  }
+
+  /* Card 4 - Orange */
+  .card4 .card-bg {
+    background: #f07a2a;
+    box-shadow: 0 12px 22px rgba(240, 122, 42, 0.25);
+  }
+  .card4 .card-border {
+    border: 2.8px solid #f07a2a;
+    box-shadow: 0 4px 12px rgba(240, 122, 42, 0.2);
+  }
+  .card4 .card-title {
+    color: #d45f1a;
+  }
+  .card4 .ip {
+    stroke: #f07a2a;
+  }
+
+  /* all SVG icons inherit stroke */
+  .ip {
+    stroke-width: 2.2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.2s;
+  }
+
+  /* responsive font & spacing refinements */
+  @media (max-width: 700px) {
+    .card-main {
+      padding: 22px 18px 20px;
+    }
+    .card-title {
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+    .card-text {
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+    .card-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+    .card-border {
+      top: -10px;
+      left: -10px;
+      width: calc(100% - 20px);
+      height: calc(100% - 20px);
+      border-radius: 16px;
+    }
+    .card-bg {
+      bottom: -10px;
+      right: -10px;
+      width: calc(100% - 20px);
+      height: calc(100% - 20px);
+      border-radius: 16px;
+    }
+  }
+
+  /* extra small devices: keep proportions */
+  @media (max-width: 480px) {
+    .card-main {
+      padding: 20px 16px 18px;
+    }
+    .card-text {
+      font-size: 0.78rem;
+    }
+    .card-border {
+      top: -8px;
+      left: -8px;
+      width: calc(100% - 16px);
+      height: calc(100% - 16px);
+      border-width: 2.2px;
+    }
+    .card-bg {
+      bottom: -8px;
+      right: -8px;
+      width: calc(100% - 16px);
+      height: calc(100% - 16px);
+    }
+  }
+
+  /* ensure no overflow issues on narrow containers */
+  .cards-wrap,
+  .card-outer,
+  .card-main {
+    overflow: visible;
+  }
+
+  /* optional: subtle background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 10% 20%, rgba(220, 230, 240, 0.4), transparent);
+    pointer-events: none;
+    z-index: -1;
+  }
+</style>
+</head>
+<body>
+
+<div class="cards-wrap">
+
+  <!-- CARD 1 - OPTIONS 01 -->
+  <div class="card-outer card1">
+    <div class="card-bg"></div>
+    <div class="card-border"></div>
+    <div class="card-main">
+      <div class="card-icon">
+        <svg width="38" height="38" viewBox="0 0 30 30" fill="none">
+          <circle cx="13" cy="13" r="8.5" class="ip" stroke-width="2" />
+          <line x1="19.5" y1="19.5" x2="27" y2="27" class="ip" stroke-width="2" />
+        </svg>
+      </div>
+      <p class="card-title">Options 01</p>
+      <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+
+  <!-- CARD 2 - OPTIONS 02 -->
+  <div class="card-outer card2">
+    <div class="card-bg"></div>
+    <div class="card-border"></div>
+    <div class="card-main">
+      <div class="card-icon">
+        <svg width="38" height="38" viewBox="0 0 30 30" fill="none">
+          <path d="M15 3C9.5 3 6 7.5 6 12c0 3.5 2.5 6.5 6 7.5V23h6v-3.5c3.5-1 6-4 6-7.5C24 7.5 20.5 3 15 3Z" class="ip" stroke-width="2" />
+          <line x1="12" y1="24.5" x2="18" y2="24.5" class="ip" stroke-width="2" />
+          <line x1="13" y1="27"   x2="17" y2="27"   class="ip" stroke-width="2" />
+        </svg>
+      </div>
+      <p class="card-title">Options 02</p>
+      <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+
+  <!-- CARD 3 - OPTIONS 03 -->
+  <div class="card-outer card3">
+    <div class="card-bg"></div>
+    <div class="card-border"></div>
+    <div class="card-main">
+      <div class="card-icon">
+        <svg width="38" height="38" viewBox="0 0 30 30" fill="none">
+          <circle cx="15" cy="15" r="11" class="ip" stroke-width="2" />
+          <circle cx="15" cy="15" r="6"  class="ip" stroke-width="2" />
+          <circle cx="15" cy="15" r="2"  class="ip" stroke-width="2" />
+          <line x1="15" y1="4"   x2="15" y2="7.5" class="ip" stroke-width="2" />
+          <line x1="23" y1="8.5" x2="21" y2="11"  class="ip" stroke-width="2" />
+        </svg>
+      </div>
+      <p class="card-title">Options 03</p>
+      <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+
+  <!-- CARD 4 - OPTIONS 04 -->
+  <div class="card-outer card4">
+    <div class="card-bg"></div>
+    <div class="card-border"></div>
+    <div class="card-main">
+      <div class="card-icon">
+        <svg width="38" height="38" viewBox="0 0 30 30" fill="none">
+          <polygon points="15,3 18.5,11 27,11.5 21,17.5 23,26 15,21.5 7,26 9,17.5 3,11.5 11.5,11" class="ip" stroke-width="2" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <p class="card-title">Options 04</p>
+      <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

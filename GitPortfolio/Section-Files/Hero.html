@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vishal – Developer Hero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #0a1628;
+      --navy-mid:    #122040;
+      --navy-light:  #1a3057;
+      --gold:        #b8902e;
+      --gold-light:  #d4a94a;
+      --gold-dim:    rgba(184,144,46,.12);
+      --white:       #ffffff;
+      --bg:          #f5f4f0;
+      --text-main:   #0d1b35;
+      --text-muted:  #6b7a92;
+      --border:      rgba(13,27,53,.10);
+      --grid-line:   rgba(13,27,53,.07);
+    }
+
+    html, body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero {
+      width: 100%;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 52% 48%;
+      background: var(--bg);
+      position: relative;
+    }
+
+    /* subtle grid lines */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none; z-index: 0;
+    }
+    /* dot intersections */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(13,27,53,.13) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none; z-index: 0;
+    }
+
+    .hero-bg-fade {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% 50%,
+        rgba(245,244,240,.78) 0%, rgba(245,244,240,.15) 65%, transparent 100%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ══════════════════════════════════════
+       LEFT PANEL
+    ══════════════════════════════════════ */
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 5% 4rem 8%;
+      position: relative;
+      z-index: 1;
+      animation: fadeInLeft .75s ease .1s both;
+    }
+
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* left gold bar */
+    .hero-left::after {
+      content: '';
+      position: absolute; left: 0; top: 22%; bottom: 22%;
+      width: 3px;
+      background: linear-gradient(to bottom, transparent, var(--gold) 35%, var(--gold) 65%, transparent);
+      border-radius: 0 2px 2px 0;
+    }
+    /* right divider */
+    .hero-left::before {
+      content: '';
+      position: absolute; right: 0; top: 12%; bottom: 12%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--border) 30%, var(--border) 70%, transparent);
+    }
+
+    /* ── Sub-label ── */
+    .sub-label {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .67rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--text-muted); font-weight: 600;
+      margin-bottom: .75rem;
+      opacity: 0; animation: fadeUp .5s ease .3s forwards;
+    }
+    .sub-label::before {
+      content: ''; display: block;
+      width: 22px; height: 1.5px;
+      background: var(--gold); border-radius: 2px;
+    }
+
+    /* ── Headline ── */
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.85rem, 3.4vw, 3rem);
+      font-weight: 900;
+      line-height: 1.13;
+      color: var(--text-main);
+      letter-spacing: -.01em;
+      margin-bottom: .85rem;
+      opacity: 0; animation: fadeUp .6s ease .4s forwards;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--gold);
+      position: relative;
+    }
+    h1 em::after {
+      content: '';
+      position: absolute; bottom: -1px; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light), transparent);
+      border-radius: 2px;
+    }
+
+    /* ── Description ── */
+    .hero-desc {
+      font-size: clamp(.8rem, 1.05vw, .9rem);
+      line-height: 1.8;
+      color: var(--text-muted);
+      max-width: 400px;
+      margin-bottom: 1.7rem;
+      font-weight: 400;
+      opacity: 0; animation: fadeUp .6s ease .5s forwards;
+    }
+    .hero-desc strong { color: var(--navy-mid); font-weight: 600; }
+
+  
+    /* ── CTA ── */
+    .actions {
+      display: flex; gap: .85rem;
+      opacity: 0; animation: fadeUp .6s ease .72s forwards;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: .55rem;
+      padding: .85rem 2.1rem;
+      background: var(--navy);
+      color: var(--white);
+      font-size: .8rem; font-weight: 700;
+      letter-spacing: .07em; text-transform: uppercase;
+      border: none; border-radius: 3px; cursor: pointer;
+      transition: all .22s;
+      box-shadow: 0 6px 24px rgba(13,27,53,.22);
+      position: relative; overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute; top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+      transition: left .4s ease;
+    }
+    .btn-primary:hover::after { left: 150%; }
+    .btn-primary:hover {
+      background: var(--navy-mid);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(13,27,53,.3);
+    }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .85rem 1.5rem;
+      background: transparent;
+      color: var(--navy);
+      font-size: .8rem; font-weight: 600;
+      letter-spacing: .05em; text-transform: uppercase;
+      border: 1px solid var(--border);
+      border-radius: 3px; cursor: pointer;
+      transition: all .22s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: var(--gold-dim);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════════════════
+       RIGHT PANEL
+    ══════════════════════════════════════ */
+    .hero-right {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 6%;
+      overflow: hidden;
+      z-index: 1;
+      animation: fadeInRight .75s ease .15s both;
+    }
+
+    @keyframes fadeInRight {
+      from { opacity: 0; transform: translateX(28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ── Developer SVG pattern fills the right panel bg ── */
+    .dev-pattern {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Floating code snippet cards ── */
+    .code-card {
+      position: absolute;
+      background: rgba(10,22,40,.91);
+      border: 1px solid rgba(184,144,46,.28);
+      border-radius: 6px;
+      padding: .7rem 1rem;
+      font-family: 'Space Mono', monospace;
+      font-size: .56rem;
+      line-height: 1.75;
+      color: rgba(255,255,255,.55);
+      white-space: pre;
+      box-shadow: 0 8px 28px rgba(10,22,40,.22);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .code-card .kw  { color: #79c0ff; }
+    .code-card .fn  { color: var(--gold-light); }
+    .code-card .str { color: #a5d6a7; }
+    .code-card .cm  { color: rgba(255,255,255,.28); font-style: italic; }
+    .code-card .pu  { color: rgba(255,255,255,.5); }
+
+    .code-card.cc1 {
+      top: 8%; left: 4%;
+      animation: floatY 5s ease-in-out infinite;
+    }
+    .code-card.cc2 {
+      bottom: 10%; right: 3%;
+      animation: floatY 6.5s 1.5s ease-in-out infinite;
+    }
+    .code-card.cc3 {
+      top: 52%; left: 2%;
+      animation: floatY 4.5s .8s ease-in-out infinite;
+    }
+
+    @keyframes floatY {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+
+    /* ── Photo card ── */
+    .photo-card {
+      position: relative;
+      width: min(280px, 80%);
+      z-index: 3;
+    }
+
+    .photo-frame {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(13,27,53,.12);
+      box-shadow:
+        0 24px 60px rgba(13,27,53,.18),
+        0 4px 16px rgba(13,27,53,.1);
+      background: #c8cdd8;
+    }
+    lottie-player {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    /* corner bracket accents */
+    .photo-card::before {
+      content: '';
+      position: absolute; top: -10px; left: -10px;
+      width: 40px; height: 40px;
+      border-top: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);
+      border-radius: 2px 0 0 0; z-index: 4;
+    }
+    .photo-card::after {
+      content: '';
+      position: absolute; bottom: -10px; right: -10px;
+      width: 40px; height: 40px;
+      border-bottom: 2px solid var(--gold);
+      border-right: 2px solid var(--gold);
+      border-radius: 0 0 2px 0; z-index: 4;
+    }
+
+    /* radial glow beneath the photo */
+    .photo-glow {
+      position: absolute;
+      width: 75%; height: 55%;
+      background: radial-gradient(ellipse, rgba(184,144,46,.12) 0%, transparent 70%);
+      bottom: 8%; left: 50%; transform: translateX(-50%);
+      pointer-events: none; z-index: 0;
+      filter: blur(30px);
+    }
+
+    /* ── Floating badges (like advocate hero) ── */
+    .float-badge {
+      position: absolute;
+      background: rgba(255,255,255,.95);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: .48rem .95rem;
+      display: flex; align-items: center; gap: .45rem;
+      box-shadow: 0 6px 20px rgba(13,27,53,.1);
+      font-size: .7rem; font-weight: 500;
+      z-index: 5; white-space: nowrap;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    .float-badge.badge-top {
+      top: 8%; right: -32px;
+      animation: floatBadge 3.5s ease-in-out infinite;
+    }
+    .float-badge.badge-bot {
+      bottom: 14%; left: -32px;
+      animation: floatBadge 3.5s 1.2s ease-in-out infinite;
+    }
+    @keyframes floatBadge {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-7px); }
+    }
+
+    .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .dot-green { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .dot-gold  { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+
+    /* ── Name plate ── */
+    .name-plate {
+      margin-top: 1.2rem;
+      text-align: center;
+      opacity: 0; animation: fadeUp .6s ease 1s forwards;
+      z-index: 3;
+    }
+    .name-plate h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--text-main);
+    }
+    .name-plate p {
+      font-size: .6rem; letter-spacing: .09em;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-top: .3rem;
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* ══════════════════════════════════════
+       TABLET  768px – 1023px
+    ══════════════════════════════════════ */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .hero { grid-template-columns: 1fr; grid-template-rows: auto auto; min-height: 100vh; }
+      .hero-right { order: 1; padding: 3.5rem 8% 2rem; min-height: 55vh; }
+      .photo-card { width: min(260px, 55%); }
+      .float-badge.badge-top { right: calc(8% - 28px); animation: none; }
+      .float-badge.badge-bot { left:  calc(8% - 28px); animation: none; }
+      .code-card.cc1 { top: 6%; left: 5%; }
+      .code-card.cc2 { bottom: 8%; right: 4%; }
+      .code-card.cc3 { display: none; }
+      .hero-left { order: 2; justify-content: flex-start; padding: 2rem 8% 3.5rem; }
+      .hero-left::after  { display: none; }
+      .hero-left::before { display: none; }
+      h1 { font-size: clamp(1.7rem, 4.2vw, 2.6rem); }
+      .hero-desc { max-width: 100%; font-size: .88rem; }
+      .stats { max-width: 100%; }
+      .stat { padding: .85rem .75rem; }
+      .stat-num { font-size: clamp(1.25rem, 2.8vw, 1.65rem); }
+      .stack-row { max-width: 100%; }
+      .actions { width: 100%; }
+      .btn-primary, .btn-secondary { flex: 1; justify-content: center; }
+    }
+
+    /* ══════════════════════════════════════
+       MOBILE  ≤ 767px
+    ══════════════════════════════════════ */
+    @media (max-width: 767px) {
+      .hero { grid-template-columns: 1fr; grid-template-rows: auto auto; min-height: 100vh; }
+      .hero-right { order: 1; padding: 3.5rem 6% 2rem; min-height: 52vh; }
+      .photo-card { width: min(220px, 62vw); }
+      .float-badge { font-size: .62rem; padding: .38rem .7rem; }
+      .float-badge.badge-top { top: 8%;  right: calc(6% - 24px); animation: none; }
+      .float-badge.badge-bot { bottom: 12%; left: calc(6% - 24px); animation: none; }
+      .code-card.cc1 { top: 4%; left: 2%; font-size: .5rem; }
+      .code-card.cc2 { bottom: 5%; right: 1%; font-size: .5rem; }
+      .code-card.cc3 { display: none; }
+      .name-plate h3 { font-size: .92rem; }
+      .name-plate p  { font-size: .57rem; }
+      .hero-left { order: 2; justify-content: center; padding: 2.2rem 6% 3rem; }
+      .hero-left::after  { display: none; }
+      .hero-left::before { display: none; }
+      h1 { font-size: clamp(1.55rem, 6.5vw, 2.1rem); margin: auto; text-align: center; }
+      .hero-desc { font-size: .84rem; max-width: 100%; margin-bottom: 1.3rem; }
+      .stats { max-width: 100%; margin-bottom: 1.4rem; }
+      .stat { padding: .75rem .5rem; }
+      .stat-num { font-size: 1.2rem; }
+      .stat-lbl  { font-size: .54rem; }
+      .stack-row { margin-bottom: 1.3rem; }
+      .actions { width: 100%; flex-direction: column; }
+      .btn-primary, .btn-secondary { width: 100%; justify-content: center; padding: .9rem 1.5rem; }
+    }
+
+    /* ══════════════════════════════════════
+       SMALL MOBILE  ≤ 420px
+    ══════════════════════════════════════ */
+    @media (max-width: 420px) {
+      .photo-card { width: min(190px, 68vw); }
+      .float-badge { font-size: .58rem; padding: .32rem .6rem; }
+      .float-badge.badge-top { right: 4%; }
+      .float-badge.badge-bot { left: 4%; }
+      h1 { font-size: clamp(1.4rem, 7vw, 1.8rem); }
+      .stat { padding: .65rem .4rem; }
+      .stat-num { font-size: 1.05rem; }
+      .stat-lbl  { font-size: .5rem; letter-spacing: .04em; }
+      .code-card { display: none; }
+    }
+
+    /* ══════════════════════════════════════
+       LARGE DESKTOP  ≥ 1400px
+    ══════════════════════════════════════ */
+    @media (min-width: 1400px) {
+      .hero-left  { padding: 5rem 6% 5rem 10%; }
+      h1 { font-size: 3.3rem; }
+      .photo-card { width: min(340px, 70%); }
+      .hero-desc  { font-size: .95rem; max-width: 440px; }
+      .stats      { max-width: 440px; }
+      .stack-row  { max-width: 440px; }
+      .float-badge.badge-top { right: -40px; }
+      .float-badge.badge-bot { left:  -40px; }
+    }
+
+    @media (min-width: 1800px) {
+      .photo-card { width: min(400px, 65%); }
+    }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+
+  <div class="hero-bg-fade"></div>
+
+  <!-- ══════════ LEFT ══════════ -->
+  <div class="hero-left">
+
+    <span class="sub-label">Full Stack Developer Associate</span>
+
+    <h1>
+      Building Ideas Into<br/>
+      <em>Elegant</em> Digital<br/>
+      Experiences
+    </h1>
+
+    <p class="hero-desc">
+      Turning complex problems into clean, scalable solutions with
+      <strong>React, Node.js, TypeScript &amp; PostgreSQL</strong> — crafted
+      with purpose, shipped with precision. Available for freelance &amp; full-time opportunities.
+    </p>
+
+    <div class="actions">
+      <button class="btn-primary">
+        <!-- Download icon -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download Resume
+      </button>
+      <button class="btn-secondary">
+        <!-- Arrow icon -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+        View Projects
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ══════════ RIGHT ══════════ -->
+  <div class="hero-right">
+
+    <!-- Developer SVG Pattern Background -->
+    <svg class="dev-pattern" viewBox="0 0 500 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="micro-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+          <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(13,27,53,.05)" stroke-width=".7"/>
+        </pattern>
+        <pattern id="micro-dots" width="15" height="15" patternUnits="userSpaceOnUse">
+          <circle cx="7.5" cy="7.5" r="1" fill="rgba(13,27,53,.07)"/>
+        </pattern>
+        <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#b8902e" stop-opacity=".25"/>
+          <stop offset="100%" stop-color="#b8902e" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="softGlow">
+          <feGaussianBlur stdDeviation="2.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- base textures -->
+      <rect width="500" height="900" fill="url(#micro-grid)"/>
+      <rect x="60"  y="180" width="120" height="90"  fill="url(#micro-dots)" opacity=".7"/>
+      <rect x="310" y="400" width="100" height="100" fill="url(#micro-dots)" opacity=".7"/>
+      <rect x="80"  y="620" width="90"  height="80"  fill="url(#micro-dots)" opacity=".7"/>
+
+      <!-- ─── Circuit board traces ─── -->
+      <g stroke="rgba(13,27,53,.12)" stroke-width="1.5" fill="none" stroke-linecap="round">
+        <!-- top-left cluster -->
+        <polyline points="20,80  80,80  80,130 160,130 160,170 240,170"/>
+        <polyline points="20,140 60,140 60,200 120,200 120,250 200,250"/>
+        <!-- mid traces -->
+        <polyline points="20,340 90,340 90,290 180,290 180,330 300,330"/>
+        <polyline points="20,440 100,440 100,400 200,400 200,460 320,460"/>
+        <!-- right-side traces -->
+        <polyline points="480,60  400,60  400,120 330,120 330,170"/>
+        <polyline points="480,200 420,200 420,260 360,260 360,300 300,300"/>
+        <polyline points="480,380 430,380 430,440 370,440 370,480 310,480"/>
+        <polyline points="480,560 440,560 440,610 380,610 380,650 310,650"/>
+        <!-- bottom cluster -->
+        <polyline points="20,600 80,600 80,660 170,660 170,700 280,700"/>
+        <polyline points="20,720 110,720 110,770 250,770"/>
+        <polyline points="20,820 200,820 200,850 400,850"/>
+        <!-- vertical connectors -->
+        <line x1="240" y1="130" x2="240" y2="170"/>
+        <line x1="300" y1="290" x2="300" y2="330"/>
+        <line x1="330" y1="120" x2="330" y2="170"/>
+      </g>
+
+      <!-- ─── Circuit nodes ─── -->
+      <g fill="rgba(13,27,53,.18)" filter="url(#softGlow)">
+        <!-- filled dots -->
+        <circle cx="80"  cy="80"  r="3.5"/>
+        <circle cx="160" cy="130" r="3.5"/>
+        <circle cx="60"  cy="140" r="3.5"/>
+        <circle cx="120" cy="200" r="3.5"/>
+        <circle cx="90"  cy="340" r="3.5"/>
+        <circle cx="180" cy="290" r="3.5"/>
+        <circle cx="100" cy="440" r="3.5"/>
+        <circle cx="200" cy="400" r="3.5"/>
+        <circle cx="400" cy="60"  r="3.5"/>
+        <circle cx="330" cy="120" r="3.5"/>
+        <circle cx="420" cy="200" r="3.5"/>
+        <circle cx="360" cy="260" r="3.5"/>
+        <circle cx="430" cy="380" r="3.5"/>
+        <circle cx="370" cy="440" r="3.5"/>
+        <circle cx="440" cy="560" r="3.5"/>
+        <circle cx="380" cy="610" r="3.5"/>
+        <circle cx="80"  cy="600" r="3.5"/>
+        <circle cx="170" cy="660" r="3.5"/>
+        <circle cx="110" cy="720" r="3.5"/>
+        <circle cx="200" cy="820" r="3.5"/>
+      </g>
+      <!-- hollow nodes (larger, endpoint markers) -->
+      <g fill="none" stroke="rgba(184,144,46,.45)" stroke-width="1.5">
+        <circle cx="240" cy="170" r="5.5"/>
+        <circle cx="200" cy="250" r="5.5"/>
+        <circle cx="300" cy="330" r="5.5"/>
+        <circle cx="320" cy="460" r="5.5"/>
+        <circle cx="280" cy="700" r="5.5"/>
+        <circle cx="250" cy="770" r="5.5"/>
+        <circle cx="400" cy="850" r="5.5"/>
+      </g>
+      <!-- gold glow blobs on key nodes -->
+      <circle cx="240" cy="170" r="22" fill="url(#nodeGlow)" opacity=".7"/>
+      <circle cx="300" cy="330" r="22" fill="url(#nodeGlow)" opacity=".6"/>
+      <circle cx="320" cy="460" r="22" fill="url(#nodeGlow)" opacity=".5"/>
+
+      <!-- ─── Code symbols scattered ─── -->
+      <g font-family="'Space Mono',monospace" fill="rgba(13,27,53,.13)" font-size="13">
+        <text x="38"  y="55">{ }</text>
+        <text x="290" y="90">&lt;/&gt;</text>
+        <text x="140" y="390">( )</text>
+        <text x="380" y="340">[ ]</text>
+        <text x="50"  y="510">=&gt;</text>
+        <text x="270" y="590">{ }</text>
+        <text x="65"  y="790">&lt;/&gt;</text>
+        <text x="380" y="730">=&gt;</text>
+        <text x="200" y="480">fn()</text>
+        <text x="340" y="180">/**</text>
+      </g>
+
+      <!-- ─── Binary rain strips ─── -->
+      <g font-family="monospace" font-size="7" fill="rgba(13,27,53,.08)">
+        <text x="10"  y="260">01001</text>
+        <text x="10"  y="270">10110</text>
+        <text x="10"  y="280">01101</text>
+        <text x="460" y="490">11010</text>
+        <text x="460" y="500">00101</text>
+        <text x="460" y="510">10011</text>
+        <text x="10"  y="870">01110</text>
+        <text x="10"  y="880">10001</text>
+      </g>
+    </svg>
+
+    <!-- Floating code cards -->
+    <div class="code-card cc1"><span class="kw">const</span> <span class="fn">Vishal</span> <span class="pu">= {</span>
+  role<span class="pu">:</span> <span class="str">'Full Stack Dev'</span><span class="pu">,</span>
+  open<span class="pu">:</span> <span class="kw">true</span><span class="pu">,</span>
+<span class="pu">};</span></div>
+
+    <div class="code-card cc2"><span class="cm">// latest commit</span>
+<span class="fn">git</span> commit <span class="pu">-m</span>
+  <span class="str">"feat: ship hero 🚀"</span></div>
+
+    <div class="code-card cc3"><span class="kw">async</span> <span class="fn">function</span> build<span class="pu">() {</span>
+  <span class="kw">await</span> ideas<span class="pu">.</span><span class="fn">compile</span><span class="pu">();</span>
+  <span class="kw">return</span> <span class="str">'production'</span><span class="pu">;</span>
+<span class="pu">}</span></div>
+
+    <div class="photo-glow"></div>
+
+    <!-- Photo card -->
+    <div class="photo-card">
+      <div class="float-badge badge-top">
+        <span class="dot dot-green"></span>Open to Work
+      </div>
+      <div class="float-badge badge-bot">
+        <span class="dot dot-gold"></span>Full Stack Certified
+      </div>
+      <div class="photo-frame">
+        <!-- Replace src with your actual photo -->
+        <lottie-player 
+          src="/Developer 01 - Whoooa!.json" 
+          background="transparent" 
+          speed="1" 
+          loop autoplay 
+          class="lottie-bg">
+        </lottie-player>
+      </div>
+    </div>
+
+    <!-- Name plate -->
+    <div class="name-plate">
+      <h3>Vishal</h3>
+      <p>React · Node.js · TypeScript · Cloud</p>
+    </div>
+
+  </div>
+
+</section>
+
+</body>
+</html>

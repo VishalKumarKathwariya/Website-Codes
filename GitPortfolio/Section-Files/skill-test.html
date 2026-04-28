@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skill-Test</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-1: #0b1012;
+      --bg-2: #0f1a1e;
+      --bg-3: #121e22;
+      --accent: #7c6dfa;
+      --accent-dim: #2aa878;
+      --accent-tint: #0d2820;
+      --accent-tint2: #091f18;
+      --text-heading: #e8f4f0;
+      --text-body: #7a9b94;
+      --text-muted: #3d5c55;
+      --border: #1d3530;
+      --border-light: rgba(68,217,162,0.12);
+      --sk-nav-w: 280px;
+      --radius-sm: 5px;
+      --radius-md: 12px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "IBM Plex Sans", sans-serif;
+      background: var(--bg-1);
+      color: var(--text-body);
+      overflow-x: hidden;
+    }
+
+    /* ══ NOISE TEXTURE overlay ══ */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ════════════════════════════════════
+       SKILLS SECTION
+    ════════════════════════════════════ */
+    .skills-section {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: var(--bg-3);
+      min-height: 100vh;
+    }
+
+    /* ── Mobile / Tablet Nav (top bar) ─── */
+    .skills-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      background: rgba(11,16,18,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      -ms-overflow-style: none;
+    }
+    .skills-nav::-webkit-scrollbar { display: none; }
+
+    .nav-label { display: none; }
+    .nav-snake { display: none; }
+
+    .nav-items-wrap { display: flex; flex-direction: row; width: 100%; }
+
+    .nav-item {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.65rem 1rem 0.55rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.25s, background 0.25s;
+      min-width: 75px;
+      position: relative;
+    }
+    .nav-item::after {
+      content: "";
+      position: absolute;
+      bottom: -2px; left: 50%; right: 50%;
+      height: 2px;
+      background: var(--accent);
+      transition: left 0.3s, right 0.3s;
+      border-radius: 2px 2px 0 0;
+    }
+    .nav-item.active::after { left: 0; right: 0; }
+
+    .nav-item .num {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+      transition: color 0.25s;
+    }
+    .nav-item .lbl {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: color 0.25s;
+      white-space: nowrap;
+    }
+    .nav-item.active .num { color: var(--accent); }
+    .nav-item.active .lbl { color: var(--text-heading); }
+
+    /* ── Panels ─── */
+    .skills-panels { width: 100%; }
+
+    .panel {
+      display: flex;
+      align-items: flex-start;
+      padding: 2.5rem 1.4rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle grid bg per panel */
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    .panel-inner { width: 100%; max-width: 680px; position: relative; z-index: 1; }
+
+    /* ── Eyebrow ─── */
+    .panel-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-tint);
+      border: 1px solid var(--border-light);
+      border-radius: 3px;
+      padding: 0.3rem 0.7rem;
+    }
+    .sk-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(68,217,162,0.5); }
+      50%      { box-shadow: 0 0 0 5px rgba(68,217,162,0); }
+    }
+
+    /* ── Title ─── */
+    .panel-title {
+      font-family: "Outfit", sans-serif;
+      font-weight: 900;
+      font-size: clamp(2rem, 9vw, 3.4rem);
+      line-height: 1.0;
+      color: var(--text-heading);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.03em;
+    }
+    .panel-title span {
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--accent-dim);
+    }
+
+    .panel-desc {
+      font-size: 0.86rem;
+      line-height: 1.9;
+      color: var(--text-body);
+      margin-bottom: 1.6rem;
+      max-width: 520px;
+    }
+
+    /* ── Progress rings ─── */
+    .sk-rings {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.2rem;
+    }
+    .sk-ring-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .sk-ring-wrap {
+      position: relative;
+      width: clamp(80px, 18vw, 100px);
+      height: clamp(80px, 18vw, 100px);
+    }
+    .sk-ring-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .sk-ring-track {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 4.5;
+    }
+    .sk-ring-fill {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 4.5;
+      stroke-linecap: round;
+      stroke-dasharray: 251.33;
+      stroke-dashoffset: 251.33;
+      transition: stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1);
+      filter: drop-shadow(0 0 6px rgba(68,217,162,0.45));
+    }
+    .sk-ring-pct {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: clamp(0.8rem, 2vw, 0.95rem);
+      font-weight: 700;
+      color: var(--text-heading);
+    }
+    .sk-ring-name {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.55rem;
+      color: var(--text-body);
+      text-align: center;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
+
+    /* ── Stat bar ─── */
+    .sk-stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--accent-tint2);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1.2rem;
+      margin-bottom: 1.6rem;
+      gap: 1rem;
+    }
+    .sk-stat-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+    .sk-stat-name {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.65rem;
+      color: var(--text-body);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .sk-stat-track {
+      height: 2px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .sk-stat-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+      transition: width 1.4s cubic-bezier(0.4,0,0.2,1) 0.2s;
+      box-shadow: 0 0 8px rgba(68,217,162,0.5);
+    }
+    .sk-stat-pct {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* ── Tech stack cards ─── */
+    .sk-stack {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.45rem;
+    }
+    .sk-stack-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.6rem;
+      transition: border-color 0.2s, transform 0.2s, background 0.2s;
+      cursor: default;
+      overflow: hidden;
+    }
+    .sk-stack-item:hover {
+      border-color: var(--accent);
+      background: var(--accent-tint);
+      transform: translateY(-2px);
+    }
+    .sk-stack-abbr {
+      width: 28px; height: 28px;
+      background: var(--accent-tint);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .sk-stack-item:hover .sk-stack-abbr { background: rgba(68,217,162,0.2); }
+    .sk-stack-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .sk-stack-name {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1;
+    }
+    .sk-stack-level {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.48rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ════════════════════════════════════
+       RESPONSIVE — Mobile / Tablet untouched
+    ════════════════════════════════════ */
+    @media (max-width: 480px) {
+      .sk-stack { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ════════════════════════════════════
+       DESKTOP LAYOUT (≥1024px) — FIXED
+    ════════════════════════════════════ */
+    @media (min-width: 1024px) {
+      .skills-section {
+        flex-direction: row;
+        min-height: 100vh;
+      }
+
+      /* ── Sticky sidebar nav ── */
+      .skills-nav {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: var(--sk-nav-w);
+        min-width: var(--sk-nav-w);
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        overflow: visible;
+        padding: 3rem 0 3rem 2.5rem;
+        border-bottom: none;
+        border-right: 1px solid var(--border);
+        background: rgba(9,15,17,0.96);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+
+      /* header label above nav items */
+      .nav-label {
+        display: block;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.58rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 2.2rem;
+      }
+
+      /* vertical snake/line */
+      .nav-snake {
+        display: block;
+        position: absolute;
+        left: 2.5rem;
+        top: 0; bottom: 0;
+        width: 1px;
+        background: var(--border);
+      }
+
+      .nav-items-wrap {
+        position: relative;
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+      }
+
+      /* override mobile underline */
+      .nav-item {
+        flex: 0 0 auto;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        width: 100%;
+        min-width: unset;
+        padding: 1rem 0 1rem 1.6rem;
+        border-bottom: none;
+        border-left: 2px solid transparent;
+        position: relative;
+        transition: border-color 0.25s, background 0.25s;
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      }
+
+      /* kill the mobile bottom underline pseudo */
+      .nav-item::after { display: none; }
+
+      /* left indicator line */
+      .nav-item::before {
+        content: "";
+        position: absolute;
+        left: -1px; top: 0; bottom: 0;
+        width: 2px;
+        background: transparent;
+        transition: background 0.25s;
+        border-radius: 2px;
+      }
+      .nav-item.active::before { background: var(--accent); }
+      .nav-item.active {
+        background: linear-gradient(90deg, var(--accent-tint) 0%, transparent 100%);
+      }
+
+      .nav-item .num {
+        font-size: 0.58rem;
+        margin-bottom: 0.25rem;
+      }
+      .nav-item .lbl {
+        font-size: 0.92rem;
+        font-weight: 600;
+        transition: color 0.25s, transform 0.3s;
+      }
+      .nav-item.active .lbl {
+        color: var(--text-heading);
+        transform: translateX(4px);
+      }
+
+      /* ── Panels on desktop ── */
+      .skills-panels {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .panel {
+        min-height: 100vh;
+        align-items: center;
+        justify-content: flex-start;
+        padding: clamp(2rem, 5vw, 6rem) clamp(2.5rem, 5vw, 6rem);
+      }
+
+      .panel-title {
+        font-size: clamp(2.5rem, 4.5vw, 4rem);
+      }
+    }
+
+    /* Extra wide — give more room */
+    @media (min-width: 1280px) {
+      :root { --sk-nav-w: 300px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="skills-section">
+
+  <!-- ══ Sidebar Nav ══ -->
+  <nav class="skills-nav" id="skillsNav">
+    <div class="nav-snake"></div>
+    <p class="nav-label">// Skills</p>
+    <div class="nav-items-wrap">
+      <div class="nav-item" data-idx="0"><div class="num">01</div><span class="lbl">Python</span></div>
+      <div class="nav-item" data-idx="1"><div class="num">02</div><span class="lbl">Django</span></div>
+      <div class="nav-item" data-idx="2"><div class="num">03</div><span class="lbl">Frontend</span></div>
+      <div class="nav-item" data-idx="3"><div class="num">04</div><span class="lbl">Database</span></div>
+    </div>
+  </nav>
+
+  <!-- ══ Panels ══ -->
+  <div class="skills-panels" id="skillsPanels">
+
+    <!-- ─── PANEL 1 : PYTHON ─── -->
+    <div class="panel" id="sk-p0" data-idx="0">
+      <div class="panel-inner">
+
+        <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 01 · Language</div>
+        <h2 class="panel-title">Python<br/><span>Programming</span></h2>
+        <p class="panel-desc">Strong fundamentals in Python — clean, readable code following PEP 8 standards. From data structures and OOP to writing scripts, utilities, and backend logic.</p>
+
+        <div class="sk-rings">
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="82"/>
+              </svg>
+              <div class="sk-ring-pct">82%</div>
+            </div>
+            <div class="sk-ring-name">Core<br/>Python</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="75"/>
+              </svg>
+              <div class="sk-ring-pct">75%</div>
+            </div>
+            <div class="sk-ring-name">OOP &amp;<br/>Design</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="70"/>
+              </svg>
+              <div class="sk-ring-pct">70%</div>
+            </div>
+            <div class="sk-ring-name">REST<br/>APIs</div>
+          </div>
+        </div>
+
+        <div class="sk-stat-row">
+          <div class="sk-stat-left">
+            <span class="sk-stat-name">Data Structures &amp; Algorithms</span>
+            <div class="sk-stat-track"><div class="sk-stat-fill" data-w="72"></div></div>
+          </div>
+          <span class="sk-stat-pct">72%</span>
+        </div>
+
+        <div class="sk-stack">
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Py</span><div class="sk-stack-info"><span class="sk-stack-name">Python 3.x</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">OOP</span><div class="sk-stack-info"><span class="sk-stack-name">OOP</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Pip</span><div class="sk-stack-info"><span class="sk-stack-name">pip / venv</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Pt</span><div class="sk-stack-info"><span class="sk-stack-name">pytest</span><span class="sk-stack-level">Learning</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Rq</span><div class="sk-stack-info"><span class="sk-stack-name">Requests</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">BS</span><div class="sk-stack-info"><span class="sk-stack-name">BeautifulSoup</span><span class="sk-stack-level">Learning</span></div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── PANEL 2 : DJANGO ─── -->
+    <div class="panel" id="sk-p1" data-idx="1">
+      <div class="panel-inner">
+
+        <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 02 · Framework</div>
+        <h2 class="panel-title">Django<br/><span>Full Stack</span></h2>
+        <p class="panel-desc">Building full-stack web applications with Django's batteries-included philosophy. MVT pattern, ORM, class-based views, authentication, and Django REST Framework for APIs.</p>
+
+        <div class="sk-rings">
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="80"/>
+              </svg>
+              <div class="sk-ring-pct">80%</div>
+            </div>
+            <div class="sk-ring-name">Django<br/>Core</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="78"/>
+              </svg>
+              <div class="sk-ring-pct">78%</div>
+            </div>
+            <div class="sk-ring-name">DRF<br/>APIs</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="74"/>
+              </svg>
+              <div class="sk-ring-pct">74%</div>
+            </div>
+            <div class="sk-ring-name">Auth &amp;<br/>Sessions</div>
+          </div>
+        </div>
+
+        <div class="sk-stat-row">
+          <div class="sk-stat-left">
+            <span class="sk-stat-name">Django ORM &amp; Migrations</span>
+            <div class="sk-stat-track"><div class="sk-stat-fill" data-w="79"></div></div>
+          </div>
+          <span class="sk-stat-pct">79%</span>
+        </div>
+
+        <div class="sk-stack">
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Dj</span><div class="sk-stack-info"><span class="sk-stack-name">Django 4.x</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">DRF</span><div class="sk-stack-info"><span class="sk-stack-name">DRF</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">ORM</span><div class="sk-stack-info"><span class="sk-stack-name">Django ORM</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Jj</span><div class="sk-stack-info"><span class="sk-stack-name">Jinja2</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Cel</span><div class="sk-stack-info"><span class="sk-stack-name">Celery</span><span class="sk-stack-level">Learning</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Gu</span><div class="sk-stack-info"><span class="sk-stack-name">Gunicorn</span><span class="sk-stack-level">Learning</span></div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── PANEL 3 : FRONTEND ─── -->
+    <div class="panel" id="sk-p2" data-idx="2">
+      <div class="panel-inner">
+
+        <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 03 · Interface</div>
+        <h2 class="panel-title">Frontend<br/><span>Basics</span></h2>
+        <p class="panel-desc">Crafting clean, functional UIs to complement Django backends. Comfortable with HTML templating, CSS styling, and enough JavaScript to make things interactive and responsive.</p>
+
+        <div class="sk-rings">
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="83"/>
+              </svg>
+              <div class="sk-ring-pct">83%</div>
+            </div>
+            <div class="sk-ring-name">HTML<br/>Templates</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="78"/>
+              </svg>
+              <div class="sk-ring-pct">78%</div>
+            </div>
+            <div class="sk-ring-name">CSS &amp;<br/>Bootstrap</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="65"/>
+              </svg>
+              <div class="sk-ring-pct">65%</div>
+            </div>
+            <div class="sk-ring-name">JavaScript<br/>ES6+</div>
+          </div>
+        </div>
+
+        <div class="sk-stat-row">
+          <div class="sk-stat-left">
+            <span class="sk-stat-name">HTMX (Django-friendly)</span>
+            <div class="sk-stat-track"><div class="sk-stat-fill" data-w="60"></div></div>
+          </div>
+          <span class="sk-stat-pct">60%</span>
+        </div>
+
+        <div class="sk-stack">
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Ht</span><div class="sk-stack-info"><span class="sk-stack-name">HTML5</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Cs</span><div class="sk-stack-info"><span class="sk-stack-name">CSS3</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Bs</span><div class="sk-stack-info"><span class="sk-stack-name">Bootstrap 5</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">JS</span><div class="sk-stack-info"><span class="sk-stack-name">JavaScript</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Hx</span><div class="sk-stack-info"><span class="sk-stack-name">HTMX</span><span class="sk-stack-level">Learning</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Ax</span><div class="sk-stack-info"><span class="sk-stack-name">Axios / Fetch</span><span class="sk-stack-level">Learning</span></div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── PANEL 4 : DATABASE ─── -->
+    <div class="panel" id="sk-p3" data-idx="3">
+      <div class="panel-inner">
+
+        <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 04 · Data</div>
+        <h2 class="panel-title">Database<br/><span>&amp; DevOps</span></h2>
+        <p class="panel-desc">Managing data with PostgreSQL and SQLite in Django projects. Getting comfortable with Git-based workflows, deployment on PaaS platforms, and Linux basics for server management.</p>
+
+        <div class="sk-rings">
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="77"/>
+              </svg>
+              <div class="sk-ring-pct">77%</div>
+            </div>
+            <div class="sk-ring-name">PostgreSQL<br/>SQLite</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="85"/>
+              </svg>
+              <div class="sk-ring-pct">85%</div>
+            </div>
+            <div class="sk-ring-name">Git &amp;<br/>GitHub</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="65"/>
+              </svg>
+              <div class="sk-ring-pct">65%</div>
+            </div>
+            <div class="sk-ring-name">Linux<br/>CLI</div>
+          </div>
+        </div>
+
+        <div class="sk-stat-row">
+          <div class="sk-stat-left">
+            <span class="sk-stat-name">Docker &amp; Deployment (Railway / Render)</span>
+            <div class="sk-stat-track"><div class="sk-stat-fill" data-w="62"></div></div>
+          </div>
+          <span class="sk-stat-pct">62%</span>
+        </div>
+
+        <div class="sk-stack">
+          <div class="sk-stack-item"><span class="sk-stack-abbr">PG</span><div class="sk-stack-info"><span class="sk-stack-name">PostgreSQL</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">SQ</span><div class="sk-stack-info"><span class="sk-stack-name">SQLite</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Gt</span><div class="sk-stack-info"><span class="sk-stack-name">Git</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Dk</span><div class="sk-stack-info"><span class="sk-stack-name">Docker</span><span class="sk-stack-level">Learning</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Rw</span><div class="sk-stack-info"><span class="sk-stack-name">Railway</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Nx</span><div class="sk-stack-info"><span class="sk-stack-name">Nginx</span><span class="sk-stack-level">Learning</span></div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  (function () {
+    var skPanels        = Array.from(document.querySelectorAll("#skillsPanels .panel"));
+    var skNavItems      = Array.from(document.querySelectorAll("#skillsNav .nav-item"));
+    var skAnimated      = {};
+    var skCurrentActive = -1;
+    var CIRCUMFERENCE   = 251.33;
+
+    function skAnimateBars(panel) {
+      var idx = panel.getAttribute("data-idx");
+      if (skAnimated[idx]) return;
+      skAnimated[idx] = true;
+
+      panel.querySelectorAll(".sk-ring-fill").forEach(function (circle) {
+        var pct    = parseInt(circle.getAttribute("data-w"), 10);
+        var offset = CIRCUMFERENCE * (1 - pct / 100);
+        requestAnimationFrame(function () {
+          setTimeout(function () { circle.style.strokeDashoffset = offset; }, 80);
+        });
+      });
+
+      panel.querySelectorAll(".sk-stat-fill").forEach(function (fill) {
+        var pct = parseInt(fill.getAttribute("data-w"), 10);
+        requestAnimationFrame(function () {
+          setTimeout(function () { fill.style.width = pct + "%"; }, 80);
+        });
+      });
+    }
+
+    function skSetActive(idx) {
+      if (idx === skCurrentActive) return;
+      skCurrentActive = idx;
+      skNavItems.forEach(function (n) {
+        n.classList.toggle("active", +n.getAttribute("data-idx") === idx);
+      });
+      skAnimateBars(skPanels[idx]);
+    }
+
+    var skObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) skSetActive(+entry.target.getAttribute("data-idx"));
+      });
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+
+    skPanels.forEach(function (p) { skObserver.observe(p); });
+
+    var skTicking = false;
+    window.addEventListener("scroll", function () {
+      if (skTicking) return;
+      skTicking = true;
+      requestAnimationFrame(function () {
+        var trigger = window.innerHeight * 0.45;
+        var best = 0;
+        skPanels.forEach(function (p, i) {
+          if (p.getBoundingClientRect().top <= trigger) best = i;
+        });
+        skSetActive(best);
+        skTicking = false;
+      });
+    }, { passive: true });
+
+    skNavItems.forEach(function (navItem) {
+      navItem.addEventListener("click", function () {
+        var idx  = +navItem.getAttribute("data-idx");
+        var panel = skPanels[idx];
+
+        // Desktop: panels inside scrollable container
+        var isDesktop = window.innerWidth >= 1024;
+        if (isDesktop) {
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          var navH = document.getElementById("skillsNav").getBoundingClientRect().height;
+          var top  = panel.getBoundingClientRect().top + window.pageYOffset - navH;
+          window.scrollTo({ top: top, behavior: "smooth" });
+        }
+      });
+    });
+
+    skSetActive(0);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio - Vishal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700;900&family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Sekuya&family=Zen+Tokyo+Zoo&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Sekuya&family=Zen+Tokyo+Zoo&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+
+    <!-- ═══════════════════════════════════════════
+         DESKTOP SIDEBAR
+    ═══════════════════════════════════════════ -->
+    <nav class="sidebar" id="sidebar" aria-label="Site navigation">
+      <div class="sb-bar">
+        <button
+          class="sb-toggle"
+          id="sbToggle"
+          aria-label="Toggle sidebar"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <div class="sb-panel">
+        <div class="sb-inner">
+          <div class="sb-brand">Vishal</div>
+
+          <nav class="sb-nav">
+            <a href="#work" class="nav-link"><span class="dot"></span> How I Work</a>
+            <a href="#reviews" class="nav-link"><span class="dot"></span> Selected Work</a>
+            <a href="#certificates" class="nav-link"><span class="dot"></span> Document</a>
+            <a href="#skills" class="nav-link"><span class="dot"></span> Skills</a>
+          </nav>
+
+          <div class="sb-actions">
+            <a href="#" class="action-btn dark"
+              >Schedule a Call
+              <span class="action-btn-icon">
+                <svg viewBox="0 0 24 24">
+                  <line x1="5" y1="19" x2="19" y2="5"></line>
+                  <polyline points="9 5 19 5 19 15"></polyline>
+                </svg>
+              </span>
+            </a>
+          </div>
+
+          <div class="sb-social">
+            <div class="sb-social-row">
+              <a href="#" class="soc" aria-label="Behance">
+                <svg viewBox="0 0 24 24"><path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.821 5.333 4.811h-7.72c.036 1.71 1.265 2.163 2.656 2.163 1.115 0 2.224-.598 2.627-1.379l2.303 1zm-5.467-5.47c-1.143 0-2.034.685-2.225 1.745h4.25c-.027-1.077-.882-1.745-2.025-1.745zm-10.631 8.47h-7.628v-16h7.447c2.65 0 4.363 1.041 4.363 3.739 0 1.581-.826 2.604-2.067 3.251 1.503.483 2.457 1.636 2.457 3.513 0 2.766-2.062 5.497-4.572 5.497zm-3.628-7h2.825c1.474 0 2.229-.818 2.229-2.033 0-1.282-.769-2.037-2.229-2.037h-2.825v4.07zm0 4.103h3.197c1.782 0 2.531-.951 2.531-2.296 0-1.428-.748-2.3-2.531-2.3h-3.197v4.596z"/></svg>
+              </a>
+              <a href="#" class="soc" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+              <a href="#" class="soc" aria-label="Instagram">
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+              </a>
+              <a href="mailto:you@gmail.com" class="soc" aria-label="Email">
+                <svg viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+              </a>
+              <a href="#" class="soc" aria-label="WhatsApp">
+                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════
+         MOBILE NAV
+    ═══════════════════════════════════════════ -->
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+      <div class="m-card" id="mCard">
+        <div class="m-brand-new">Vishal</div>
+
+        <button class="m-toggle" id="mToggle" aria-label="Toggle menu" aria-expanded="false">
+          <div class="m-line"></div>
+          <div class="m-line"></div>
+          <div class="m-line"></div>
+        </button>
+
+        <div class="m-body">
+          <div class="m-links">
+            <a href="#work" class="m-link">How I Work</a>
+            <a href="#reviews" class="m-link">Project</a>
+            <a href="#certificates" class="m-link">Certificates</a>
+            <a href="#skills" class="m-link">Skills</a>
+          </div>
+
+          <div class="m-socials">
+            <a href="#" class="m-soc" aria-label="Behance">
+              <svg viewBox="0 0 24 24"><path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.821 5.333 4.811h-7.72c.036 1.71 1.265 2.163 2.656 2.163 1.115 0 2.224-.598 2.627-1.379l2.303 1zm-5.467-5.47c-1.143 0-2.034.685-2.225 1.745h4.25c-.027-1.077-.882-1.745-2.025-1.745zm-10.631 8.47h-7.628v-16h7.447c2.65 0 4.363 1.041 4.363 3.739 0 1.581-.826 2.604-2.067 3.251 1.503.483 2.457 1.636 2.457 3.513 0 2.766-2.062 5.497-4.572 5.497zm-3.628-7h2.825c1.474 0 2.229-.818 2.229-2.033 0-1.282-.769-2.037-2.229-2.037h-2.825v4.07zm0 4.103h3.197c1.782 0 2.531-.951 2.531-2.296 0-1.428-.748-2.3-2.531-2.3h-3.197v4.596z"/></svg>
+            </a>
+            <a href="#" class="m-soc" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            </a>
+            <a href="#" class="m-soc" aria-label="Instagram">
+              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+            <a href="mailto:you@gmail.com" class="m-soc" aria-label="Email">
+              <svg viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+            </a>
+          </div>
+
+          <div class="m-actions">
+            <a href="#" class="action-btn orange"
+              >Discuss a Project
+              <span class="action-btn-icon">
+                <svg viewBox="0 0 24 24">
+                  <line x1="5" y1="19" x2="19" y2="5"></line>
+                  <polyline points="9 5 19 5 19 15"></polyline>
+                </svg>
+              </span>
+            </a>
+            <a href="#" class="action-btn dark"
+              >Schedule a Call
+              <span class="action-btn-icon">
+                <svg viewBox="0 0 24 24">
+                  <line x1="5" y1="19" x2="19" y2="5"></line>
+                  <polyline points="9 5 19 5 19 15"></polyline>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════
+         PAGE WRAP
+    ═══════════════════════════════════════════ -->
+    <div class="page-wrap">
+
+      <!-- ═══════════════════════════════════════════
+           SECTION 1: HERO
+      ═══════════════════════════════════════════ -->
+      <section class="hero-section">
+        <lottie-player
+          src="/GitPortfolio/lottie-files/Animated Dashboards.json"
+          background="transparent"
+          speed="0.5"
+          loop
+          autoplay
+          class="hero-lottie-bg">
+        </lottie-player>
+
+        <div class="hero-glow glow-1"></div>
+        <div class="hero-glow glow-2"></div>
+
+        <div class="hero-content">
+          <h1 class="hero-title animate-hero">
+            Crafting digital <span class="hero-font-serif">experiences</span><br>
+            that drive <span class="hero-text-accent">results.</span>
+          </h1>
+
+          <p class="hero-description animate-hero">
+            I'm a full-stack developer blending creative design with robust engineering. I build scalable, user-centric web applications for forward-thinking brands.
+          </p>
+
+          <div class="hero-actions animate-hero">
+            <a href="#reviews" class="hero-btn hero-btn-primary">View My Work</a>
+            <a href="#contact" class="hero-btn hero-btn-secondary">Get in Touch</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           SECTION 2: HOW I WORK
+      ═══════════════════════════════════════════ -->
+      <section class="how-i-work-section" id="work">
+        <div class="hiw-section-header">
+          <div class="sec-label" id="hiwLbl">// Process</div>
+          <h2 class="sec-title" id="hiwTtl">How I <span>Work</span></h2>
+          <p class="sec-sub" id="hiwSub">A streamlined, four-step process designed to turn complex problems into elegant, user-centric solutions.</p>
+        </div>
+
+        <div class="how-cards-container">
+          <div class="how-card">
+            <lottie-player src="/Woman discovering business statistics.json" background="transparent" speed="1" loop autoplay class="lottie-bg"></lottie-player>
+            <h2><span>Step 1</span> Research</h2>
+          </div>
+          <div class="how-card">
+            <lottie-player src="/Data center.json" background="transparent" speed="1" loop autoplay class="lottie-bg"></lottie-player>
+            <h2><span>Step 2</span> Structure</h2>
+          </div>
+          <div class="how-card">
+            <lottie-player src="/login screen.json" background="transparent" speed="1" loop autoplay class="lottie-bg"></lottie-player>
+            <h2><span>Step 3</span> Design</h2>
+          </div>
+          <div class="how-card">
+            <lottie-player src="/Programming Computer.json" background="transparent" speed="1" loop autoplay class="lottie-bg"></lottie-player>
+            <h2><span>Step 4</span> Build</h2>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           SECTION 3: Project Gallery
+      ═══════════════════════════════════════════ -->
+      <section class="project-gallery-section" id="reviews">
+        <div class="pg-header">
+          <div class="sec-label" id="pgLbl">Project Gallery</div>
+          <h2 class="sec-title" id="pgTtl">Selected <span>Works</span></h2>
+          <p class="sec-sub" id="pgSub">A curated collection of interfaces, products, and digital experiences built with precision and purpose.</p>
+        </div>
+
+        <div class="pg-grid" id="pgGrid">
+          <div class="pg-card"><div class="pg-img"><img src="/GitPortfolio/Images/Galary/ProductCard.png" alt="Portfolio website preview" loading="lazy" /><span class="pg-tag">UI Design</span><div class="pg-info"><div class="pg-title">Portfolio</div><div class="pg-desc">Modern personal website UI</div></div></div></div>
+          <div class="pg-card"><div class="pg-img"><img src="/GitPortfolio/Images/Galary/Arcadia.png" alt="E-commerce UI preview" loading="lazy" /><span class="pg-tag">E-Commerce</span><div class="pg-info"><div class="pg-title">E-commerce</div><div class="pg-desc">Clean shopping experience</div></div></div></div>
+          <div class="pg-card"><div class="pg-img"><img src="/GitPortfolio/Images/Galary/Aura.png" alt="Dashboard analytics UI" loading="lazy" /><span class="pg-tag">Analytics</span><div class="pg-info"><div class="pg-title">Dashboard</div><div class="pg-desc">Analytics visualization UI</div></div></div></div>
+          <div class="pg-card"><div class="pg-img"><img src="/GitPortfolio/Images/Galary/DK-Hero.png" alt="Landing page design" loading="lazy" /><span class="pg-tag">Marketing</span><div class="pg-info"><div class="pg-title">Landing Page</div><div class="pg-desc">High conversion layout</div></div></div></div>
+          <div class="pg-card"><div class="pg-img"><img src="/GitPortfolio/Images/Galary/DK-HW.png" alt="Mobile app interface" loading="lazy" /><span class="pg-tag">Mobile</span><div class="pg-info"><div class="pg-title">Mobile App</div><div class="pg-desc">App UI system</div></div></div></div>
+          <div class="pg-card"><div class="pg-img"><img src="/GitPortfolio/Images/Galary/PriceCard.png" alt="Admin panel dashboard" loading="lazy" /><span class="pg-tag">SaaS</span><div class="pg-info"><div class="pg-title">Admin Panel</div><div class="pg-desc">Control dashboard</div></div></div></div>
+          <div class="pg-card"><div class="pg-img"><img src="/GitPortfolio/Images/Galary/GoogleReview.png" alt="Blog website layout" loading="lazy" /><span class="pg-tag">Content</span><div class="pg-info"><div class="pg-title">Blog</div><div class="pg-desc">Content-first layout</div></div></div></div>
+          <div class="pg-card"><div class="pg-img"><img src="/GitPortfolio/Images/Galary/Home.png" alt="Startup homepage UI" loading="lazy" /><span class="pg-tag">Branding</span><div class="pg-info"><div class="pg-title">Startup</div><div class="pg-desc">Modern brand site</div></div></div></div>
+          <div class="pg-card"><div class="pg-img"><img src="/GitPortfolio/Images/Galary/PriceCard.png" alt="SaaS dashboard interface" loading="lazy" /><span class="pg-tag">Product</span><div class="pg-info"><div class="pg-title">SaaS</div><div class="pg-desc">Product dashboard UI</div></div></div></div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           CERTIFICATE SECTION
+      ═══════════════════════════════════════════ -->
+      <div class="cert-preview" id="certPreview">
+        <img src="" id="previewImg" alt="" />
+      </div>
+
+      <section class="cert-section" id="certificates">
+        <div class="cert-layout">
+          <div class="cert-left">
+            <div class="cert-section-label" id="certLbl">Credentials</div>
+            <h2 class="cert-section-title" id="certTtl">My<br><span>Documents</span></h2>
+            <p class="cert-section-sub" id="certSub">Professional certifications and verified credentials earned across disciplines.</p>
+          </div>
+          <div class="cert-right">
+            <div class="cert-list">
+              <div class="cert-item" data-img="Images\Aadhar Card.jpg">
+                <span class="cert-num">01</span><span class="cert-name">Aadhar Card</span>
+                <img class="cert-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M17.81 4.47c-.08 0-.16-.02-.23-.06C15.66 3.42 14 3 12.01 3c-1.98 0-3.86.47-5.57 1.41-.24.13-.54.04-.68-.2-.13-.24-.04-.55.2-.68C7.82 2.52 9.86 2 12.01 2c2.13 0 3.99.47 6.03 1.52.27.14.37.43.23.7-.1.18-.28.25-.46.25zm.48 3.8c-.11 0-.21-.03-.3-.1-1.06-.65-2.57-1.17-4-.17-.24.05-.47-.11-.52-.35-.04-.24.11-.47.35-.52 1.6-.34 3.26.2 4.46.95.23.14.3.44.16.67-.09.14-.24.22-.4.22l.25-.7zm.22 3.86c-.09 0-.18-.02-.26-.07-.97-.58-2.11-.88-3.26-.88-1.13 0-2.28.29-3.27.87-.23.13-.54.05-.67-.19-.13-.24-.05-.54.19-.67 1.1-.63 2.38-.97 3.75-.97 1.37 0 2.65.34 3.75.97.23.13.31.44.18.67-.09.16-.25.24-.41.24zM12 22c-1.7 0-3.26-.65-4.44-1.83-.18-.18-.18-.47 0-.65.18-.18.47-.18.65 0C9.27 20.53 10.6 21 12 21c1.42 0 2.77-.49 3.83-1.5.18-.17.47-.17.65.01.17.18.17.47-.01.65C15.28 21.35 13.7 22 12 22zm0-3c-1.14 0-2.19-.43-2.99-1.21-.18-.18-.19-.47-.01-.65.18-.18.47-.19.65-.01C10.27 17.66 11.11 18 12 18c.91 0 1.77-.36 2.41-1.01.18-.18.47-.17.65.01.17.18.17.47-.01.65C14.23 18.56 13.16 19 12 19zm0-3c-.57 0-1.1-.2-1.52-.58-.19-.17-.2-.46-.03-.65.17-.19.46-.2.65-.03.24.21.55.26.9.26.37 0 .69-.09.93-.3.19-.17.48-.15.65.04.17.19.15.48-.04.65-.44.4-1 .61-1.54.61z'/%3E%3C/svg%3E" alt="Aadhar" />
+                <span class="cert-arrow">→</span>
+              </div>
+              <div class="cert-item" data-img="Images\PanCard.jpg">
+                <span class="cert-num">02</span><span class="cert-name">Pan Card</span>
+                <img class="cert-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z'/%3E%3C/svg%3E" alt="PAN" />
+                <span class="cert-arrow">→</span>
+              </div>
+              <div class="cert-item" data-img="Images\Caste Certificate.jpg">
+                <span class="cert-num">03</span><span class="cert-name">Caste Certificate</span>
+                <img class="cert-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-5 8v-2h8v2H8zm0-4v-2h8v2H8zm0-4V7h4v2H8z'/%3E%3C/svg%3E" alt="Certificate" />
+                <span class="cert-arrow">→</span>
+              </div>
+              <div class="cert-item" data-img="Images\Address Certificate.jpg">
+                <span class="cert-num">04</span><span class="cert-name">Address Proof</span>
+                <img class="cert-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E" alt="Address" />
+                <span class="cert-arrow">→</span>
+              </div>
+              <div class="cert-item" data-img="Images\10th Marksheet.jpg">
+                <span class="cert-num">05</span><span class="cert-name">High School Marksheet</span>
+                <img class="cert-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z'/%3E%3C/svg%3E" alt="High School" />
+                <span class="cert-arrow">→</span>
+              </div>
+              <div class="cert-item" data-img="Images\12th Marksheet.jpg">
+                <span class="cert-num">06</span><span class="cert-name">Intermediate Marksheet</span>
+                <img class="cert-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M17.5 4.5c-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5-1.45 0-2.99.22-4.28.79C1.49 5.62 1 6.33 1 7.14v11.28c0 1.3 1.22 2.26 2.48 1.94.98-.25 2.02-.36 3.02-.36 1.56 0 3.22.26 4.56.92.6.3 1.28.3 1.87 0 1.34-.67 3-.92 4.56-.92 1 0 2.04.11 3.02.36C21.78 20.68 23 19.72 23 18.42V7.14c0-.81-.49-1.52-1.22-1.85-1.28-.57-2.82-.79-4.28-.79zM21 18.42c0 .31-.29.53-.59.45-.93-.24-1.89-.37-2.91-.37-1.56 0-3.55.6-4.5 1.5V8c.95-.9 2.94-1.5 4.5-1.5 1.02 0 1.96.14 2.9.38.3.08.6-.14.6-.45V18.42z'/%3E%3C/svg%3E" alt="Intermediate" />
+                <span class="cert-arrow">→</span>
+              </div>
+              <div class="cert-item" data-img="Images/Graduation.jpg">
+                <span class="cert-num">07</span><span class="cert-name">Graduation Marksheet</span>
+                <img class="cert-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm-7 9.41V17l7 4 7-4v-4.59L12 17l-7-4.59z'/%3E%3C/svg%3E" alt="Graduation" />
+                <span class="cert-arrow">→</span>
+              </div>
+              <div class="cert-item" data-img="">
+                <span class="cert-num">08</span><span class="cert-name">Full Stack Development Associate Certificate</span>
+                <img class="cert-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z'/%3E%3C/svg%3E" alt="Full Stack Dev" />
+                <span class="cert-arrow">→</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           SECTION 5: Skills
+      ═══════════════════════════════════════════ -->
+      <div class="skills-section" id="skills">
+        <nav class="skills-nav" id="skillsNav">
+          <p class="nav-label">// Skills</p>
+          <div class="nav-items-wrap">
+            <div class="nav-item" data-idx="0"><div class="num">01</div><span class="lbl">Frontend</span></div>
+            <div class="nav-item" data-idx="1"><div class="num">02</div><span class="lbl">Backend</span></div>
+            <div class="nav-item" data-idx="2"><div class="num">03</div><span class="lbl">Database</span></div>
+            <div class="nav-item" data-idx="3"><div class="num">04</div><span class="lbl">Tools</span></div>
+          </div>
+        </nav>
+
+        <div class="skills-panels" id="skillsPanels">
+
+          <!-- PANEL 1: FRONTEND -->
+          <div class="panel" id="sk-p0" data-idx="0">
+            <div class="panel-inner">
+              <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 01 &nbsp;·&nbsp; Interface</div>
+              <h2 class="panel-title">Frontend<br /><span>Development</span></h2>
+              <p class="panel-desc">Building pixel-perfect, performant interfaces that users love. From responsive layouts to smooth animations — clean, accessible, and maintainable code.</p>
+
+              <div class="sk-rings">
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="95"/></svg>
+                    <div class="sk-ring-pct">95%</div>
+                  </div>
+                  <div class="sk-ring-name">HTML</div>
+                </div>
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="98"/></svg>
+                    <div class="sk-ring-pct">98%</div>
+                  </div>
+                  <div class="sk-ring-name">CSS</div>
+                </div>
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="92"/></svg>
+                    <div class="sk-ring-pct">92%</div>
+                  </div>
+                  <div class="sk-ring-name">JS</div>
+                </div>
+              </div>
+
+              <div class="sk-stat-row">
+                <div class="sk-stat-left">
+                  <span class="sk-stat-name">BootStrap</span>
+                  <div class="sk-stat-track"><div class="sk-stat-fill" data-w="88"></div></div>
+                </div>
+                <span class="sk-stat-pct">88%</span>
+              </div>
+
+              <div class="sk-stack">
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Re</span><div class="sk-stack-info"><span class="sk-stack-name">Responsive</span><span class="sk-stack-level">Proficient</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Ar</span><div class="sk-stack-info"><span class="sk-stack-name">Architecture</span><span class="sk-stack-level">Proficient</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Co</span><div class="sk-stack-info"><span class="sk-stack-name">Component UI</span><span class="sk-stack-level">Proficient</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Dj</span><div class="sk-stack-info"><span class="sk-stack-name">Django Templates</span><span class="sk-stack-level">Intermediate</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Sv</span><div class="sk-stack-info"><span class="sk-stack-name">SVG & Lottie</span><span class="sk-stack-level">Intermediate</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Gs</span><div class="sk-stack-info"><span class="sk-stack-name">GSAP</span><span class="sk-stack-level">Intermediate</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PANEL 2: BACKEND -->
+          <div class="panel" id="sk-p1" data-idx="1">
+            <div class="panel-inner">
+              <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 02 &nbsp;·&nbsp; Logic</div>
+              <h2 class="panel-title">Backend<br /><span>Development</span></h2>
+              <p class="panel-desc">Architecting robust APIs and scalable server-side systems. From RESTful services to real-time WebSocket servers — fast, secure, and built to last.</p>
+
+              <div class="sk-rings">
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="93"/></svg>
+                    <div class="sk-ring-pct">93%</div>
+                  </div>
+                  <div class="sk-ring-name">Node.js<br/>Express</div>
+                </div>
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="85"/></svg>
+                    <div class="sk-ring-pct">85%</div>
+                  </div>
+                  <div class="sk-ring-name">Python<br/>FastAPI</div>
+                </div>
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="90"/></svg>
+                    <div class="sk-ring-pct">90%</div>
+                  </div>
+                  <div class="sk-ring-name">REST<br/>GraphQL</div>
+                </div>
+              </div>
+
+              <div class="sk-stat-row">
+                <div class="sk-stat-left">
+                  <span class="sk-stat-name">Auth &amp; Security</span>
+                  <div class="sk-stat-track"><div class="sk-stat-fill" data-w="87"></div></div>
+                </div>
+                <span class="sk-stat-pct">87%</span>
+              </div>
+
+              <div class="sk-stack">
+                <div class="sk-stack-item"><span class="sk-stack-abbr">No</span><div class="sk-stack-info"><span class="sk-stack-name">Node.js</span><span class="sk-stack-level">Proficient</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Py</span><div class="sk-stack-info"><span class="sk-stack-name">Python</span><span class="sk-stack-level">Proficient</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">FA</span><div class="sk-stack-info"><span class="sk-stack-name">FastAPI</span><span class="sk-stack-level">Intermediate</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">GQ</span><div class="sk-stack-info"><span class="sk-stack-name">GraphQL</span><span class="sk-stack-level">Intermediate</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Rd</span><div class="sk-stack-info"><span class="sk-stack-name">Redis</span><span class="sk-stack-level">Intermediate</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Dk</span><div class="sk-stack-info"><span class="sk-stack-name">Docker</span><span class="sk-stack-level">Intermediate</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PANEL 3: DATABASE -->
+          <div class="panel" id="sk-p2" data-idx="2">
+            <div class="panel-inner">
+              <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 03 &nbsp;·&nbsp; Data</div>
+              <h2 class="panel-title">Database<br /><span>Management</span></h2>
+              <p class="panel-desc">Designing and optimizing data layers for performance and reliability. SQL or NoSQL — efficient schemas, clean queries, and data integrity at any scale.</p>
+
+              <div class="sk-rings">
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="91"/></svg>
+                    <div class="sk-ring-pct">91%</div>
+                  </div>
+                  <div class="sk-ring-name">PostgreSQL</div>
+                </div>
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="88"/></svg>
+                    <div class="sk-ring-pct">88%</div>
+                  </div>
+                  <div class="sk-ring-name">MongoDB</div>
+                </div>
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="89"/></svg>
+                    <div class="sk-ring-pct">89%</div>
+                  </div>
+                  <div class="sk-ring-name">Prisma<br/>ORM</div>
+                </div>
+              </div>
+
+              <div class="sk-stat-row">
+                <div class="sk-stat-left">
+                  <span class="sk-stat-name">MySQL</span>
+                  <div class="sk-stat-track"><div class="sk-stat-fill" data-w="85"></div></div>
+                </div>
+                <span class="sk-stat-pct">85%</span>
+              </div>
+
+              <div class="sk-stack">
+                <div class="sk-stack-item"><span class="sk-stack-abbr">PG</span><div class="sk-stack-info"><span class="sk-stack-name">PostgreSQL</span><span class="sk-stack-level">Proficient</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Mg</span><div class="sk-stack-info"><span class="sk-stack-name">MongoDB</span><span class="sk-stack-level">Proficient</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">My</span><div class="sk-stack-info"><span class="sk-stack-name">MySQL</span><span class="sk-stack-level">Proficient</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Rd</span><div class="sk-stack-info"><span class="sk-stack-name">Redis</span><span class="sk-stack-level">Intermediate</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Sb</span><div class="sk-stack-info"><span class="sk-stack-name">Supabase</span><span class="sk-stack-level">Intermediate</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Fb</span><div class="sk-stack-info"><span class="sk-stack-name">Firebase</span><span class="sk-stack-level">Intermediate</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PANEL 4: TOOLS -->
+          <div class="panel" id="sk-p3" data-idx="3">
+            <div class="panel-inner">
+              <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 04 &nbsp;·&nbsp; Workflow</div>
+              <h2 class="panel-title">Tools &amp;<br /><span>DevOps</span></h2>
+              <p class="panel-desc">Streamlining development with modern tooling and CI/CD pipelines. From version control to cloud deployments — shipping fast and keeping teams in sync.</p>
+
+              <div class="sk-rings">
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="96"/></svg>
+                    <div class="sk-ring-pct">96%</div>
+                  </div>
+                  <div class="sk-ring-name">Git<br/>GitHub</div>
+                </div>
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="82"/></svg>
+                    <div class="sk-ring-pct">82%</div>
+                  </div>
+                  <div class="sk-ring-name">Docker<br/>K8s</div>
+                </div>
+                <div class="sk-ring-item">
+                  <div class="sk-ring-wrap">
+                    <svg class="sk-ring-svg" viewBox="0 0 100 100"><circle class="sk-ring-track" cx="50" cy="50" r="40"/><circle class="sk-ring-fill" cx="50" cy="50" r="40" data-w="84"/></svg>
+                    <div class="sk-ring-pct">84%</div>
+                  </div>
+                  <div class="sk-ring-name">AWS<br/>Vercel</div>
+                </div>
+              </div>
+
+              <div class="sk-stat-row">
+                <div class="sk-stat-left">
+                  <span class="sk-stat-name">CI/CD Pipelines</span>
+                  <div class="sk-stat-track"><div class="sk-stat-fill" data-w="87"></div></div>
+                </div>
+                <span class="sk-stat-pct">87%</span>
+              </div>
+
+              <div class="sk-stack">
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Gt</span><div class="sk-stack-info"><span class="sk-stack-name">Git</span><span class="sk-stack-level">Proficient</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Dk</span><div class="sk-stack-info"><span class="sk-stack-name">Docker</span><span class="sk-stack-level">Intermediate</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">K8</span><div class="sk-stack-info"><span class="sk-stack-name">Kubernetes</span><span class="sk-stack-level">Intermediate</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">AW</span><div class="sk-stack-info"><span class="sk-stack-name">AWS</span><span class="sk-stack-level">Intermediate</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Vc</span><div class="sk-stack-info"><span class="sk-stack-name">Vercel</span><span class="sk-stack-level">Proficient</span></div></div>
+                <div class="sk-stack-item"><span class="sk-stack-abbr">Fig</span><div class="sk-stack-info"><span class="sk-stack-name">Figma</span><span class="sk-stack-level">Intermediate</span></div></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════
+           SECTION 6: CEO / About
+      ═══════════════════════════════════════════ -->
+      <section class="ceo-section">
+        <div class="left-col">
+          <div class="sec-label" id="ceoLbl">// Testimonial</div>
+          <h2 class="sec-title" id="ceoTtl">Words from <span>ME</span></h2>
+          <div class="ceo-card">
+            <div class="ceo-photo-wrap">
+              <div class="ceo-avatar-placeholder" aria-label="Vishal Kumar">
+                <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="50" cy="34" rx="22" ry="24" />
+                  <path d="M5 120 Q5 74 50 71 Q95 74 95 120Z" />
+                </svg>
+              </div>
+              <div class="linkedin-badge" title="LinkedIn">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="24" height="24" rx="4" fill="#0A66C2" />
+                  <path d="M7 10H9.5V17H7V10ZM8.25 9A1.25 1.25 0 1 0 8.25 6.5 1.25 1.25 0 0 0 8.25 9Z" fill="white" />
+                  <path d="M11 10H13.4V11.1H13.43C13.77 10.5 14.56 9.85 15.73 9.85C18.28 9.85 18.75 11.52 18.75 13.7V17H16.25V14.2C16.25 13.25 16.23 12.03 14.93 12.03C13.61 12.03 13.4 13.07 13.4 14.12V17H11V10Z" fill="white" />
+                </svg>
+              </div>
+            </div>
+            <div class="ceo-info">
+              <div class="ceo-name">Vishal Kumar</div>
+              <div class="ceo-role">Full Stack Developer</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-col">
+          <div class="bubble">At ADELT we're passionate about weaving together standout marketing strategies, creating memorable branding, and delivering sleek web designs 💥</div>
+          <div class="bubble">Can't wait to start your project!</div>
+          <div class="cta-card">
+            <div class="cta-text">Book a trial 15-min workshop<br />for your business</div>
+            <button class="cta-btn">
+              SCHEDULE A CALL
+              <span class="arrow-icon">
+                <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="2" y1="12" x2="12" y2="2" />
+                  <polyline points="6,2 12,2 12,8" />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           SECTION 7: Creative / Approach
+      ═══════════════════════════════════════════ -->
+      <section class="creative-wrap" id="approach">
+        <div class="creative-inner">
+          <div class="creative-left">
+            <h1 class="creative-heading">
+              <span class="static">Let's make something</span>
+              <span class="word-rotator">
+                <span class="word-rotator-inner">
+                  <span>Outstanding.</span>
+                  <span>Engaging.</span>
+                  <span>Innovative.</span>
+                  <span>Strategic.</span>
+                </span>
+              </span>
+            </h1>
+            <div class="creative-divider">
+              <div class="divider-line left"></div>
+              <div class="divider-dots"><span></span><span></span><span></span></div>
+              <div class="divider-line right"></div>
+            </div>
+            <p class="creative-desc">We craft experiences that captivate audiences and drive real results — from bold brands to seamless digital products.</p>
+            <div class="creative-btns">
+              <a href="#" class="btn-primary">
+                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" stroke="white" stroke-width="1.3"/>
+                  <path d="M5 7h6M5 9.5h4" stroke="white" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+                Get In Touch
+              </a>
+            </div>
+          </div>
+          <div class="creative-right">
+            <div class="lottie-stage">
+              <lottie-player src="/GitPortfolio/lottie-files/animation.json" background="transparent" speed="1" loop autoplay></lottie-player>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /.page-wrap -->
+
+    <!-- SITE FOOTER -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-grid">
+        <div class="footer-logo">Vishal</div>
+        <div class="footer-links">
+          <a href="#work">How I Work</a>
+          <a href="#reviews">Our works</a>
+          <a href="#skills">Skills</a>
+        </div>
+        <div class="footer-contact">
+          <p>H No. 267,<br />Vijay Nagar Khekra Baghpat<br />Uttar Pradesh<br />250101</p>
+          <p>
+            <a href="tel:+34675389458">7668245608</a><br />
+            <a href="mailto:business@adelt.io">vishalkumarkathwariya@gmail.com</a>
+          </p>
+        </div>
+        <div class="footer-social-copy">
+          <div class="f-socials">
+            <a href="#" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            </a>
+            <a href="vishalkumarkathwariya@gmail.com" aria-label="Gmail">
+              <svg viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+            <a href="#" aria-label="Instagram">
+              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+            <a href="#" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </a>
+          </div>
+          <span class="f-copy">&copy; Vishal 2025</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

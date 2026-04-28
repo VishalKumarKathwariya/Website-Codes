@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill - Section</title>
+    <!-- ==================== SKILLS SECTION ONLY ==================== -->
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+</head>
+<body>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:       #f4f3ef;
+  --bg-card:  #eeecea;
+  --border:   #d9d5cf;
+  --accent:   #16a34a;
+  --text-hi:  #1a1a18;
+  --text-mid: #4b5563;
+  --text-lo:  #9ca3af;
+  --track:    #d9d5cf;
+  --nav-w:    260px;
+}
+
+/* ─── WRAPPER ─── */
+.skills-section{
+  display:flex;
+  flex-direction:column; /* mobile default: stacked */
+  position:relative;
+  background:var(--bg);
+  font-family:'DM Mono',monospace;
+  color:var(--text-hi);
+}
+
+/* ════════════════════════════════════════
+   MOBILE  (default, < 660 px)
+════════════════════════════════════════ */
+
+/* Horizontal sticky nav tab-bar */
+.skills-nav{
+  position:sticky;
+  top:0;
+  z-index:10;
+  width:100%;
+  height:auto;
+  display:flex;
+  flex-direction:row;
+  align-items:stretch;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;
+  overflow-y:visible;
+  -ms-overflow-style:none;
+}
+.skills-nav::-webkit-scrollbar{display:none}
+
+.nav-label{ display:none }
+
+/* wrapper div — transparent on mobile, rail on desktop */
+.nav-items-wrap{
+  display:flex;
+  flex-direction:row;
+  width:100%;
+}
+
+.nav-item{
+  flex:1 0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:.6rem .9rem .5rem;
+  cursor:pointer;
+  position:relative;
+  border-bottom:2px solid transparent;
+  transition:border-color .25s;
+  min-width:70px;
+}
+.nav-item.active{
+  border-bottom-color:var(--accent);
+}
+
+.nav-item .num{
+  font-size:.55rem;
+  letter-spacing:.1em;
+  color:var(--text-lo);
+  margin-bottom:.2rem;
+  transition:color .25s;
+}
+.nav-item .lbl{
+  font-family:'Syne',sans-serif;
+  font-size:.8rem;
+  font-weight:700;
+  color:var(--text-lo);
+  transition:color .25s, transform .25s;
+  white-space:nowrap;
+}
+.nav-item.active .num{ color:var(--accent) }
+.nav-item.active .lbl{ color:var(--text-hi) }
+
+/* Panels */
+.skills-panels{ width:100% }
+
+.panel{
+  min-height:calc(100svh - 58px); /* subtract sticky nav height */
+  display:flex;
+  align-items:flex-start;
+  padding:2.5rem 1.4rem 3rem;
+  border-bottom:1px solid var(--border);
+}
+
+.panel-inner{ width:100%; max-width:600px }
+
+.panel-eyebrow{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-bottom:1.1rem;
+  font-size:.62rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--text-lo);
+}
+
+.dot{ width:7px; height:7px; border-radius:50%; flex-shrink:0 }
+#p0 .dot{ background:#16a34a }
+#p1 .dot{ background:#2563eb }
+#p2 .dot{ background:#d97706 }
+#p3 .dot{ background:#9333ea }
+
+.panel-title{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:clamp(2rem,9vw,3.2rem);
+  line-height:1.05;
+  color:var(--text-hi);
+  margin-bottom:.85rem;
+}
+
+.panel-desc{
+  font-size:.82rem;
+  line-height:1.85;
+  color:var(--text-mid);
+  margin-bottom:1.6rem;
+}
+
+/* Bars */
+.bars{ display:flex; flex-direction:column; gap:14px; margin-bottom:1.6rem }
+.bar-top{
+  display:flex;
+  justify-content:space-between;
+  font-size:.68rem;
+  color:var(--text-mid);
+  margin-bottom:5px;
+}
+.bar-track{
+  height:3px;
+  background:var(--track);
+  border-radius:99px;
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  border-radius:99px;
+  width:0;
+  transition:width 1.1s cubic-bezier(.4,0,.2,1);
+}
+#p0 .bar-fill{ background:#16a34a }
+#p1 .bar-fill{ background:#2563eb }
+#p2 .bar-fill{ background:#d97706 }
+#p3 .bar-fill{ background:#9333ea }
+
+/* Pills */
+.pills{ display:flex; flex-wrap:wrap; gap:8px }
+.pill{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:.4rem .8rem;
+  font-size:.72rem;
+  font-family:'DM Mono',monospace;
+  color:var(--text-mid);
+  cursor:default;
+  transition:border-color .2s, color .2s, transform .2s, background .2s;
+}
+.pill:hover{
+  border-color:var(--accent);
+  color:var(--text-hi);
+  background:#dcfce7;
+  transform:translateY(-2px);
+}
+
+/* ════════════════════════════════════════
+   DESKTOP  (≥ 660 px)
+════════════════════════════════════════ */
+@media(min-width:660px){
+
+  .skills-section{ flex-direction:row }
+
+  /* ── Sidebar nav ── */
+  .skills-nav{
+    position:sticky;
+    top:0;
+    height:100vh;
+    width:var(--nav-w);
+    min-width:var(--nav-w);
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+    overflow:visible;
+    padding:2.5rem 2rem;
+    border-bottom:none;
+    border-right:1px solid var(--border);
+  }
+
+  .nav-label{
+    display:block;
+    font-size:.63rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--text-lo);
+    margin-bottom:2rem;
+    padding-left:1.4rem;
+  }
+
+  /* Wrap becomes the vertical rail container */
+  .nav-items-wrap{
+    position:relative;
+    flex-direction:column;
+    width:100%;
+  }
+  /* Continuous grey rail — single line behind all items */
+  .nav-items-wrap::before{
+    content:'';
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:2px;
+    background:var(--border);
+    border-radius:2px;
+  }
+
+  .nav-item{
+    flex:0 0 auto;
+    align-items:flex-start;
+    justify-content:center;
+    width:100%;
+    min-width:unset;
+    padding:.9rem 0 .9rem 1.4rem;
+    /* left accent overlays the rail */
+    border-bottom:none;
+    border-left:2px solid transparent;
+    position:relative;
+    z-index:1;
+    transition:border-color .3s;
+  }
+  .nav-item.active{
+    border-left-color:var(--accent);
+    border-bottom-color:transparent;
+  }
+  .nav-item .num{ font-size:.62rem }
+  .nav-item .lbl{ font-size:1rem }
+  .nav-item.active .lbl{
+    color:var(--text-hi);
+    transform:translateX(5px);
+  }
+
+  /* Panels full-viewport-height on desktop */
+  .panel{
+    height:100vh;
+    min-height:unset;
+    align-items:center;
+    padding:clamp(2rem,5vw,5rem);
+  }
+}
+</style>
+
+<div class="skills-section">
+
+  <!-- NAV -->
+  <nav class="skills-nav" id="skillsNav">
+    <p class="nav-label">// Skills</p>
+    <div class="nav-items-wrap">
+      <div class="nav-item" data-idx="0"><div class="num">01</div><span class="lbl">Frontend</span></div>
+      <div class="nav-item" data-idx="1"><div class="num">02</div><span class="lbl">Backend</span></div>
+      <div class="nav-item" data-idx="2"><div class="num">03</div><span class="lbl">Database</span></div>
+      <div class="nav-item" data-idx="3"><div class="num">04</div><span class="lbl">Tools</span></div>
+    </div>
+  </nav>
+
+  <!-- PANELS -->
+  <div class="skills-panels" id="skillsPanels">
+
+    <div class="panel" id="p0" data-idx="0">
+      <div class="panel-inner">
+        <div class="panel-eyebrow"><div class="dot"></div>Layer 01 &nbsp;·&nbsp; Interface</div>
+        <h2 class="panel-title">Frontend<br/>Development</h2>
+        <p class="panel-desc">Building pixel-perfect, performant interfaces that users love. From responsive layouts to smooth animations — clean, accessible, and maintainable code.</p>
+        <div class="bars">
+          <div><div class="bar-top"><span>React / Next.js</span><span>95%</span></div><div class="bar-track"><div class="bar-fill" data-w="95"></div></div></div>
+          <div><div class="bar-top"><span>HTML · CSS · JavaScript</span><span>98%</span></div><div class="bar-track"><div class="bar-fill" data-w="98"></div></div></div>
+          <div><div class="bar-top"><span>TypeScript</span><span>88%</span></div><div class="bar-track"><div class="bar-fill" data-w="88"></div></div></div>
+          <div><div class="bar-top"><span>Tailwind CSS</span><span>92%</span></div><div class="bar-track"><div class="bar-fill" data-w="92"></div></div></div>
+        </div>
+        <div class="pills">
+          <span class="pill">React</span><span class="pill">Next.js</span><span class="pill">Tailwind</span><span class="pill">TypeScript</span><span class="pill">Vue.js</span><span class="pill">Framer Motion</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="p1" data-idx="1">
+      <div class="panel-inner">
+        <div class="panel-eyebrow"><div class="dot"></div>Layer 02 &nbsp;·&nbsp; Logic</div>
+        <h2 class="panel-title">Backend<br/>Development</h2>
+        <p class="panel-desc">Architecting robust APIs and scalable server-side systems. From RESTful services to real-time WebSocket servers — fast, secure, and built to last.</p>
+        <div class="bars">
+          <div><div class="bar-top"><span>Node.js / Express</span><span>93%</span></div><div class="bar-track"><div class="bar-fill" data-w="93"></div></div></div>
+          <div><div class="bar-top"><span>Python / FastAPI</span><span>85%</span></div><div class="bar-track"><div class="bar-fill" data-w="85"></div></div></div>
+          <div><div class="bar-top"><span>REST · GraphQL</span><span>90%</span></div><div class="bar-track"><div class="bar-fill" data-w="90"></div></div></div>
+          <div><div class="bar-top"><span>Auth / Security</span><span>87%</span></div><div class="bar-track"><div class="bar-fill" data-w="87"></div></div></div>
+        </div>
+        <div class="pills">
+          <span class="pill">Node.js</span><span class="pill">Python</span><span class="pill">FastAPI</span><span class="pill">GraphQL</span><span class="pill">Redis</span><span class="pill">Docker</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="p2" data-idx="2">
+      <div class="panel-inner">
+        <div class="panel-eyebrow"><div class="dot"></div>Layer 03 &nbsp;·&nbsp; Data</div>
+        <h2 class="panel-title">Database<br/>Management</h2>
+        <p class="panel-desc">Designing and optimizing data layers for performance and reliability. SQL or NoSQL — efficient schemas, clean queries, and data integrity at any scale.</p>
+        <div class="bars">
+          <div><div class="bar-top"><span>PostgreSQL</span><span>91%</span></div><div class="bar-track"><div class="bar-fill" data-w="91"></div></div></div>
+          <div><div class="bar-top"><span>MongoDB</span><span>88%</span></div><div class="bar-track"><div class="bar-fill" data-w="88"></div></div></div>
+          <div><div class="bar-top"><span>MySQL</span><span>85%</span></div><div class="bar-track"><div class="bar-fill" data-w="85"></div></div></div>
+          <div><div class="bar-top"><span>Prisma / ORM</span><span>89%</span></div><div class="bar-track"><div class="bar-fill" data-w="89"></div></div></div>
+        </div>
+        <div class="pills">
+          <span class="pill">PostgreSQL</span><span class="pill">MongoDB</span><span class="pill">MySQL</span><span class="pill">Redis</span><span class="pill">Supabase</span><span class="pill">Firebase</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="p3" data-idx="3">
+      <div class="panel-inner">
+        <div class="panel-eyebrow"><div class="dot"></div>Layer 04 &nbsp;·&nbsp; Workflow</div>
+        <h2 class="panel-title">Tools &amp;<br/>DevOps</h2>
+        <p class="panel-desc">Streamlining development with modern tooling and CI/CD pipelines. From version control to cloud deployments — shipping fast and keeping teams in sync.</p>
+        <div class="bars">
+          <div><div class="bar-top"><span>Git / GitHub</span><span>96%</span></div><div class="bar-track"><div class="bar-fill" data-w="96"></div></div></div>
+          <div><div class="bar-top"><span>Docker / Kubernetes</span><span>82%</span></div><div class="bar-track"><div class="bar-fill" data-w="82"></div></div></div>
+          <div><div class="bar-top"><span>CI/CD Pipelines</span><span>87%</span></div><div class="bar-track"><div class="bar-fill" data-w="87"></div></div></div>
+          <div><div class="bar-top"><span>AWS / Vercel / GCP</span><span>84%</span></div><div class="bar-track"><div class="bar-fill" data-w="84"></div></div></div>
+        </div>
+        <div class="pills">
+          <span class="pill">Git</span><span class="pill">Docker</span><span class="pill">Kubernetes</span><span class="pill">AWS</span><span class="pill">Vercel</span><span class="pill">Figma</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var panels   = Array.from(document.querySelectorAll('.panel'));
+  var navItems = Array.from(document.querySelectorAll('.nav-item'));
+  var animated = {};
+  var currentActive = -1;
+
+  /* ── Animate skill bars once per panel ── */
+  function animateBars(panel){
+    var idx = panel.getAttribute('data-idx');
+    if(animated[idx]) return;
+    animated[idx] = true;
+    panel.querySelectorAll('.bar-fill').forEach(function(b){
+      var w = parseInt(b.getAttribute('data-w'), 10);
+      requestAnimationFrame(function(){
+        setTimeout(function(){ b.style.width = w + '%'; }, 120);
+      });
+    });
+  }
+
+  /* ── Highlight nav item ── */
+  function setActive(idx){
+    if(idx === currentActive) return;
+    currentActive = idx;
+    navItems.forEach(function(n){
+      n.classList.toggle('active', +n.getAttribute('data-idx') === idx);
+    });
+    animateBars(panels[idx]);
+  }
+
+  /*
+   * ── Scroll-based active detection ──
+   *
+   * IntersectionObserver ratios break when panels are taller than the
+   * viewport (ratio can never exceed viewport/panelHeight, so the 0.3
+   * threshold is never crossed on short screens).
+   *
+   * Instead we use a simple scroll listener: whichever panel's top edge
+   * is closest to — but still above — 45% of the viewport height wins.
+   */
+  var ticking = false;
+
+  function detectActive(){
+    var trigger = window.innerHeight * 0.45;
+    var best = 0;
+    for(var i = 0; i < panels.length; i++){
+      var top = panels[i].getBoundingClientRect().top;
+      if(top <= trigger) best = i;
+    }
+    setActive(best);
+  }
+
+  window.addEventListener('scroll', function(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      detectActive();
+      ticking = false;
+    });
+  }, {passive:true});
+
+  /* ── Click nav → scroll panel into view ── */
+  navItems.forEach(function(n){
+    n.addEventListener('click', function(){
+      var idx = +n.getAttribute('data-idx');
+      var navH = document.getElementById('skillsNav').getBoundingClientRect().height;
+      var top  = panels[idx].getBoundingClientRect().top + window.pageYOffset - navH;
+      window.scrollTo({top: top, behavior:'smooth'});
+    });
+  });
+
+  /* ── Init ── */
+  detectActive();
+
+})();
+</script>
+<!-- ==================== END SKILLS SECTION ==================== -->
+  
+</body>
+</html>
