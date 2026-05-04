@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StoreFrame | Newsroom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:         #080a0f;
+      --surface:    #0e1117;
+      --surface-2:  #141820;
+      --border:     rgba(255,255,255,0.06);
+      --accent:     #ff4d00;
+      --accent-dim: rgba(255,77,0,0.18);
+      --text-1:     #f0f2f7;
+      --text-2:     #8b8f9e;
+      --text-3:     #3f4455;
+      --card-w:     304px;
+      --radius:     640px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-1);
+    }
+
+    /* ── Background atmosphere ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,77,0,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(80,120,255,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Grain texture overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Layout ── */
+    .news-section {
+      position: relative;
+      z-index: 1;
+      padding: 36px 0 0;
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .news-header {
+      margin-bottom: 28px;
+      animation: fadeDown 0.9s cubic-bezier(.16,1,.3,1) both;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 5px 14px 5px 10px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 14px;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.3; }
+    }
+
+    .headline {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 800;
+      color: var(--text-1);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .headline em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    /* ── Viewport ── */
+    .carousel-viewport {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1100px;
+      perspective-origin: 50% 50%;
+      cursor: grab;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel-viewport:active { cursor: grabbing; }
+
+    /* Fade edges */
+    .carousel-viewport::before,
+    .carousel-viewport::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 220px;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .carousel-viewport::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg), transparent);
+    }
+    .carousel-viewport::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg), transparent);
+    }
+
+    /* ── Carousel container ── */
+    .carousel-container {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: var(--card-w);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    /* ── Card ── */
+    .news-card {
+      position: absolute;
+      width: var(--card-w);
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.04) inset,
+        0 24px 64px rgba(0,0,0,0.55),
+        0 0 0 0.5px rgba(0,0,0,0.5);
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      left: 50%;
+      top: 50%;
+      margin-left: -152px;
+      margin-top: -213px;
+      transition: box-shadow 0.3s;
+    }
+
+    .card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 16px;
+      margin-bottom: 18px;
+      object-fit: cover;
+      display: block;
+      /* subtle dark tint over image */
+      filter: brightness(0.88) saturate(0.85);
+    }
+
+    .card-meta {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--text-3);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+    }
+
+    .card-dot {
+      width: 5px; height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .news-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      line-height: 1.45;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 10px;
+      text-align: left;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .news-card p {
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: var(--text-2);
+      text-align: left;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Read more link */
+    .card-link {
+      margin-top: 16px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      opacity: 0.75;
+      transition: opacity 0.2s;
+    }
+    .card-link:hover { opacity: 1; }
+    .card-link svg { width: 11px; height: 11px; }
+
+    /* ── Bottom hint ── */
+    .drag-hint {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      z-index: 10;
+      pointer-events: none;
+      animation: fadeUp 1s cubic-bezier(.16,1,.3,1) 0.6s both;
+    }
+
+    .drag-hint svg { width: 14px; height: 14px; opacity: 0.5; }
+
+    /* ── Scroll indicator dots ── */
+    .dots {
+      position: fixed;
+      bottom: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .dot-item {
+      width: 4px; height: 4px;
+      border-radius: 2px;
+      background: var(--text-3);
+      transition: all 0.35s cubic-bezier(.16,1,.3,1);
+    }
+
+    .dot-item.active {
+      width: 20px;
+      background: var(--accent);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .headline { font-size: 2rem; }
+      .carousel-viewport::before,
+      .carousel-viewport::after { width: 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="news-section">
+
+    <div class="news-header">
+      <div><span class="badge"><span class="badge-dot"></span>Newsroom</span></div>
+      <h2 class="headline">More <em>News</em></h2>
+    </div>
+
+    <div class="carousel-viewport" id="viewport">
+      <div class="carousel-container" id="carousel"></div>
+    </div>
+
+  </section>
+
+  <!-- Indicator dots -->
+  <div class="dots" id="dots"></div>
+
+  <!-- Drag hint -->
+  <div class="drag-hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M8 7l4-4 4 4M8 17l4 4 4-4M5 12h14"/>
+    </svg>
+    Drag to explore
+  </div>
+
+  <script>
+  (function () {
+    const carousel  = document.getElementById('carousel');
+    const viewport  = document.getElementById('viewport');
+    const dotsEl    = document.getElementById('dots');
+
+    const rawData = [
+      { title: "High-Performance Magento Hosting Solutions",   date: "MAR 24, 2026", desc: "Optimized server stacks for industrial-scale e-commerce traffic." },
+      { title: "Automated Scaling with StoreFrame Labs",       date: "MAR 22, 2026", desc: "Predictive resource management for enterprise infrastructure." },
+      { title: "Minimalist UI: The Future of Dashboard Design",date: "MAR 20, 2026", desc: "Applying Swiss-style precision to complex technical interfaces." },
+      { title: "Advanced Security Layers for Magento Stores",  date: "MAR 18, 2026", desc: "Zero-trust architecture protecting global transaction nodes." },
+      { title: "Edge Caching Strategies for Global Reach",     date: "MAR 16, 2026", desc: "Deploying CDN layers to serve sub-100ms responses worldwide." },
+      { title: "The Rise of Headless Commerce Architectures",  date: "MAR 14, 2026", desc: "Decoupling front-end velocity from back-end stability at scale." },
+    ];
+
+    const data      = [...rawData, ...rawData, ...rawData];
+    const cardCount = data.length;
+    const RADIUS    = 640;
+    const BASE_COUNT = rawData.length;
+
+    let currentRotation = 0;
+    let velocity        = 0;
+    let isDragging      = false;
+    let lastX           = 0;
+    const DRAG_SENS     = 0.15;
+
+    /* ── Build dot indicators (for base items) ── */
+    rawData.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot-item' + (i === 0 ? ' active' : '');
+      dotsEl.appendChild(d);
+    });
+
+    const dotItems = dotsEl.querySelectorAll('.dot-item');
+
+    /* ── Generate cards ── */
+    data.forEach((item, i) => {
+      const card  = document.createElement('div');
+      card.className = 'news-card';
+      const angle = (i * 360) / cardCount;
+      card.style.transform = `rotateY(${angle}deg) translateZ(${RADIUS}px) rotateY(180deg)`;
+
+      // Varied image seeds for visual interest
+      const imgSeed = (i % BASE_COUNT) + 10;
+
+      card.innerHTML = `
+        <img class="card-img" src="https://picsum.photos/seed/${imgSeed * 7}/400/300" alt="news image" loading="lazy">
+        <div class="card-meta">
+          <span class="card-dot"></span>
+          News &nbsp;·&nbsp; ${item.date}
+        </div>
+        <h3>${item.title}</h3>
+        <p>${item.desc}</p>
+        <a href="#" class="card-link">
+          Read more
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M1 6h10M7 2l4 4-4 4"/>
+          </svg>
+        </a>
+      `;
+      carousel.appendChild(card);
+    });
+
+    /* ── Update active dot ── */
+    function updateDots() {
+      /* Normalise rotation to [0, 360) */
+      const step   = 360 / cardCount;
+      /* Which card is closest to front (rotateY = 0 face) */
+      const norm   = ((-currentRotation % 360) + 360) % 360;
+      const idx    = Math.round(norm / step) % cardCount;
+      const base   = idx % BASE_COUNT;
+      dotItems.forEach((d, i) => d.classList.toggle('active', i === base));
+    }
+
+    /* ── Physics loop ── */
+    function animate() {
+      if (!isDragging) {
+        currentRotation += velocity;
+        velocity *= 0.95;
+        if (Math.abs(velocity) < 0.01) {
+          currentRotation -= 0.04; // idle drift
+        }
+      }
+      carousel.style.transform = `translate(-50%, -50%) rotateY(${currentRotation}deg)`;
+      updateDots();
+      requestAnimationFrame(animate);
+    }
+
+    /* ── Interaction ── */
+    const onStart = (e) => {
+      isDragging = true;
+      lastX      = e.pageX || (e.touches ? e.touches[0].pageX : 0);
+      velocity   = 0;
+    };
+
+    const onMove = (e) => {
+      if (!isDragging) return;
+      if (e.touches) e.preventDefault();
+      const x      = e.pageX || (e.touches ? e.touches[0].pageX : 0);
+      const deltaX = x - lastX;
+      currentRotation += deltaX * DRAG_SENS;
+      velocity         = deltaX * DRAG_SENS;
+      lastX            = x;
+    };
+
+    const onEnd = () => { isDragging = false; };
+
+    viewport.addEventListener('mousedown',  onStart);
+    window.addEventListener('mousemove',    onMove);
+    window.addEventListener('mouseup',      onEnd);
+    viewport.addEventListener('touchstart', onStart, { passive: false });
+    window.addEventListener('touchmove',    onMove,  { passive: false });
+    window.addEventListener('touchend',     onEnd);
+
+    window.addEventListener('wheel', (e) => {
+      if (e.target.closest('#viewport')) {
+        velocity += e.deltaY * 0.01;
+      }
+    }, { passive: true });
+
+    animate();
+  })();
+  </script>
+</body>
+</html>

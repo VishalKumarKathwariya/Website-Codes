@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Little Vanity - Hero Section</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Main Hero Container */
+        .hero-section {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Left Section - 60% - z-index: 1 */
+        .left-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60%;
+            height: 100%;
+            background-color: #f5f5f5;
+            background-image: url(''); /* Add your image URL here */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            opacity: 0.7;
+        }
+
+        .left-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+        /* Right Section - 40% - z-index: 1 */
+        .right-section {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40%;
+            height: 100%;
+            background: #f5f5f5;
+            z-index: 1;
+        }
+
+        /* Premium Quality Badge - z-index: 5 */
+        .premium-badge {
+            position: absolute;
+            top: 10%;
+            right: 8%;
+            width: 85px;
+            height: 85px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .premium-text {
+            font-size: 9px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 1.5px;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        /* Blob/Circle in Center - z-index: 5 */
+        .blob-circle {
+            position: absolute;
+            top: 60%;
+            left: 45%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #f172f1 0%, #9d479d 100%);
+            border-radius: 50%;
+            z-index: 5;
+            opacity: 0.4;
+        }
+
+        /* Counter *01 Bottom Right - z-index: 5 */
+        .counter {
+            position: absolute;
+            bottom: 12%;
+            right: 10%;
+            font-size: 90px;
+            font-weight: 700;
+            color: #1a1a1a;
+            font-family: 'Georgia', serif;
+            z-index: 5;
+        }
+
+        /* Center Overlapping Typography */
+       /* THE LITTLE - z-index: 10 */
+.text-the-little {
+    position: absolute;
+    top: 34%;
+    left: 60%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 44px;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    z-index: 10;
+}
+
+        /* VANITY - z-index: 11 */
+        .text-vanity {
+            position: absolute;
+            top: 36%;
+            left: 60%;
+            transform: translateX(-50%);
+            font-size: 150px;
+            font-family: 'Georgia', serif;
+            font-weight: 400;
+            color: #1a1a1a;
+            letter-spacing: 1rem;
+            z-index: 11;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        /* FIND YOURS with underline - z-index: 12 */
+        .cta-container {
+            position: absolute;
+            margin-top: 1rem;
+            top: 55%;
+            left: 78%;
+            transform: translateX(-50%);
+            z-index: 12;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cta-text {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.25rem;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            position: relative;
+            padding-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cta-text::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #6b216b 0%, #e526e5 100%);
+        }
+
+        .cta-container:hover {
+            transform: translateX(-48%);
+        }
+
+        .cta-container:hover .cta-text::after {
+            width: 110%;
+        }
+
+        /* Responsive adjustments for text visibility */
+        @media (max-width: 1400px) {
+            .text-vanity {
+                font-size: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <!-- Left Section (60%) -->
+        <div class="left-section">
+            <!-- Image will be added via CSS background-image or you can add <img> tag here -->
+        </div>
+
+        <!-- Right Section (40%) -->
+        <div class="right-section">
+            <!-- Premium Quality Badge - Top Right -->
+            <div class="premium-badge">
+                <div class="premium-text">PREMIUM<br>QUALITY</div>
+            </div>
+
+            <!-- Blob Circle - Center -->
+            <div class="blob-circle"></div>
+
+            <!-- Counter - Bottom Right -->
+            <div class="counter">*01</div>
+        </div>
+
+        <!-- Center Overlapping Typography Elements -->
+        
+        <!-- THE LITTLE -->
+        <div class="text-the-little">THE LITTLE</div>
+
+        <!-- VANITY -->
+        <div class="text-vanity">VANITY</div>
+
+        <!-- FIND YOURS with underline -->
+        <div class="cta-container">
+            <div class="cta-text">FIND YOURS</div>
+        </div>
+    </div>
+</body>
+</html>

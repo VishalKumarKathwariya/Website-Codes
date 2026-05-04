@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animation Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/splitting/dist/splitting.css">
+
+<style>
+/* =============================================
+   GLOBAL
+   ============================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.scroll-wrap {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.section {
+  height: 100vh;
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Nav Dots */
+.nav-dots {
+  position: fixed;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.nav-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  border: 1.5px solid rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-dot.active {
+  background: white;
+  transform: scale(1.45);
+}
+
+.section-label {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  opacity: 0.35;
+  color: white;
+  z-index: 10;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+}
+
+/* =============================================
+   SECTION 1 — SPLITTING
+   ============================================= */
+#s1 {
+  --duration: 6s;
+  --wave-duration: calc(var(--duration) * 0.25);
+  --text-in-delay: calc(var(--duration) * 0.275);
+  --text-in-duration: calc(var(--duration) * 0.1);
+  --easing: cubic-bezier(0.5, 0, 0.5, 1);
+  --dot-color: #ffd950;
+  --dot-color-dark: #977a12;
+
+  background: #060506;
+  color: white;
+  font-family: 'Heebo', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+#s1 .s1-hint {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  letter-spacing: 3px;
+  opacity: 0.25;
+  color: white;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#s1 .s1-container {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+#s1 .s1-container > * {
+  grid-area: 1 / 1;
+}
+
+#s1 .s1-title {
+  font-size: 10vmin;
+  margin: 0;
+}
+
+/* Splitting chars */
+#s1 .s1-title .char {
+  --delay: calc(var(--text-in-delay) + (0.25s * (1 - var(--distance-percent, 0.5))));
+  animation: s1-text-in var(--text-in-duration) var(--easing) var(--delay) backwards;
+  transform-origin: center 1em;
+}
+
+@keyframes s1-text-in {
+  0% {
+    opacity: 0;
+    transform: translateX(calc(-0.4em * var(--char-offset, 0))) scale(0);
+  }
+  90% {
+    transform: translateX(0em) scale(1.1);
+  }
+}
+
+#s1 .s1-title .char[data-char="t"],
+#s1 .s1-title .char[data-char="i"] {
+  visibility: hidden;
+  --squish-scale: 0.6;
+  --squish-y: 10%;
+}
+
+#s1 .s1-title .char[data-char="t"]::before,
+#s1 .s1-title .char[data-char="i"]::before {
+  content: attr(data-char);
+  animation: s1-text-squish var(--duration) var(--easing) forwards;
+  visibility: visible;
+  transform-origin: center 1em;
+  display: block;
+}
+
+#s1 .s1-title .char[data-char="i"] {
+  --squish-scale: 0.9;
+  --squish-y: 5%;
+}
+
+@keyframes s1-text-squish {
+  47.5%, 52.5% { transform: none; }
+  50% {
+    transform: translateY(calc(var(--squish-y) * 1))
+               scaleY(calc(var(--squish-scale) * 1));
+  }
+}
+
+#s1 .s1-title .char:last-child {
+  animation:
+    s1-text-in var(--text-in-duration) var(--easing) var(--delay) backwards,
+    s1-text-bonk var(--duration) var(--easing) forwards;
+}
+
+@keyframes s1-text-bonk {
+  80%, 85%, to { transform: none; }
+  82% { transform: translateX(-20%); }
+}
+
+/* Dot */
+#s1 .s1-dot {
+  font-size: 5vmin;
+  width: 1em;
+  height: 1em;
+  animation: s1-dot var(--duration) var(--easing) both;
+}
+
+#s1 .s1-dot-inner {
+  animation: s1-dot-inner var(--duration) var(--easing) both;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+#s1 .s1-dot-inner > * { grid-area: 1 / 1; }
+
+#s1 .s1-dot-wave {
+  width: 200%;
+  height: 200%;
+  fill: var(--dot-color);
+  animation: s1-wave-in var(--wave-duration) var(--easing);
+  --offset-x: -110%;
+}
+
+#s1 .s1-dot-wave.s1-bg {
+  fill: var(--dot-color-dark);
+  animation-duration: calc(0.95 * var(--wave-duration));
+  --offset-x: 110%;
+}
+
+@keyframes s1-wave-in {
+  0% { transform: translateY(100%) translateX(var(--offset-x)); }
+  70% { transform: translateY(30%) translateX(0%); }
+}
+
+@keyframes s1-dot {
+  from            { opacity: 0; transform: scale(3); }
+  10%             { opacity: 1; transform: scale(3); }
+  15%             { transform: scale(3) translateY(0.5em) scaleY(1.5); }
+  20%             { transform: scale(1) translateY(-300%); }
+  30%             { transform: translateY(1em) scaleY(0.5); }
+  40%             { transform: translateY(-400%); }
+  50%             { transform: translateY(-1em); }
+  53%             { transform: translateY(-300%); }
+  56%             { transform: translateY(-1em); }
+  59%             { transform: translateY(-200%); }
+  62%             { transform: translateY(1em); }
+  80%, 90%, to    { transform: translateY(1em); }
+}
+
+@keyframes s1-dot-inner {
+  from, 45% { transform: none; }
+  70% {
+    transform: translateX(6em);
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0);
+  }
+  80% {
+    transform: translateX(4.3em);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+  }
+  83%, to { transform: translateX(4.4em); }
+}
+
+/* Pause all animations when not activated */
+#s1:not([data-play]) *,
+#s1:not([data-play]) *::before,
+#s1:not([data-play]) *::after {
+  visibility: hidden !important;
+  animation: none !important;
+}
+
+
+/* =============================================
+   SECTION 2 — GSAP FLIP
+   ============================================= */
+#s2 {
+  --color-green:    #0AE448;
+  --color-pink:     #FF6B9D;
+  --color-blue-lt:  #74BCFF;
+  --color-blue:     #0066FF;
+  --color-surface:  #F0F0E8;
+  --color-dark:     #0e100f;
+
+  background: var(--color-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+#s2 .s2-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#s2 .s2-container.grid,
+#s2 .s2-container.columns {
+  align-content: stretch;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+#s2 .s2-letter {
+  text-align: center;
+  color: black;
+  font-size: 10vmax;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+}
+
+#s2 .s2-container.grid .s2-letter    { flex-basis: 50%; }
+#s2 .s2-container.columns .s2-letter { flex-basis: 25%; }
+
+#s2 .s2-for,
+#s2 .s2-gsap {
+  font-size: 5vmax;
+  color: var(--color-surface);
+}
+
+#s2 .s2-for {
+  padding: 2px 1.6vmax;
+  font-weight: 300;
+  display: none;
+}
+
+#s2 .s2-gsap {
+  padding: 2px 0;
+  font-weight: 700;
+  display: none;
+}
+
+#s2 .s2-container.final .s2-for,
+#s2 .s2-container.final .s2-gsap {
+  display: block;
+}
+
+#s2 .s2-letter.F { background: var(--color-green); }
+#s2 .s2-letter.l { background: var(--color-pink); }
+#s2 .s2-letter.i { background: var(--color-blue-lt); }
+#s2 .s2-letter.p { background: var(--color-blue); }
+
+#s2 .s2-container.plain .s2-letter {
+  background: transparent !important;
+  color: var(--color-surface);
+  padding: 0;
+}
+
+#s2 .gsap-logo {
+  position: absolute;
+  width: 90px;
+  bottom: 18px;
+  right: 28px;
+  opacity: 0.7;
+}
+
+
+/* =============================================
+   SECTION 3 — JELLO (VARIABLE FONT)
+   ============================================= */
+@font-face {
+  font-family: 'GT-Flexa';
+  src: url('https://assets.codepen.io/61488/GT-Flexa-VF-Trial.woff2') format('woff2');
+  font-display: block;
+  font-style: normal;
+  font-weight: 100 800;
+  font-stretch: 10% 200%;
+}
+
+#s3 {
+  --fw: 600;
+  --fs: 150;
+  --fontSize: 18;
+
+  background-color: #FF7F99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'GT-Flexa', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: url("data:image/svg+xml,%3Csvg width='64px' height='64px' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 700'%3E%3Cpath d='M419.99,560.0013c83.627,0,151.67-68.041,151.67-151.67v-198.33A46.6565,46.6565,0,0,0,499.047,171.22a46.6714,46.6714,0,0,0-70-23.3323,46.7853,46.7853,0,0,0-44.055-31.219,46.2641,46.2641,0,0,0-23.332,6.2773V46.669a46.668,46.668,0,1,0-93.336,0v272.79l-64.145-32.082a70.2983,70.2983,0,0,0-31.289-7.375,44.6638,44.6638,0,0,0-31.5,76.23l150.88,150.87A179.4167,179.4167,0,0,0,420,560ZM172.9,303.33a21.3182,21.3182,0,0,0-15.0035,36.379l150.9,150.88a156.058,156.058,0,0,0,111.18,46.082c70.77,0,128.36-57.562,128.36-128.33V210.001a23.332,23.332,0,1,0-46.664,0v58.332a11.668,11.668,0,0,1-23.336,0V186.669a23.332,23.332,0,1,0-46.664,0v81.668a11.668,11.668,0,0,1-23.336,0v-105a23.332,23.332,0,0,0-46.664,0v105a11.668,11.668,0,0,1-23.336,0V46.677a23.332,23.332,0,0,0-46.664,0v291.67a11.66,11.66,0,0,1-16.8712,10.43l-81.035-40.508a46.9273,46.9273,0,0,0-20.863-4.9258Z' fill='%23fff'/%3E%3C/svg%3E") 32 32, pointer;
+}
+
+#s3 .s3-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+}
+
+#s3 .s3-content {
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#s3 .s3-txt {
+  margin: 0;
+  font-size: calc(var(--fontSize) * 1vw);
+  font-weight: var(--fw);
+  font-stretch: calc(var(--fs) * 1%);
+  line-height: 0.65;
+  letter-spacing: -1vw;
+  color: white;
+  text-shadow:
+    0 0.05em 0 #FFB0C0,
+    0 0.1em 0.1em rgba(70,0,35,0.3),
+    0 0.4em 0.3em rgba(70,0,35,0.1);
+}
+
+#s3 .s3-txt .char {
+  display: inline-block;
+  position: relative;
+  padding-top: 1.08vw;
+  will-change: font-weight, font-stretch, transform;
+}
+
+#s3 .s3-hint {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  letter-spacing: 3px;
+  opacity: 0.4;
+  color: white;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation Dots -->
+<nav class="nav-dots" id="navDots">
+  <div class="nav-dot active" data-target="0"></div>
+  <div class="nav-dot"        data-target="1"></div>
+  <div class="nav-dot"        data-target="2"></div>
+</nav>
+
+<!-- =============================================
+     SCROLL CONTAINER
+     ============================================= -->
+<div class="scroll-wrap" id="scrollWrap">
+
+  <!-- ─── SECTION 1: SPLITTING ─── -->
+  <section class="section" id="s1">
+    <div class="s1-hint">Click to replay</div>
+    <div class="s1-container">
+      <h1 class="s1-title" data-splitting>Splitting</h1>
+      <div class="s1-dot">
+        <div class="s1-dot-inner">
+          <svg class="s1-dot-wave s1-bg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+            <path d="M799.09 90s11.04 0 0 0c-80.714 0-79.621-90-200-90-120.377 0-118.607 90-200 90-81.391 0-81.215-90-200-90C80.308 0 78.68 89.29-.91 90c-6.946.062 0 0 0 0v510h800V90z"/>
+          </svg>
+          <svg class="s1-dot-wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+            <path d="M799.09 90s11.04 0 0 0c-80.714 0-79.621-90-200-90-120.377 0-118.607 90-200 90-81.391 0-81.215-90-200-90C80.308 0 78.68 89.29-.91 90c-6.946.062 0 0 0 0v510h800V90z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="section-label">01 — Splitting.js</div>
+  </section>
+
+  <!-- ─── SECTION 2: GSAP FLIP ─── -->
+  <section class="section" id="s2">
+    <div class="s2-container final" id="s2Container">
+      <div class="s2-letter F">F</div>
+      <div class="s2-letter l">L</div>
+      <div class="s2-letter i">I</div>
+      <div class="s2-letter p">P</div>
+      <div class="s2-for">for</div>
+      <div class="s2-gsap">GSAP</div>
+    </div>
+    <img
+      src="https://assets.codepen.io/16327/gsap-logo-light.svg"
+      class="gsap-logo"
+      alt="GSAP logo"
+    >
+    <div class="section-label">02 — GSAP Flip</div>
+  </section>
+
+  <!-- ─── SECTION 3: JELLO ─── -->
+  <section class="section" id="s3">
+    <div class="s3-hint">Drag the letters</div>
+    <div class="s3-stage" id="s3Stage">
+      <div class="s3-content">
+        <h1 class="s3-txt" id="s3Txt">Vishal</h1>
+      </div>
+    </div>
+    <div class="section-label">03 — Variable Font Drag</div>
+  </section>
+
+</div><!-- /scroll-wrap -->
+
+
+<!-- ─── SCRIPTS ─── -->
+<script src="https://unpkg.com/splitting/dist/splitting.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+
+<script>
+/* =============================================
+   NAV DOTS + SCROLL SYNC
+   ============================================= */
+(function () {
+  const wrap    = document.getElementById('scrollWrap');
+  const dots    = document.querySelectorAll('.nav-dot');
+  const sects   = document.querySelectorAll('.section');
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const i = parseInt(dot.dataset.target, 10);
+      sects[i].scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  wrap.addEventListener('scroll', () => {
+    const idx = Math.round(wrap.scrollTop / window.innerHeight);
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  });
+})();
+
+
+/* =============================================
+   SECTION 1 — SPLITTING.JS
+   ============================================= */
+(function () {
+  const s1 = document.getElementById('s1');
+
+  // Run Splitting on the scoped heading
+  Splitting({ target: '.s1-title', by: 'chars' });
+
+  function play() {
+    requestAnimationFrame(() => {
+      s1.dataset.play = '1';
+    });
+  }
+
+  function replay() {
+    delete s1.dataset.play;
+    // Need two rAF ticks so the browser resets the animation
+    requestAnimationFrame(() => requestAnimationFrame(play));
+  }
+
+  play();
+  s1.addEventListener('click', replay);
+})();
+
+
+/* =============================================
+   SECTION 2 — GSAP FLIP
+   ============================================= */
+(function () {
+  gsap.registerPlugin(Flip);
+
+  const container = document.getElementById('s2Container');
+  const layouts   = ['final', 'plain', 'columns', 'grid'];
+  let cur = 0;
+
+  function nextState() {
+    const state = Flip.getState('.s2-letter, .s2-for, .s2-gsap', {
+      props : 'color,backgroundColor',
+      simple: true
+    });
+
+    container.classList.remove(layouts[cur]);
+    cur = (cur + 1) % layouts.length;
+    container.classList.add(layouts[cur]);
+
+    Flip.from(state, {
+      absolute : true,
+      stagger  : 0.07,
+      duration : 0.7,
+      ease     : 'power2.inOut',
+      spin     : cur === 0,
+      simple   : true,
+      onEnter  : (els, anim) => gsap.fromTo(els, { opacity: 0 }, { opacity: 1, delay: anim.duration() - 0.1 }),
+      onLeave  : els => gsap.to(els, { opacity: 0 })
+    });
+
+    gsap.delayedCall(cur === 0 ? 3.5 : 1.5, nextState);
+  }
+
+  gsap.delayedCall(1, nextState);
+})();
+
+
+/* =============================================
+   SECTION 3 — VARIABLE FONT DRAG (JELLO)
+   ============================================= */
+(function () {
+  const s3Stage = document.getElementById('s3Stage');
+  const s3      = document.getElementById('s3');
+  const s3TxtEl = document.getElementById('s3Txt');
+
+  const weightInit   = 600;
+  const weightTarget = 400;
+  const weightDiff   = weightInit - weightTarget;
+  const stretchInit   = 150;
+  const stretchTarget = 80;
+  const stretchDiff   = stretchInit - stretchTarget;
+  const maxYScale     = 2.5;
+  const elasticDropOff = 0.8;
+
+  let chars     = [];
+  let numChars  = 0;
+  let charH     = 0;
+  let isDown    = false;
+  let initY     = 0;
+  let finalY    = 0;
+  let selIdx    = 0;
+  let dragScale = 0;
+
+  /* — Manual SplitText replacement — */
+  function splitText() {
+    const text = s3TxtEl.textContent;
+    s3TxtEl.innerHTML = '';
+    text.split('').forEach(ch => {
+      const span = document.createElement('span');
+      span.className   = 'char';
+      span.textContent = ch;
+      s3TxtEl.appendChild(span);
+    });
+    chars    = Array.from(s3TxtEl.querySelectorAll('.char'));
+    numChars = chars.length;
+  }
+
+  function calcDispersion(index) {
+    const d = 1 - Math.abs(index - selIdx) / (numChars * elasticDropOff);
+    return d * dragScale;
+  }
+
+  function setDragFont() {
+    gsap.to(chars, {
+      y          : i => calcDispersion(i) * -50,
+      fontWeight : i => weightInit - calcDispersion(i) * weightDiff,
+      fontStretch: i => `${stretchInit - calcDispersion(i) * stretchDiff}%`,
+      scaleY     : i => Math.max(0.5, 1 + calcDispersion(i)),
+      ease       : 'power4',
+      duration   : 0.6
+    });
+  }
+
+  function snapBack() {
+    gsap.to(chars, {
+      y          : 0,
+      fontWeight : weightInit,
+      fontStretch: `${stretchInit}%`,
+      scale      : 1,
+      ease       : 'elastic(0.35, 0.1)',
+      duration   : 1,
+      stagger    : { each: 0.02, from: selIdx }
+    });
+  }
+
+  function calcDist() {
+    const max = charH * (maxYScale - 1);
+    dragScale = (initY - finalY) / max;
+    dragScale = Math.min(maxYScale - 1, Math.max(-0.5, dragScale));
+  }
+
+  function bindEvents() {
+    s3.addEventListener('mousemove', e => {
+      if (!isDown) return;
+      finalY = e.clientY;
+      calcDist();
+      setDragFont();
+    });
+
+    s3.addEventListener('mouseup', e => {
+      if (!isDown) return;
+      finalY = e.clientY;
+      isDown = false;
+      snapBack();
+    });
+
+    s3.addEventListener('mouseleave', e => {
+      if (!isDown) return;
+      if (e.clientY <= 0 || e.clientX <= 0 ||
+          e.clientX >= window.innerWidth || e.clientY >= window.innerHeight) {
+        isDown = false;
+        snapBack();
+      }
+    });
+
+    /* Touch support */
+    s3.addEventListener('touchmove', e => {
+      if (!isDown) return;
+      e.preventDefault();
+      finalY = e.touches[0].clientY;
+      calcDist();
+      setDragFont();
+    }, { passive: false });
+
+    s3.addEventListener('touchend', () => {
+      if (!isDown) return;
+      isDown = false;
+      snapBack();
+    });
+
+    chars.forEach((ch, i) => {
+      ch.addEventListener('mousedown', e => {
+        initY  = e.clientY;
+        selIdx = i;
+        isDown = true;
+      });
+      ch.addEventListener('touchstart', e => {
+        initY  = e.touches[0].clientY;
+        selIdx = i;
+        isDown = true;
+      }, { passive: true });
+    });
+  }
+
+  function initJello() {
+    splitText();
+    charH = s3TxtEl.offsetHeight;
+
+    gsap.set(s3Stage, { autoAlpha: 1 });
+    gsap.set(chars,   { transformOrigin: 'center bottom' });
+
+    const rect = s3TxtEl.getBoundingClientRect();
+    gsap.from(chars, {
+      y          : () => -1 * (rect.y + charH + 500),
+      fontWeight : weightTarget,
+      fontStretch: `${stretchTarget}%`,
+      scaleY     : 2,
+      ease       : 'elastic(0.2, 0.1)',
+      duration   : 1.5,
+      delay      : 0.4,
+      stagger    : { each: 0.05, from: 'random' },
+      onComplete : bindEvents
+    });
+  }
+
+  /* Lazy-init when section scrolls into view */
+  let jelloReady = false;
+  const io = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !jelloReady) {
+      jelloReady = true;
+      initJello();
+    }
+  }, { threshold: 0.4 });
+  io.observe(s3);
+
+  window.addEventListener('resize', () => {
+    charH = s3TxtEl.offsetHeight;
+  });
+})();
+</script>
+</body>
+</html>

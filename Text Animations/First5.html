@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Text Animations - Professional Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --card-bg: #16162a;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background: var(--bg-primary);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 70% 60%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
+            animation: backgroundDrift 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes backgroundDrift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-5%, -5%) rotate(2deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 120px;
+        }
+
+        .header-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            color: var(--accent-purple);
+        }
+
+        .main-title {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(3.5rem, 10vw, 7rem);
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 500;
+        }
+
+        .demo-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 70px 60px;
+            margin-bottom: 60px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.4s ease;
+        }
+
+        .demo-section:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .demo-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--accent-blue), 
+                var(--accent-purple), 
+                var(--accent-pink),
+                transparent
+            );
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .demo-section:hover::after {
+            opacity: 1;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .section-number {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1rem;
+            color: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-number::before {
+            content: '';
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-purple), transparent);
+        }
+
+        .section-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .demo-area {
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 40px;
+            border: 1px dashed rgba(255, 255, 255, 0.05);
+        }
+
+        .instruction {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 30px;
+            padding: 16px;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        /* Animation 1: Jelly/Elastic Text with Real Spring Physics */
+        .jelly-container {
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .jelly-text {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            display: inline-block;
+            letter-spacing: 0.02em;
+        }
+
+        .jelly-text span {
+            display: inline-block;
+            transform-origin: center bottom;
+            color: var(--accent-blue);
+            position: relative;
+        }
+
+        /* Animation 2: Professional Scatter System (Canvas-based) */
+        #scatterCanvas {
+            width: 100%;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        .custom-cursor {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--accent-purple);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+            opacity: 0;
+            mix-blend-mode: difference;
+        }
+
+        .custom-cursor.active {
+            opacity: 1;
+        }
+
+        /* Animation 3: Magnetic Attraction Field */
+        #magneticCanvas {
+            width: 100%;
+            height: 300px;
+        }
+
+        /* Animation 4: Liquid Distortion */
+        .liquid-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+        }
+
+        #liquidCanvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Animation 5: Advanced Particle System */
+        #particleCanvas {
+            width: 100%;
+            height: 300px;
+            cursor: crosshair;
+        }
+
+        footer {
+            text-align: center;
+            padding: 80px 20px 60px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 100px;
+        }
+
+        footer p {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tech-badge {
+            padding: 6px 16px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-purple);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 60px 24px;
+            }
+
+            .demo-section {
+                padding: 40px 24px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .jelly-text {
+                font-size: 3rem;
+            }
+
+            #scatterCanvas,
+            #magneticCanvas,
+            #liquidCanvas,
+            #particleCanvas {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-cursor"></div>
+
+    <div class="container">
+        <header>
+            <div class="header-badge">Advanced Physics Engine</div>
+            <h1 class="main-title">Professional<br>Text Animations</h1>
+            <p class="subtitle">Interactive effects powered by real physics calculations, spring systems, and particle dynamics</p>
+        </header>
+
+        <!-- Animation 1: Jelly Physics -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">01</div>
+                <h2 class="section-title">Elastic Spring Physics</h2>
+            </div>
+            <div class="demo-area">
+                <div class="jelly-container" id="jellyContainer">
+                    <div class="jelly-text" id="jellyText"></div>
+                </div>
+            </div>
+            <p class="instruction">✨ Click to trigger realistic spring-based bouncing with wave propagation</p>
+        </div>
+
+        <!-- Animation 2: Advanced Scatter System -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <h2 class="section-title">Professional Scatter System</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="scatterCanvas"></canvas>
+            </div>
+            <p class="instruction">🎯 Click to scatter with velocity physics • Characters explode and smoothly reassemble</p>
+        </div>
+
+        <!-- Animation 3: Magnetic Field -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <h2 class="section-title">Magnetic Field Attraction</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="magneticCanvas"></canvas>
+            </div>
+            <p class="instruction">🧲 Move cursor to create magnetic force field • Real-time physics simulation</p>
+        </div>
+
+        <!-- Animation 4: Liquid Distortion -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">04</div>
+                <h2 class="section-title">Liquid Wave Distortion</h2>
+            </div>
+            <div class="demo-area">
+                <div class="liquid-container">
+                    <canvas id="liquidCanvas"></canvas>
+                </div>
+            </div>
+            <p class="instruction">🌊 Move cursor for wave distortion • Advanced vertex manipulation</p>
+        </div>
+
+        <!-- Animation 5: Particle Explosion -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">05</div>
+                <h2 class="section-title">Particle Explosion Matrix</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="particleCanvas"></canvas>
+            </div>
+            <p class="instruction">💥 Click to trigger particle explosion • Gravity simulation with color transitions</p>
+        </div>
+
+        <footer>
+            <p>Built with Advanced JavaScript Physics Engines</p>
+            <p>No external libraries • Pure Canvas API & Mathematical Physics</p>
+            <div class="tech-stack">
+                <span class="tech-badge">Canvas API</span>
+                <span class="tech-badge">Spring Physics</span>
+                <span class="tech-badge">Velocity Calculations</span>
+                <span class="tech-badge">Particle Systems</span>
+                <span class="tech-badge">Force Fields</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.custom-cursor');
+        let cursorX = 0;
+        let cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            cursorX = e.clientX;
+            cursorY = e.clientY;
+        });
+
+        function updateCursor() {
+            cursor.style.left = cursorX - 12 + 'px';
+            cursor.style.top = cursorY - 12 + 'px';
+            requestAnimationFrame(updateCursor);
+        }
+        updateCursor();
+
+        document.body.addEventListener('mouseenter', () => cursor.classList.add('active'));
+        document.body.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+
+        // Utility: Resize Canvas
+        function setupCanvas(canvas) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        // ============================================
+        // ANIMATION 1: JELLY SPRING PHYSICS
+        // ============================================
+        const jellyText = document.getElementById('jellyText');
+        const jellyContainer = document.getElementById('jellyContainer');
+        const jellyWord = 'BOUNCE';
+        
+        // Create character spans
+        jellyText.innerHTML = jellyWord.split('').map(char => 
+            `<span>${char}</span>`
+        ).join('');
+
+        const jellyChars = jellyText.querySelectorAll('span');
+        let jellyStates = [];
+
+        // Initialize physics state for each character
+        jellyChars.forEach((char, i) => {
+            jellyStates[i] = {
+                scaleY: 1,
+                scaleX: 1,
+                velocityY: 0,
+                velocityX: 0,
+                k: 0.15,  // Spring constant
+                damping: 0.8
+            };
+        });
+
+        function animateJelly() {
+            jellyStates.forEach((state, i) => {
+                // Spring physics
+                const forceY = (1 - state.scaleY) * state.k;
+                const forceX = (1 - state.scaleX) * state.k;
+                
+                state.velocityY += forceY;
+                state.velocityX += forceX;
+                
+                state.velocityY *= state.damping;
+                state.velocityX *= state.damping;
+                
+                state.scaleY += state.velocityY;
+                state.scaleX += state.velocityX;
+
+                jellyChars[i].style.transform = `scale(${state.scaleX}, ${state.scaleY})`;
+            });
+
+            requestAnimationFrame(animateJelly);
+        }
+
+        jellyContainer.addEventListener('click', () => {
+            jellyStates.forEach((state, i) => {
+                setTimeout(() => {
+                    state.scaleY = 0.5;
+                    state.scaleX = 1.3;
+                    state.velocityY = 0.3;
+                }, i * 50);
+            });
+        });
+
+        animateJelly();
+
+        // ============================================
+        // ANIMATION 2: PROFESSIONAL SCATTER SYSTEM
+        // ============================================
+        const scatterCanvas = document.getElementById('scatterCanvas');
+        const scatterSetup = setupCanvas(scatterCanvas);
+        const scatterCtx = scatterSetup.ctx;
+
+        class ScatterChar {
+            constructor(char, x, y, index) {
+                this.char = char;
+                this.baseX = x;
+                this.baseY = y;
+                this.x = x;
+                this.y = y;
+                this.vx = 0;
+                this.vy = 0;
+                this.rotation = 0;
+                this.vr = 0;
+                this.scattered = false;
+                this.index = index;
+                this.size = 60;
+                this.targetSize = 60;
+            }
+
+            scatter() {
+                this.scattered = true;
+                const angle = (Math.random() * Math.PI * 2);
+                const force = 15 + Math.random() * 10;
+                this.vx = Math.cos(angle) * force;
+                this.vy = Math.sin(angle) * force - 8;
+                this.vr = (Math.random() - 0.5) * 0.4;
+                this.targetSize = 0;
+            }
+
+            reassemble() {
+                this.scattered = false;
+                this.targetSize = 60;
+            }
+
+            update() {
+                if (this.scattered) {
+                    this.vy += 0.6; // Gravity
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.rotation += this.vr;
+                    this.vx *= 0.98;
+                } else {
+                    // Smooth return to base
+                    const dx = this.baseX - this.x;
+                    const dy = this.baseY - this.y;
+                    const dr = -this.rotation;
+                    
+                    this.x += dx * 0.12;
+                    this.y += dy * 0.12;
+                    this.rotation += dr * 0.12;
+                    
+                    this.vx *= 0.85;
+                    this.vy *= 0.85;
+                    this.vr *= 0.85;
+                }
+
+                // Smooth size transition
+                this.size += (this.targetSize - this.size) * 0.1;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.font = `900 ${this.size}px Archivo Black`;
+                ctx.fillStyle = this.scattered ? '#ec4899' : '#8b5cf6';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.globalAlpha = Math.max(0, this.size / 60);
+                ctx.fillText(this.char, 0, 0);
+                ctx.restore();
+            }
+        }
+
+        const scatterWord = 'SCATTER';
+        const scatterChars = [];
+        const charSpacing = 65;
+        const scatterStartX = scatterSetup.width / 2 - (scatterWord.length * charSpacing) / 2 + charSpacing / 2;
+
+        for (let i = 0; i < scatterWord.length; i++) {
+            scatterChars.push(new ScatterChar(
+                scatterWord[i],
+                scatterStartX + i * charSpacing,
+                scatterSetup.height / 2,
+                i
+            ));
+        }
+
+        let scatterState = false;
+
+        scatterCanvas.addEventListener('click', () => {
+            if (!scatterState) {
+                scatterChars.forEach((char, i) => {
+                    setTimeout(() => char.scatter(), i * 40);
+                });
+                scatterState = true;
+                
+                setTimeout(() => {
+                    scatterChars.forEach(char => char.reassemble());
+                    scatterState = false;
+                }, 2000);
+            }
+        });
+
+        function animateScatter() {
+            scatterCtx.clearRect(0, 0, scatterSetup.width, scatterSetup.height);
+            
+            scatterChars.forEach(char => {
+                char.update();
+                char.draw(scatterCtx);
+            });
+
+            requestAnimationFrame(animateScatter);
+        }
+
+        animateScatter();
+
+        // ============================================
+        // ANIMATION 3: MAGNETIC FIELD
+        // ============================================
+        const magneticCanvas = document.getElementById('magneticCanvas');
+        const magneticSetup = setupCanvas(magneticCanvas);
+        const magneticCtx = magneticSetup.ctx;
+
+        class MagneticChar {
+            constructor(char, x, y) {
+                this.char = char;
+                this.baseX = x;
+                this.baseY = y;
+                this.x = x;
+                this.y = y;
+                this.vx = 0;
+                this.vy = 0;
+            }
+
+            update(mouseX, mouseY) {
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const maxDistance = 180;
+
+                if (distance < maxDistance && distance > 0) {
+                    const force = (1 - distance / maxDistance) * 0.8;
+                    const angle = Math.atan2(dy, dx);
+                    this.vx += Math.cos(angle) * force;
+                    this.vy += Math.sin(angle) * force;
+                }
+
+                // Return force
+                this.vx += (this.baseX - this.x) * 0.08;
+                this.vy += (this.baseY - this.y) * 0.08;
+
+                // Damping
+                this.vx *= 0.88;
+                this.vy *= 0.88;
+
+                this.x += this.vx;
+                this.y += this.vy;
+            }
+
+            draw(ctx) {
+                ctx.font = '900 56px Archivo Black';
+                
+                // Gradient based on velocity
+                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                const hue = 220 + speed * 20;
+                ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
+                
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.char, this.x, this.y);
+            }
+        }
+
+        const magneticWord = 'MAGNETIC';
+        const magneticChars = [];
+        const magCharSpacing = 60;
+        const magStartX = magneticSetup.width / 2 - (magneticWord.length * magCharSpacing) / 2 + magCharSpacing / 2;
+
+        for (let i = 0; i < magneticWord.length; i++) {
+            magneticChars.push(new MagneticChar(
+                magneticWord[i],
+                magStartX + i * magCharSpacing,
+                magneticSetup.height / 2
+            ));
+        }
+
+        let magneticMouseX = magneticSetup.width / 2;
+        let magneticMouseY = magneticSetup.height / 2;
+
+        magneticCanvas.addEventListener('mousemove', (e) => {
+            const rect = magneticCanvas.getBoundingClientRect();
+            magneticMouseX = e.clientX - rect.left;
+            magneticMouseY = e.clientY - rect.top;
+        });
+
+        function animateMagnetic() {
+            magneticCtx.clearRect(0, 0, magneticSetup.width, magneticSetup.height);
+            
+            magneticChars.forEach(char => {
+                char.update(magneticMouseX, magneticMouseY);
+                char.draw(magneticCtx);
+            });
+
+            requestAnimationFrame(animateMagnetic);
+        }
+
+        animateMagnetic();
+
+        // ============================================
+        // ANIMATION 4: LIQUID WAVE DISTORTION
+        // ============================================
+        const liquidCanvas = document.getElementById('liquidCanvas');
+        const liquidSetup = setupCanvas(liquidCanvas);
+        const liquidCtx = liquidSetup.ctx;
+
+        class LiquidChar {
+            constructor(char, x, y, index) {
+                this.char = char;
+                this.x = x;
+                this.y = y;
+                this.baseY = y;
+                this.index = index;
+                this.wavePhase = index * 0.5;
+            }
+
+            update(mouseX, mouseY, time) {
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 150) {
+                    const influence = (150 - distance) / 150;
+                    this.wavePhase = time * 0.05 + influence * Math.PI * 2;
+                } else {
+                    this.wavePhase = time * 0.02 + this.index * 0.3;
+                }
+
+                this.y = this.baseY + Math.sin(this.wavePhase) * 20;
+            }
+
+            draw(ctx) {
+                const gradient = ctx.createLinearGradient(this.x - 30, this.y - 30, this.x + 30, this.y + 30);
+                gradient.addColorStop(0, '#3b82f6');
+                gradient.addColorStop(0.5, '#8b5cf6');
+                gradient.addColorStop(1, '#ec4899');
+
+                ctx.font = '900 60px Archivo Black';
+                ctx.fillStyle = gradient;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.char, this.x, this.y);
+            }
+        }
+
+        const liquidWord = 'LIQUID';
+        const liquidChars = [];
+        const liqCharSpacing = 68;
+        const liqStartX = liquidSetup.width / 2 - (liquidWord.length * liqCharSpacing) / 2 + liqCharSpacing / 2;
+
+        for (let i = 0; i < liquidWord.length; i++) {
+            liquidChars.push(new LiquidChar(
+                liquidWord[i],
+                liqStartX + i * liqCharSpacing,
+                liquidSetup.height / 2,
+                i
+            ));
+        }
+
+        let liquidMouseX = liquidSetup.width / 2;
+        let liquidMouseY = liquidSetup.height / 2;
+        let liquidTime = 0;
+
+        liquidCanvas.addEventListener('mousemove', (e) => {
+            const rect = liquidCanvas.getBoundingClientRect();
+            liquidMouseX = e.clientX - rect.left;
+            liquidMouseY = e.clientY - rect.top;
+        });
+
+        function animateLiquid() {
+            liquidTime++;
+            liquidCtx.clearRect(0, 0, liquidSetup.width, liquidSetup.height);
+            
+            liquidChars.forEach(char => {
+                char.update(liquidMouseX, liquidMouseY, liquidTime);
+                char.draw(liquidCtx);
+            });
+
+            requestAnimationFrame(animateLiquid);
+        }
+
+        animateLiquid();
+
+        // ============================================
+        // ANIMATION 5: PARTICLE EXPLOSION MATRIX
+        // ============================================
+        const particleCanvas = document.getElementById('particleCanvas');
+        const particleSetup = setupCanvas(particleCanvas);
+        const particleCtx = particleSetup.ctx;
+
+        class ExplosionParticle {
+            constructor(x, y, char, gridX, gridY) {
+                this.char = char;
+                this.baseX = x;
+                this.baseY = y;
+                this.x = x;
+                this.y = y;
+                this.gridX = gridX;
+                this.gridY = gridY;
+                this.vx = 0;
+                this.vy = 0;
+                this.size = 40;
+                this.targetSize = 40;
+                this.opacity = 1;
+                this.exploded = false;
+                this.color = { h: 260, s: 80, l: 60 };
+            }
+
+            explode() {
+                this.exploded = true;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 10 + Math.random() * 8;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed - 5;
+                this.targetSize = 10;
+                this.color.h = 320 + Math.random() * 40;
+            }
+
+            reset() {
+                this.exploded = false;
+                this.x = this.baseX;
+                this.y = this.baseY;
+                this.vx = 0;
+                this.vy = 0;
+                this.targetSize = 40;
+                this.opacity = 1;
+                this.color = { h: 260, s: 80, l: 60 };
+            }
+
+            update() {
+                if (this.exploded) {
+                    this.vy += 0.5; // Gravity
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.vx *= 0.98;
+                    
+                    if (this.y > particleSetup.height + 50) {
+                        this.reset();
+                    }
+                } else {
+                    const dx = this.baseX - this.x;
+                    const dy = this.baseY - this.y;
+                    this.x += dx * 0.15;
+                    this.y += dy * 0.15;
+                }
+
+                this.size += (this.targetSize - this.size) * 0.1;
+                this.opacity = this.exploded ? Math.max(0, this.size / 40) : 1;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.font = `900 ${this.size}px Archivo Black`;
+                ctx.fillStyle = `hsl(${this.color.h}, ${this.color.s}%, ${this.color.l}%)`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.char, this.x, this.y);
+                ctx.restore();
+            }
+        }
+
+        const particleWord = 'EXPLODE';
+        const particleChars = [];
+        const partCharSpacing = 62;
+        const partStartX = particleSetup.width / 2 - (particleWord.length * partCharSpacing) / 2 + partCharSpacing / 2;
+
+        for (let i = 0; i < particleWord.length; i++) {
+            particleChars.push(new ExplosionParticle(
+                partStartX + i * partCharSpacing,
+                particleSetup.height / 2,
+                particleWord[i],
+                i,
+                0
+            ));
+        }
+
+        particleCanvas.addEventListener('click', () => {
+            particleChars.forEach((particle, i) => {
+                setTimeout(() => particle.explode(), i * 60);
+            });
+        });
+
+        function animateParticles() {
+            particleCtx.clearRect(0, 0, particleSetup.width, particleSetup.height);
+            
+            particleChars.forEach(particle => {
+                particle.update();
+                particle.draw(particleCtx);
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
+
+        // Handle window resize for all canvases
+        window.addEventListener('resize', () => {
+            const canvases = [
+                { canvas: scatterCanvas, setup: scatterSetup },
+                { canvas: magneticCanvas, setup: magneticSetup },
+                { canvas: liquidCanvas, setup: liquidSetup },
+                { canvas: particleCanvas, setup: particleSetup }
+            ];
+
+            canvases.forEach(({ canvas }) => setupCanvas(canvas));
+        });
+    </script>
+</body>
+</html>

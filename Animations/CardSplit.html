@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Split Hovers</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/splitting/dist/splitting.css">
+<style>
+  /* ── Variables ── */
+  :root {
+    --cover-timing:  0.5s;
+    --cover-ease:    cubic-bezier(0.66, 0.08, 0.19, 0.97);
+    --cover-stagger: 0.15s;
+    --text-timing:   0.75s;
+    --text-stagger:  0.015s;
+    --text-ease:     cubic-bezier(0.38, 0.26, 0.05, 1.07);
+    --title-stagger: 0.05s;
+    --highlight:     white;
+  }
+
+  /* ── Reset ── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    min-height: 100%;
+  }
+
+  /* ── Body with mesh gradient background ── */
+  body {
+    min-height: 100vh;
+    font-family: 'Outfit', sans-serif;
+    color: white;
+    display: grid;
+    place-items: center;
+    padding: 3em 1em 4em;
+    position: relative;
+    overflow-x: hidden;
+
+    /* Rich layered mesh gradient */
+    background-color: #0d0d1a;
+    background-image:
+      radial-gradient(ellipse 120% 80% at 10% 0%,   #1a0533 0%, transparent 55%),
+      radial-gradient(ellipse 80%  60% at 90% 5%,   #001a3a 0%, transparent 50%),
+      radial-gradient(ellipse 100% 70% at 50% 100%, #0a1a00 0%, transparent 55%),
+      radial-gradient(ellipse 60%  50% at 0%   80%, #1a0010 0%, transparent 45%),
+      radial-gradient(ellipse 70%  60% at 100% 90%, #001a1a 0%, transparent 50%);
+  }
+
+  /* Animated aurora blobs */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 45% 35% at 20% 25%, rgba(120, 40, 200, 0.22) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 80% 70%, rgba(0, 180, 255, 0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 60% 10%, rgba(255, 60, 120, 0.14) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 35% at 10% 80%, rgba(0, 255, 160, 0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 45% 35% at 90% 20%, rgba(255, 140, 0, 0.1)  0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+    animation: auroraShift 12s ease-in-out infinite alternate;
+  }
+
+  @keyframes auroraShift {
+    0%   { opacity: 1; filter: blur(40px); }
+    50%  { opacity: 0.7; filter: blur(55px); }
+    100% { opacity: 1; filter: blur(40px); }
+  }
+
+  /* Grain texture */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* ── Main grid ── */
+  main {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 2em;
+    place-items: center;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  @media (min-width: 600px) {
+    main {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: min-content 1fr;
+    }
+  }
+
+  /* ── Page title ── */
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  @media (min-width: 600px) {
+    h1 { grid-column: 1 / 3; }
+  }
+
+  /* ── Card ── */
+  .card {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 9 / 12;
+    width: 90vw;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    outline: none;
+    cursor: pointer;
+
+    box-shadow:
+      rgba(255,255,255,0.15) 0 5vw 6vw -8vw,
+      rgba(255,255,255,0)    0 4.5vw 5vw -6vw,
+      rgba(50, 50, 80, 0.6)  0 4vw 8vw -2vw,
+      rgba(0, 0, 0, 0.85)    0 4vw 5vw -3vw;
+
+    transition: box-shadow 1s var(--cover-ease), transform 0.6s var(--cover-ease);
+
+    /* Glass border */
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  @media (min-width: 600px) {
+    .card { width: 40vw; }
+  }
+
+  .card > * { z-index: 2; }
+  .card > img { z-index: 0; }
+
+  /* Split cover halves */
+  .card::before,
+  .card::after {
+    content: "";
+    width: 100%;
+    height: 50%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: all var(--cover-timing) var(--cover-ease);
+    z-index: 1;
+  }
+
+  .card::after {
+    transition-delay: var(--cover-stagger);
+    top: 50%;
+  }
+
+  /* Card 1 — violet/coral palette */
+  .card:nth-of-type(1) {
+    --highlight: #ff7b7b;
+    --cover-bg: rgba(55, 10, 90, 0.82);
+  }
+
+  /* Card 2 — teal/cyan palette */
+  .card:nth-of-type(2) {
+    --highlight: #56ffe5;
+    --cover-bg: rgba(0, 55, 75, 0.82);
+  }
+
+  /* Card 3 — amber/gold palette */
+  .card:nth-of-type(3) {
+    --highlight: #ffd166;
+    --cover-bg: rgba(90, 40, 0, 0.82);
+  }
+
+  /* Card 4 — green/lime palette */
+  .card:nth-of-type(4) {
+    --highlight: #b5ff6d;
+    --cover-bg: rgba(10, 50, 10, 0.82);
+  }
+
+  /* Both halves use the SAME background — seamless merge on hover */
+  .card::before,
+  .card::after {
+    background: var(--cover-bg);
+  }
+
+  /* ── Hover / Focus state ── */
+  .card:hover,
+  .card:focus {
+    transform: translateY(-6px) scale(1.015);
+  }
+
+  .card:nth-of-type(1):hover,
+  .card:nth-of-type(1):focus {
+    box-shadow:
+      #ff7b7b    0 5vw 6vw -9vw,
+      #ff4d4d    0 5.5vw 5vw -7.5vw,
+      rgba(120,20,80,0.5) 0 4vw 8vw -2vw,
+      rgba(0,0,0,0.85)    0 4vw 5vw -3vw;
+  }
+  .card:nth-of-type(2):hover,
+  .card:nth-of-type(2):focus {
+    box-shadow:
+      #56ffe5    0 5vw 6vw -9vw,
+      #00f0cc    0 5.5vw 5vw -7.5vw,
+      rgba(0,80,100,0.5) 0 4vw 8vw -2vw,
+      rgba(0,0,0,0.85)   0 4vw 5vw -3vw;
+  }
+  .card:nth-of-type(3):hover,
+  .card:nth-of-type(3):focus {
+    box-shadow:
+      #ffd166    0 5vw 6vw -9vw,
+      #ffb700    0 5.5vw 5vw -7.5vw,
+      rgba(120,60,0,0.5) 0 4vw 8vw -2vw,
+      rgba(0,0,0,0.85)   0 4vw 5vw -3vw;
+  }
+  .card:nth-of-type(4):hover,
+  .card:nth-of-type(4):focus {
+    box-shadow:
+      #b5ff6d    0 5vw 6vw -9vw,
+      #80ff00    0 5.5vw 5vw -7.5vw,
+      rgba(20,80,0,0.5) 0 4vw 8vw -2vw,
+      rgba(0,0,0,0.85)  0 4vw 5vw -3vw;
+  }
+
+  .card:hover::before,
+  .card:hover::after,
+  .card:focus::before,
+  .card:focus::after {
+    transform: scaleX(1);
+  }
+
+  .card:hover h2 .char,
+  .card:focus h2 .char,
+  .card:hover p .word,
+  .card:focus p .word {
+    opacity: 1;
+    transform: translateY(0);
+    color: inherit;
+  }
+
+  .card:hover h2 .char,
+  .card:focus h2 .char {
+    transition-delay: calc(0.1s + var(--char-index) * var(--title-stagger));
+  }
+
+  .card:hover p .word,
+  .card:focus p .word {
+    transition-delay: calc(0.1s + var(--word-index) * var(--text-stagger));
+  }
+
+  .card:hover img,
+  .card:focus img {
+    transform: scale(1.08);
+    filter: saturate(1.1);
+  }
+
+  /* ── Card image ── */
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    transition: all 0.8s cubic-bezier(0.66, 0.08, 0.19, 0.97);
+  }
+
+  /* ── Text block ── */
+  .text {
+    position: absolute;
+    inset: 20px;
+    top: auto;
+    bottom: 22px;
+  }
+
+  /* Coloured tag above title */
+  .card-tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--highlight);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity var(--text-timing) var(--text-ease) 0.05s,
+                transform var(--text-timing) var(--text-ease) 0.05s;
+  }
+
+  .card:hover .card-tag,
+  .card:focus .card-tag {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(22px, 4.5vw, 44px);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.3em;
+    line-height: 1;
+  }
+
+  p {
+    font-size: clamp(10px, 1.2vw, 13px);
+    line-height: 1.55;
+    text-align: left;
+    font-weight: 300;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* Splitting char/word base state */
+  h2 .char,
+  p .word {
+    color: var(--highlight);
+    display: inline-block;
+    opacity: 0;
+    position: relative;
+    transform: translateY(20px);
+    transition-property: transform, opacity, color;
+    transition-timing-function: var(--text-ease);
+    transition-duration: var(--text-timing), var(--text-timing), calc(var(--text-timing) * 2);
+  }
+
+  /* ── Floating label (always visible) ── */
+  .card-label {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    z-index: 3;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.35);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  /* ── Scroll hint ── */
+  .scroll-hint {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    pointer-events: none;
+    z-index: 10;
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 0.2; }
+    50%      { opacity: 0.55; }
+  }
+</style>
+</head>
+<body>
+
+<main id="main">
+  <h1>Card Split Hovers</h1>
+
+  <!-- Card 1 -->
+  <div class="card" tabindex="0">
+    <img src="https://images.unsplash.com/photo-1535498730771-e735b998cd64?auto=format&fit=crop&w=687&q=80" alt="City skyline at sunset">
+    <span class="card-label">01 — Urban</span>
+    <div class="text">
+      <span class="card-tag">Photography</span>
+      <h2 data-splitting>The City</h2>
+      <p data-splitting>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos excepturi nostrum necessitatibus doloremque? Quasi non molestias odio.</p>
+    </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="card" tabindex="0">
+    <img src="https://images.unsplash.com/photo-1586500036706-41963de24d8b?auto=format&fit=crop&w=687&q=80" alt="Beach at sunset">
+    <span class="card-label">02 — Coast</span>
+    <div class="text">
+      <span class="card-tag">Nature</span>
+      <h2 data-splitting>The Beach</h2>
+      <p data-splitting>Quasi non molestias odio. Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos excepturi nostrum necessitatibus doloremque?</p>
+    </div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="card" tabindex="0">
+    <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=687&q=80" alt="Mountain landscape">
+    <span class="card-label">03 — Alpine</span>
+    <div class="text">
+      <span class="card-tag">Adventure</span>
+      <h2 data-splitting>The Mountains</h2>
+      <p data-splitting>Necessitatibus doloremque quasi non molestias odio. Lorem ipsum dolor sit amet consectetur adipisicing elit dignissimos.</p>
+    </div>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="card" tabindex="0">
+    <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=687&q=80" alt="Forest path">
+    <span class="card-label">04 — Wild</span>
+    <div class="text">
+      <span class="card-tag">Wilderness</span>
+      <h2 data-splitting>The Forest</h2>
+      <p data-splitting>Molestias odio dignissimos excepturi nostrum necessitatibus. Lorem ipsum dolor sit amet consectetur adipisicing elit quasi.</p>
+    </div>
+  </div>
+
+</main>
+
+<p class="scroll-hint">Hover or focus a card to reveal</p>
+
+<script src="https://unpkg.com/splitting/dist/splitting.min.js"></script>
+<script>
+  Splitting();
+  // Auto-focus first card after brief delay
+  setTimeout(() => {
+    document.querySelector('.card').focus();
+  }, 1400);
+</script>
+</body>
+</html>

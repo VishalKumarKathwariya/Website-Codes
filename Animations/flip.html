@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSAP Flip</title>
+<style>
+:root {
+  --color-green:   #0AE448;
+  --color-pink:    #FF6B9D;
+  --color-blue-lt: #74BCFF;
+  --color-blue:    #0066FF;
+  --color-surface: #F0F0E8;
+  --color-dark:    #0e100f;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-dark);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Container layouts ── */
+.container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.container.grid,
+.container.columns {
+  align-content: stretch;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+/* ── Letters ── */
+.letter {
+  text-align: center;
+  color: black;
+  font-size: 10vmax;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+-webkit-user-select: none;
+  user-select: none;
+}
+
+.container.grid   .letter { flex-basis: 50%; }
+.container.columns .letter { flex-basis: 25%; }
+
+.F { background: var(--color-green); }
+.l { background: var(--color-pink); }
+.i { background: var(--color-blue-lt); }
+.p { background: var(--color-blue); }
+
+.container.plain .letter {
+  background: transparent !important;
+  color: var(--color-surface);
+  padding: 0;
+}
+
+/* ── "for" + "GSAP" labels ── */
+.for,
+.gsap-word {
+  font-size: 5vmax;
+  color: var(--color-surface);
+}
+
+.for {
+  padding: 2px 1.6vmax;
+  font-weight: 300;
+  display: none;
+}
+
+.gsap-word {
+  padding: 2px 0;
+  font-weight: 700;
+  display: none;
+}
+
+.container.final .for,
+.container.final .gsap-word {
+  display: block;
+}
+
+/* ── GSAP Logo ── */
+.logo {
+  position: fixed;
+  width: 100px;
+  bottom: 20px;
+  right: 30px;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+/* ── Layout badge ── */
+.badge {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--color-surface);
+  opacity: 0.25;
+  font-family: 'Courier New', monospace;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 0.4s;
+}
+</style>
+</head>
+<body>
+
+<span class="badge" id="badge">Layout: final</span>
+
+<div class="container final" id="container">
+  <div class="letter F">F</div>
+  <div class="letter l">L</div>
+  <div class="letter i">I</div>
+  <div class="letter p">P</div>
+  <div class="for">for</div>
+  <div class="gsap-word">GSAP</div>
+</div>
+
+<img src="https://assets.codepen.io/16327/gsap-logo-light.svg" class="logo" alt="GSAP">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+<script>
+  gsap.registerPlugin(Flip);
+
+  const container = document.getElementById('container');
+  const badge     = document.getElementById('badge');
+  const layouts   = ['final', 'plain', 'columns', 'grid'];
+  let cur = 0;
+
+  function nextState() {
+    const state = Flip.getState('.letter, .for, .gsap-word', {
+      props : 'color,backgroundColor',
+      simple: true
+    });
+
+    container.classList.remove(layouts[cur]);
+    cur = (cur + 1) % layouts.length;
+    container.classList.add(layouts[cur]);
+
+    badge.textContent = 'Layout: ' + layouts[cur];
+
+    Flip.from(state, {
+      absolute : true,
+      stagger  : 0.07,
+      duration : 0.7,
+      ease     : 'power2.inOut',
+      spin     : cur === 0,
+      simple   : true,
+      onEnter  : (els, anim) => gsap.fromTo(els, { opacity: 0 }, { opacity: 1, delay: anim.duration() - 0.1 }),
+      onLeave  : els => gsap.to(els, { opacity: 0 })
+    });
+
+    gsap.delayedCall(cur === 0 ? 3.5 : 1.5, nextState);
+  }
+
+  gsap.delayedCall(1, nextState);
+</script>
+</body>
+</html>

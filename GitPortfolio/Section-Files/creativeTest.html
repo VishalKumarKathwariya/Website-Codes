@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Creative Section</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js",
+      "jsm/":  "https://cdn.jsdelivr.net/npm/three@0.182.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Section background matches ring bg ── */
+    .creative-wrap {
+      width: 100%;
+      background: #17171c;
+      padding: 3rem 2rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .creative-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Left text column ── */
+    .creative-left {
+      position: relative;
+      z-index: 10;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .creative-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-weight: 900;
+      line-height: 1.12;
+      color: #f0ede8;
+      margin-bottom: 0.4rem;
+    }
+
+    .creative-heading .static { display: block; }
+
+    .word-rotator {
+      display: inline-block;
+      position: relative;
+      height: 1.15em;
+      overflow: hidden;
+      vertical-align: bottom;
+    }
+
+    .word-rotator-inner {
+      display: flex;
+      flex-direction: column;
+      animation: slideWords 8s ease-in-out infinite;
+    }
+
+    .word-rotator-inner span {
+      display: block;
+      line-height: 1.15;
+      background: #F55D00;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      white-space: nowrap;
+    }
+
+    @keyframes slideWords {
+      0%   { transform: translateY(0%); }
+      15%  { transform: translateY(0%); }
+      25%  { transform: translateY(-25%); }
+      40%  { transform: translateY(-25%); }
+      50%  { transform: translateY(-50%); }
+      65%  { transform: translateY(-50%); }
+      75%  { transform: translateY(-75%); }
+      90%  { transform: translateY(-75%); }
+      100% { transform: translateY(0%); }
+    }
+
+    .creative-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 1.4rem 0 1.6rem;
+    }
+
+    .divider-line { height: 1px; width: 52px; border-radius: 2px; }
+    .divider-line.left  { background: linear-gradient(90deg, #F55D00, transparent); }
+    .divider-line.right { background: linear-gradient(90deg, transparent, #F55D00); }
+
+    .divider-dots { display: flex; gap: 4px; }
+    .divider-dots span {
+      width: 5px; height: 5px; border-radius: 50%; background: #F55D00;
+    }
+    .divider-dots span:nth-child(1) { opacity: 1; }
+    .divider-dots span:nth-child(2) { opacity: 0.5; }
+    .divider-dots span:nth-child(3) { opacity: 0.22; }
+
+    .creative-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      color: #998f80;
+      margin-bottom: 2rem;
+      max-width: 100%;
+      font-weight: 400;
+    }
+
+    .creative-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 15px 0;
+      width: min(360px, 100%);
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      color: #f0ede8;
+      border: 1.5px solid rgba(255,255,255,0.18);
+      background: transparent;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      border-color: #F55D00;
+      color: #F55D00;
+      transform: translateY(-2px);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-icon {
+      width: 17px; height: 17px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Right: Three.js ring canvas ── */
+    .creative-right {
+      display: none;
+    }
+
+    .ring-stage {
+      width: 100%;
+      aspect-ratio: 1;
+      max-width: 420px;
+      margin: 0 auto;
+      position: relative;
+      background: transparent;
+    }
+
+    .ring-stage canvas {
+      position: absolute;
+      inset: 0;
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+
+    /* Mobile: show ring as faded backdrop */
+    @media (max-width: 767px) {
+      .creative-wrap { padding: 2rem 1.5rem; min-height: fit-content; }
+
+      .creative-inner { position: relative; padding-bottom: 1rem; }
+
+      .creative-right {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 300px;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.35;
+      }
+
+      .ring-stage { max-width: 300px; }
+      .creative-left { z-index: 10; }
+    }
+
+    /* Desktop: side-by-side */
+    @media (min-width: 768px) {
+      .creative-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: center;
+      }
+
+      .creative-right {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        pointer-events: auto;
+      }
+
+      .ring-stage { max-width: 460px; }
+      .creative-desc { max-width: 420px; }
+    }
+
+    @media (min-width: 1024px) {
+      .creative-inner { gap: 4rem; }
+      .ring-stage { max-width: 520px; }
+      .creative-heading { font-size: clamp(2.8rem, 4vw, 3.6rem); }
+    }
+  </style>
+</head>
+<body>
+
+<section class="creative-wrap">
+  <div class="creative-inner">
+
+    <!-- ── Left: Text ── -->
+    <div class="creative-left">
+      <h1 class="creative-heading">
+        <span class="static">Let's make something</span>
+        <span class="word-rotator">
+          <span class="word-rotator-inner">
+            <span>Outstanding.</span>
+            <span>Engaging.</span>
+            <span>Innovative.</span>
+            <span>Strategic.</span>
+          </span>
+        </span>
+      </h1>
+
+      <div class="creative-divider">
+        <div class="divider-line left"></div>
+        <div class="divider-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="divider-line right"></div>
+      </div>
+
+      <p class="creative-desc">
+        We craft experiences that captivate audiences and drive real results — from bold brands to seamless digital products.
+      </p>
+
+      <div class="creative-btns">
+        <a href="#" class="btn-primary">
+          <span class="btn-icon">
+            <svg width="17" height="17" viewBox="0 0 16 16" fill="none">
+              <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" stroke="#F55D00" stroke-width="1.3"/>
+              <path d="M5 7h6M5 9.5h4" stroke="#F55D00" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </span>
+          Get In Touch
+        </a>
+      </div>
+    </div>
+
+    <!-- ── Right: Three.js fracture ring ── -->
+    <div class="creative-right">
+      <div class="ring-stage" id="ringStage"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ THREE.JS FRACTURE RING ══ -->
+<script type="module">
+  import * as THREE from "three";
+  import { EffectComposer }  from "jsm/postprocessing/EffectComposer.js";
+  import { RenderPass }      from "jsm/postprocessing/RenderPass.js";
+  import { UnrealBloomPass } from "jsm/postprocessing/UnrealBloomPass.js";
+  import { ShaderPass }      from "jsm/postprocessing/ShaderPass.js";
+  import { FXAAShader }      from "jsm/shaders/FXAAShader.js";
+
+  const stage = document.getElementById("ringStage");
+
+  /* ── Canvas ── */
+  const canvas = document.createElement("canvas");
+  stage.appendChild(canvas);
+
+  const sz = () => ({ w: stage.clientWidth || 460, h: stage.clientHeight || 460 });
+  let { w, h } = sz();
+
+  /* ── Scene ── */
+  const scene = new THREE.Scene();
+  scene.background = null;
+
+  const torusGroup = new THREE.Group();
+  scene.add(torusGroup);
+
+  /* ── Camera ── */
+  const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
+  camera.position.z = 7;
+
+  /* ── Renderer ── */
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setSize(w, h, false);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+
+  /* ── Post-processing ── */
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+
+  const bloom = new UnrealBloomPass(new THREE.Vector2(w, h), 0.85, 0.4, 0.62);
+  composer.addPass(bloom);
+
+  const fxaa = new ShaderPass(FXAAShader);
+  fxaa.uniforms["resolution"].value.set(1 / w, 1 / h);
+  composer.addPass(fxaa);
+
+  /* ── Lights ── */
+  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  const key = new THREE.DirectionalLight(0xfff4e0, 2.8);
+  key.position.set(3, 4, 5);
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0xaabbff, 0.5);
+  fill.position.set(-4, -2, -3);
+  scene.add(fill);
+
+  /* ── Textures ── */
+  const TL = new THREE.TextureLoader();
+  const BASE = "https://raw.githubusercontent.com/danielyl123/person/refs/heads/main/";
+  const diffuse  = TL.load(BASE + "diffuse.jpg");
+  const normalTx = TL.load(BASE + "normal.jpg");
+  const arm      = TL.load(BASE + "arm.jpg");
+  [diffuse, normalTx, arm].forEach(t => {
+    t.repeat.set(2, 2);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  });
+  diffuse.colorSpace = THREE.SRGBColorSpace;
+
+  /* ── Barycentric wireframe inner torus ── */
+  function barycentricGeo(geo) {
+    const g = geo.toNonIndexed();
+    const cnt = g.attributes.position.count;
+    const b = new Float32Array(cnt * 3);
+    for (let i = 0; i < cnt; i += 3) {
+      b[i*3]=1; b[i*3+1]=0; b[i*3+2]=0;
+      b[(i+1)*3]=0; b[(i+1)*3+1]=1; b[(i+1)*3+2]=0;
+      b[(i+2)*3]=0; b[(i+2)*3+1]=0; b[(i+2)*3+2]=1;
+    }
+    g.setAttribute("barycentric", new THREE.BufferAttribute(b, 3));
+    return g;
+  }
+
+  const wireMat = new THREE.ShaderMaterial({
+    vertexShader: `
+      attribute vec3 barycentric;
+      varying vec3 vBary;
+      void main(){
+        vBary = barycentric;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+      }`,
+    fragmentShader: `
+      varying vec3 vBary;
+      float wm(vec3 b,float t){
+        vec3 d=fwidth(b); vec3 a=smoothstep(vec3(0.0),d*t,b);
+        return 1.0-min(a.x,min(a.y,a.z));
+      }
+      void main(){
+        float wf=wm(vBary,1.6);
+        vec3 col=mix(vec3(0.07,0.01,0.0),vec3(1.0,0.28,0.04),wf);
+        col=mix(col,vec3(1.0,0.8,0.3)*2.2,wf*0.55);
+        gl_FragColor=vec4(col,1.0);
+      }`,
+    side: THREE.DoubleSide,
+    extensions: { derivatives: true },
+  });
+
+  torusGroup.add(new THREE.Mesh(
+    barycentricGeo(new THREE.TorusGeometry(2, 0.4, 80, 80)),
+    wireMat
+  ));
+
+  /* ── Voronoi Fragments ── */
+  const SCALE = 50, R = 2, r = 0.4;
+
+  function hash2(px, py) {
+    const a = Math.sin(px*127.1 + py*311.7)*43758.5453;
+    const b = Math.sin(px*269.5 + py*183.3)*43758.5453;
+    return [a-Math.floor(a), b-Math.floor(b)];
+  }
+
+  function cellSeed(u, v) {
+    const n = [Math.floor(u*SCALE), Math.floor(v*SCALE)];
+    const f = [u*SCALE-n[0], v*SCALE-n[1]];
+    let md = Infinity, best = [...n];
+    for (let j=-2;j<=2;j++) for (let i=-2;i<=2;i++) {
+      const o = hash2(n[0]+i, n[1]+j);
+      const rx = i+o[0]-f[0], ry = j+o[1]-f[1];
+      const d = rx*rx+ry*ry;
+      if (d < md) { md=d; best=[n[0]+i+o[0], n[1]+j+o[1]]; }
+    }
+    return [best[0]/SCALE, best[1]/SCALE];
+  }
+
+  const fragments = (() => {
+    const base = new THREE.TorusGeometry(R, r, 100, 100);
+    const ni = base.toNonIndexed(); base.dispose();
+    const pos = ni.attributes.position.array;
+    const nrm = ni.attributes.normal.array;
+    const uvD = ni.attributes.uv.array;
+    const tris = pos.length / 9;
+
+    const cellMap = new Map();
+    for (let t=0;t<tris;t++) {
+      const uc=(uvD[t*6]+uvD[t*6+2]+uvD[t*6+4])/3;
+      const vc=(uvD[t*6+1]+uvD[t*6+3]+uvD[t*6+5])/3;
+      const s=cellSeed(uc,vc);
+      const k=`${s[0].toFixed(9)}_${s[1].toFixed(9)}`;
+      if (!cellMap.has(k)) cellMap.set(k,{s,t:[]});
+      cellMap.get(k).t.push(t);
+    }
+
+    const mat = new THREE.MeshStandardMaterial({
+      map:diffuse, normalMap:normalTx, roughnessMap:arm,
+      roughness:1.0, metalness:0.0, side:THREE.DoubleSide,
+    });
+
+    const list=[]; const PI2=Math.PI*2;
+
+    for (const {s:seed, t:triList} of cellMap.values()) {
+      if (!triList.length) continue;
+      const vc=triList.length*3;
+      const pArr=new Float32Array(vc*3), nArr=new Float32Array(vc*3), uvArr=new Float32Array(vc*2);
+      let vi=0;
+      for (const tri of triList) for (let v=0;v<3;v++) {
+        const sv=tri*3+v;
+        pArr[vi*3]=pos[sv*3];   pArr[vi*3+1]=pos[sv*3+1]; pArr[vi*3+2]=pos[sv*3+2];
+        nArr[vi*3]=nrm[sv*3];   nArr[vi*3+1]=nrm[sv*3+1]; nArr[vi*3+2]=nrm[sv*3+2];
+        uvArr[vi*2]=uvD[sv*2];  uvArr[vi*2+1]=uvD[sv*2+1];
+        vi++;
+      }
+
+      const phi=seed[0]*PI2, theta=seed[1]*PI2;
+      const cx=(R+r*Math.cos(theta))*Math.cos(phi);
+      const cy=(R+r*Math.cos(theta))*Math.sin(phi);
+      const cz=r*Math.sin(theta);
+      const cc = new THREE.Vector3(cx,cy,cz);
+      const mp = new THREE.Vector3(R*Math.cos(phi), R*Math.sin(phi), 0);
+      const cn = cc.clone().sub(mp).normalize();
+
+      const SK=0.96;
+      for (let i=0;i<pArr.length;i+=3) {
+        pArr[i]=(pArr[i]-cx)*SK; pArr[i+1]=(pArr[i+1]-cy)*SK; pArr[i+2]=(pArr[i+2]-cz)*SK;
+      }
+
+      const geo=new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(pArr,3));
+      geo.setAttribute("normal",   new THREE.BufferAttribute(nArr,3));
+      geo.setAttribute("uv",       new THREE.BufferAttribute(uvArr,2));
+
+      const rnd=hash2(seed[0]*137.53, seed[1]*137.53);
+      const up=Math.abs(cn.z)<0.9?new THREE.Vector3(0,0,1):new THREE.Vector3(0,1,0);
+      const tang=new THREE.Vector3().crossVectors(cn,up).normalize();
+      const bitang=new THREE.Vector3().crossVectors(cn,tang);
+      const aa=rnd[0]*PI2;
+      const rotAxis=tang.clone().multiplyScalar(Math.cos(aa)).addScaledVector(bitang,Math.sin(aa)).normalize();
+
+      const mesh=new THREE.Mesh(geo,mat);
+      mesh.position.copy(cc).addScaledVector(cn,0.015);
+      mesh.userData={cc,cn,rotAxis,maxAngle:0.7+rnd[1]*0.9,lift:0};
+      torusGroup.add(mesh);
+      list.push(mesh);
+    }
+    ni.dispose();
+    return list;
+  })();
+
+  /* ── Invisible raycaster torus ── */
+  const rcMesh = new THREE.Mesh(
+    new THREE.TorusGeometry(R, r, 80, 80),
+    new THREE.MeshBasicMaterial({ visible:false })
+  );
+  torusGroup.add(rcMesh);
+
+  /* ── Mouse tracking relative to canvas ── */
+  const mouse = new THREE.Vector2(-999,-999);
+  const raycaster = new THREE.Raycaster();
+
+  canvas.addEventListener("mousemove", e => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x =  ((e.clientX-rect.left)/rect.width )*2-1;
+    mouse.y = -((e.clientY-rect.top )/rect.height)*2+1;
+  });
+  canvas.addEventListener("mouseleave", () => mouse.set(-999,-999));
+
+  // Touch support
+  canvas.addEventListener("touchmove", e => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches[0];
+    mouse.x =  ((t.clientX-rect.left)/rect.width )*2-1;
+    mouse.y = -((t.clientY-rect.top )/rect.height)*2+1;
+  }, { passive:false });
+  canvas.addEventListener("touchend", () => mouse.set(-999,-999));
+
+  /* ── Tick ── */
+  const clock = new THREE.Clock();
+  let lastT=0;
+  const hover={ point:new THREE.Vector3(), active:0 };
+  const _lh = new THREE.Vector3();
+  const fp={ hoverRadius:0.75, liftDist:0.28, liftUp:0.15, liftDown:0.06 };
+
+  const ss=(lo,hi,v)=>{const t=Math.max(0,Math.min(1,(v-lo)/(hi-lo)));return t*t*(3-2*t);};
+
+  torusGroup.rotation.x = 0.3;
+
+  (function tick(){
+    requestAnimationFrame(tick);
+    const el=clock.getElapsedTime(), dt=el-lastT; lastT=el;
+
+    // Idle rotation
+    torusGroup.rotation.y += dt*(Math.PI*2/22);
+
+    // Raycasting
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObject(rcMesh);
+    if (hits.length) {
+      torusGroup.worldToLocal(_lh.copy(hits[0].point));
+      hover.point.copy(_lh);
+      hover.active = Math.min(hover.active+dt*5, 1);
+    } else {
+      hover.active = Math.max(hover.active-dt*2.5, 0);
+    }
+
+    for (const frag of fragments) {
+      const {cc,cn,rotAxis,maxAngle}=frag.userData;
+      let target=0;
+      if (hover.active>0.01) {
+        const dist=cc.distanceTo(hover.point);
+        target=(1-ss(0.4,fp.hoverRadius,dist))*hover.active;
+      }
+      const spd=target>frag.userData.lift?fp.liftUp:fp.liftDown;
+      frag.userData.lift=THREE.MathUtils.lerp(frag.userData.lift,target,spd);
+      const lift=frag.userData.lift;
+      frag.position.copy(cc).addScaledVector(cn,0.015+lift*fp.liftDist);
+      frag.quaternion.setFromAxisAngle(rotAxis,lift*maxAngle);
+    }
+
+    composer.render();
+  })();
+
+  /* ── Resize observer ── */
+  new ResizeObserver(()=>{
+    const {w:nw,h:nh}=sz();
+    if (nw<10||nh<10) return;
+    camera.aspect=nw/nh;
+    camera.updateProjectionMatrix();
+    renderer.setSize(nw,nh,false);
+    composer.setSize(nw,nh);
+    bloom.resolution.set(nw,nh);
+    fxaa.uniforms["resolution"].value.set(1/nw,1/nh);
+  }).observe(stage);
+</script>
+
+</body>
+</html>

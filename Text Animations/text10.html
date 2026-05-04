@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trending Text Animations - Tech Industry Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #16161d;
+            --accent-1: #00ff88;
+            --accent-2: #0066ff;
+            --accent-3: #ff0080;
+            --accent-4: #ffaa00;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 102, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 0, 128, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            animation: bgShift 20s ease-in-out infinite;
+        }
+
+        @keyframes bgShift {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 120px;
+            position: relative;
+        }
+
+        .main-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientFlow 8s ease infinite;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .animation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 60px;
+            margin-bottom: 100px;
+        }
+
+        .animation-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .animation-card.visible {
+            animation: cardFadeIn 0.8s ease forwards;
+        }
+
+        @keyframes cardFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animation-card:hover {
+            border-color: rgba(0, 255, 136, 0.3);
+            transform: translateY(-8px);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-family: 'Syne', sans-serif;
+            font-size: 5rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.03);
+            line-height: 1;
+        }
+
+        .card-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-1);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 30px;
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 20px;
+        }
+
+        .demo-area {
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        /* Animation 1: Gradient Text Flow (Stripe/Linear style) */
+        .gradient-flow-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, 
+                var(--accent-1), 
+                var(--accent-2), 
+                var(--accent-3), 
+                var(--accent-4),
+                var(--accent-1));
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s linear infinite;
+            line-height: 1.2;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+
+        /* Animation 2: Glitch Effect (Cyberpunk style) */
+        .glitch-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            position: relative;
+            color: var(--text-primary);
+            cursor: pointer;
+            line-height: 1.2;
+        }
+
+        .glitch-text:hover::before,
+        .glitch-text:hover::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text:hover::before {
+            color: var(--accent-2);
+            animation: glitch1 0.3s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+        }
+
+        .glitch-text:hover::after {
+            color: var(--accent-3);
+            animation: glitch2 0.3s infinite;
+            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+        }
+
+        @keyframes glitch1 {
+            0%, 100% { transform: translate(0); }
+            33% { transform: translate(-4px, 2px); }
+            66% { transform: translate(4px, -2px); }
+        }
+
+        @keyframes glitch2 {
+            0%, 100% { transform: translate(0); }
+            33% { transform: translate(4px, -2px); }
+            66% { transform: translate(-4px, 2px); }
+        }
+
+        /* Animation 3: Split Text Reveal (Apple/Vercel style) */
+        .split-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            overflow: hidden;
+            line-height: 1.2;
+        }
+
+        .split-text .char {
+            display: inline-block;
+            transform: translateY(100%);
+            opacity: 0;
+            animation: charReveal 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes charReveal {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .split-text .char:nth-child(1) { animation-delay: 0.05s; }
+        .split-text .char:nth-child(2) { animation-delay: 0.1s; }
+        .split-text .char:nth-child(3) { animation-delay: 0.15s; }
+        .split-text .char:nth-child(4) { animation-delay: 0.2s; }
+        .split-text .char:nth-child(5) { animation-delay: 0.25s; }
+        .split-text .char:nth-child(6) { animation-delay: 0.3s; }
+        .split-text .char:nth-child(7) { animation-delay: 0.35s; }
+        .split-text .char:nth-child(8) { animation-delay: 0.4s; }
+        .split-text .char:nth-child(9) { animation-delay: 0.45s; }
+        .split-text .char:nth-child(10) { animation-delay: 0.5s; }
+
+        /* Animation 4: Typewriter Effect */
+        .typewriter-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            color: var(--accent-1);
+            border-right: 3px solid var(--accent-1);
+            padding-right: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typing 3s steps(30) infinite, blink 0.7s step-end infinite;
+        }
+
+        @keyframes typing {
+            0%, 10% { width: 0; }
+            50%, 90% { width: 100%; }
+            100% { width: 0; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* Animation 5: 3D Rotate Text (Hover) */
+        .rotate-3d-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            perspective: 1000px;
+            cursor: pointer;
+            display: inline-block;
+            line-height: 1.2;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transform-style: preserve-3d;
+        }
+
+        .rotate-3d-text:hover {
+            transform: rotateX(360deg) rotateY(360deg);
+        }
+
+        .rotate-3d-text span {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Animation 6: Wave Text Animation */
+        .wave-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            display: inline-block;
+            line-height: 1.2;
+        }
+
+        .wave-text span {
+            display: inline-block;
+            animation: wave 1.5s ease-in-out infinite;
+            color: var(--accent-4);
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .wave-text span:nth-child(1) { animation-delay: 0s; }
+        .wave-text span:nth-child(2) { animation-delay: 0.1s; }
+        .wave-text span:nth-child(3) { animation-delay: 0.2s; }
+        .wave-text span:nth-child(4) { animation-delay: 0.3s; }
+        .wave-text span:nth-child(5) { animation-delay: 0.4s; }
+        .wave-text span:nth-child(6) { animation-delay: 0.5s; }
+        .wave-text span:nth-child(7) { animation-delay: 0.6s; }
+
+        /* Animation 7: Text Scramble/Decode (Hover) */
+        .scramble-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--accent-1);
+            position: relative;
+            line-height: 1.2;
+        }
+
+        /* Animation 8: Gradient Mask Reveal (Scroll) */
+        .mask-reveal-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--text-primary) 20%, 
+                var(--text-primary) 80%, 
+                transparent 100%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: maskSlide 3s ease-in-out infinite;
+            line-height: 1.2;
+        }
+
+        @keyframes maskSlide {
+            0%, 100% { background-position: -200% 0; }
+            50% { background-position: 200% 0; }
+        }
+
+        /* Animation 9: Neon Glow Pulse */
+        .neon-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent-2);
+            text-shadow: 
+                0 0 10px var(--accent-2),
+                0 0 20px var(--accent-2),
+                0 0 40px var(--accent-2),
+                0 0 80px var(--accent-2);
+            animation: neonPulse 2s ease-in-out infinite;
+            line-height: 1.2;
+        }
+
+        @keyframes neonPulse {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 10px var(--accent-2),
+                    0 0 20px var(--accent-2),
+                    0 0 40px var(--accent-2),
+                    0 0 80px var(--accent-2);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 5px var(--accent-2),
+                    0 0 10px var(--accent-2),
+                    0 0 20px var(--accent-2),
+                    0 0 40px var(--accent-2);
+            }
+        }
+
+        /* Animation 10: Clip Path Reveal (Scroll Triggered) */
+        .clip-reveal-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+            transition: clip-path 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            line-height: 1.2;
+        }
+
+        .clip-reveal-text.revealed {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        /* Instruction text */
+        .instruction {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 40px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 100px;
+        }
+
+        footer a {
+            color: var(--accent-1);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--accent-2);
+        }
+
+        @media (max-width: 768px) {
+            .animation-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .gradient-flow-text,
+            .glitch-text,
+            .split-text,
+            .rotate-3d-text,
+            .wave-text,
+            .mask-reveal-text,
+            .neon-text,
+            .clip-reveal-text {
+                font-size: 2rem;
+            }
+
+            .scramble-text {
+                font-size: 1.5rem;
+            }
+
+            .typewriter-text {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="main-title">Text Animations</h1>
+            <p class="subtitle">Production-Ready Effects from Modern Tech</p>
+        </header>
+
+        <div class="animation-grid">
+            <!-- Animation 1 -->
+            <div class="animation-card">
+                <span class="card-number">01</span>
+                <div class="card-label">Stripe / Linear Style</div>
+                <div class="demo-area">
+                    <div class="gradient-flow-text">Infinite Flow</div>
+                </div>
+                <p class="instruction">Gradient animation continuously flowing</p>
+            </div>
+
+            <!-- Animation 2 -->
+            <div class="animation-card">
+                <span class="card-number">02</span>
+                <div class="card-label">Cyberpunk Glitch</div>
+                <div class="demo-area">
+                    <div class="glitch-text" data-text="HOVER ME">HOVER ME</div>
+                </div>
+                <p class="instruction">Hover to trigger glitch effect</p>
+            </div>
+
+            <!-- Animation 3 -->
+            <div class="animation-card">
+                <span class="card-number">03</span>
+                <div class="card-label">Apple / Vercel Style</div>
+                <div class="demo-area">
+                    <div class="split-text">
+                        <span class="char">R</span><span class="char">e</span><span class="char">v</span><span class="char">e</span><span class="char">a</span><span class="char">l</span><span class="char">e</span><span class="char">d</span>
+                    </div>
+                </div>
+                <p class="instruction">Character-by-character reveal animation</p>
+            </div>
+
+            <!-- Animation 4 -->
+            <div class="animation-card">
+                <span class="card-number">04</span>
+                <div class="card-label">Classic Typewriter</div>
+                <div class="demo-area">
+                    <div class="typewriter-text">console.log('Hello World');</div>
+                </div>
+                <p class="instruction">Infinite typing animation with cursor</p>
+            </div>
+
+            <!-- Animation 5 -->
+            <div class="animation-card">
+                <span class="card-number">05</span>
+                <div class="card-label">3D Transform</div>
+                <div class="demo-area">
+                    <div class="rotate-3d-text"><span>ROTATE</span></div>
+                </div>
+                <p class="instruction">Hover for 3D rotation effect</p>
+            </div>
+
+            <!-- Animation 6 -->
+            <div class="animation-card">
+                <span class="card-number">06</span>
+                <div class="card-label">Wave Motion</div>
+                <div class="demo-area">
+                    <div class="wave-text">
+                        <span>W</span><span>A</span><span>V</span><span>I</span><span>N</span><span>G</span>
+                    </div>
+                </div>
+                <p class="instruction">Continuous wave animation per character</p>
+            </div>
+
+            <!-- Animation 7 -->
+            <div class="animation-card">
+                <span class="card-number">07</span>
+                <div class="card-label">Text Scramble</div>
+                <div class="demo-area">
+                    <div class="scramble-text" id="scrambleText">DECODE_ME</div>
+                </div>
+                <p class="instruction">Hover to scramble and decode text</p>
+            </div>
+
+            <!-- Animation 8 -->
+            <div class="animation-card">
+                <span class="card-number">08</span>
+                <div class="card-label">Gradient Mask</div>
+                <div class="demo-area">
+                    <div class="mask-reveal-text">Sliding Mask</div>
+                </div>
+                <p class="instruction">Animated gradient mask reveal</p>
+            </div>
+
+            <!-- Animation 9 -->
+            <div class="animation-card">
+                <span class="card-number">09</span>
+                <div class="card-label">Neon Glow</div>
+                <div class="demo-area">
+                    <div class="neon-text">NEON</div>
+                </div>
+                <p class="instruction">Pulsing neon glow effect</p>
+            </div>
+
+            <!-- Animation 10 -->
+            <div class="animation-card">
+                <span class="card-number">10</span>
+                <div class="card-label">Clip Path Reveal</div>
+                <div class="demo-area">
+                    <div class="clip-reveal-text" id="clipText">Scroll Magic</div>
+                </div>
+                <p class="instruction">Scroll-triggered reveal animation</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Crafted with modern CSS & JavaScript • Inspired by industry leaders</p>
+            <p>Stripe, Linear, Vercel, Apple, and more</p>
+        </footer>
+    </div>
+
+    <script>
+        // Intersection Observer for scroll-triggered animations
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animation cards
+        document.querySelectorAll('.animation-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Clip path reveal on scroll
+        const clipObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const clipText = document.getElementById('clipText');
+        if (clipText) {
+            clipObserver.observe(clipText);
+        }
+
+        // Text scramble effect
+        class TextScramble {
+            constructor(el) {
+                this.el = el;
+                this.chars = '!<>-_\\/[]{}—=+*^?#________';
+                this.update = this.update.bind(this);
+            }
+
+            setText(newText) {
+                const oldText = this.el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise((resolve) => this.resolve = resolve);
+                this.queue = [];
+
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 40);
+                    const end = start + Math.floor(Math.random() * 40);
+                    this.queue.push({ from, to, start, end });
+                }
+
+                cancelAnimationFrame(this.frameRequest);
+                this.frame = 0;
+                this.update();
+                return promise;
+            }
+
+            update() {
+                let output = '';
+                let complete = 0;
+
+                for (let i = 0, n = this.queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = this.queue[i];
+
+                    if (this.frame >= end) {
+                        complete++;
+                        output += to;
+                    } else if (this.frame >= start) {
+                        if (!char || Math.random() < 0.28) {
+                            char = this.randomChar();
+                            this.queue[i].char = char;
+                        }
+                        output += char;
+                    } else {
+                        output += from;
+                    }
+                }
+
+                this.el.innerText = output;
+
+                if (complete === this.queue.length) {
+                    this.resolve();
+                } else {
+                    this.frameRequest = requestAnimationFrame(this.update);
+                    this.frame++;
+                }
+            }
+
+            randomChar() {
+                return this.chars[Math.floor(Math.random() * this.chars.length)];
+            }
+        }
+
+        const scrambleEl = document.getElementById('scrambleText');
+        if (scrambleEl) {
+            const fx = new TextScramble(scrambleEl);
+            const originalText = scrambleEl.innerText;
+            
+            scrambleEl.addEventListener('mouseenter', () => {
+                fx.setText('$%#@&*_!?');
+                setTimeout(() => {
+                    fx.setText(originalText);
+                }, 800);
+            });
+        }
+
+        // Add stagger delay to card animations
+        document.querySelectorAll('.animation-card').forEach((card, index) => {
+            card.style.transitionDelay = `${index * 0.1}s`;
+        });
+    </script>
+</body>
+</html>

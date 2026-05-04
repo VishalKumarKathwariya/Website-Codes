@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be Your Own Muse - Editorial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            background: #e8e8e8;
+        }
+
+        /* Main Container */
+        .hero-section {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: #f9f6f4;
+            overflow: hidden;
+        }
+
+        /* Pink Circular Decorative Elements */
+        .pink-circle-1 {
+            position: absolute;
+            top: 15%;
+            left: 25%;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(232, 180, 217, 0.5) 0%, rgba(240, 208, 232, 0.3) 100%);
+            border-radius: 50%;
+            z-index: 1;
+            filter: blur(30px);
+        }
+
+        .pink-circle-2 {
+            position: absolute;
+            top: 8%;
+            right: 12%;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(200, 150, 220, 0.4) 0%, rgba(230, 200, 240, 0.2) 100%);
+            border-radius: 50%;
+            z-index: 1;
+            filter: blur(40px);
+        }
+
+        .pink-circle-3 {
+            position: absolute;
+            bottom: 20%;
+            left: 18%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(245, 200, 230, 0.35) 0%, rgba(250, 220, 240, 0.2) 100%);
+            border-radius: 50%;
+            z-index: 1;
+            filter: blur(25px);
+        }
+
+        /* Main Heading */
+        .main-heading {
+            position: absolute;
+            top: 22%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 82px;
+            font-weight: 400;
+            color: #1a1a1a;
+            letter-spacing: -1px;
+            line-height: 0.95;
+            z-index: 5;
+        }
+
+        .heading-line {
+            display: block;
+        }
+
+        /* Portrait Image */
+        .portrait-image {
+            position: absolute;
+            top: 34%;
+            left: 16%;
+            width: 230px;
+            height: 280px;
+            background: #1a1a1a;
+            z-index: 4;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+        }
+
+        .portrait-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.15);
+        }
+
+        /* Circular Badge */
+        .circular-badge {
+            position: absolute;
+            top: 20%;
+            right: 14%;
+            width: 160px;
+            height: 160px;
+            z-index: 6;
+        }
+
+        .badge-circle {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #1a1a1a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+
+        .badge-center {
+            font-size: 48px;
+            color: #1a1a1a;
+            font-weight: 300;
+        }
+
+        .badge-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 200px;
+            transform: translate(-50%, -50%);
+        }
+
+        .badge-text svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Content Columns */
+        .content-wrapper {
+            position: absolute;
+            top: 52%;
+            left: 16%;
+            right: 14%;
+            display: flex;
+            gap: 80px;
+            z-index: 5;
+        }
+
+        .content-column {
+            flex: 1;
+        }
+
+        .column-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .column-text {
+            font-size: 12px;
+            font-weight: 400;
+            color: #666;
+            line-height: 1.6;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 12px;
+        }
+
+        .column-link {
+            font-size: 11px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-decoration: underline;
+            font-family: 'Arial', sans-serif;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .column-link:hover {
+            opacity: 0.7;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: absolute;
+            bottom: 12%;
+            right: 10%;
+            display: flex;
+            align-items: center;
+            gap: 35px;
+            z-index: 8;
+        }
+
+        .nav-arrows {
+            display: flex;
+            gap: 25px;
+        }
+
+        .arrow {
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            font-weight: 300;
+        }
+
+        .arrow:hover {
+            transform: scale(1.2);
+        }
+
+        /* Counter */
+        .counter {
+            position: absolute;
+            bottom: 8%;
+            right: 10%;
+            font-size: 90px;
+            font-weight: 700;
+            color: #1a1a1a;
+            font-family: 'Georgia', serif;
+            z-index: 8;
+            letter-spacing: -2px;
+        }
+
+        /* Date Tabs */
+        .date-tabs {
+            position: absolute;
+            bottom: 5%;
+            right: 20%;
+            display: flex;
+            gap: 15px;
+            z-index: 8;
+        }
+
+        .date-tab {
+            font-size: 11px;
+            color: #999;
+            font-family: 'Arial', sans-serif;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .date-tab:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        
+        <!-- Pink Circular Decorative Elements -->
+        <div class="pink-circle-1"></div>
+        <div class="pink-circle-2"></div>
+        <div class="pink-circle-3"></div>
+
+        <!-- Main Heading -->
+        <div class="main-heading">
+            <span class="heading-line">BE YOUR</span>
+            <span class="heading-line">OWN</span>
+            <span class="heading-line">MUSE</span>
+        </div>
+
+        <!-- Portrait Image -->
+        <div class="portrait-image">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=460&h=560&fit=crop" alt="Fashion Portrait">
+        </div>
+
+        <!-- Circular Badge -->
+        <div class="circular-badge">
+            <div class="badge-circle">
+                <div class="badge-center">+</div>
+            </div>
+            <div class="badge-text">
+                <svg viewBox="0 0 200 200">
+                    <defs>
+                        <path id="circlePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"/>
+                    </defs>
+                    <text font-family="Arial" font-size="11" fill="#1a1a1a">
+                        <textPath href="#circlePath" startOffset="0%">
+                            FOLLOW US ON INSTAGRAM • SOCIAL NETWORK
+                        </textPath>
+                    </text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Content Columns -->
+        <div class="content-wrapper">
+            <div class="content-column">
+                <p class="column-title">Maecenas tincidunt, velit ac porttitor pulvinar, tortor eros facilisis libero, vitae commodo nunc quam et ligula ut nec ipsum sapien.</p>
+            </div>
+            
+            <div class="content-column">
+                <p class="column-text">
+                    Aenean eu enim justo. Vestibulum aliquam hendrerit molestie. Mauris malesuada nisi sit amet nibh ullamcorper, et mattis lorem tincidunt, velit ac porttitor pulvinar, tortor eros facilisis libero, <span class="column-link">vitae commodo</span>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation Arrows -->
+        <div class="bottom-nav">
+            <div class="nav-arrows">
+                <span class="arrow">‹</span>
+                <span class="arrow">›</span>
+            </div>
+        </div>
+
+        <!-- Counter -->
+        <div class="counter">*04</div>
+
+        <!-- Date Tabs -->
+        <div class="date-tabs">
+            <span class="date-tab">Tue</span>
+            <span class="date-tab">Fri</span>
+            <span class="date-tab">Hlg</span>
+        </div>
+
+    </div>
+</body>
+</html>
