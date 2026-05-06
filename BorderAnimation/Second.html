@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>10 Next-Level Border Animations 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Clash+Display:wght@400;600;700&family=Cabinet+Grotesk:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    /* ──────────────────────────────────────────
+       ROOT & GLOBALS
+    ────────────────────────────────────────── */
+    :root {
+      --bg: #07080f;
+      --surface: #0e101c;
+      --surface2: #13162a;
+      --text: #edeef5;
+      --muted: #6b7280;
+      --c1: #6366f1;   /* indigo   */
+      --c2: #ec4899;   /* pink     */
+      --c3: #06b6d4;   /* cyan     */
+      --c4: #f59e0b;   /* amber    */
+      --c5: #10b981;   /* emerald  */
+      --c6: #a855f7;   /* purple   */
+      --r: 14px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* noise grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: .45;
+    }
+
+    /* ──────────────────────────────────────────
+       HERO
+    ────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 70% 30%, rgba(99,102,241,.18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 20% 70%, rgba(236,72,153,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 50% 10%, rgba(6,182,212,.10) 0%, transparent 60%),
+        var(--bg);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(99,102,241,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+    }
+
+    .hero h1 {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      line-height: 1.05;
+      position: relative;
+      background: linear-gradient(135deg, #fff 30%, rgba(99,102,241,.8));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      margin-bottom: 20px;
+      font-size: .78rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--c1);
+      position: relative;
+    }
+
+    .hero p {
+      margin-top: 20px;
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 520px;
+      position: relative;
+    }
+
+    .hero-arrow {
+      position: absolute;
+      bottom: 32px;
+      font-size: .8rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      animation: arrowBob 2.2s ease-in-out infinite;
+    }
+
+    @keyframes arrowBob {
+      0%,100% { transform: translateY(0); opacity: .5; }
+      50%      { transform: translateY(8px); opacity: 1; }
+    }
+
+    /* ──────────────────────────────────────────
+       GRID
+    ────────────────────────────────────────── */
+    .container {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 80px 28px 120px;
+    }
+
+    .section-label {
+      font-size: .78rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--c1);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 60px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 28px;
+    }
+
+    /* ──────────────────────────────────────────
+       CARD BASE
+    ────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border-radius: var(--r);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: transform .3s ease;
+      position: relative;
+    }
+
+    .card:hover { transform: translateY(-4px); }
+
+    .card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .num {
+      font-size: .72rem;
+      color: var(--c1);
+      letter-spacing: 3px;
+    }
+
+    .card h2 {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .card p {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .demo {
+      width: 100%;
+      height: 180px;
+      border-radius: 10px;
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      position: relative;
+    }
+
+    /* ══════════════════════════════════════════
+       ANIMATION 01 — Conic Sweep (SaaS staple)
+       Seen on: Vercel, Resend, Railway dashboards
+    ══════════════════════════════════════════ */
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    .conic-sweep {
+      position: relative;
+      isolation: isolate;
+      border-radius: 10px;
+    }
+
+    .conic-sweep::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 12px;
+      background: conic-gradient(
+        from var(--angle),
+        transparent 70%,
+        var(--c1) 85%,
+        var(--c3) 92%,
+        transparent 100%
+      );
+      animation: spinAngle 3s linear infinite;
+      z-index: -1;
+    }
+
+    .conic-sweep::after {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      background: var(--surface2);
+      border-radius: 10px;
+      z-index: -1;
+    }
+
+    @keyframes spinAngle {
+      to { --angle: 360deg; }
+    }
+
+    /* ══════════════════════════════════════════
+       ANIMATION 02 — Aurora Mesh (Premium SaaS)
+       Seen on: Linear, Luma, Raycast landing pages
+    ══════════════════════════════════════════ */
+    .aurora-border {
+      position: relative;
+      border-radius: 10px;
+      isolation: isolate;
+    }
+
+    .aurora-border::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 13px;
+      background: linear-gradient(
+        var(--aurora-angle, 135deg),
+        #6366f1, #ec4899, #06b6d4, #a855f7, #6366f1
+      );
+      background-size: 300% 300%;
+      animation: auroraShift 6s ease infinite;
+      z-index: -1;
+      filter: blur(1px);
+    }
+
+    .aurora-border::after {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      border-radius: 10px;
+      background: var(--surface2);
+      z-index: -1;
+    }
+
+    @keyframes auroraShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ══════════════════════════════════════════
+       ANIMATION 03 — SVG Dash Race (Trendy tool UIs)
+       Seen on: Figma plugins, Framer components
+    ══════════════════════════════════════════ */
+    .dash-race {
+      position: relative;
+      border-radius: 10px;
+    }
+
+    .dash-race svg.border-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .dash-race svg.border-svg rect {
+      fill: none;
+      stroke: var(--c5);
+      stroke-width: 2;
+      rx: 10;
+      stroke-dasharray: 30 800;
+      stroke-dashoffset: 0;
+      animation: dashRace 2.5s linear infinite;
+    }
+
+    .dash-race svg.border-svg rect:nth-child(2) {
+      stroke: var(--c2);
+      stroke-dasharray: 15 800;
+      animation: dashRace 2.5s linear infinite reverse;
+      animation-delay: -1.25s;
+    }
+
+    @keyframes dashRace {
+      to { stroke-dashoffset: -830; }
+    }
+
+    /* ══════════════════════════════════════════
+       ANIMATION 04 — Shimmer Inset (E-commerce / Cards)
+       Seen on: Shopify sections, Stripe UI kit
+    ══════════════════════════════════════════ */
+    .shimmer-inset {
+      position: relative;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .shimmer-inset::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        110deg,
+        transparent 20%,
+        rgba(255,255,255,.07) 40%,
+        rgba(255,255,255,.14) 50%,
+        rgba(255,255,255,.07) 60%,
+        transparent 80%
+      );
+      background-size: 250% 100%;
+      animation: shimmer 2.8s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ══════════════════════════════════════════
+       ANIMATION 05 — Laser Trace (Game / Creative)
+       Seen on: Roblox creator, Unity dashboards
+    ══════════════════════════════════════════ */
+    .laser-trace {
+      position: relative;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .laser-trace::before {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--c4), transparent);
+      border-radius: 100px;
+      box-shadow: 0 0 12px 4px var(--c4);
+      animation: laserH 2.5s ease-in-out infinite;
+      top: -1px;
+      left: 0;
+    }
+
+    .laser-trace::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 50px;
+      background: linear-gradient(180deg, transparent, var(--c2), transparent);
+      border-radius: 100px;
+      box-shadow: 0 0 12px 4px var(--c2);
+      animation: laserV 2.5s ease-in-out infinite;
+      animation-delay: 1.25s;
+      right: -1px;
+      top: 0;
+    }
+
+    @keyframes laserH {
+      0%   { left: 0;          top: -1px;        opacity: 0; }
+      5%   { opacity: 1; }
+      45%  { left: calc(100% - 60px); top: -1px; opacity: 1; }
+      50%  { left: calc(100% - 60px); top: calc(100% - 1px); opacity: 1; }
+      90%  { left: 0; top: calc(100% - 1px); opacity: 1; }
+      95%  { opacity: 0; }
+      100% { left: 0; top: -1px; opacity: 0; }
+    }
+
+    @keyframes laserV {
+      0%   { right: -1px; top: 0;              opacity: 0; }
+      5%   { opacity: 1; }
+      45%  { right: -1px; top: calc(100% - 50px); opacity: 1; }
+      50%  { right: calc(100% - 1px); top: calc(100% - 50px); opacity: 1; }
+      90%  { right: calc(100% - 1px); top: 0; opacity: 1; }
+      95%  { opacity: 0; }
+      100% { right: -1px; top: 0; opacity: 0; }
+    }
+
+    /* ══════════════════════════════════════════
+       ANIMATION 06 — Morphing Blob Border (Agency sites)
+       Seen on: Awwwards winners, creative agency portfolios
+    ══════════════════════════════════════════ */
+    .blob-border {
+      position: relative;
+      border-radius: 10px;
+    }
+
+    .blob-border::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      background: linear-gradient(135deg, var(--c6), var(--c2), var(--c3));
+      border-radius: 10px;
+      filter: blur(2px);
+      animation: blobMorph 6s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    .blob-border::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: var(--surface2);
+      border-radius: 8px;
+      z-index: -1;
+    }
+
+    @keyframes blobMorph {
+      0%,100% {
+        border-radius: 10px;
+        transform: scale(1) rotate(0deg);
+      }
+      25% {
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        transform: scale(1.02) rotate(2deg);
+      }
+      50% {
+        border-radius: 50% 50% 30% 70% / 50% 70% 30% 50%;
+        transform: scale(1.01) rotate(-1deg);
+      }
+      75% {
+        border-radius: 70% 30% 50% 50% / 30% 50% 50% 70%;
+        transform: scale(1.02) rotate(1deg);
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       ANIMATION 07 — Electric Arc Corners (Crypto/Web3)
+       Seen on: OpenSea, Coinbase, web3 dashboards
+    ══════════════════════════════════════════ */
+    .electric-corners {
+      position: relative;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .electric-corners .corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+    }
+
+    .electric-corners .corner::before,
+    .electric-corners .corner::after {
+      content: '';
+      position: absolute;
+      background: var(--c3);
+      box-shadow: 0 0 10px 2px var(--c3);
+      border-radius: 1px;
+    }
+
+    /* horizontal bar */
+    .electric-corners .corner::before {
+      width: 100%;
+      height: 2px;
+    }
+
+    /* vertical bar */
+    .electric-corners .corner::after {
+      width: 2px;
+      height: 100%;
+    }
+
+    .electric-corners .corner.tl { top: -1px; left: -1px; }
+    .electric-corners .corner.tl::before { top: 0; left: 0; }
+    .electric-corners .corner.tl::after  { top: 0; left: 0; }
+
+    .electric-corners .corner.tr { top: -1px; right: -1px; }
+    .electric-corners .corner.tr::before { top: 0; right: 0; }
+    .electric-corners .corner.tr::after  { top: 0; right: 0; }
+
+    .electric-corners .corner.bl { bottom: -1px; left: -1px; }
+    .electric-corners .corner.bl::before { bottom: 0; left: 0; }
+    .electric-corners .corner.bl::after  { bottom: 0; left: 0; }
+
+    .electric-corners .corner.br { bottom: -1px; right: -1px; }
+    .electric-corners .corner.br::before { bottom: 0; right: 0; }
+    .electric-corners .corner.br::after  { bottom: 0; right: 0; }
+
+    .electric-corners .corner::before,
+    .electric-corners .corner::after {
+      animation: arcPulse 2s ease-in-out infinite;
+    }
+
+    .electric-corners .corner.tr::before,
+    .electric-corners .corner.tr::after { animation-delay: .5s; }
+    .electric-corners .corner.bl::before,
+    .electric-corners .corner.bl::after { animation-delay: 1s; }
+    .electric-corners .corner.br::before,
+    .electric-corners .corner.br::after { animation-delay: 1.5s; }
+
+    @keyframes arcPulse {
+      0%,100% { opacity: .6; box-shadow: 0 0 6px 1px var(--c3); }
+      50%      { opacity: 1;  box-shadow: 0 0 16px 4px var(--c3); }
+    }
+
+    /* ══════════════════════════════════════════
+       ANIMATION 08 — Liquid Fill Border (Fintech)
+       Seen on: Revolut, Monzo, Wise app UI
+    ══════════════════════════════════════════ */
+    .liquid-fill {
+      position: relative;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background:
+        linear-gradient(var(--surface2), var(--surface2)) padding-box,
+        linear-gradient(180deg, var(--c5) 0%, transparent 100%) border-box;
+      animation: liquidFill 3s ease-in-out infinite;
+      background-size: 100% 100%;
+    }
+
+    @keyframes liquidFill {
+      0%,100% {
+        background:
+          linear-gradient(var(--surface2), var(--surface2)) padding-box,
+          linear-gradient(0deg, var(--c5) 0%, rgba(16,185,129,.1) 100%) border-box;
+      }
+      50% {
+        background:
+          linear-gradient(var(--surface2), var(--surface2)) padding-box,
+          linear-gradient(180deg, var(--c5) 0%, rgba(16,185,129,.1) 100%) border-box;
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       ANIMATION 09 — Typing Outline (Dev tools / docs)
+       Seen on: CodeSandbox, StackBlitz, Warp terminal
+    ══════════════════════════════════════════ */
+    .typing-outline {
+      position: relative;
+      border-radius: 10px;
+    }
+
+    .typing-outline svg.to-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .typing-outline svg.to-svg rect.outline-rect {
+      fill: none;
+      stroke: var(--c1);
+      stroke-width: 2;
+      rx: 10;
+      stroke-dasharray: 700;
+      stroke-dashoffset: 700;
+      animation: typeWrite 3s linear infinite;
+    }
+
+    .typing-outline svg.to-svg rect.cursor-rect {
+      fill: var(--c1);
+      rx: 2;
+      width: 8px;
+      height: 8px;
+      opacity: 0;
+      animation: cursorBlink 3s linear infinite;
+    }
+
+    @keyframes typeWrite {
+      0%    { stroke-dashoffset: 700; opacity: 1; }
+      70%   { stroke-dashoffset: 0;   opacity: 1; }
+      85%   { stroke-dashoffset: 0;   opacity: 1; }
+      100%  { stroke-dashoffset: 0;   opacity: 0; }
+    }
+
+    @keyframes cursorBlink {
+      0%,70%  { opacity: 0; }
+      72%     { opacity: 1; }
+      74%     { opacity: 0; }
+      76%     { opacity: 1; }
+      78%     { opacity: 0; }
+      80%     { opacity: 1; }
+      100%    { opacity: 0; }
+    }
+
+    /* ══════════════════════════════════════════
+       ANIMATION 10 — Holo Foil (Premium/NFT)
+       Seen on: Vercel Marketplace, GitHub Sponsors, Loot
+    ══════════════════════════════════════════ */
+    .holo-foil {
+      position: relative;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background:
+        linear-gradient(var(--surface2), var(--surface2)) padding-box,
+        conic-gradient(
+          from var(--holo-angle, 0deg),
+          #6366f1, #ec4899, #06b6d4, #f59e0b, #10b981, #a855f7, #6366f1
+        ) border-box;
+      animation: holoSpin 4s linear infinite;
+    }
+
+    @keyframes holoSpin {
+      to { --holo-angle: 360deg; }
+    }
+
+    /* need the @property for the holo too */
+    @property --holo-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    .holo-foil::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      background: linear-gradient(
+        125deg,
+        rgba(99,102,241,.08) 0%,
+        rgba(236,72,153,.08) 25%,
+        rgba(6,182,212,.08) 50%,
+        rgba(168,85,247,.08) 75%,
+        rgba(99,102,241,.08) 100%
+      );
+      background-size: 300% 300%;
+      animation: holoSheen 4s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes holoSheen {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ──────────────────────────────────────────
+       TAGS
+    ────────────────────────────────────────── */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .7rem;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(99,102,241,.12);
+      color: var(--c1);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    /* ──────────────────────────────────────────
+       FOOTER
+    ────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--muted);
+      font-size: .8rem;
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+
+    /* ──────────────────────────────────────────
+       RESPONSIVE
+    ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-tag">TRENDING 2025</div>
+  <h1>Next-Level<br>Border FX</h1>
+  <p>10 fresh border animations used by top SaaS products, creative agencies, and leading freelancers — completely different from everything you've seen.</p>
+  <div class="hero-arrow">↓ SCROLL</div>
+</section>
+
+<!-- GRID -->
+<div class="container">
+  <div class="section-label">COLLECTION</div>
+  <div class="section-title">10 Production-Grade Animations</div>
+
+  <div class="grid">
+
+    <!-- 01 Conic Sweep -->
+    <div class="card">
+      <div class="card-meta">
+        <span class="num">01</span>
+        <h2>Conic Sweep</h2>
+        <div class="tag">/@property/ CSS · SaaS</div>
+        <p>A single glowing arc sweeps the full border using <code>@property</code> and <code>conic-gradient</code>. Seen everywhere on Vercel, Resend, and Railway product UIs in 2024–25.</p>
+      </div>
+      <div class="demo conic-sweep">Conic Gradient Arc</div>
+    </div>
+
+    <!-- 02 Aurora Mesh -->
+    <div class="card">
+      <div class="card-meta">
+        <span class="num">02</span>
+        <h2>Aurora Mesh</h2>
+        <div class="tag">Mesh · Premium SaaS</div>
+        <p>A slow-breathing multi-color gradient border with a subtle blur, mimicking aurora borealis. Linear, Luma, and Raycast use this exact treatment on landing pages.</p>
+      </div>
+      <div class="demo aurora-border">Aurora Glow</div>
+    </div>
+
+    <!-- 03 Dash Race -->
+    <div class="card">
+      <div class="card-meta">
+        <span class="num">03</span>
+        <h2>SVG Dash Race</h2>
+        <div class="tag">SVG · Design Tools</div>
+        <p>Two dashes of different colors race around the border perimeter in opposite directions using SVG stroke animation. Staple of Figma plugins and Framer components.</p>
+      </div>
+      <div class="demo dash-race">
+        <svg class="border-svg" aria-hidden="true">
+          <rect width="100%" height="100%" rx="10"/>
+          <rect width="100%" height="100%" rx="10"/>
+        </svg>
+        Dash Race
+      </div>
+    </div>
+
+    <!-- 04 Shimmer Inset -->
+    <div class="card">
+      <div class="card-meta">
+        <span class="num">04</span>
+        <h2>Shimmer Inset</h2>
+        <div class="tag">Skeleton · E-commerce</div>
+        <p>A diagonal light streak sweeps across the card surface over a faint border — the refined evolution of skeleton loaders. Ubiquitous in Shopify storefronts and Stripe's UI kit.</p>
+      </div>
+      <div class="demo shimmer-inset">Light Shimmer</div>
+    </div>
+
+    <!-- 05 Laser Trace -->
+    <div class="card">
+      <div class="card-meta">
+        <span class="num">05</span>
+        <h2>Laser Trace</h2>
+        <div class="tag">Gaming · Creative</div>
+        <p>Two glowing laser beams trace the full perimeter — one horizontal, one vertical — taking turns in a synchronized loop. Popular in gaming UIs like Roblox Creator and Unity dashboards.</p>
+      </div>
+      <div class="demo laser-trace">Laser Perimeter</div>
+    </div>
+
+    <!-- 06 Morphing Blob -->
+    <div class="card">
+      <div class="card-meta">
+        <span class="num">06</span>
+        <h2>Morphing Blob Border</h2>
+        <div class="tag">Awwwards · Agency</div>
+        <p>The border itself morphs between organic blob shapes while the gradient rotates — a hallmark of Awwwards-winning creative agency sites and avant-garde portfolios.</p>
+      </div>
+      <div class="demo blob-border">Organic Border</div>
+    </div>
+
+    <!-- 07 Electric Corners -->
+    <div class="card">
+      <div class="card-meta">
+        <span class="num">07</span>
+        <h2>Electric Arc Corners</h2>
+        <div class="tag">Web3 · Crypto</div>
+        <p>HUD-style L-shaped corner brackets that pulse with a cyan electric glow in sequence, creating a targeting-reticle effect. Dominant in Web3 dashboards, OpenSea, and Coinbase.</p>
+      </div>
+      <div class="demo electric-corners">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+        HUD Corners
+      </div>
+    </div>
+
+    <!-- 08 Liquid Fill -->
+    <div class="card">
+      <div class="card-meta">
+        <span class="num">08</span>
+        <h2>Liquid Fill Border</h2>
+        <div class="tag">Fintech · Banking</div>
+        <p>The border appears to fill with liquid from bottom to top, then reverse — created entirely with <code>background-clip</code>. Revolut, Wise, and Monzo use this for balance/status cards.</p>
+      </div>
+      <div class="demo liquid-fill">Fill Effect</div>
+    </div>
+
+    <!-- 09 Typing Outline -->
+    <div class="card">
+      <div class="card-meta">
+        <span class="num">09</span>
+        <h2>Typing Outline</h2>
+        <div class="tag">Dev Tools · Docs</div>
+        <p>The border draws itself like a typewriter, then a cursor blinks at the end before it fades and resets. A signature style of CodeSandbox, StackBlitz, and Warp's marketing pages.</p>
+      </div>
+      <div class="demo typing-outline">
+        <svg class="to-svg" aria-hidden="true">
+          <rect class="outline-rect" x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="10"/>
+        </svg>
+        Type Effect
+      </div>
+    </div>
+
+    <!-- 10 Holo Foil -->
+    <div class="card">
+      <div class="card-meta">
+        <span class="num">10</span>
+        <h2>Holo Foil Border</h2>
+        <div class="tag">NFT · Premium</div>
+        <p>A spinning rainbow conic-gradient border with an internal iridescent sheen — replicating holographic trading card foil. Used on Vercel Marketplace cards, GitHub Sponsors, and NFT platforms.</p>
+      </div>
+      <div class="demo holo-foil">✦ Holographic ✦</div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  Pure CSS + SVG · No JavaScript · All animations run on the GPU compositor<br>
+  <span>@property support required for Conic Sweep & Holo Foil (Chrome 85+, Safari 16.4+, Firefox 128+)</span>
+</footer>
+
+</body>
+</html>

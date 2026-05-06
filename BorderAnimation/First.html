@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Trending Border Animations | Modern Web Design</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ================================
+           GLOBAL STYLES & CSS VARIABLES
+           ================================ */
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #15151f;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent-1: #00ff88;
+            --accent-2: #ff0080;
+            --accent-3: #00d4ff;
+            --accent-4: #ffd700;
+            --spacing-xl: 120px;
+            --spacing-lg: 80px;
+            --spacing-md: 40px;
+            --spacing-sm: 20px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* ================================
+           HERO SECTION
+           ================================ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+                var(--bg-primary);
+            position: relative;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 800;
+            margin-bottom: var(--spacing-sm);
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 5s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+        
+        /* ================================
+           MAIN GRID CONTAINER
+           ================================ */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-lg) var(--spacing-md);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        /* ================================
+           CARD BASE STYLES
+           ================================ */
+        .card {
+            background: var(--bg-secondary);
+            padding: var(--spacing-md);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .card-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.85rem;
+            color: var(--accent-1);
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .card-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .demo-box {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        /* ================================
+           ANIMATION 1: GRADIENT BORDER ROTATE
+           Used by: Stripe, Linear
+           ================================ */
+        .gradient-border-rotate {
+            position: relative;
+            background: var(--bg-secondary);
+        }
+        
+        .gradient-border-rotate::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-4));
+            border-radius: 8px;
+            z-index: -1;
+            animation: rotateBorder 3s linear infinite;
+            background-size: 300% 300%;
+        }
+        
+        @keyframes rotateBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* ================================
+           ANIMATION 2: SPOTLIGHT BORDER
+           Used by: Vercel, GitHub
+           ================================ */
+        .spotlight-border {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .spotlight-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            padding: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--accent-1) 50%, 
+                transparent 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            animation: spotlightMove 3s ease-in-out infinite;
+        }
+        
+        @keyframes spotlightMove {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        
+        /* ================================
+           ANIMATION 3: NEON PULSE
+           Used by: Behance, Dribbble
+           ================================ */
+        .neon-pulse {
+            border: 2px solid var(--accent-2);
+            box-shadow: 0 0 10px rgba(255, 0, 128, 0.5);
+            animation: neonPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes neonPulse {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(255, 0, 128, 0.5),
+                            0 0 20px rgba(255, 0, 128, 0.3),
+                            inset 0 0 10px rgba(255, 0, 128, 0.2);
+                border-color: var(--accent-2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 0, 128, 0.8),
+                            0 0 40px rgba(255, 0, 128, 0.5),
+                            inset 0 0 20px rgba(255, 0, 128, 0.4);
+                border-color: rgba(255, 0, 128, 0.8);
+            }
+        }
+        
+        /* ================================
+           ANIMATION 4: DRAWING BORDER
+           Used by: Apple, Notion
+           ================================ */
+        .drawing-border {
+            position: relative;
+            background: var(--bg-secondary);
+        }
+        
+        .drawing-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--accent-3);
+            border-radius: 8px;
+            clip-path: polygon(
+                0 0, 0 0,
+                0 0, 0 0
+            );
+            animation: drawBorder 4s ease-in-out infinite;
+        }
+        
+        @keyframes drawBorder {
+            0% {
+                clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+            }
+            25% {
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            }
+            50% {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+            75% {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+            100% {
+                clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+            }
+        }
+        
+        /* ================================
+           ANIMATION 5: CORNER DOTS
+           Used by: Figma, Framer
+           ================================ */
+        .corner-dots {
+            position: relative;
+        }
+        
+        .corner-dots::before,
+        .corner-dots::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-1);
+            border-radius: 50%;
+            animation: cornerDotsMove 3s ease-in-out infinite;
+        }
+        
+        .corner-dots::before {
+            top: -4px;
+            left: -4px;
+        }
+        
+        .corner-dots::after {
+            bottom: -4px;
+            right: -4px;
+            animation-delay: 1.5s;
+        }
+        
+        @keyframes cornerDotsMove {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(2);
+                opacity: 0.5;
+            }
+        }
+        
+        /* ================================
+           ANIMATION 6: GLITCH BORDER
+           Used by: Discord, Spotify
+           ================================ */
+        .glitch-border {
+            position: relative;
+            border: 2px solid var(--accent-3);
+        }
+        
+        .glitch-border::before,
+        .glitch-border::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border: 2px solid var(--accent-2);
+            border-radius: 8px;
+            opacity: 0;
+        }
+        
+        .glitch-border:hover::before {
+            animation: glitch1 0.3s infinite;
+        }
+        
+        .glitch-border:hover::after {
+            animation: glitch2 0.3s infinite 0.15s;
+        }
+        
+        @keyframes glitch1 {
+            0%, 100% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-3px, 3px);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes glitch2 {
+            0%, 100% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(3px, -3px);
+                opacity: 0.6;
+            }
+        }
+        
+        /* ================================
+           ANIMATION 7: DASHED ROTATING
+           Used by: Airbnb, Shopify
+           ================================ */
+        .dashed-rotating {
+            position: relative;
+            background: var(--bg-secondary);
+        }
+        
+        .dashed-rotating::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border: 2px dashed var(--accent-4);
+            border-radius: 8px;
+            animation: rotateDashed 10s linear infinite;
+        }
+        
+        @keyframes rotateDashed {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ================================
+           ANIMATION 8: WAVE BORDER
+           Used by: Netflix, Adobe
+           ================================ */
+        .wave-border {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wave-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            background: linear-gradient(90deg,
+                transparent,
+                var(--accent-1),
+                transparent
+            );
+            transform: translateX(-100%) skewX(-15deg);
+            animation: wave 3s ease-in-out infinite;
+        }
+        
+        .wave-border::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            z-index: 1;
+        }
+        
+        .wave-border .demo-box {
+            position: relative;
+            z-index: 2;
+        }
+        
+        @keyframes wave {
+            0% {
+                transform: translateX(-100%) skewX(-15deg);
+            }
+            100% {
+                transform: translateX(200%) skewX(-15deg);
+            }
+        }
+        
+        /* ================================
+           ANIMATION 9: BORDER SCALE
+           Used by: Twitter/X, Slack
+           ================================ */
+        .border-scale {
+            border: 2px solid var(--accent-1);
+            animation: borderScale 2s ease-in-out infinite;
+        }
+        
+        @keyframes borderScale {
+            0%, 100% {
+                border-width: 2px;
+                border-color: var(--accent-1);
+            }
+            50% {
+                border-width: 6px;
+                border-color: var(--accent-3);
+            }
+        }
+        
+        /* ================================
+           ANIMATION 10: PARTICLE ORBIT
+           Used by: Meta, OpenAI
+           ================================ */
+        .particle-orbit {
+            position: relative;
+        }
+        
+        .particle-orbit::before,
+        .particle-orbit::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-2);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-2);
+        }
+        
+        .particle-orbit::before {
+            top: 50%;
+            left: -3px;
+            animation: orbitVertical 4s linear infinite;
+        }
+        
+        .particle-orbit::after {
+            top: -3px;
+            left: 50%;
+            animation: orbitHorizontal 4s linear infinite;
+        }
+        
+        @keyframes orbitVertical {
+            0% { top: -3px; }
+            25% { top: 50%; }
+            50% { top: calc(100% + 3px); }
+            75% { top: 50%; }
+            100% { top: -3px; }
+        }
+        
+        @keyframes orbitHorizontal {
+            0% { left: -3px; }
+            25% { left: 50%; }
+            50% { left: calc(100% + 3px); }
+            75% { left: 50%; }
+            100% { left: -3px; }
+        }
+        
+        /* ================================
+           FOOTER
+           ================================ */
+        footer {
+            text-align: center;
+            padding: var(--spacing-lg) var(--spacing-md);
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        footer p {
+            font-size: 0.9rem;
+        }
+        
+        footer a {
+            color: var(--accent-1);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: var(--accent-3);
+        }
+        
+        /* ================================
+           RESPONSIVE DESIGN
+           ================================ */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: var(--spacing-md) var(--spacing-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- ================================
+         HERO SECTION
+         ================================ -->
+    <section class="hero">
+        <h1>Border Animations</h1>
+        <p>10 trending border animation styles used by the world's leading tech companies and designers. Scroll down to explore.</p>
+        <div class="scroll-indicator">↓ Scroll to explore</div>
+    </section>
+    
+    <!-- ================================
+         MAIN CONTENT CONTAINER
+         ================================ -->
+    <div class="container">
+        <div class="grid">
+            
+            <!-- ================================
+                 CARD 1: GRADIENT BORDER ROTATE
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-number">01</div>
+                    <h2 class="card-title">Gradient Border Rotate</h2>
+                    <p class="card-description">Animated gradient that shifts around the border. Used by Stripe and Linear for premium feel.</p>
+                </div>
+                <div class="demo-box gradient-border-rotate">
+                    Hover & Watch
+                </div>
+            </div>
+            
+            <!-- ================================
+                 CARD 2: SPOTLIGHT BORDER
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-number">02</div>
+                    <h2 class="card-title">Spotlight Border</h2>
+                    <p class="card-description">Illuminated highlight that travels along the border. Signature style of Vercel and GitHub.</p>
+                </div>
+                <div class="demo-box spotlight-border">
+                    Spotlight Effect
+                </div>
+            </div>
+            
+            <!-- ================================
+                 CARD 3: NEON PULSE
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-number">03</div>
+                    <h2 class="card-title">Neon Pulse</h2>
+                    <p class="card-description">Pulsating glow effect with vibrant colors. Popular on creative platforms like Behance and Dribbble.</p>
+                </div>
+                <div class="demo-box neon-pulse">
+                    Neon Glow
+                </div>
+            </div>
+            
+            <!-- ================================
+                 CARD 4: DRAWING BORDER
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-number">04</div>
+                    <h2 class="card-title">Drawing Border</h2>
+                    <p class="card-description">Border that draws itself in a continuous loop. Apple and Notion use this for elegant transitions.</p>
+                </div>
+                <div class="demo-box drawing-border">
+                    Self-Drawing
+                </div>
+            </div>
+            
+            <!-- ================================
+                 CARD 5: CORNER DOTS
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-number">05</div>
+                    <h2 class="card-title">Corner Dots</h2>
+                    <p class="card-description">Animated dots at corners that pulse and scale. Figma and Framer use this subtle approach.</p>
+                </div>
+                <div class="demo-box corner-dots">
+                    Dot Animation
+                </div>
+            </div>
+            
+            <!-- ================================
+                 CARD 6: GLITCH BORDER
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-number">06</div>
+                    <h2 class="card-title">Glitch Border</h2>
+                    <p class="card-description">Cyberpunk-style glitch effect on hover. Discord and Spotify use this for gaming aesthetics.</p>
+                </div>
+                <div class="demo-box glitch-border">
+                    Hover for Glitch
+                </div>
+            </div>
+            
+            <!-- ================================
+                 CARD 7: DASHED ROTATING
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-number">07</div>
+                    <h2 class="card-title">Dashed Rotating</h2>
+                    <p class="card-description">Rotating dashed border pattern. Airbnb and Shopify use this for loading states.</p>
+                </div>
+                <div class="demo-box dashed-rotating">
+                    Rotating Dash
+                </div>
+            </div>
+            
+            <!-- ================================
+                 CARD 8: WAVE BORDER
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-number">08</div>
+                    <h2 class="card-title">Wave Border</h2>
+                    <p class="card-description">Wave of light traveling across the border. Netflix and Adobe use this for content highlights.</p>
+                </div>
+                <div class="demo-box wave-border">
+                    Wave Effect
+                </div>
+            </div>
+            
+            <!-- ================================
+                 CARD 9: BORDER SCALE
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-number">09</div>
+                    <h2 class="card-title">Border Scale</h2>
+                    <p class="card-description">Border that dynamically changes thickness and color. Twitter/X and Slack use this for emphasis.</p>
+                </div>
+                <div class="demo-box border-scale">
+                    Scaling Border
+                </div>
+            </div>
+            
+            <!-- ================================
+                 CARD 10: PARTICLE ORBIT
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-number">10</div>
+                    <h2 class="card-title">Particle Orbit</h2>
+                    <p class="card-description">Particles orbiting around the border perimeter. Meta and OpenAI use this for futuristic look.</p>
+                </div>
+                <div class="demo-box particle-orbit">
+                    Orbital Particles
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- ================================
+         FOOTER
+         ================================ -->
+    <footer>
+        <p>Created with pure CSS animations • No JavaScript required</p>
+        <p>Inspired by <a href="#">modern web design trends</a></p>
+    </footer>
+    
+</body>
+</html>

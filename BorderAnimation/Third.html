@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>10 More Border Animations — Vol. 3</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ─────────────────────────────────────────────
+       CSS @property declarations (must be top-level)
+    ───────────────────────────────────────────── */
+      @property --sweep {
+        syntax: "<angle>";
+        initial-value: 0deg;
+        inherits: false;
+      }
+      @property --p {
+        syntax: "<percentage>";
+        initial-value: 0%;
+        inherits: false;
+      }
+      @property --snake-pos {
+        syntax: "<percentage>";
+        initial-value: 0%;
+        inherits: false;
+      }
+
+      /* ─────────────────────────────────────────────
+       ROOT & RESET
+    ───────────────────────────────────────────── */
+      :root {
+        --bg: #060610;
+        --surf: #0d0d20;
+        --surf2: #12122a;
+        --text: #e8e8f0;
+        --dim: #555570;
+        --r: 12px;
+
+        /* palette */
+        --violet: #7c3aed;
+        --fuchsia: #d946ef;
+        --sky: #0ea5e9;
+        --lime: #84cc16;
+        --orange: #f97316;
+        --rose: #f43f5e;
+        --teal: #14b8a6;
+        --amber: #f59e0b;
+        --indigo: #6366f1;
+        --pink: #ec4899;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "JetBrains Mono", monospace;
+        background: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+      }
+
+      /* grain */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cfilter id='g'%3E%3CfeTurbulence baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.035'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 9999;
+      }
+
+      /* ─────────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────────── */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 40px 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 55% 45% at 15% 25%,
+            rgba(124, 58, 237, 0.2) 0%,
+            transparent 65%
+          ),
+          radial-gradient(
+            ellipse 50% 50% at 85% 75%,
+            rgba(217, 70, 239, 0.15) 0%,
+            transparent 65%
+          ),
+          radial-gradient(
+            ellipse 40% 35% at 55% 5%,
+            rgba(14, 165, 233, 0.12) 0%,
+            transparent 55%
+          ),
+          var(--bg);
+      }
+
+      /* dot grid */
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+          rgba(255, 255, 255, 0.07) 1px,
+          transparent 1px
+        );
+        background-size: 40px 40px;
+        mask-image: radial-gradient(
+          ellipse 75% 75% at 50% 50%,
+          black 10%,
+          transparent 100%
+        );
+      }
+
+      .hero-inner {
+        position: relative;
+        z-index: 1;
+      }
+
+      .vol-badge {
+        display: inline-block;
+        margin-bottom: 18px;
+        font-size: 0.7rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--violet);
+        border: 1px solid rgba(124, 58, 237, 0.3);
+        padding: 5px 14px;
+        border-radius: 100px;
+      }
+
+      .hero h1 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 800;
+        font-size: clamp(3rem, 8vw, 6.5rem);
+        line-height: 1;
+        background: linear-gradient(
+          135deg,
+          #fff 0%,
+          rgba(124, 58, 237, 0.7) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero p {
+        margin-top: 20px;
+        font-size: 0.9rem;
+        color: var(--dim);
+        max-width: 500px;
+        line-height: 1.8;
+      }
+
+      .scroll-hint {
+        margin-top: 48px;
+        font-size: 0.72rem;
+        letter-spacing: 3px;
+        color: var(--dim);
+        animation: hint 2s ease-in-out infinite;
+      }
+
+      @keyframes hint {
+        0%,
+        100% {
+          opacity: 0.4;
+          transform: translateY(0);
+        }
+        50% {
+          opacity: 1;
+          transform: translateY(6px);
+        }
+      }
+
+      /* ─────────────────────────────────────────────
+       LAYOUT
+    ───────────────────────────────────────────── */
+      .container {
+        max-width: 1340px;
+        margin: 0 auto;
+        padding: 80px 28px 120px;
+      }
+
+      .eyebrow {
+        font-size: 0.72rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--violet);
+        margin-bottom: 10px;
+      }
+
+      .section-h {
+        font-family: "Outfit", sans-serif;
+        font-size: clamp(1.9rem, 4vw, 3rem);
+        font-weight: 800;
+        margin-bottom: 56px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 26px;
+      }
+
+      /* ─────────────────────────────────────────────
+       CARD
+    ───────────────────────────────────────────── */
+      .card {
+        background: var(--surf);
+        border-radius: var(--r);
+        padding: 26px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card-top {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .num {
+        font-size: 0.68rem;
+        letter-spacing: 3px;
+        color: var(--violet);
+      }
+
+      .card h2 {
+        font-family: "Outfit", sans-serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+      }
+
+      .badge {
+        display: inline-block;
+        font-size: 0.65rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 100px;
+        background: rgba(124, 58, 237, 0.12);
+        color: var(--violet);
+        width: fit-content;
+      }
+
+      .card p {
+        font-size: 0.8rem;
+        color: var(--dim);
+        line-height: 1.75;
+      }
+
+      .demo {
+        width: 100%;
+        height: 185px;
+        border-radius: 10px;
+        background: var(--surf2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
+        font-size: 1rem;
+        position: relative;
+      }
+
+      /* ══════════════════════════════════════════════
+       01 — MAGNETIC PULL BORDER
+       Hover: border segments "attract" to cursor corners
+       Seen on: Vercel AI SDK docs, Clerk auth pages
+    ══════════════════════════════════════════════ */
+      .magnetic {
+        border-radius: 10px;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .magnetic .seg {
+        position: absolute;
+        background: var(--sky);
+        border-radius: 100px;
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 0 10px 2px rgba(14, 165, 233, 0.5);
+      }
+
+      .magnetic .seg-t {
+        top: -1px;
+        left: 20%;
+        width: 30%;
+        height: 2px;
+      }
+      .magnetic .seg-b {
+        bottom: -1px;
+        right: 20%;
+        width: 30%;
+        height: 2px;
+      }
+      .magnetic .seg-l {
+        left: -1px;
+        top: 20%;
+        width: 2px;
+        height: 30%;
+      }
+      .magnetic .seg-r {
+        right: -1px;
+        bottom: 20%;
+        width: 2px;
+        height: 30%;
+      }
+
+      .magnetic:hover .seg-t {
+        left: 0;
+        width: 100%;
+        box-shadow: 0 0 20px 4px rgba(14, 165, 233, 0.7);
+      }
+      .magnetic:hover .seg-b {
+        right: 0;
+        width: 100%;
+        box-shadow: 0 0 20px 4px rgba(14, 165, 233, 0.7);
+      }
+      .magnetic:hover .seg-l {
+        top: 0;
+        height: 100%;
+        box-shadow: 0 0 20px 4px rgba(14, 165, 233, 0.7);
+      }
+      .magnetic:hover .seg-r {
+        bottom: 0;
+        height: 100%;
+        box-shadow: 0 0 20px 4px rgba(14, 165, 233, 0.7);
+      }
+
+      /* ══════════════════════════════════════════════
+       02 — RADAR PING BORDER
+       Circular wave pulses from center outward
+       Seen on: Datadog, PagerDuty, monitoring dashboards
+    ══════════════════════════════════════════════ */
+      .radar-ping {
+        border-radius: 10px;
+        border: 1px solid rgba(132, 204, 22, 0.25);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .radar-ping::before,
+      .radar-ping::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        border: 2px solid var(--lime);
+        animation: radarPulse 2.5s ease-out infinite;
+      }
+
+      .radar-ping::after {
+        animation-delay: 1.25s;
+      }
+
+      @keyframes radarPulse {
+        0% {
+          transform: scale(0.7);
+          opacity: 0.9;
+        }
+        100% {
+          transform: scale(1.3);
+          opacity: 0;
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+       03 — FIRE BORDER (bottom up flicker)
+       Seen on: Notion AI, ChatGPT "thinking" states
+    ══════════════════════════════════════════════ */
+      .fire-border {
+        border-radius: 10px;
+        position: relative;
+        border: 1px solid rgba(249, 115, 22, 0.15);
+      }
+
+      .fire-border::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 12px;
+        background: linear-gradient(
+          0deg,
+          var(--orange) 0%,
+          var(--amber) 30%,
+          rgba(249, 115, 22, 0.3) 60%,
+          transparent 100%
+        );
+        z-index: -1;
+        filter: blur(3px);
+        animation: fireFlicker 1.5s ease-in-out infinite alternate;
+      }
+
+      .fire-border::after {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: var(--surf2);
+        border-radius: 10px;
+        z-index: -1;
+      }
+
+      @keyframes fireFlicker {
+        0% {
+          opacity: 0.6;
+          transform: scaleX(0.97) scaleY(1.01);
+        }
+        25% {
+          opacity: 1;
+          transform: scaleX(1.01) scaleY(0.99);
+        }
+        50% {
+          opacity: 0.8;
+          transform: scaleX(0.99) scaleY(1.02);
+        }
+        75% {
+          opacity: 1;
+          transform: scaleX(1.02) scaleY(0.98);
+        }
+        100% {
+          opacity: 0.7;
+          transform: scaleX(0.98) scaleY(1.01);
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+       04 — DNA HELIX BORDER (side traveling dots)
+       Seen on: Biotech SaaS, health-tech dashboards
+    ══════════════════════════════════════════════ */
+      .dna-border {
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .dna-border .dot {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+
+      .dna-border .dot-a {
+        background: var(--fuchsia);
+        box-shadow: 0 0 8px 2px var(--fuchsia);
+        animation: dnaA 3s linear infinite;
+      }
+
+      .dna-border .dot-b {
+        background: var(--teal);
+        box-shadow: 0 0 8px 2px var(--teal);
+        animation: dnaB 3s linear infinite;
+      }
+
+      /* travels along perimeter: top → right → bottom → left */
+      @keyframes dnaA {
+        0% {
+          top: -3px;
+          left: calc(0% - 3px);
+        }
+        25% {
+          top: -3px;
+          left: calc(100% - 3px);
+        }
+        50% {
+          top: calc(100% - 3px);
+          left: calc(100% - 3px);
+        }
+        75% {
+          top: calc(100% - 3px);
+          left: calc(0% - 3px);
+        }
+        100% {
+          top: -3px;
+          left: calc(0% - 3px);
+        }
+      }
+
+      @keyframes dnaB {
+        0% {
+          top: calc(100% - 3px);
+          left: calc(100% - 3px);
+        }
+        25% {
+          top: calc(100% - 3px);
+          left: calc(0% - 3px);
+        }
+        50% {
+          top: -3px;
+          left: calc(0% - 3px);
+        }
+        75% {
+          top: -3px;
+          left: calc(100% - 3px);
+        }
+        100% {
+          top: calc(100% - 3px);
+          left: calc(100% - 3px);
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+       05 — FROST / GLASS CRACK BORDER
+       Seen on: Apple Vision Pro UI concepts, Spline 3D
+    ══════════════════════════════════════════════ */
+      .frost-border {
+        border-radius: 10px;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(6px);
+        overflow: hidden;
+      }
+
+      .frost-border::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        right: -1px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.6) 30%,
+          rgba(255, 255, 255, 0.9) 50%,
+          rgba(255, 255, 255, 0.6) 70%,
+          transparent 100%
+        );
+        animation: frostShine 4s ease-in-out infinite;
+      }
+
+      .frost-border::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: -1px;
+        right: -1px;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.25) 50%,
+          transparent 100%
+        );
+      }
+
+      @keyframes frostShine {
+        0%,
+        100% {
+          transform: scaleX(0.3);
+          opacity: 0;
+          left: -30%;
+        }
+        20% {
+          opacity: 1;
+        }
+        80% {
+          opacity: 1;
+        }
+        100% {
+          transform: scaleX(0.3);
+          opacity: 0;
+          left: 100%;
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+       06 — SNAKE BORDER (single continuous line)
+       Seen on: Framer Motion demos, Pika.art generator
+    ══════════════════════════════════════════════ */
+      .snake-border {
+        border-radius: 10px;
+        position: relative;
+      }
+
+      .snake-border svg.snake-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        pointer-events: none;
+      }
+
+      .snake-border svg.snake-svg rect {
+        fill: none;
+        stroke: url(#snakeGrad);
+        stroke-width: 2.5;
+        rx: 10;
+        stroke-linecap: round;
+        stroke-dasharray: 60 1000;
+        stroke-dashoffset: 0;
+        animation: snakeRun 2s linear infinite;
+      }
+
+      @keyframes snakeRun {
+        to {
+          stroke-dashoffset: -1060;
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+       07 — SCAN LINE BORDER (CRT / retro terminal)
+       Seen on: Warp terminal, Fig, Charm.sh tools
+    ══════════════════════════════════════════════ */
+      .scanline-border {
+        border-radius: 10px;
+        border: 1px solid rgba(132, 204, 22, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .scanline-border::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          180deg,
+          transparent,
+          rgba(132, 204, 22, 0.6),
+          rgba(132, 204, 22, 0.9),
+          rgba(132, 204, 22, 0.6),
+          transparent
+        );
+        box-shadow: 0 0 20px 6px rgba(132, 204, 22, 0.4);
+        animation: scanDown 2.5s linear infinite;
+        top: -10px;
+      }
+
+      .scanline-border::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 3px,
+          rgba(0, 0, 0, 0.15) 3px,
+          rgba(0, 0, 0, 0.15) 4px
+        );
+        pointer-events: none;
+      }
+
+      @keyframes scanDown {
+        0% {
+          top: -10px;
+        }
+        100% {
+          top: calc(100% + 10px);
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+       08 — PRISM SPLIT (rainbow dispersion)
+       Seen on: Apple Intelligence UI, iOS 18 concepts
+    ══════════════════════════════════════════════ */
+      .prism-split {
+        border-radius: 10px;
+        position: relative;
+      }
+
+      .prism-split::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 12px;
+        background: conic-gradient(
+          from var(--sweep),
+          #f43f5e,
+          #f97316,
+          #f59e0b,
+          #84cc16,
+          #0ea5e9,
+          #7c3aed,
+          #d946ef,
+          #f43f5e
+        );
+        z-index: -1;
+        animation: prismSpin 6s linear infinite;
+      }
+
+      .prism-split::after {
+        content: "";
+        position: absolute;
+        inset: 1.5px;
+        background: var(--surf2);
+        border-radius: 10px;
+        z-index: -1;
+      }
+
+      @keyframes prismSpin {
+        to {
+          --sweep: 360deg;
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+       09 — STACKED OFFSET BORDERS (depth illusion)
+       Seen on: Reshaped, shadcn/ui themes, Radix demos
+    ══════════════════════════════════════════════ */
+      .stacked-offset {
+        border-radius: 10px;
+        border: 1.5px solid rgba(99, 102, 241, 0.5);
+        position: relative;
+      }
+
+      .stacked-offset::before {
+        content: "";
+        position: absolute;
+        inset: -6px;
+        border-radius: 14px;
+        border: 1.5px solid rgba(99, 102, 241, 0.2);
+        animation: stackFloat 3s ease-in-out infinite;
+      }
+
+      .stacked-offset::after {
+        content: "";
+        position: absolute;
+        inset: -12px;
+        border-radius: 18px;
+        border: 1.5px solid rgba(99, 102, 241, 0.07);
+        animation: stackFloat 3s ease-in-out infinite reverse;
+      }
+
+      @keyframes stackFloat {
+        0%,
+        100% {
+          transform: rotate(0deg) scale(1);
+        }
+        50% {
+          transform: rotate(0.5deg) scale(1.005);
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+       10 — WATERCOLOR BLEED
+       Seen on: Notion covers, Read.cv, portfolio sites
+    ══════════════════════════════════════════════ */
+      .watercolor {
+        border-radius: 10px;
+        position: relative;
+        border: 1px solid transparent;
+      }
+
+      .watercolor::before {
+        content: "";
+        position: absolute;
+        inset: -3px;
+        border-radius: 14px;
+        background: linear-gradient(
+          var(--sweep),
+          var(--rose),
+          var(--fuchsia),
+          var(--violet),
+          var(--indigo),
+          var(--sky),
+          var(--rose)
+        );
+        background-size: 400% 400%;
+        filter: blur(8px);
+        opacity: 0.55;
+        animation:
+          waterBleed 8s ease-in-out infinite,
+          prismSpin 10s linear infinite;
+        z-index: -1;
+      }
+
+      .watercolor::after {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: var(--surf2);
+        border-radius: 10px;
+        z-index: -1;
+      }
+
+      @keyframes waterBleed {
+        0%,
+        100% {
+          opacity: 0.4;
+          filter: blur(8px) saturate(1);
+        }
+        50% {
+          opacity: 0.7;
+          filter: blur(12px) saturate(1.4);
+        }
+      }
+
+      /* ─────────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────────── */
+      footer {
+        text-align: center;
+        padding: 60px 24px;
+        color: var(--dim);
+        font-size: 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+        line-height: 2;
+      }
+
+      @media (max-width: 768px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="vol-badge">VOLUME III · 2025</div>
+        <h1>Border FX<br />Reloaded</h1>
+        <p>
+          10 more unique, production-grade border animations used by the most
+          admired products and designers — none repeated from previous volumes.
+        </p>
+        <div class="scroll-hint">↓ SCROLL TO EXPLORE</div>
+      </div>
+    </section>
+
+    <!-- GRID -->
+    <div class="container">
+      <div class="eyebrow">COLLECTION VOL. 3</div>
+      <div class="section-h">10 More Unique Borders</div>
+
+      <div class="grid">
+        <!-- 01 MAGNETIC PULL -->
+        <div class="card">
+          <div class="card-top">
+            <span class="num">01</span>
+            <h2>Magnetic Pull</h2>
+            <span class="badge">Hover · SaaS</span>
+            <p>
+              Border segments are scattered at rest, then magnetically snap
+              together on hover using CSS transitions with elastic easing. Seen
+              on Vercel AI SDK docs and Clerk auth pages.
+            </p>
+          </div>
+          <div class="demo magnetic">
+            <span class="seg seg-t"></span>
+            <span class="seg seg-b"></span>
+            <span class="seg seg-l"></span>
+            <span class="seg seg-r"></span>
+            Hover to Attract
+          </div>
+        </div>
+
+        <!-- 02 RADAR PING -->
+        <div class="card">
+          <div class="card-top">
+            <span class="num">02</span>
+            <h2>Radar Ping</h2>
+            <span class="badge">Monitoring · DevOps</span>
+            <p>
+              Two out-of-phase concentric border rings scale up and fade out,
+              simulating a live radar or sonar ping. Dominant in Datadog alerts,
+              PagerDuty status dashboards, and incident tools.
+            </p>
+          </div>
+          <div class="demo radar-ping">LIVE SIGNAL</div>
+        </div>
+
+        <!-- 03 FIRE BORDER -->
+        <div class="card">
+          <div class="card-top">
+            <span class="num">03</span>
+            <h2>Fire Border</h2>
+            <span class="badge">AI · Generative UI</span>
+            <p>
+              A blurred orange-amber gradient flickers from the bottom edge like
+              real fire using subtle scale animation with alternate direction.
+              Seen on Notion AI processing states and ChatGPT thinking
+              indicators.
+            </p>
+          </div>
+          <div class="demo fire-border">🔥 Processing…</div>
+        </div>
+
+        <!-- 04 DNA HELIX -->
+        <div class="card">
+          <div class="card-top">
+            <span class="num">04</span>
+            <h2>DNA Helix Orbit</h2>
+            <span class="badge">Biotech · Health SaaS</span>
+            <p>
+              Two glowing dots travel the perimeter in exact opposite
+              directions, creating a chasing / double-helix effect. Popular in
+              biotech SaaS and health-tech dashboard UIs.
+            </p>
+          </div>
+          <div class="demo dna-border">
+            <span class="dot dot-a"></span>
+            <span class="dot dot-b"></span>
+            Dual Orbit
+          </div>
+        </div>
+
+        <!-- 05 FROST GLASS -->
+        <div class="card">
+          <div class="card-top">
+            <span class="num">05</span>
+            <h2>Frost Glass Shine</h2>
+            <span class="badge">Glassmorphism · Apple</span>
+            <p>
+              A frosted glass card with a crisp white top edge highlight that
+              sweeps across slowly — replicating real light on etched glass.
+              Seen in Apple Vision Pro UI concepts and Spline 3D renders.
+            </p>
+          </div>
+          <div class="demo frost-border">✦ Frosted Glass</div>
+        </div>
+
+        <!-- 06 SNAKE -->
+        <div class="card">
+          <div class="card-top">
+            <span class="num">06</span>
+            <h2>Rainbow Snake</h2>
+            <span class="badge">Motion · Generative</span>
+            <p>
+              A short rainbow-gradient stroke races endlessly around the border
+              perimeter using SVG stroke-dashoffset — smoother than CSS-only
+              approaches. Featured in Framer Motion demos and Pika.art's
+              generator UI.
+            </p>
+          </div>
+          <div class="demo snake-border">
+            <svg class="snake-svg" aria-hidden="true">
+              <defs>
+                <linearGradient
+                  id="snakeGrad"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="0%"
+                >
+                  <stop offset="0%" stop-color="#f43f5e" />
+                  <stop offset="33%" stop-color="#7c3aed" />
+                  <stop offset="66%" stop-color="#0ea5e9" />
+                  <stop offset="100%" stop-color="#84cc16" />
+                </linearGradient>
+              </defs>
+              <rect
+                x="1.25"
+                y="1.25"
+                width="calc(100% - 2.5px)"
+                height="calc(100% - 2.5px)"
+                rx="10"
+              />
+            </svg>
+            Snake Trail
+          </div>
+        </div>
+
+        <!-- 07 SCAN LINE -->
+        <div class="card">
+          <div class="card-top">
+            <span class="num">07</span>
+            <h2>CRT Scan Line</h2>
+            <span class="badge">Terminal · Retro Dev</span>
+            <p>
+              A glowing horizontal scan line travels top-to-bottom over a subtle
+              CRT raster pattern, evoking old-school terminal aesthetics. The
+              defining style of Warp, Fig, and Charm.sh CLI tools.
+            </p>
+          </div>
+          <div class="demo scanline-border">$ SCANNING...</div>
+        </div>
+
+        <!-- 08 PRISM SPLIT -->
+        <div class="card">
+          <div class="card-top">
+            <span class="num">08</span>
+            <h2>Prism Dispersion</h2>
+            <span class="badge"> /@property/ · Premium</span>
+            <p>
+              A full-spectrum conic gradient rotates around the border using CSS
+              <code>@property</code>, simulating light through a prism. Seen in
+              Apple Intelligence UI leaks, iOS 18 concepts, and luxury landing
+              pages.
+            </p>
+          </div>
+          <div class="demo prism-split">◈ Prism Edge</div>
+        </div>
+
+        <!-- 09 STACKED OFFSET -->
+        <div class="card">
+          <div class="card-top">
+            <span class="num">09</span>
+            <h2>Stacked Offset Rings</h2>
+            <span class="badge">Depth · Design Systems</span>
+            <p>
+              Three concentric borders at different opacities and offsets gently
+              breathe in opposite directions, creating a layered depth illusion.
+              Popularized by Reshaped UI, shadcn/ui theme demos, and Radix
+              component showcases.
+            </p>
+          </div>
+          <div class="demo stacked-offset">Depth Rings</div>
+        </div>
+
+        <!-- 10 WATERCOLOR -->
+        <div class="card">
+          <div class="card-top">
+            <span class="num">10</span>
+            <h2>Watercolor Bleed</h2>
+            <span class="badge">Editorial · Portfolio</span>
+            <p>
+              A heavily blurred, slowly rotating gradient behind the card edge
+              creates the illusion of watercolor paint bleeding outward.
+              Signature aesthetic of Notion covers, Read.cv profiles, and
+              editorial portfolio sites.
+            </p>
+          </div>
+          <div class="demo watercolor">✦ Painted Edge</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Pure CSS + SVG · Zero JavaScript · GPU-composited animations<br />
+      <span
+        >@property required for Prism Dispersion & Watercolor (Chrome 85+,
+        Safari 16.4+, Firefox 128+)</span
+      >
+    </footer>
+  </body>
+</html>
