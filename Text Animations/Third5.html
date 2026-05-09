@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Text Animations Vol. 3 - Elite Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #050505;
+            --bg-secondary: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --accent-neon-green: #39ff14;
+            --accent-electric-blue: #00d9ff;
+            --accent-hot-pink: #ff006e;
+            --accent-cyber-yellow: #ffed4e;
+            --accent-matrix-green: #00ff41;
+            --text-primary: #ffffff;
+            --text-secondary: #8b8b8b;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background: var(--bg-primary);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(57, 255, 20, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(0, 217, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 50% 90%, rgba(255, 0, 110, 0.04) 0%, transparent 50%);
+            animation: bgPulse 15s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 120px;
+            position: relative;
+        }
+
+        .header-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, rgba(57, 255, 20, 0.15), rgba(0, 217, 255, 0.15));
+            border: 1px solid rgba(57, 255, 20, 0.4);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            color: var(--accent-neon-green);
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+        }
+
+        .main-title {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(3.5rem, 10vw, 8rem);
+            line-height: 0.95;
+            margin-bottom: 28px;
+            background: linear-gradient(135deg, var(--accent-neon-green) 0%, var(--accent-electric-blue) 50%, var(--accent-hot-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 750px;
+            margin: 0 auto;
+            font-weight: 500;
+            line-height: 1.7;
+        }
+
+        .demo-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 70px 60px;
+            margin-bottom: 60px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .demo-section:hover {
+            border-color: rgba(57, 255, 20, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(57, 255, 20, 0.12);
+        }
+
+        .demo-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--accent-neon-green), 
+                var(--accent-electric-blue), 
+                transparent
+            );
+            animation: scanline 3s linear infinite;
+        }
+
+        @keyframes scanline {
+            to { left: 100%; }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--accent-neon-green);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+        }
+
+        .section-number::before {
+            content: '▸';
+            font-size: 1.5rem;
+        }
+
+        .section-title {
+            font-family: 'JetBrains Mono', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            flex: 1;
+            text-transform: uppercase;
+        }
+
+        .demo-area {
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .instruction {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 35px;
+            padding: 18px 24px;
+            background: rgba(57, 255, 20, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(57, 255, 20, 0.15);
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Animation 1: Glitch Matrix */
+        #glitchCanvas {
+            width: 100%;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        /* Animation 2: Gravity Physics */
+        #gravityCanvas {
+            width: 100%;
+            height: 350px;
+            cursor: pointer;
+        }
+
+        /* Animation 3: Typing Decoder */
+        #decoderCanvas {
+            width: 100%;
+            height: 280px;
+        }
+
+        /* Animation 4: Shatter Fragments */
+        #shatterCanvas {
+            width: 100%;
+            height: 300px;
+            cursor: crosshair;
+        }
+
+        /* Animation 5: DNA Helix Spiral */
+        #helixCanvas {
+            width: 100%;
+            height: 350px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 80px 20px 60px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 120px;
+        }
+
+        footer p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .tech-badge {
+            padding: 8px 18px;
+            background: rgba(57, 255, 20, 0.1);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-neon-green);
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 8px rgba(57, 255, 20, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 60px 24px;
+            }
+
+            .demo-section {
+                padding: 40px 28px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            #glitchCanvas,
+            #gravityCanvas,
+            #decoderCanvas,
+            #shatterCanvas,
+            #helixCanvas {
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-badge">Volume 3 — Elite Collection</div>
+            <h1 class="main-title">Cyberpunk<br>Text Effects</h1>
+            <p class="subtitle">Five experimental animations pushing the boundaries with glitch matrices, physics simulations, and neural network-inspired effects</p>
+        </header>
+
+        <!-- Animation 1: Glitch Matrix -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">01</div>
+                <h2 class="section-title">Glitch Matrix RGB Split</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="glitchCanvas"></canvas>
+            </div>
+            <p class="instruction">⚡ Click to trigger RGB channel separation glitch • Scan line distortion</p>
+        </div>
+
+        <!-- Animation 2: Gravity Physics -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <h2 class="section-title">Gravity Drop & Bounce</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="gravityCanvas"></canvas>
+            </div>
+            <p class="instruction">🎯 Click to drop letters with real gravity physics • Elastic collision bounce</p>
+        </div>
+
+        <!-- Animation 3: Typing Decoder -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <h2 class="section-title">Neural Network Decoder</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="decoderCanvas"></canvas>
+            </div>
+            <p class="instruction">🔐 Watch text decode from random characters • Matrix-style reveal algorithm</p>
+        </div>
+
+        <!-- Animation 4: Shatter Fragments -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">04</div>
+                <h2 class="section-title">Fragment Shatter Explosion</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="shatterCanvas"></canvas>
+            </div>
+            <p class="instruction">💥 Click to shatter text into fragments • Piece-by-piece destruction physics</p>
+        </div>
+
+        <!-- Animation 5: DNA Helix -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">05</div>
+                <h2 class="section-title">DNA Helix Spiral Rotation</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="helixCanvas"></canvas>
+            </div>
+            <p class="instruction">🧬 Continuous 3D helix rotation • Characters orbit in DNA-like spiral pattern</p>
+        </div>
+
+        <footer>
+            <p>// CRAFTED WITH ADVANCED CANVAS RENDERING</p>
+            <p>// EXPERIMENTAL EFFECTS FOR NEXT-GEN WEB</p>
+            <div class="tech-stack">
+                <span class="tech-badge">RGB Channel Separation</span>
+                <span class="tech-badge">Physics Engine</span>
+                <span class="tech-badge">Matrix Decoding</span>
+                <span class="tech-badge">Fragment System</span>
+                <span class="tech-badge">3D Helix Math</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Utility: Canvas Setup
+        function setupCanvas(canvas) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        // ============================================
+        // ANIMATION 1: GLITCH MATRIX RGB SPLIT
+        // ============================================
+        const glitchCanvas = document.getElementById('glitchCanvas');
+        const glitchSetup = setupCanvas(glitchCanvas);
+        const glitchCtx = glitchSetup.ctx;
+
+        class GlitchChar {
+            constructor(char, x, y, index) {
+                this.char = char;
+                this.x = x;
+                this.y = y;
+                this.index = index;
+                this.glitching = false;
+                this.glitchIntensity = 0;
+                this.rgbOffset = 0;
+                this.scanlineOffset = 0;
+            }
+
+            startGlitch() {
+                this.glitching = true;
+                this.glitchIntensity = 1;
+            }
+
+            update() {
+                if (this.glitching) {
+                    this.glitchIntensity *= 0.92;
+                    this.rgbOffset = (Math.random() - 0.5) * 15 * this.glitchIntensity;
+                    this.scanlineOffset = (Math.random() - 0.5) * 10 * this.glitchIntensity;
+                    
+                    if (this.glitchIntensity < 0.01) {
+                        this.glitching = false;
+                        this.rgbOffset = 0;
+                        this.scanlineOffset = 0;
+                    }
+                }
+            }
+
+            draw(ctx) {
+                ctx.font = '900 70px Archivo Black';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                if (this.glitching) {
+                    // Red channel
+                    ctx.fillStyle = '#ff0000';
+                    ctx.globalAlpha = 0.8;
+                    ctx.fillText(this.char, this.x + this.rgbOffset, this.y + this.scanlineOffset);
+                    
+                    // Green channel
+                    ctx.fillStyle = '#00ff00';
+                    ctx.fillText(this.char, this.x - this.rgbOffset * 0.5, this.y);
+                    
+                    // Blue channel
+                    ctx.fillStyle = '#0000ff';
+                    ctx.fillText(this.char, this.x, this.y - this.scanlineOffset);
+                    
+                    ctx.globalAlpha = 1;
+                } else {
+                    ctx.fillStyle = '#39ff14';
+                    ctx.fillText(this.char, this.x, this.y);
+                }
+            }
+        }
+
+        const glitchWord = 'GLITCH';
+        const glitchChars = [];
+        const gCharSpacing = 75;
+        const gStartX = glitchSetup.width / 2 - (glitchWord.length * gCharSpacing) / 2 + gCharSpacing / 2;
+
+        for (let i = 0; i < glitchWord.length; i++) {
+            glitchChars.push(new GlitchChar(
+                glitchWord[i],
+                gStartX + i * gCharSpacing,
+                glitchSetup.height / 2,
+                i
+            ));
+        }
+
+        glitchCanvas.addEventListener('click', () => {
+            glitchChars.forEach((char, i) => {
+                setTimeout(() => char.startGlitch(), i * 50);
+            });
+        });
+
+        function animateGlitch() {
+            glitchCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            glitchCtx.fillRect(0, 0, glitchSetup.width, glitchSetup.height);
+            
+            // Draw scan lines
+            glitchCtx.strokeStyle = 'rgba(57, 255, 20, 0.05)';
+            glitchCtx.lineWidth = 1;
+            for (let i = 0; i < glitchSetup.height; i += 4) {
+                glitchCtx.beginPath();
+                glitchCtx.moveTo(0, i);
+                glitchCtx.lineTo(glitchSetup.width, i);
+                glitchCtx.stroke();
+            }
+            
+            glitchChars.forEach(char => {
+                char.update();
+                char.draw(glitchCtx);
+            });
+            
+            requestAnimationFrame(animateGlitch);
+        }
+
+        animateGlitch();
+
+        // ============================================
+        // ANIMATION 2: GRAVITY DROP & BOUNCE
+        // ============================================
+        const gravityCanvas = document.getElementById('gravityCanvas');
+        const gravitySetup = setupCanvas(gravityCanvas);
+        const gravityCtx = gravitySetup.ctx;
+
+        class GravityChar {
+            constructor(char, x, y, index) {
+                this.char = char;
+                this.x = x;
+                this.startY = y;
+                this.y = 50;
+                this.vy = 0;
+                this.index = index;
+                this.gravity = 0.6;
+                this.bounce = 0.7;
+                this.ground = gravitySetup.height - 100;
+                this.isDropping = false;
+                this.rotation = 0;
+                this.vr = 0;
+            }
+
+            drop() {
+                this.isDropping = true;
+                this.y = 50;
+                this.vy = 0;
+                this.rotation = 0;
+                this.vr = (Math.random() - 0.5) * 0.2;
+            }
+
+            update() {
+                if (this.isDropping) {
+                    this.vy += this.gravity;
+                    this.y += this.vy;
+                    this.rotation += this.vr;
+                    
+                    if (this.y >= this.ground) {
+                        this.y = this.ground;
+                        this.vy *= -this.bounce;
+                        this.vr *= this.bounce;
+                        
+                        if (Math.abs(this.vy) < 1) {
+                            this.isDropping = false;
+                            this.vy = 0;
+                            this.rotation = 0;
+                        }
+                    }
+                }
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                ctx.font = '900 70px Archivo Black';
+                ctx.fillStyle = this.isDropping ? '#00d9ff' : '#ffed4e';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.char, 0, 0);
+                
+                ctx.restore();
+            }
+        }
+
+        const gravityWord = 'DROP';
+        const gravityChars = [];
+        const grCharSpacing = 85;
+        const grStartX = gravitySetup.width / 2 - (gravityWord.length * grCharSpacing) / 2 + grCharSpacing / 2;
+
+        for (let i = 0; i < gravityWord.length; i++) {
+            gravityChars.push(new GravityChar(
+                gravityWord[i],
+                grStartX + i * grCharSpacing,
+                gravitySetup.height - 100,
+                i
+            ));
+        }
+
+        gravityCanvas.addEventListener('click', () => {
+            gravityChars.forEach((char, i) => {
+                setTimeout(() => char.drop(), i * 100);
+            });
+        });
+
+        function animateGravity() {
+            gravityCtx.clearRect(0, 0, gravitySetup.width, gravitySetup.height);
+            
+            // Draw ground line
+            gravityCtx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            gravityCtx.lineWidth = 2;
+            gravityCtx.beginPath();
+            gravityCtx.moveTo(0, gravitySetup.height - 100);
+            gravityCtx.lineTo(gravitySetup.width, gravitySetup.height - 100);
+            gravityCtx.stroke();
+            
+            gravityChars.forEach(char => {
+                char.update();
+                char.draw(gravityCtx);
+            });
+            
+            requestAnimationFrame(animateGravity);
+        }
+
+        animateGravity();
+
+        // ============================================
+        // ANIMATION 3: NEURAL NETWORK DECODER
+        // ============================================
+        const decoderCanvas = document.getElementById('decoderCanvas');
+        const decoderSetup = setupCanvas(decoderCanvas);
+        const decoderCtx = decoderSetup.ctx;
+
+        class DecoderChar {
+            constructor(targetChar, x, y, index) {
+                this.targetChar = targetChar;
+                this.currentChar = this.randomChar();
+                this.x = x;
+                this.y = y;
+                this.index = index;
+                this.decodeProgress = 0;
+                this.isDecoded = false;
+                this.changeSpeed = 0.02;
+                this.decodeDelay = index * 200;
+                this.decodeStartTime = Date.now() + this.decodeDelay;
+            }
+
+            randomChar() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+                return chars[Math.floor(Math.random() * chars.length)];
+            }
+
+            update() {
+                if (!this.isDecoded) {
+                    if (Date.now() > this.decodeStartTime) {
+                        this.decodeProgress += this.changeSpeed;
+                        
+                        if (Math.random() < 0.3) {
+                            this.currentChar = this.randomChar();
+                        }
+                        
+                        if (this.decodeProgress >= 1) {
+                            this.currentChar = this.targetChar;
+                            this.isDecoded = true;
+                        }
+                    }
+                }
+            }
+
+            draw(ctx) {
+                ctx.font = '800 60px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                if (this.isDecoded) {
+                    ctx.fillStyle = '#39ff14';
+                    ctx.shadowColor = '#39ff14';
+                    ctx.shadowBlur = 10;
+                } else {
+                    ctx.fillStyle = `rgba(57, 255, 20, ${0.3 + this.decodeProgress * 0.7})`;
+                    ctx.shadowBlur = 0;
+                }
+                
+                ctx.fillText(this.currentChar, this.x, this.y);
+                ctx.shadowBlur = 0;
+            }
+
+            reset() {
+                this.currentChar = this.randomChar();
+                this.decodeProgress = 0;
+                this.isDecoded = false;
+                this.decodeStartTime = Date.now() + this.decodeDelay;
+            }
+        }
+
+        const decoderWord = 'DECODE';
+        const decoderChars = [];
+        const dCharSpacing = 70;
+        const dStartX = decoderSetup.width / 2 - (decoderWord.length * dCharSpacing) / 2 + dCharSpacing / 2;
+
+        for (let i = 0; i < decoderWord.length; i++) {
+            decoderChars.push(new DecoderChar(
+                decoderWord[i],
+                dStartX + i * dCharSpacing,
+                decoderSetup.height / 2,
+                i
+            ));
+        }
+
+        function animateDecoder() {
+            decoderCtx.clearRect(0, 0, decoderSetup.width, decoderSetup.height);
+            
+            let allDecoded = true;
+            decoderChars.forEach(char => {
+                char.update();
+                char.draw(decoderCtx);
+                if (!char.isDecoded) allDecoded = false;
+            });
+            
+            // Reset when all decoded
+            if (allDecoded) {
+                setTimeout(() => {
+                    decoderChars.forEach(char => char.reset());
+                }, 1500);
+            }
+            
+            requestAnimationFrame(animateDecoder);
+        }
+
+        animateDecoder();
+
+        // ============================================
+        // ANIMATION 4: FRAGMENT SHATTER EXPLOSION
+        // ============================================
+        const shatterCanvas = document.getElementById('shatterCanvas');
+        const shatterSetup = setupCanvas(shatterCanvas);
+        const shatterCtx = shatterSetup.ctx;
+
+        class Fragment {
+            constructor(char, x, y, fragmentX, fragmentY, totalFragmentsX, totalFragmentsY) {
+                this.char = char;
+                this.x = x;
+                this.y = y;
+                this.startX = x;
+                this.startY = y;
+                this.fragmentX = fragmentX;
+                this.fragmentY = fragmentY;
+                this.vx = 0;
+                this.vy = 0;
+                this.vr = 0;
+                this.rotation = 0;
+                this.alpha = 1;
+                this.scale = 1;
+                this.isShattered = false;
+            }
+
+            shatter(clickX, clickY) {
+                this.isShattered = true;
+                const dx = this.x - clickX;
+                const dy = this.y - clickY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx);
+                const force = Math.max(5, 20 - distance * 0.05);
+                
+                this.vx = Math.cos(angle) * force;
+                this.vy = Math.sin(angle) * force - 3;
+                this.vr = (Math.random() - 0.5) * 0.3;
+            }
+
+            update() {
+                if (this.isShattered) {
+                    this.vy += 0.5; // Gravity
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.rotation += this.vr;
+                    this.alpha *= 0.98;
+                    this.scale *= 0.99;
+                    
+                    if (this.alpha < 0.01) {
+                        this.reset();
+                    }
+                }
+            }
+
+            reset() {
+                this.x = this.startX;
+                this.y = this.startY;
+                this.vx = 0;
+                this.vy = 0;
+                this.vr = 0;
+                this.rotation = 0;
+                this.alpha = 1;
+                this.scale = 1;
+                this.isShattered = false;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.scale(this.scale, this.scale);
+                
+                ctx.font = '900 70px Archivo Black';
+                ctx.fillStyle = '#ff006e';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.char, 0, 0);
+                
+                ctx.restore();
+            }
+        }
+
+        const shatterWord = 'BREAK';
+        const shatterFragments = [];
+        const sCharSpacing = 80;
+        const sStartX = shatterSetup.width / 2 - (shatterWord.length * sCharSpacing) / 2 + sCharSpacing / 2;
+
+        for (let i = 0; i < shatterWord.length; i++) {
+            shatterFragments.push(new Fragment(
+                shatterWord[i],
+                sStartX + i * sCharSpacing,
+                shatterSetup.height / 2,
+                i, 0, shatterWord.length, 1
+            ));
+        }
+
+        shatterCanvas.addEventListener('click', (e) => {
+            const rect = shatterCanvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            
+            shatterFragments.forEach(frag => {
+                frag.shatter(clickX, clickY);
+            });
+        });
+
+        function animateShatter() {
+            shatterCtx.clearRect(0, 0, shatterSetup.width, shatterSetup.height);
+            
+            shatterFragments.forEach(frag => {
+                frag.update();
+                frag.draw(shatterCtx);
+            });
+            
+            requestAnimationFrame(animateShatter);
+        }
+
+        animateShatter();
+
+        // ============================================
+        // ANIMATION 5: DNA HELIX SPIRAL ROTATION
+        // ============================================
+        const helixCanvas = document.getElementById('helixCanvas');
+        const helixSetup = setupCanvas(helixCanvas);
+        const helixCtx = helixSetup.ctx;
+
+        class HelixChar {
+            constructor(char, index, total) {
+                this.char = char;
+                this.index = index;
+                this.total = total;
+                this.angle = (index / total) * Math.PI * 4;
+                this.radius = 150;
+                this.centerX = helixSetup.width / 2;
+                this.centerY = helixSetup.height / 2;
+            }
+
+            update(time) {
+                this.angle += 0.02;
+                this.x = this.centerX + Math.cos(this.angle) * this.radius;
+                this.y = this.centerY + (this.index / this.total) * 200 - 100;
+                this.z = Math.sin(this.angle);
+                this.scale = 0.5 + (this.z + 1) * 0.5;
+            }
+
+            draw(ctx, time) {
+                ctx.save();
+                ctx.globalAlpha = this.scale;
+                
+                const hue = 180 + Math.sin(this.angle) * 60;
+                ctx.font = `900 ${50 * this.scale}px Archivo Black`;
+                ctx.fillStyle = `hsl(${hue}, 100%, 60%)`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = `hsl(${hue}, 100%, 60%)`;
+                ctx.shadowBlur = 15 * this.scale;
+                ctx.fillText(this.char, this.x, this.y);
+                
+                ctx.restore();
+            }
+        }
+
+        const helixWord = 'HELIX DNA';
+        const helixChars = [];
+
+        for (let i = 0; i < helixWord.length; i++) {
+            if (helixWord[i] !== ' ') {
+                helixChars.push(new HelixChar(helixWord[i], i, helixWord.length));
+            }
+        }
+
+        let helixTime = 0;
+
+        function animateHelix() {
+            helixTime += 0.016;
+            helixCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            helixCtx.fillRect(0, 0, helixSetup.width, helixSetup.height);
+            
+            // Sort by z-index for proper depth
+            helixChars.sort((a, b) => a.z - b.z);
+            
+            helixChars.forEach(char => {
+                char.update(helixTime);
+                char.draw(helixCtx, helixTime);
+            });
+            
+            requestAnimationFrame(animateHelix);
+        }
+
+        animateHelix();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            setupCanvas(glitchCanvas);
+            setupCanvas(gravityCanvas);
+            setupCanvas(decoderCanvas);
+            setupCanvas(shatterCanvas);
+            setupCanvas(helixCanvas);
+        });
+    </script>
+</body>
+</html>

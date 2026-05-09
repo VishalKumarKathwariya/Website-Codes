@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Text Animations Vol. 2 - Professional Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #14141b;
+            --card-bg: #1a1a24;
+            --accent-cyan: #06b6d4;
+            --accent-violet: #7c3aed;
+            --accent-rose: #f43f5e;
+            --accent-amber: #f59e0b;
+            --accent-emerald: #10b981;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        body {
+            background: var(--bg-primary);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 25% 35%, rgba(6, 182, 212, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 75% 65%, rgba(124, 58, 237, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 50% 85%, rgba(244, 63, 94, 0.05) 0%, transparent 40%);
+            animation: bgFloat 25s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(3%, -3%) scale(1.05); }
+            66% { transform: translate(-3%, 3%) scale(0.95); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 120px;
+        }
+
+        .header-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(124, 58, 237, 0.15));
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            color: var(--accent-cyan);
+        }
+
+        .main-title {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(3.5rem, 10vw, 7.5rem);
+            line-height: 1;
+            margin-bottom: 28px;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-violet) 50%, var(--accent-rose) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 500;
+            line-height: 1.7;
+        }
+
+        .demo-section {
+            background: var(--card-bg);
+            border-radius: 28px;
+            padding: 70px 60px;
+            margin-bottom: 60px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .demo-section:hover {
+            border-color: rgba(124, 58, 237, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(124, 58, 237, 0.15);
+        }
+
+        .demo-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--accent-cyan), 
+                var(--accent-violet), 
+                var(--accent-rose),
+                transparent
+            );
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .demo-section:hover::before {
+            opacity: 1;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .section-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-violet);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .section-number::before {
+            content: '';
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-violet), transparent);
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .demo-area {
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 50px;
+            border: 1px dashed rgba(255, 255, 255, 0.04);
+        }
+
+        .instruction {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 35px;
+            padding: 18px 24px;
+            background: rgba(124, 58, 237, 0.08);
+            border-radius: 14px;
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            font-weight: 500;
+        }
+
+        /* Animation 1: Text Morphing / Switching */
+        #morphCanvas {
+            width: 100%;
+            height: 300px;
+        }
+
+        /* Animation 2: 3D Cube Perspective */
+        .cube-container {
+            perspective: 1200px;
+            cursor: pointer;
+        }
+
+        .cube-text {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            display: inline-block;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .cube-text span {
+            display: inline-block;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        /* Animation 3: SVG Path Drawing */
+        .svg-text-container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .svg-text {
+            width: 100%;
+            height: 200px;
+        }
+
+        .svg-text path {
+            stroke: var(--accent-cyan);
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawPath 3s ease-in-out infinite;
+        }
+
+        @keyframes drawPath {
+            0%, 100% { 
+                stroke-dashoffset: 1000;
+                fill-opacity: 0;
+            }
+            50% { 
+                stroke-dashoffset: 0;
+                fill-opacity: 0;
+            }
+            75%, 100% {
+                stroke-dashoffset: 0;
+                fill: var(--accent-violet);
+                fill-opacity: 1;
+            }
+        }
+
+        /* Animation 4: Ripple Wave Effect */
+        #rippleCanvas {
+            width: 100%;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        /* Animation 5: Split Flip Animation */
+        #flipCanvas {
+            width: 100%;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 80px 20px 60px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 120px;
+        }
+
+        footer p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .tech-badge {
+            padding: 8px 18px;
+            background: rgba(124, 58, 237, 0.12);
+            border: 1px solid rgba(124, 58, 237, 0.25);
+            border-radius: 24px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-violet);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 60px 24px;
+            }
+
+            .demo-section {
+                padding: 40px 28px;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            #morphCanvas,
+            #rippleCanvas,
+            #flipCanvas {
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-badge">Volume 2 Collection</div>
+            <h1 class="main-title">Next Level<br>Animations</h1>
+            <p class="subtitle">Five more cutting-edge text effects featuring morphing algorithms, 3D transforms, and advanced canvas rendering</p>
+        </header>
+
+        <!-- Animation 1: Text Morphing -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">01</div>
+                <h2 class="section-title">Smooth Text Morphing</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="morphCanvas"></canvas>
+            </div>
+            <p class="instruction">⚡ Watch text smoothly morph between different words • Particle interpolation</p>
+        </div>
+
+        <!-- Animation 2: 3D Cube Text -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <h2 class="section-title">3D Perspective Rotation</h2>
+            </div>
+            <div class="demo-area">
+                <div class="cube-container" id="cubeContainer">
+                    <div class="cube-text" id="cubeText"></div>
+                </div>
+            </div>
+            <p class="instruction">🎲 Click to rotate text in 3D space • Perspective depth transform</p>
+        </div>
+
+        <!-- Animation 3: SVG Path Drawing -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <h2 class="section-title">SVG Stroke Animation</h2>
+            </div>
+            <div class="demo-area">
+                <div class="svg-text-container">
+                    <svg class="svg-text" viewBox="0 0 800 200">
+                        <defs>
+                            <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%"/>
+                                <stop offset="50%"/>
+                                <stop offset="100%"/>
+                            </linearGradient>
+                        </defs>
+                        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" 
+                              font-family="Archivo Black" font-size="120" font-weight="900">
+                            <tspan>DRAW</tspan>
+                        </text>
+                    </svg>
+                </div>
+            </div>
+            <p class="instruction">✏️ Continuous stroke drawing animation • SVG path manipulation</p>
+        </div>
+
+        <!-- Animation 4: Ripple Wave -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">04</div>
+                <h2 class="section-title">Ripple Wave Effect</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="rippleCanvas"></canvas>
+            </div>
+            <p class="instruction">🌊 Click to create expanding ripple waves • Sine wave distortion</p>
+        </div>
+
+        <!-- Animation 5: Split Flip -->
+        <div class="demo-section">
+            <div class="section-header">
+                <div class="section-number">05</div>
+                <h2 class="section-title">Split Flip Transition</h2>
+            </div>
+            <div class="demo-area">
+                <canvas id="flipCanvas"></canvas>
+            </div>
+            <p class="instruction">🔄 Click to trigger split and flip animation • 3D rotation with depth</p>
+        </div>
+
+        <footer>
+            <p>Crafted with Advanced JavaScript & Canvas Techniques</p>
+            <p>Professional-grade animations for modern web experiences</p>
+            <div class="tech-stack">
+                <span class="tech-badge">Canvas 2D API</span>
+                <span class="tech-badge">SVG Animation</span>
+                <span class="tech-badge">3D Transforms</span>
+                <span class="tech-badge">Particle Morphing</span>
+                <span class="tech-badge">Wave Physics</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Utility: Canvas Setup
+        function setupCanvas(canvas) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        // ============================================
+        // ANIMATION 1: TEXT MORPHING
+        // ============================================
+        const morphCanvas = document.getElementById('morphCanvas');
+        const morphSetup = setupCanvas(morphCanvas);
+        const morphCtx = morphSetup.ctx;
+
+        class MorphParticle {
+            constructor(x, y, targetX, targetY) {
+                this.x = x;
+                this.y = y;
+                this.startX = x;
+                this.startY = y;
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.progress = 0;
+            }
+
+            update() {
+                this.progress += 0.01;
+                if (this.progress > 1) this.progress = 0;
+                
+                // Smooth easing
+                const eased = this.easeInOutCubic(this.progress);
+                this.x = this.startX + (this.targetX - this.startX) * eased;
+                this.y = this.startY + (this.targetY - this.startY) * eased;
+            }
+
+            easeInOutCubic(t) {
+                return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            }
+
+            draw(ctx) {
+                ctx.fillStyle = `hsl(${190 + this.progress * 80}, 70%, 60%)`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createTextParticles(text, fontSize, offsetX, offsetY) {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = 800;
+            tempCanvas.height = 200;
+            
+            tempCtx.font = `900 ${fontSize}px Archivo Black`;
+            tempCtx.fillStyle = '#ffffff';
+            tempCtx.textAlign = 'center';
+            tempCtx.textBaseline = 'middle';
+            tempCtx.fillText(text, 400, 100);
+            
+            const imageData = tempCtx.getImageData(0, 0, 800, 200);
+            const particles = [];
+            
+            for (let y = 0; y < imageData.height; y += 3) {
+                for (let x = 0; x < imageData.width; x += 3) {
+                    const index = (y * imageData.width + x) * 4;
+                    const alpha = imageData.data[index + 3];
+                    
+                    if (alpha > 128) {
+                        particles.push({
+                            x: x * (morphSetup.width / 800) + offsetX,
+                            y: y * (morphSetup.height / 200) + offsetY
+                        });
+                    }
+                }
+            }
+            
+            return particles;
+        }
+
+        const words = ['CREATE', 'DESIGN', 'BUILD'];
+        let currentWordIndex = 0;
+        let nextWordIndex = 1;
+        
+        let currentParticles = createTextParticles(
+            words[currentWordIndex], 
+            80, 
+            0, 
+            0
+        );
+        
+        let morphParticles = [];
+        
+        function startMorph() {
+            const nextParticles = createTextParticles(
+                words[nextWordIndex], 
+                80, 
+                0, 
+                0
+            );
+            
+            morphParticles = [];
+            const maxLength = Math.max(currentParticles.length, nextParticles.length);
+            
+            for (let i = 0; i < maxLength; i++) {
+                const start = currentParticles[i] || currentParticles[currentParticles.length - 1];
+                const end = nextParticles[i] || nextParticles[nextParticles.length - 1];
+                
+                morphParticles.push(new MorphParticle(start.x, start.y, end.x, end.y));
+            }
+            
+            currentParticles = nextParticles;
+            currentWordIndex = nextWordIndex;
+            nextWordIndex = (nextWordIndex + 1) % words.length;
+        }
+
+        startMorph();
+        setInterval(startMorph, 3000);
+
+        function animateMorph() {
+            morphCtx.clearRect(0, 0, morphSetup.width, morphSetup.height);
+            
+            morphParticles.forEach(particle => {
+                particle.update();
+                particle.draw(morphCtx);
+            });
+            
+            requestAnimationFrame(animateMorph);
+        }
+
+        animateMorph();
+
+        // ============================================
+        // ANIMATION 2: 3D CUBE TEXT
+        // ============================================
+        const cubeText = document.getElementById('cubeText');
+        const cubeContainer = document.getElementById('cubeContainer');
+        const cubeWord = 'ROTATE';
+
+        cubeText.innerHTML = cubeWord.split('').map(char => 
+            `<span style="color: #7c3aed;">${char}</span>`
+        ).join('');
+
+        let rotationX = 0;
+        let rotationY = 0;
+        let targetRotationX = 0;
+        let targetRotationY = 0;
+
+        cubeContainer.addEventListener('click', () => {
+            targetRotationY += 360;
+            targetRotationX += 180;
+        });
+
+        function animateCube() {
+            rotationX += (targetRotationX - rotationX) * 0.08;
+            rotationY += (targetRotationY - rotationY) * 0.08;
+            
+            cubeText.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+            
+            requestAnimationFrame(animateCube);
+        }
+
+        animateCube();
+
+        // ============================================
+        // ANIMATION 3: SVG PATH (Pure CSS - already implemented in HTML)
+        // ============================================
+
+        // ============================================
+        // ANIMATION 4: RIPPLE WAVE EFFECT
+        // ============================================
+        const rippleCanvas = document.getElementById('rippleCanvas');
+        const rippleSetup = setupCanvas(rippleCanvas);
+        const rippleCtx = rippleSetup.ctx;
+
+        class Ripple {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 0;
+                this.maxRadius = 300;
+                this.alpha = 1;
+            }
+
+            update() {
+                this.radius += 4;
+                this.alpha = 1 - (this.radius / this.maxRadius);
+            }
+
+            isFinished() {
+                return this.radius >= this.maxRadius;
+            }
+        }
+
+        class WaveChar {
+            constructor(char, x, y, index) {
+                this.char = char;
+                this.baseX = x;
+                this.baseY = y;
+                this.x = x;
+                this.y = y;
+                this.index = index;
+                this.wavePhase = 0;
+            }
+
+            update(ripples) {
+                let totalOffset = 0;
+                
+                ripples.forEach(ripple => {
+                    const dx = this.baseX - ripple.x;
+                    const dy = this.baseY - ripple.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < ripple.radius && distance > ripple.radius - 50) {
+                        const influence = 1 - Math.abs(ripple.radius - distance) / 50;
+                        totalOffset += Math.sin(distance * 0.1) * 30 * influence * ripple.alpha;
+                    }
+                });
+                
+                this.y = this.baseY + totalOffset;
+            }
+
+            draw(ctx) {
+                const gradient = ctx.createLinearGradient(this.x - 30, this.y - 30, this.x + 30, this.y + 30);
+                gradient.addColorStop(0, '#06b6d4');
+                gradient.addColorStop(0.5, '#7c3aed');
+                gradient.addColorStop(1, '#f43f5e');
+
+                ctx.font = '900 60px Archivo Black';
+                ctx.fillStyle = gradient;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.char, this.x, this.y);
+            }
+        }
+
+        const rippleWord = 'RIPPLE';
+        const rippleChars = [];
+        const ripples = [];
+        const rCharSpacing = 65;
+        const rStartX = rippleSetup.width / 2 - (rippleWord.length * rCharSpacing) / 2 + rCharSpacing / 2;
+
+        for (let i = 0; i < rippleWord.length; i++) {
+            rippleChars.push(new WaveChar(
+                rippleWord[i],
+                rStartX + i * rCharSpacing,
+                rippleSetup.height / 2,
+                i
+            ));
+        }
+
+        rippleCanvas.addEventListener('click', (e) => {
+            const rect = rippleCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ripples.push(new Ripple(x, y));
+        });
+
+        function animateRipple() {
+            rippleCtx.clearRect(0, 0, rippleSetup.width, rippleSetup.height);
+            
+            // Update and draw ripples
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                ripples[i].update();
+                
+                rippleCtx.strokeStyle = `rgba(6, 182, 212, ${ripples[i].alpha * 0.5})`;
+                rippleCtx.lineWidth = 2;
+                rippleCtx.beginPath();
+                rippleCtx.arc(ripples[i].x, ripples[i].y, ripples[i].radius, 0, Math.PI * 2);
+                rippleCtx.stroke();
+                
+                if (ripples[i].isFinished()) {
+                    ripples.splice(i, 1);
+                }
+            }
+            
+            // Update and draw characters
+            rippleChars.forEach(char => {
+                char.update(ripples);
+                char.draw(rippleCtx);
+            });
+            
+            requestAnimationFrame(animateRipple);
+        }
+
+        animateRipple();
+
+        // ============================================
+        // ANIMATION 5: SPLIT FLIP
+        // ============================================
+        const flipCanvas = document.getElementById('flipCanvas');
+        const flipSetup = setupCanvas(flipCanvas);
+        const flipCtx = flipSetup.ctx;
+
+        class FlipChar {
+            constructor(char, x, y, index) {
+                this.char = char;
+                this.x = x;
+                this.y = y;
+                this.baseY = y;
+                this.index = index;
+                this.rotation = 0;
+                this.scaleY = 1;
+                this.offsetY = 0;
+                this.isFlipping = false;
+                this.flipProgress = 0;
+            }
+
+            startFlip() {
+                this.isFlipping = true;
+                this.flipProgress = 0;
+            }
+
+            update() {
+                if (this.isFlipping) {
+                    this.flipProgress += 0.04;
+                    
+                    if (this.flipProgress < 0.5) {
+                        this.scaleY = 1 - this.flipProgress * 2;
+                        this.offsetY = -50 * Math.sin(this.flipProgress * Math.PI * 2);
+                    } else {
+                        this.scaleY = (this.flipProgress - 0.5) * 2;
+                        this.offsetY = -50 * Math.sin(this.flipProgress * Math.PI * 2);
+                    }
+                    
+                    if (this.flipProgress >= 1) {
+                        this.isFlipping = false;
+                        this.scaleY = 1;
+                        this.offsetY = 0;
+                    }
+                }
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y + this.offsetY);
+                ctx.scale(1, this.scaleY);
+                
+                const hue = 190 + this.flipProgress * 80;
+                ctx.font = '900 65px Archivo Black';
+                ctx.fillStyle = `hsl(${hue}, 75%, 60%)`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.char, 0, 0);
+                
+                ctx.restore();
+            }
+        }
+
+        const flipWord = 'FLIP';
+        const flipChars = [];
+        const fCharSpacing = 75;
+        const fStartX = flipSetup.width / 2 - (flipWord.length * fCharSpacing) / 2 + fCharSpacing / 2;
+
+        for (let i = 0; i < flipWord.length; i++) {
+            flipChars.push(new FlipChar(
+                flipWord[i],
+                fStartX + i * fCharSpacing,
+                flipSetup.height / 2,
+                i
+            ));
+        }
+
+        flipCanvas.addEventListener('click', () => {
+            flipChars.forEach((char, i) => {
+                setTimeout(() => char.startFlip(), i * 100);
+            });
+        });
+
+        function animateFlip() {
+            flipCtx.clearRect(0, 0, flipSetup.width, flipSetup.height);
+            
+            flipChars.forEach(char => {
+                char.update();
+                char.draw(flipCtx);
+            });
+            
+            requestAnimationFrame(animateFlip);
+        }
+
+        animateFlip();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            setupCanvas(morphCanvas);
+            setupCanvas(rippleCanvas);
+            setupCanvas(flipCanvas);
+        });
+    </script>
+</body>
+</html>
