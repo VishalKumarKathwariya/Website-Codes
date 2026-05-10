@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll-Triggered Animations - Complete Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* ================================
+           BASE STYLES & CSS VARIABLES
+           ================================ */
+        :root {
+            /* Color Palette - Editorial Dark Theme */
+            --color-bg: #0a0a0a;
+            --color-surface: #151515;
+            --color-text: #e8e8e8;
+            --color-text-muted: #888888;
+            --color-accent: #ff6b35;
+            --color-accent-secondary: #4ecdc4;
+            
+            /* Typography */
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'IBM Plex Sans', sans-serif;
+            
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 2rem;
+            --spacing-lg: 4rem;
+            --spacing-xl: 8rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ================================
+           SCROLL PROGRESS BAR
+           Animation: Grows from 0 to 100% width as user scrolls down the page
+           ================================ */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%; /* Starts at 0%, will be animated via JavaScript */
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-secondary));
+            z-index: 1000;
+            transition: width 0.1s ease-out; /* Smooth width transition as scroll updates */
+        }
+
+        /* ================================
+           HERO SECTION
+           Animation: Fixed background with parallax text
+           ================================ */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(78, 205, 196, 0.15), transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(255, 107, 53, 0.15), transparent 50%);
+            /* This background stays fixed while content scrolls */
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            max-width: 900px;
+            padding: var(--spacing-md);
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: var(--spacing-md);
+            background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--color-text-muted);
+            font-weight: 300;
+        }
+
+        /* ================================
+           SECTION CONTAINER
+           ================================ */
+        .section {
+            min-height: 100vh;
+            padding: var(--spacing-xl) var(--spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* ================================
+           FADE-IN ANIMATION
+           Animation Type: Opacity 0 → 1
+           Trigger: When element enters viewport
+           Use Case: Subtle content reveal
+           ================================ */
+        .fade-in {
+            opacity: 0; /* Start invisible */
+            transition: opacity 1s ease-out; /* Smooth fade over 1 second */
+        }
+
+        .fade-in.visible {
+            opacity: 1; /* Becomes fully visible when 'visible' class is added */
+        }
+
+        /* ================================
+           SLIDE-UP ANIMATION
+           Animation Type: Translate Y (bottom to position) + Opacity
+           Trigger: When element enters viewport
+           Use Case: Card reveals, content blocks
+           ================================ */
+        .slide-up {
+            opacity: 0;
+            transform: translateY(60px); /* Starts 60px below final position */
+            transition: all 0.8s cubic-bezier(0.22, 0.61, 0.36, 1); /* Custom easing for smooth motion */
+        }
+
+        .slide-up.visible {
+            opacity: 1;
+            transform: translateY(0); /* Moves to original position */
+        }
+
+        /* ================================
+           SLIDE-IN FROM LEFT ANIMATION
+           Animation Type: Translate X (left to position) + Opacity
+           Trigger: When element enters viewport
+           Use Case: Side content, images
+           ================================ */
+        .slide-left {
+            opacity: 0;
+            transform: translateX(-80px); /* Starts 80px to the left */
+            transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bounce-like easing */
+        }
+
+        .slide-left.visible {
+            opacity: 1;
+            transform: translateX(0); /* Slides into position */
+        }
+
+        /* ================================
+           SLIDE-IN FROM RIGHT ANIMATION
+           Animation Type: Translate X (right to position) + Opacity
+           Trigger: When element enters viewport
+           Use Case: Alternating content, images
+           ================================ */
+        .slide-right {
+            opacity: 0;
+            transform: translateX(80px); /* Starts 80px to the right */
+            transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bounce-like easing */
+        }
+
+        .slide-right.visible {
+            opacity: 1;
+            transform: translateX(0); /* Slides into position */
+        }
+
+        /* ================================
+           SCALE-UP ANIMATION
+           Animation Type: Scale (0.8 to 1) + Opacity
+           Trigger: When element enters viewport
+           Use Case: Featured content, images, cards
+           ================================ */
+        .scale-up {
+            opacity: 0;
+            transform: scale(0.8); /* Starts at 80% size */
+            transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); /* Smooth ease-out */
+        }
+
+        .scale-up.visible {
+            opacity: 1;
+            transform: scale(1); /* Grows to full size */
+        }
+
+        /* ================================
+           ROTATE-IN ANIMATION
+           Animation Type: Rotate + Scale + Opacity
+           Trigger: When element enters viewport
+           Use Case: Decorative elements, badges, icons
+           ================================ */
+        .rotate-in {
+            opacity: 0;
+            transform: rotate(-15deg) scale(0.7); /* Starts rotated and smaller */
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Elastic easing */
+        }
+
+        .rotate-in.visible {
+            opacity: 1;
+            transform: rotate(0deg) scale(1); /* Rotates to normal and scales up */
+        }
+
+        /* ================================
+           STAGGER ANIMATION
+           Animation Type: Sequential delays for multiple elements
+           Trigger: When container enters viewport
+           Use Case: Lists, grids, multiple cards
+           ================================ */
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        /* Each item gets a progressively longer delay */
+        .stagger-item:nth-child(1) { transition-delay: 0s; }
+        .stagger-item:nth-child(2) { transition-delay: 0.1s; }
+        .stagger-item:nth-child(3) { transition-delay: 0.2s; }
+        .stagger-item:nth-child(4) { transition-delay: 0.3s; }
+        .stagger-item:nth-child(5) { transition-delay: 0.4s; }
+        .stagger-item:nth-child(6) { transition-delay: 0.5s; }
+
+        .stagger-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ================================
+           BLUR-IN ANIMATION
+           Animation Type: Blur filter + Opacity
+           Trigger: When element enters viewport
+           Use Case: Images, hero text, featured content
+           ================================ */
+        .blur-in {
+            opacity: 0;
+            filter: blur(10px); /* Starts blurred */
+            transition: all 1.2s ease-out;
+        }
+
+        .blur-in.visible {
+            opacity: 1;
+            filter: blur(0px); /* Becomes sharp */
+        }
+
+        /* ================================
+           COMPONENT STYLES
+           ================================ */
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text);
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+            margin-bottom: var(--spacing-lg);
+            max-width: 600px;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .card {
+            background: var(--color-surface);
+            padding: var(--spacing-md);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-number {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .card p {
+            color: var(--color-text-muted);
+            line-height: 1.7;
+        }
+
+        /* Feature Items */
+        .feature {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: flex-start;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .feature-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .feature-content p {
+            color: var(--color-text-muted);
+        }
+
+        /* Image Box */
+        .image-box {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, var(--color-surface), rgba(78, 205, 196, 0.1));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: var(--spacing-lg) 0;
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Accent Box */
+        .accent-box {
+            background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+            padding: var(--spacing-lg);
+            border-radius: 16px;
+            color: white;
+        }
+
+        .accent-box h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .accent-box p {
+            font-size: 1.125rem;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer p {
+            color: var(--color-text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- SCROLL PROGRESS BAR: Fills from left to right as user scrolls -->
+    <div class="scroll-progress"></div>
+
+    <!-- ================================
+         HERO SECTION
+         No scroll animation - always visible
+         ================================ -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1>Scroll-Triggered Animations</h1>
+            <p>A comprehensive guide to creating engaging scroll-based effects</p>
+        </div>
+    </section>
+
+    <!-- ================================
+         FADE-IN SECTION
+         Animation: Simple opacity fade
+         ================================ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title fade-in">Fade-In Animation</h2>
+            <p class="section-subtitle fade-in">
+                The most subtle scroll animation. Elements smoothly transition from invisible to visible 
+                as they enter the viewport. Perfect for text content and soft reveals.
+            </p>
+            <div class="image-box fade-in">
+                <span>🎭</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================
+         SLIDE-UP SECTION
+         Animation: Vertical movement + fade
+         ================================ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title slide-up">Slide-Up Animation</h2>
+            <p class="section-subtitle slide-up">
+                Elements rise from below their final position. This creates a sense of content 
+                emerging from beneath the page, commonly used for cards and content blocks.
+            </p>
+            <div class="card-grid">
+                <div class="card slide-up">
+                    <div class="card-number">01</div>
+                    <h3>Performance</h3>
+                    <p>Optimized for smooth 60fps animations using CSS transforms and opacity.</p>
+                </div>
+                <div class="card slide-up">
+                    <div class="card-number">02</div>
+                    <h3>Accessibility</h3>
+                    <p>Respects prefers-reduced-motion for users who need minimal animation.</p>
+                </div>
+                <div class="card slide-up">
+                    <div class="card-number">03</div>
+                    <h3>Responsive</h3>
+                    <p>Works seamlessly across desktop, tablet, and mobile devices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================
+         HORIZONTAL SLIDE SECTION
+         Animation: Horizontal movement from sides
+         ================================ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title slide-left">Horizontal Slide Animations</h2>
+            <p class="section-subtitle slide-left">
+                Elements can slide in from the left or right, creating directional flow 
+                and guiding the user's eye across the page.
+            </p>
+            
+            <div class="two-column">
+                <div class="slide-left">
+                    <div class="feature">
+                        <div class="feature-icon">←</div>
+                        <div class="feature-content">
+                            <h3>Slide From Left</h3>
+                            <p>Perfect for content that should be read left-to-right, maintaining natural reading flow.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide-right">
+                    <div class="feature">
+                        <div class="feature-icon">→</div>
+                        <div class="feature-content">
+                            <h3>Slide From Right</h3>
+                            <p>Creates visual interest through alternating directions and balanced composition.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================
+         SCALE-UP SECTION
+         Animation: Zoom from smaller size
+         ================================ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title scale-up">Scale-Up Animation</h2>
+            <p class="section-subtitle scale-up">
+                Elements start smaller and grow to their full size. This creates a sense of 
+                importance and draws attention to featured content.
+            </p>
+            <div class="accent-box scale-up">
+                <h2>Featured Content</h2>
+                <p>
+                    The scale animation makes this box feel like it's coming toward you, 
+                    creating depth and emphasizing its importance in the page hierarchy.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================
+         ROTATE-IN SECTION
+         Animation: Rotation + scale combo
+         ================================ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title rotate-in">Rotate-In Animation</h2>
+            <p class="section-subtitle rotate-in">
+                Combines rotation with scale for a dynamic, playful entrance. Best used sparingly 
+                for decorative elements or to add personality to the design.
+            </p>
+            <div class="image-box rotate-in">
+                <span>⭐</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================
+         STAGGER SECTION
+         Animation: Sequential reveals with delays
+         ================================ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title slide-up">Stagger Animation</h2>
+            <p class="section-subtitle slide-up">
+                Multiple elements animate in sequence with progressive delays, creating a 
+                cascading effect that's perfect for lists and grids.
+            </p>
+            <div class="card-grid">
+                <div class="card stagger-item">
+                    <div class="card-number">01</div>
+                    <h3>First Item</h3>
+                    <p>Animates immediately when visible</p>
+                </div>
+                <div class="card stagger-item">
+                    <div class="card-number">02</div>
+                    <h3>Second Item</h3>
+                    <p>Follows with 0.1s delay</p>
+                </div>
+                <div class="card stagger-item">
+                    <div class="card-number">03</div>
+                    <h3>Third Item</h3>
+                    <p>Follows with 0.2s delay</p>
+                </div>
+                <div class="card stagger-item">
+                    <div class="card-number">04</div>
+                    <h3>Fourth Item</h3>
+                    <p>Follows with 0.3s delay</p>
+                </div>
+                <div class="card stagger-item">
+                    <div class="card-number">05</div>
+                    <h3>Fifth Item</h3>
+                    <p>Follows with 0.4s delay</p>
+                </div>
+                <div class="card stagger-item">
+                    <div class="card-number">06</div>
+                    <h3>Sixth Item</h3>
+                    <p>Follows with 0.5s delay</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================
+         BLUR-IN SECTION
+         Animation: Blur filter transition
+         ================================ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title blur-in">Blur-In Animation</h2>
+            <p class="section-subtitle blur-in">
+                Elements start out of focus and gradually sharpen, creating a cinematic 
+                effect similar to a camera focusing on a subject.
+            </p>
+            <div class="two-column">
+                <div class="blur-in">
+                    <div class="image-box">
+                        <span>📸</span>
+                    </div>
+                </div>
+                <div class="blur-in">
+                    <h3>The Focus Effect</h3>
+                    <p>
+                        This animation technique mimics the experience of viewing something come 
+                        into focus, making it particularly effective for photography portfolios, 
+                        image galleries, and hero sections.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================
+         FINAL SECTION
+         ================================ -->
+    <section class="section">
+        <div class="container">
+            <div class="accent-box scale-up">
+                <h2>You've Reached the End!</h2>
+                <p>
+                    You've experienced all the major scroll-triggered animation types. 
+                    Scroll back up to see them again, or check the source code to see 
+                    how each animation is implemented.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>Scroll-Triggered Animations Demo • 2026</p>
+        <p>
+            All animations use CSS transitions and the Intersection Observer API
+        </p>
+    </footer>
+
+    <!-- ================================
+         JAVASCRIPT: INTERSECTION OBSERVER
+         This is the engine that triggers animations when elements become visible
+         ================================ -->
+    <script>
+        /* ================================
+           INTERSECTION OBSERVER SETUP
+           
+           The Intersection Observer API watches elements and triggers callbacks
+           when they enter or leave the viewport. This is more performant than
+           using scroll event listeners.
+           ================================ */
+
+        // Create observer with options
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                // entry.isIntersecting is true when element is visible in viewport
+                if (entry.isIntersecting) {
+                    // Add 'visible' class to trigger CSS animation
+                    entry.target.classList.add('visible');
+                    
+                    // OPTIONAL: Unobserve after animation (one-time animation)
+                    // Uncomment the line below if you want animations to only happen once
+                    // observer.unobserve(entry.target);
+                }
+                // OPTIONAL: Remove 'visible' class when element leaves viewport
+                // This makes animations repeat when scrolling back up
+                // else {
+                //     entry.target.classList.remove('visible');
+                // }
+            });
+        }, {
+            // Options object:
+            threshold: 0.1,  // Trigger when 10% of element is visible
+            rootMargin: '0px 0px -100px 0px'  // Trigger slightly before element fully enters
+            // Negative bottom margin means animation starts 100px before element reaches bottom of viewport
+        });
+
+        /* ================================
+           OBSERVE ALL ANIMATED ELEMENTS
+           
+           Find all elements with animation classes and observe them
+           ================================ */
+        
+        // Select all elements with animation classes
+        const animatedElements = document.querySelectorAll(
+            '.fade-in, .slide-up, .slide-left, .slide-right, .scale-up, .rotate-in, .blur-in, .stagger-item'
+        );
+
+        // Start observing each element
+        animatedElements.forEach(element => {
+            observer.observe(element);
+        });
+
+        /* ================================
+           SCROLL PROGRESS BAR
+           
+           Updates the width of the progress bar based on scroll position
+           ================================ */
+        
+        const progressBar = document.querySelector('.scroll-progress');
+
+        window.addEventListener('scroll', () => {
+            // Calculate scroll progress as a percentage
+            
+            // How far user has scrolled from top
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Total scrollable height (document height minus viewport height)
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            
+            // Calculate percentage (0 to 100)
+            const scrollPercentage = (scrollTop / scrollHeight) * 100;
+            
+            // Update progress bar width
+            progressBar.style.width = scrollPercentage + '%';
+        });
+
+        /* ================================
+           ACCESSIBILITY: RESPECT PREFERS-REDUCED-MOTION
+           
+           Disable animations for users who prefer reduced motion
+           ================================ */
+        
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+        if (prefersReducedMotion.matches) {
+            // Remove all animation classes if user prefers reduced motion
+            animatedElements.forEach(element => {
+                element.classList.add('visible'); // Make immediately visible
+                element.style.transition = 'none'; // Disable transitions
+            });
+        }
+
+        /* ================================
+           PERFORMANCE TIPS:
+           
+           1. Use CSS transforms (translateX, translateY, scale) instead of 
+              position properties - they're GPU accelerated
+           
+           2. Use opacity changes - also GPU accelerated
+           
+           3. Avoid animating: width, height, top, left, margin, padding
+              These cause layout recalculations (expensive)
+           
+           4. Use Intersection Observer instead of scroll event listeners
+              More efficient and doesn't block the main thread
+           
+           5. Use will-change CSS property sparingly for complex animations:
+              will-change: transform, opacity;
+           
+           6. Debounce or throttle scroll events if you must use them
+           
+           7. Keep animations under 1 second for better UX
+           
+           8. Test on mobile devices - animations can be janky on slower devices
+           ================================ */
+    </script>
+</body>
+</html>
