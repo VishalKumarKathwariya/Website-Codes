@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Case Studies by Patholab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      background: #f4fafd;
+      color: #222;
+    }
+
+    /* ── SECTION ── */
+    .case-section {
+      padding: 72px 0 80px;
+      overflow: hidden;
+    }
+
+    /* ── HEADER ── */
+    .section-header {
+      text-align: center;
+      padding: 0 20px;
+      margin-bottom: 44px;
+    }
+    .section-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #0abf8e;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #0d1e2c;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    .section-desc {
+      font-size: 14px;
+      color: #7a8fa0;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── CAROUSEL OUTER ── */
+    .carousel-outer {
+      position: relative;
+    }
+    .carousel-track-wrap {
+      overflow: hidden;
+      padding: 12px 0 24px;
+    }
+    .carousel-track {
+      display: flex;
+      gap: 22px;
+      will-change: transform;
+    }
+
+    /* ── SLIDE BASE ── */
+    .slide {
+      flex-shrink: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      height: 330px;
+      cursor: pointer;
+      box-shadow: 0 6px 28px rgba(0,0,0,.1);
+    }
+
+    /* image always fills */
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .5s ease;
+    }
+    .slide:hover img {
+      transform: scale(1.06);
+    }
+
+    /* ── DEFAULT BOTTOM LABEL ── */
+    .slide-label {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 50px 20px 18px;
+      background: linear-gradient(to top, rgba(13,30,44,.75), transparent);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.4;
+      transition: opacity .35s ease;
+      pointer-events: none;
+    }
+
+    /* ── HOVER OVERLAY ── */
+    .slide-hover {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, #0abf8e 0%, #089b74 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 26px 24px 24px;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .35s ease, transform .35s ease;
+      pointer-events: none;
+    }
+    .slide:hover .slide-hover {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .slide:hover .slide-label {
+      opacity: 0;
+    }
+
+    .hover-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.8);
+      margin-bottom: 8px;
+    }
+    .hover-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+    .hover-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,.88);
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+    .hover-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 20px;
+      background: #fff;
+      color: #0abf8e;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 50px;
+      text-decoration: none;
+      width: fit-content;
+      font-family: 'Nunito Sans', sans-serif;
+      transition: background .2s, color .2s;
+    }
+    .hover-btn:hover { background: #0d1e2c; color: #fff; }
+    .hover-btn svg { width: 13px; height: 13px; }
+
+    /* ── ARROWS ── */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-60%);
+      z-index: 10;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,.13);
+      transition: background .2s, color .2s, box-shadow .2s;
+      color: #0d1e2c;
+    }
+    .arrow:hover {
+      background: #0abf8e;
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(10,191,142,.35);
+    }
+    .arrow svg { width: 18px; height: 18px; }
+    .arrow-prev { left: 18px; }
+    .arrow-next { right: 18px; }
+
+    /* ── DOTS ── */
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      margin-top: 26px;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #c5d8e4;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background .25s, width .25s, border-radius .25s;
+    }
+    .dot.active {
+      background: #0abf8e;
+      width: 22px;
+      border-radius: 4px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .slide { height: 290px; }
+    }
+    @media (max-width: 580px) {
+      .slide { height: 260px; }
+      .section-title { font-size: 26px; }
+      .arrow { width: 36px; height: 36px; }
+      .arrow svg { width: 15px; height: 15px; }
+      .arrow-prev { left: 8px; }
+      .arrow-next { right: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="case-section">
+
+  <div class="section-header">
+    <p class="section-label">Our Work</p>
+    <h2 class="section-title">Case Studies by Patholab</h2>
+    <p class="section-desc">
+      Real breakthroughs from our laboratory — explore how Patholab's diagnostic
+      expertise has transformed patient outcomes across specialties.
+    </p>
+  </div>
+
+  <div class="carousel-outer">
+    <button class="arrow arrow-prev" aria-label="Previous">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+
+    <div class="carousel-track-wrap">
+      <div class="carousel-track" id="track"></div>
+    </div>
+
+    <button class="arrow arrow-next" aria-label="Next">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+</section>
+
+<script>
+  const DATA = [
+    {
+      img:   'https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?w=800&q=80',
+      label: 'Vaccine Research Lab',
+      tag:   'Immunology · 2023',
+      title: 'Vaccine Research Lab Studies',
+      desc:  'Advanced mRNA adjuvant platforms tested in our lab show 3× faster immune activation, redefining pandemic preparedness timelines.'
+    },
+    {
+      img:   'https://images.unsplash.com/photo-1576086213369-97a306d36557?w=800&q=80',
+      label: 'Neurological Sample Analysis',
+      tag:   'Neurology · 2023',
+      title: 'Neurological Sample Analysis',
+      desc:  'Biomarker-driven neural screening allows detection of early-onset neurodegenerative conditions up to 4 years before clinical symptoms appear.'
+    },
+    {
+      img:   'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&q=80',
+      label: 'Cancer Testing Machine 2023',
+      tag:   'Oncology · 2023',
+      title: 'Cancer Testing Machine 2023 in our Lab',
+      desc:  'Our latest oncology machine delivers biopsy-level precision at a fraction of the cost, enabling mass early-stage cancer screening.'
+    },
+    {
+      img:   'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&q=80',
+      label: 'Genomic Pattern Studies',
+      tag:   'Genomics · 2022',
+      title: 'Post-COVID Genomic Pattern Studies',
+      desc:  'Post-COVID genomic drift studies reveal long-term cellular mutations, reshaping personalised medicine and future antiviral strategies.'
+    },
+    {
+      img:   'https://images.unsplash.com/photo-1614935151651-0bea6508db6b?w=800&q=80',
+      label: 'Reagent Purity Testing',
+      tag:   'Pathology · 2023',
+      title: 'Reagent Purity Testing Standards',
+      desc:  'High-purity reagent sourcing directly impacts diagnostic accuracy — Patholab outlines the critical benchmarks every laboratory must meet.'
+    },
+    {
+      img:   'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=800&q=80',
+      label: 'Microbiology Culture Lab',
+      tag:   'Microbiology · 2022',
+      title: 'Microbiology Culture Lab Research',
+      desc:  'Novel culture techniques developed here reduce contamination rates by 62%, setting a new benchmark for sterile lab environments worldwide.'
+    },
+    {
+      img:   'https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?w=800&q=80',
+      label: 'Blood Sample Diagnostics',
+      tag:   'Diagnostics · 2023',
+      title: 'Advanced Blood Sample Diagnostics',
+      desc:  'Automated blood panel analysis cuts result turnaround to under 90 minutes while maintaining 99.4% accuracy across 42 diagnostic markers.'
+    },
+  ];
+
+  const track    = document.getElementById('track');
+  const dotsWrap = document.getElementById('dots');
+  const btnPrev  = document.querySelector('.arrow-prev');
+  const btnNext  = document.querySelector('.arrow-next');
+
+  const GAP      = 22;
+  const AUTO_MS  = 2800;
+  const SPEED    = 520; // ms
+
+  let current  = 0;   // logical index (0 … DATA.length-1)
+  let pos      = 0;   // actual DOM position (includes prepended clones)
+  let busy     = false;
+  let timer;
+
+  /* ── Visible slides by breakpoint ── */
+  function vc() {
+    if (window.innerWidth <= 580) return 1;
+    if (window.innerWidth <= 900) return 2;
+    return 3;
+  }
+
+  /* ── Slide width in px ── */
+  function slideW() {
+    const peek  = vc() === 1 ? 16 : vc() === 2 ? 36 : 72;
+    const total = track.parentElement.offsetWidth;
+    return (total - (vc() - 1) * GAP - peek * 2) / vc();
+  }
+
+  /* ── Build one slide DOM node ── */
+  function makeSlide(d) {
+    const s = document.createElement('div');
+    s.className = 'slide';
+    s.style.width = slideW() + 'px';
+
+    s.innerHTML = `
+      <img src="${d.img}" alt="${d.label}" loading="lazy"/>
+      <div class="slide-label">${d.label}</div>
+      <div class="slide-hover">
+        <span class="hover-tag">${d.tag}</span>
+        <h3 class="hover-title">${d.title}</h3>
+        <p class="hover-desc">${d.desc}</p>
+        <a href="#" class="hover-btn">
+          Read More
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>`;
+    return s;
+  }
+
+  /* ── Build track: [clone-tail … originals … clone-head] ── */
+  function build() {
+    track.innerHTML = '';
+    const N = DATA.length;
+    const C = N; // clone count on each side (full set = seamless)
+
+    const all = [
+      ...DATA.slice(N - C),   // tail clones  → prepended
+      ...DATA,                 // originals
+      ...DATA.slice(0, C),    // head clones  → appended
+    ];
+
+    all.forEach(d => track.appendChild(makeSlide(d)));
+
+    // pos: where we sit in the DOM array. originals start at index C.
+    pos = C + current;
+    setPos(false);
+  }
+
+  /* ── Set transform (no animation by default) ── */
+  function setPos(animate) {
+    const N   = DATA.length;
+    const sw  = slideW();
+    const off = vc() === 1 ? 16 : vc() === 2 ? 36 : 72; // left peek gap
+    const x   = pos * (sw + GAP) - off;
+
+    track.style.transition = animate ? `transform ${SPEED}ms cubic-bezier(.4,0,.2,1)` : 'none';
+    track.style.transform  = `translateX(-${x}px)`;
+  }
+
+  /* ── Update slide widths on resize ── */
+  function resizeSlides() {
+    const sw = slideW();
+    track.querySelectorAll('.slide').forEach(s => s.style.width = sw + 'px');
+    setPos(false);
+  }
+
+  /* ── Dots ── */
+  function buildDots() {
+    dotsWrap.innerHTML = '';
+    DATA.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'dot' + (i === current ? ' active' : '');
+      d.addEventListener('click', () => moveTo(i));
+      dotsWrap.appendChild(d);
+    });
+  }
+  function syncDots() {
+    dotsWrap.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  /* ── Move by delta (+1 / -1) ── */
+  function move(delta) {
+    if (busy) return;
+    busy = true;
+
+    const N = DATA.length;
+    pos     += delta;
+    current  = ((current + delta) % N + N) % N;
+    syncDots();
+    setPos(true);
+  }
+
+  /* ── Move to exact logical index ── */
+  function moveTo(idx) {
+    if (busy) return;
+    busy    = true;
+    const N = DATA.length;
+    const C = N;
+    pos     = C + idx;
+    current = idx;
+    syncDots();
+    setPos(true);
+  }
+
+  /* ── After each transition: silently jump to canonical position ── */
+  track.addEventListener('transitionend', () => {
+    const N = DATA.length;
+    const C = N;
+
+    // jump back to real range silently
+    if (pos < C || pos >= C + N) {
+      pos = C + current;
+      setPos(false); // instant
+    }
+    busy = false;
+  });
+
+  /* ── Auto-play ── */
+  function startAuto() { timer = setInterval(() => move(1), AUTO_MS); }
+  function stopAuto()  { clearInterval(timer); }
+  function resetAuto() { stopAuto(); startAuto(); }
+
+  btnPrev.addEventListener('click', () => { move(-1); resetAuto(); });
+  btnNext.addEventListener('click', () => { move(+1); resetAuto(); });
+
+  /* ── Pause on hover ── */
+  track.parentElement.addEventListener('mouseenter', stopAuto);
+  track.parentElement.addEventListener('mouseleave', startAuto);
+
+  /* ── Touch swipe ── */
+  let tx = 0;
+  track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) { move(dx < 0 ? 1 : -1); resetAuto(); }
+  });
+
+  /* ── Resize ── */
+  let rt;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { build(); buildDots(); }, 180);
+  });
+
+  /* ── Init ── */
+  build();
+  buildDots();
+  startAuto();
+</script>
+</body>
+</html>

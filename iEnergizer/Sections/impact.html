@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Studies – BPOC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #eef0f6;
+      padding: 60px 32px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+    .section-header h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+    }
+    .section-header p {
+      font-size: 0.83rem;
+      color: #888;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Grid */
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* Outer wrapper – needed so the green tab can escape the card's clip */
+    .card-outer {
+      position: relative;
+      /* top padding = height of the tab area that sits above the card notch shelf */
+    }
+
+    /*
+      Green industry label.
+      In the design it sits RIGHT of the card, at the top,
+      horizontally aligned with the top-right area of the card.
+      The card's top-right is scooped inward so the tab visually
+      sits "in" that cutout without overlapping the card body.
+    */
+    .industry-tab {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #00e676;
+      color: #003d15;
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      border-radius: 8px;
+      z-index: 2;
+      /* vertically centered in the notch shelf zone (~44px tall) */
+      top: 6px;
+    }
+
+    /* The card itself */
+    .case-card {
+      display: block;
+      text-decoration: none;
+      color: #fff;
+      position: relative;
+      min-height: 390px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: linear-gradient(175deg, #0b1230 0%, #0e1840 40%, #1438c0 100%);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      cursor: pointer;
+      /*
+        clip-path creates the concave scooped notch at top-right.
+        Going clockwise from top-left:
+          - top-left rounded corner
+          - straight across to ~65% of width
+          - concave curve down-right into the notch
+          - shelf across to right edge
+          - straight down right edge
+          - bottom-right rounded
+          - bottom left rounded
+        Using SVG clip-path for the concave bezier.
+      */
+      clip-path: url(#notch-clip);
+    }
+
+    .case-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 55px rgba(10, 30, 150, 0.35);
+    }
+
+    .coming-soon {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .card-body {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 22px 22px 26px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.42;
+      margin-bottom: 10px;
+    }
+
+    .card-desc {
+      font-size: 0.77rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.65;
+    }
+
+    @media (max-width: 768px) {
+      .cases-grid {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!--
+  SVG clip-path definition.
+  clipPathUnits="objectBoundingBox" means all coords are 0..1 relative to element.
+
+  Card shape:
+  - Full rounded rectangle EXCEPT top-right corner is replaced with a
+    concave (inward curving) scoop that creates a "shelf" on the right side.
+
+  The notch:
+    - Top edge goes from left to ~x=0.62
+    - Then a smooth concave curve pulls DOWN and to the right, landing at ~(1.0, 0.135)
+    - Then right edge continues straight down from y=0.135
+
+  The concave effect uses a cubic bezier where control points are
+  positioned to pull the curve INWARD (toward the card center).
+-->
+<svg width="0" height="0">
+  <defs>
+    <clipPath id="notch-clip" clipPathUnits="objectBoundingBox">
+      <!--
+        Start at top-left (with rounded corner approximated):
+        M 0.04,0  → across top → 
+        L 0.63,0  → concave bezier into notch →
+        C 0.72,0  0.76,0.04  0.78,0.08   (control1, control2, end of first segment)
+        C 0.80,0.11 0.82,0.13 0.84,0.13  (smooth into the shelf)
+        L 1.0, 0.13  → shelf at right edge
+        L 1.0, 0.96  → down right side
+        C 1.0,1.0  0.97,1.0  0.94,1.0   → bottom-right round
+        L 0.06,1.0
+        C 0.03,1.0  0,0.97  0,0.94       → bottom-left round
+        L 0, 0.06
+        C 0,0.03  0.03,0  0.06,0         → top-left round
+        Z
+      -->
+      <path d="
+        M 0.06,0
+        L 0.63,0
+        C 0.72,0   0.77,0.03  0.79,0.07
+        C 0.81,0.11  0.83,0.135  0.86,0.135
+        L 1.0,0.135
+        L 1.0,0.94
+        C 1.0,0.972  0.972,1.0  0.94,1.0
+        L 0.06,1.0
+        C 0.028,1.0  0,0.972  0,0.94
+        L 0,0.06
+        C 0,0.028  0.028,0  0.06,0
+        Z
+      " />
+    </clipPath>
+  </defs>
+</svg>
+
+  <div class="section-header">
+    <h2>Proven Impact Across Industries.</h2>
+    <p>See how BPOC solves complex operational challenges and delivers better customer experiences across industries.</p>
+  </div>
+
+  <div class="cases-grid">
+
+    <!-- Card 1: Telecom -->
+    <div class="card-outer">
+      <span class="industry-tab">Telecom</span>
+      <a href="#" class="case-card">
+        <span class="coming-soon">Coming Soon</span>
+        <div class="card-body">
+          <h3 class="card-title">How BPOC Helped a Leading Mobile Service Provider Improve Customer Experience</h3>
+          <p class="card-desc">Optimize support journeys, reduce churn, and elevate service quality at scale.</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- Card 2: Retail -->
+    <div class="card-outer">
+      <span class="industry-tab">Retail</span>
+      <a href="#" class="case-card">
+        <span class="coming-soon">Coming Soon</span>
+        <div class="card-body">
+          <h3 class="card-title">Customer Experience for a Logistics Giant Transformed by BPOC</h3>
+          <p class="card-desc">Streamline operations, improve delivery touchpoints, and enhance end-to-end visibility.</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- Card 3: Healthcare -->
+    <div class="card-outer">
+      <span class="industry-tab">Healthcare</span>
+      <a href="#" class="case-card">
+        <span class="coming-soon">Coming Soon</span>
+        <div class="card-body">
+          <h3 class="card-title">BPOC Boosts Revenue, Accuracy &amp; Customer Satisfaction for an Online Pharma Business</h3>
+          <p class="card-desc">Improve order accuracy, ensure compliance, and deliver a seamless customer experience.</p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+</body>
+</html>

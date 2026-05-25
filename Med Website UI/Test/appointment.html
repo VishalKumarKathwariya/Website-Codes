@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Patholab - Appointment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #f4f9f9;
+      min-height: 100vh;
+    }
+
+    /* ── HERO SECTION ── */
+    .hero {
+      background: linear-gradient(135deg, #0bbfb0 0%, #09a89a 40%, #07928b 100%);
+      position: relative;
+      overflow: hidden;
+      min-height: 320px;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: end;
+      gap: 0;
+      position: relative;
+      min-height: 320px;
+    }
+
+    /* Left column */
+    .hero-left {
+      padding: 40px 24px 40px 40px;
+      z-index: 2;
+    }
+
+    .hero-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .hero-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.25;
+      margin-bottom: 28px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .feature-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.6);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .feature-content h4 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .feature-content p {
+      font-size: 11px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+    }
+
+    /* Center column – doctor image */
+    .hero-center {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      height: 340px;
+      z-index: 2;
+    }
+
+    .doctor-img {
+      height: 320px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.18));
+    }
+
+    /* Right column – text */
+    .hero-right {
+      padding: 40px 40px 40px 24px;
+      z-index: 2;
+    }
+
+    .hero-right p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.7;
+    }
+
+    /* decorative blob */
+    .hero-blob {
+      position: absolute;
+      right: -60px;
+      top: -60px;
+      width: 320px;
+      height: 320px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-blob2 {
+      position: absolute;
+      left: 30%;
+      bottom: -80px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 40px;
+      padding: 48px 40px;
+      align-items: start;
+    }
+
+    /* Stats */
+    .stats-row {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .stat-circle {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+    }
+
+    .stat-circle svg {
+      transform: rotate(-90deg);
+      width: 80px;
+      height: 80px;
+    }
+
+    .stat-circle .track {
+      fill: none;
+      stroke: #e0f0f0;
+      stroke-width: 6;
+    }
+
+    .stat-circle .progress {
+      fill: none;
+      stroke: #0bbfb0;
+      stroke-width: 6;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1.2s ease;
+    }
+
+    .stat-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0bbfb0;
+      transform: rotate(0deg);
+    }
+
+    .stat-text h4 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a2e35;
+      margin-bottom: 5px;
+    }
+
+    .stat-text p {
+      font-size: 11px;
+      color: #6b8896;
+      line-height: 1.5;
+      max-width: 160px;
+    }
+
+    /* ── APPOINTMENT CARD ── */
+    .appt-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 8px 40px rgba(11,191,176,0.12);
+      position: relative;
+      top: -80px;
+      margin-bottom: -80px;
+    }
+
+    .appt-tag {
+      font-size: 11px;
+      color: #0bbfb0;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .appt-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(18px, 2vw, 22px);
+      font-weight: 800;
+      color: #1a2e35;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .appt-desc {
+      font-size: 11px;
+      color: #6b8896;
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: none;
+    }
+
+    .form-select,
+    .form-input {
+      width: 100%;
+      border: 1px solid #e0eaed;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-family: 'Open Sans', sans-serif;
+      color: #1a2e35;
+      background: #fff;
+      appearance: none;
+      outline: none;
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .form-select:focus,
+    .form-input:focus {
+      border-color: #0bbfb0;
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper::after {
+      content: '▾';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6b8896;
+      font-size: 12px;
+      pointer-events: none;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .form-row .form-group {
+      margin-bottom: 0;
+    }
+
+    .placeholder-label {
+      font-size: 11.5px;
+      color: #6b8896;
+    }
+
+    .agree-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      margin-top: 4px;
+    }
+
+    .agree-row input[type="checkbox"] {
+      accent-color: #0bbfb0;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    .agree-row span {
+      font-size: 11px;
+      color: #6b8896;
+    }
+
+    .agree-row a {
+      color: #0bbfb0;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .btn-appt {
+      width: 100%;
+      background: #1a2e35;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 13px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-appt:hover {
+      background: #0bbfb0;
+      transform: translateY(-1px);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+      .hero-center {
+        display: none;
+      }
+      .main-content {
+        grid-template-columns: 1fr;
+        padding: 32px 20px;
+      }
+      .appt-card {
+        top: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+      }
+      .hero-right {
+        display: none;
+      }
+      .hero-left {
+        padding: 28px 20px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .stats-row {
+        flex-direction: column;
+        gap: 24px;
+      }
+      .main-content {
+        padding: 24px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob"></div>
+  <div class="hero-blob2"></div>
+  <div class="hero-inner">
+
+    <!-- LEFT -->
+    <div class="hero-left">
+      <div class="hero-tag">Learn How We maintain our Lab</div>
+      <h1 class="hero-title">Patholab is committed to<br>provide accurate Findings</h1>
+
+      <div class="feature-item">
+        <div class="feature-number">01</div>
+        <div class="feature-content">
+          <h4>Experience and Expertise</h4>
+          <p>Patholab Laboratory is a leading diagnostic laboratory established with a vision to provide complete laboratory services for better patient management.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-number">02</div>
+        <div class="feature-content">
+          <h4>Experience and Expertise</h4>
+          <p>Patholab Laboratory is a leading diagnostic laboratory established with a vision to provide complete laboratory services for better patient management.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER (doctor image placeholder) -->
+    <div class="hero-center">
+      <svg class="doctor-img" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
+        <!-- Simple doctor silhouette illustration -->
+        <!-- Head -->
+        <ellipse cx="100" cy="60" rx="34" ry="38" fill="#f9d9b8"/>
+        <!-- Hair -->
+        <ellipse cx="100" cy="32" rx="34" ry="20" fill="#c8a26a"/>
+        <rect x="66" y="32" width="14" height="30" rx="7" fill="#c8a26a"/>
+        <!-- Goggles -->
+        <rect x="74" y="50" width="22" height="14" rx="7" fill="rgba(255,255,255,0.55)" stroke="#0bbfb0" stroke-width="1.5"/>
+        <rect x="104" y="50" width="22" height="14" rx="7" fill="rgba(255,255,255,0.55)" stroke="#0bbfb0" stroke-width="1.5"/>
+        <line x1="96" y1="57" x2="104" y2="57" stroke="#0bbfb0" stroke-width="1.5"/>
+        <!-- Lab coat body -->
+        <path d="M55 105 Q55 95 100 95 Q145 95 145 105 L152 270 L48 270 Z" fill="#fff"/>
+        <!-- Coat lapels -->
+        <path d="M100 95 L85 130 L78 95 Z" fill="#e8f4f3"/>
+        <path d="M100 95 L115 130 L122 95 Z" fill="#e8f4f3"/>
+        <!-- Neck -->
+        <rect x="90" y="90" width="20" height="18" rx="6" fill="#f9d9b8"/>
+        <!-- Arms -->
+        <path d="M55 120 Q30 150 40 200" stroke="#fff" stroke-width="30" stroke-linecap="round" fill="none"/>
+        <path d="M145 120 Q170 150 160 200" stroke="#fff" stroke-width="30" stroke-linecap="round" fill="none"/>
+        <!-- Hands holding flask -->
+        <ellipse cx="42" cy="205" rx="12" ry="12" fill="#f9d9b8"/>
+        <ellipse cx="158" cy="205" rx="12" ry="12" fill="#f9d9b8"/>
+        <!-- Flask -->
+        <rect x="148" y="175" width="20" height="6" rx="3" fill="#0bbfb0"/>
+        <path d="M150 181 L143 220 Q143 232 158 232 Q173 232 173 220 L166 181 Z" fill="rgba(255,200,50,0.85)"/>
+        <ellipse cx="158" cy="220" rx="15" ry="8" fill="rgba(255,180,20,0.5)"/>
+        <!-- Stethoscope -->
+        <path d="M88 130 Q80 160 88 180 Q95 195 105 180 Q112 165 108 135" stroke="#0bbfb0" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <circle cx="105" cy="183" r="6" fill="#0bbfb0"/>
+        <!-- Coat pocket & badge -->
+        <rect x="105" y="155" width="28" height="20" rx="4" fill="#e8f4f3" stroke="#d0e8e6" stroke-width="1"/>
+        <rect x="110" y="145" width="16" height="8" rx="4" fill="#0bbfb0"/>
+      </svg>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="hero-right">
+      <p>We believe in a future where renewable energy sources play a vital role in reducing carbon emissions and creating a sustainable planet. At Patholab Laboratory, we provide a wide range of diagnostic services ranging from complete health check-up packages.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+  <!-- Stats (left) -->
+  <div class="stats-row">
+
+    <div class="stat-item">
+      <div class="stat-circle">
+        <svg viewBox="0 0 80 80">
+          <circle class="track" cx="40" cy="40" r="32"/>
+          <circle class="progress" cx="40" cy="40" r="32"
+            stroke-dasharray="201"
+            stroke-dashoffset="50"/>
+        </svg>
+        <div class="stat-label">75%</div>
+      </div>
+      <div class="stat-text">
+        <h4>Vaccine Development</h4>
+        <p>Patholab Laboratory is equipped with best world class machinery &amp; reagents.</p>
+      </div>
+    </div>
+
+    <div class="stat-item">
+      <div class="stat-circle">
+        <svg viewBox="0 0 80 80">
+          <circle class="track" cx="40" cy="40" r="32"/>
+          <circle class="progress" cx="40" cy="40" r="32"
+            stroke-dasharray="201"
+            stroke-dashoffset="24"/>
+        </svg>
+        <div class="stat-label">88%</div>
+      </div>
+      <div class="stat-text">
+        <h4>Clinic Management</h4>
+        <p>Patholab Laboratory is equipped with best world class machinery &amp; reagents.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Appointment Card (right) -->
+  <div class="appt-card">
+    <div class="appt-tag">High Performance Service For</div>
+    <h2 class="appt-title">Schedule An Appointment</h2>
+    <p class="appt-desc">Patholab is the best diagnostic lab in the city. I have great experience with them. The provide authentic.</p>
+
+    <!-- Service -->
+    <div class="form-group select-wrapper">
+      <select class="form-select" title="Services">
+        <option>Select Service*  General Diagnostic Testing</option>
+        <option>Blood Test</option>
+        <option>X-Ray</option>
+        <option>MRI Scan</option>
+      </select>
+    </div>
+
+    <!-- Name + Email -->
+    <div class="form-row">
+      <div class="form-group">
+        <input type="text" class="form-input" placeholder="Full Name*"/>
+      </div>
+      <div class="form-group">
+        <input type="email" class="form-input" placeholder="Email Address*"/>
+      </div>
+    </div>
+
+    <!-- Phone + Location -->
+    <div class="form-row">
+      <div class="form-group">
+        <input type="tel" class="form-input" placeholder="Phone No*"/>
+      </div>
+      <div class="form-group select-wrapper">
+        <select class="form-select" title="Location">
+          <option>Location*  Utah</option>
+          <option>New York</option>
+          <option>California</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Date + Time -->
+    <div class="form-row">
+      <div class="form-group select-wrapper">
+        <select class="form-select" title="Date">
+          <option>Appointment Date*</option>
+        </select>
+      </div>
+      <div class="form-group select-wrapper">
+        <select class="form-select" title="Time">
+          <option>Appointment Time*</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Special Requirement -->
+    <div class="form-group select-wrapper">
+      <select class="form-select" title="Support">
+        <option>Special Requirement  Wheelchair Support</option>
+        <option>Interpreter Needed</option>
+        <option>None</option>
+      </select>
+    </div>
+
+    <!-- Agree -->
+    <div class="agree-row">
+      <input type="checkbox" id="agree" title="Confirm" checked/>
+      <span>I agree to the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a></span>
+    </div>
+
+    <button class="btn-appt">Make Appointment</button>
+  </div>
+
+</div>
+
+</body>
+</html>

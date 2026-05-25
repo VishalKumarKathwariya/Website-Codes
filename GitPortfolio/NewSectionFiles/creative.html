@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Component: Let's Make Something Outstanding</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
+
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ═══════════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════════ */
+    :root {
+      --bg-1:         #0e0e10;
+      --bg-2:         #141416;
+      --accent:       #7c6dfa;
+      --accent-tint:  #1e1a3a;
+      --text-heading: #f0f0f0;
+      --text-body:    #9090a0;
+      --text-muted:   #55555f;
+      --border-dark:  rgba(255,255,255,0.06);
+      --ease:         cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--bg-2);
+      color: var(--text-body);
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       CREATIVE SECTION
+    ═══════════════════════════════════════════ */
+    .creative-wrap {
+      width: 100%;
+      background: var(--bg-2);
+      -webkit-backdrop-filter: blur(28px) saturate(1.4);
+      backdrop-filter: blur(28px) saturate(1.4);
+      padding: clamp(3rem, 4vw, 5rem) clamp(1rem, 3vw, 3rem);
+    }
+
+    .creative-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── LEFT ── */
+    .creative-left {
+      position: relative;
+      z-index: 10;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADING ── */
+    .creative-heading {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.12;
+      color: var(--text-heading);
+      margin-bottom: 0.4rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .creative-heading.head-in { opacity: 1; transform: translateY(0); }
+    .creative-heading .static { display: block; }
+
+    /* ── WORD ROTATOR ── */
+    .word-rotator {
+      display: inline-block;
+      position: relative;
+      height: 1.15em;
+      overflow: hidden;
+      vertical-align: bottom;
+    }
+    .word-rotator-inner {
+      display: flex;
+      flex-direction: column;
+      animation: slideWords 8s ease-in-out infinite;
+    }
+    .word-rotator-inner span {
+      display: block;
+      line-height: 1.15;
+      background: var(--accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      white-space: nowrap;
+    }
+
+    @keyframes slideWords {
+      0%   { transform: translateY(0%);   }
+      15%  { transform: translateY(0%);   }
+      25%  { transform: translateY(-25%); }
+      40%  { transform: translateY(-25%); }
+      50%  { transform: translateY(-50%); }
+      65%  { transform: translateY(-50%); }
+      75%  { transform: translateY(-75%); }
+      90%  { transform: translateY(-75%); }
+      100% { transform: translateY(0%);   }
+    }
+
+    /* ── DIVIDER ── */
+    .creative-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 1.4rem 0 1.6rem;
+      opacity: 0;
+      transform: scaleX(0.6);
+      transform-origin: left;
+      transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
+    }
+    .creative-divider.div-in { opacity: 1; transform: scaleX(1); }
+
+    .divider-line        { height: 1px; width: 52px; border-radius: 2px; }
+    .divider-line.left   { background: linear-gradient(90deg, var(--accent), transparent); }
+    .divider-line.right  { background: linear-gradient(90deg, transparent, var(--accent)); }
+
+    .divider-dots        { display: flex; gap: 4px; }
+    .divider-dots span   { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+    .divider-dots span:nth-child(1) { opacity: 1;    }
+    .divider-dots span:nth-child(2) { opacity: 0.5;  }
+    .divider-dots span:nth-child(3) { opacity: 0.22; }
+
+    /* ── DESCRIPTION ── */
+    .creative-desc {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 2rem;
+      max-width: 100%;
+      font-weight: 400;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease 0.25s, transform 0.6s ease 0.25s;
+    }
+    .creative-desc.desc-in { opacity: 1; transform: translateY(0); }
+
+    /* ── BUTTONS ── */
+    .creative-btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s;
+    }
+    .creative-btns.btns-in { opacity: 1; transform: translateY(0); }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 15px 0;
+      width: min(360px, 100%);
+      border-radius: 50px;
+      font-family: "DM Sans", sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      color: var(--text-heading);
+      border: 1.5px solid var(--text-heading);
+      background: transparent;
+      transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+    }
+    .btn-primary svg {
+      width: 17px; height: 17px;
+      flex-shrink: 0;
+      background-color: var(--accent);
+      border-radius: 4px;
+      padding: 2px;
+    }
+    .btn-primary:hover {
+      border-color: var(--accent);
+      background: var(--accent-tint);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+
+    /* ── RIGHT: Lottie ── */
+    .creative-right { display: none; }
+
+    .lottie-stage {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      aspect-ratio: 1;
+    }
+    lottie-player { width: 100%; height: 100%; }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — max-width: 768px
+    ═══════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .creative-inner  { position: relative; }
+
+      /* Lottie as faint background on mobile */
+      .creative-right {
+        display: block;
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        z-index: 5;
+        pointer-events: none;
+      }
+      .lottie-stage {
+        max-width: 300px;
+        top: 15%;
+        transform: translateY(-5%);
+        opacity: 0.45;
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — min-width: 768px
+    ═══════════════════════════════════════════ */
+    @media (min-width: 768px) {
+      .creative-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: center;
+      }
+      .creative-right {
+        display: flex;
+        position: relative;
+        pointer-events: auto;
+        justify-content: center;
+        align-items: center;
+      }
+      .creative-left   { z-index: auto; }
+      .lottie-stage    { max-width: 380px; }
+      .creative-desc   { max-width: 420px; }
+      .creative-heading { font-size: 2.2rem; }
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — min-width: 1024px
+    ═══════════════════════════════════════════ */
+    @media (min-width: 1024px) {
+      .creative-heading { font-size: 3.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION: LET'S MAKE SOMETHING OUTSTANDING
+  ═══════════════════════════════════════════ -->
+  <section class="creative-wrap" id="approach">
+    <div class="creative-inner">
+
+      <!-- ── LEFT: Text Content ── -->
+      <div class="creative-left">
+
+        <h1 class="creative-heading" id="creativeHeading">
+          <span class="static">Let's make something</span>
+          <span class="word-rotator">
+            <span class="word-rotator-inner">
+              <span>Outstanding.</span>
+              <span>Engaging.</span>
+              <span>Innovative.</span>
+              <span>Strategic.</span>
+            </span>
+          </span>
+        </h1>
+
+        <div class="creative-divider" id="creativeDivider">
+          <div class="divider-line left"></div>
+          <div class="divider-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="divider-line right"></div>
+        </div>
+
+        <p class="creative-desc" id="creativeDesc">
+          We craft experiences that captivate audiences and drive real results — from bold brands to seamless digital products.
+        </p>
+
+        <div class="creative-btns" id="creativeBtns">
+          <a href="#contact" class="btn-primary">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" stroke="white" stroke-width="1.3"/>
+              <path d="M5 7h6M5 9.5h4" stroke="white" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+            Get In Touch
+          </a>
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT: Lottie Animation ── -->
+      <div class="creative-right">
+        <div class="lottie-stage">
+          <!-- Replace src with your actual lottie file path -->
+          <lottie-player
+            src="/GitPortfolio/lottie-files/animation.json"
+            background="transparent"
+            speed="1"
+            loop
+            autoplay>
+          </lottie-player>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /* ═══════════════════════════════════════════
+       INTERSECTION OBSERVER — staggered entrance
+    ═══════════════════════════════════════════ */
+    const animMap = [
+      { id: "creativeHeading", cls: "head-in" },
+      { id: "creativeDivider", cls: "div-in"  },
+      { id: "creativeDesc",    cls: "desc-in" },
+      { id: "creativeBtns",    cls: "btns-in" },
+    ];
+
+    const sectionObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+
+        animMap.forEach(({ id, cls }, i) => {
+          const el = document.getElementById(id);
+          if (el) setTimeout(() => el.classList.add(cls), i * 120);
+        });
+
+        sectionObs.unobserve(entry.target);
+      });
+    }, { threshold: 0.2 });
+
+    const section = document.getElementById("approach");
+    if (section) sectionObs.observe(section);
+
+    /* ═══════════════════════════════════════════
+       WORD ROTATOR — pause on hover
+    ═══════════════════════════════════════════ */
+    const rotatorInner = document.querySelector(".word-rotator-inner");
+    if (rotatorInner) {
+      rotatorInner.addEventListener("mouseenter", () => {
+        rotatorInner.style.animationPlayState = "paused";
+      });
+      rotatorInner.addEventListener("mouseleave", () => {
+        rotatorInner.style.animationPlayState = "running";
+      });
+    }
+  </script>
+
+</body>
+</html>

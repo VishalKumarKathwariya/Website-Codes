@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Component: Project Gallery</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ═══════════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════════ */
+    :root {
+      --bg-1:         #0e0e10;
+      --bg-3:         #1a1a1c;
+      --accent:       #7c6dfa;
+      --text-heading: #f0f0f0;
+      --text-body:    #9090a0;
+      --text-muted:   #55555f;
+      --border:       #2a2a30;
+      --border-dark:  rgba(255,255,255,0.06);
+      --radius-sm:    6px;    /* card radius */
+      --ease:         cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--bg-3);
+      color: var(--text-body);
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       SHARED HEADING PATTERN
+    ═══════════════════════════════════════════ */
+    .sec-label {
+      font-family: "DM Mono", monospace;
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .sec-label::after {
+      content: "";
+      height: 1px;
+      width: 28px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+    .sec-label.sec-in { opacity: 1; transform: translateY(0); }
+
+    .sec-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text-heading);
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease 0.1s, transform 0.55s ease 0.1s;
+    }
+    .sec-title span { color: var(--accent); }
+    .sec-title.sec-in { opacity: 1; transform: translateY(0); }
+
+    .sec-sub {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--text-body);
+      line-height: 1.8;
+      font-weight: 300;
+      max-width: 380px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.55s ease 0.2s, transform 0.55s ease 0.2s;
+    }
+    .sec-sub.sec-in { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════════
+       PROJECT GALLERY SECTION
+    ═══════════════════════════════════════════ */
+    .project-gallery-section {
+      background: var(--bg-3);
+      color: var(--text-heading);
+      padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 3rem);
+      border-bottom: 1px solid var(--border-dark);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    /* ── Section Header ── */
+    .pg-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      margin-bottom: clamp(2rem, 4vw, 3rem);
+    }
+
+    /* ═══════════════════════════════════════════
+       GRID
+    ═══════════════════════════════════════════ */
+    .pg-grid {
+      display: grid;
+      /* Mobile: 2 columns */
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    /* BUG FIX: span rules need to be explicit per breakpoint.
+       On mobile (2-col) cards 1, 4, 9 span both columns.
+       On desktop (3-col) every card is span 1. */
+    .pg-card:nth-child(1),
+    .pg-card:nth-child(4),
+    .pg-card:nth-child(9) {
+      grid-column: span 2;
+    }
+
+    /* ── Card ── */
+    .pg-card {
+      background: var(--bg-1);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--border);
+
+      /* entrance state */
+      opacity: 0;
+      transform: translateY(56px);
+      transition:
+        opacity    0.75s ease,
+        transform  0.75s ease,
+        filter     0.35s ease,
+        box-shadow 0.25s ease;
+
+      cursor: pointer;
+    }
+    .pg-card.card-in { opacity: 1; transform: translateY(0); }
+
+    /* Blur siblings on grid hover — BUG FIX: only apply when
+       the grid itself is hovered, not on touch devices */
+    .pg-grid:hover .pg-card:not(:hover) {
+      filter: blur(2.5px) brightness(0.65);
+    }
+
+    /* Card hover lift */
+    .pg-card:hover {
+      transform: scale(1.025) translateY(-3px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+    }
+
+    /* ── Image Wrapper ── */
+    .pg-img {
+      position: relative;
+      /* BUG FIX: use aspect-ratio so height is never 0 if
+         the image is slow/missing */
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      display: block;
+      width: 100%;
+    }
+
+    .pg-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.32s var(--ease);
+      /* BUG FIX: prevent image dragging causing layout glitches */
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .pg-card:hover .pg-img img { transform: scale(1.04); }
+
+    /* ── Overlay Info (slides up on hover) ── */
+    .pg-info {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 1.2rem 1rem 1rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 100%);
+      transform: translateY(100%);
+      opacity: 0;
+      /* BUG FIX: use will-change to hint GPU compositing for
+         smoother slide animation */
+      will-change: transform, opacity;
+      transition: transform 0.32s var(--ease), opacity 0.32s var(--ease);
+    }
+    .pg-card:hover .pg-info { transform: translateY(0); opacity: 1; }
+
+    .pg-title {
+      font-family: "Syne", sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.2rem;
+    }
+    .pg-desc {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.65);
+      font-family: "DM Mono", monospace;
+    }
+
+    /* ── Tag Badge ── */
+    .pg-tag {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: var(--accent);
+      color: var(--text-heading);
+      font-family: "DM Mono", monospace;
+      font-size: 0.6rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      /* entrance state */
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.32s var(--ease), transform 0.32s var(--ease);
+      /* BUG FIX: prevent tag from intercepting hover on the image */
+      pointer-events: none;
+    }
+    .pg-card:hover .pg-tag { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — min-width: 992px (3-col desktop)
+    ═══════════════════════════════════════════ */
+    @media (min-width: 992px) {
+      .pg-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+      }
+
+      /* BUG FIX: reset all span overrides on desktop so every
+         card occupies exactly 1 column — the original code
+         forgot to reset these at the desktop breakpoint which
+         caused cards to span 2 of 3 columns unexpectedly */
+      .pg-card:nth-child(1),
+      .pg-card:nth-child(4),
+      .pg-card:nth-child(9) {
+        grid-column: span 1;
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — max-width: 480px (single col)
+    ═══════════════════════════════════════════ */
+    @media (max-width: 480px) {
+      .pg-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+
+      /* Reset spans — single column, no spanning needed */
+      .pg-card:nth-child(1),
+      .pg-card:nth-child(4),
+      .pg-card:nth-child(9) {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     SECTION: PROJECT GALLERY
+═══════════════════════════════════════════ -->
+<section class="project-gallery-section" id="reviews">
+
+  <!-- Header -->
+  <div class="pg-header">
+    <div class="sec-label" id="pgLbl">Project Gallery</div>
+    <h2  class="sec-title"  id="pgTtl">Selected <span>Works</span></h2>
+    <p   class="sec-sub"    id="pgSub">A curated collection of interfaces, products, and digital experiences built with precision and purpose.</p>
+  </div>
+
+  <!-- Grid -->
+  <div class="pg-grid" id="pgGrid">
+
+    <!-- Card 1 — spans 2 cols on mobile -->
+    <div class="pg-card">
+      <div class="pg-img">
+        <img src="/GitPortfolio/Images/Galary/ProductCard.png" alt="Portfolio website preview" loading="lazy" />
+        <span class="pg-tag">UI Design</span>
+        <div class="pg-info">
+          <div class="pg-title">Portfolio</div>
+          <div class="pg-desc">Modern personal website UI</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="pg-card">
+      <div class="pg-img">
+        <img src="/GitPortfolio/Images/Galary/Arcadia.png" alt="E-commerce UI preview" loading="lazy" />
+        <span class="pg-tag">E-Commerce</span>
+        <div class="pg-info">
+          <div class="pg-title">E-commerce</div>
+          <div class="pg-desc">Clean shopping experience</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="pg-card">
+      <div class="pg-img">
+        <img src="/GitPortfolio/Images/Galary/Aura.png" alt="Dashboard analytics UI" loading="lazy" />
+        <span class="pg-tag">Analytics</span>
+        <div class="pg-info">
+          <div class="pg-title">Dashboard</div>
+          <div class="pg-desc">Analytics visualization UI</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 — spans 2 cols on mobile -->
+    <div class="pg-card">
+      <div class="pg-img">
+        <img src="/GitPortfolio/Images/Galary/DK-Hero.png" alt="Landing page design" loading="lazy" />
+        <span class="pg-tag">Marketing</span>
+        <div class="pg-info">
+          <div class="pg-title">Landing Page</div>
+          <div class="pg-desc">High conversion layout</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="pg-card">
+      <div class="pg-img">
+        <img src="/GitPortfolio/Images/Galary/DK-HW.png" alt="Mobile app interface" loading="lazy" />
+        <span class="pg-tag">Mobile</span>
+        <div class="pg-info">
+          <div class="pg-title">Mobile App</div>
+          <div class="pg-desc">App UI system</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="pg-card">
+      <div class="pg-img">
+        <img src="/GitPortfolio/Images/Galary/PriceCard.png" alt="Admin panel dashboard" loading="lazy" />
+        <span class="pg-tag">SaaS</span>
+        <div class="pg-info">
+          <div class="pg-title">Admin Panel</div>
+          <div class="pg-desc">Control dashboard</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 7 -->
+    <div class="pg-card">
+      <div class="pg-img">
+        <img src="/GitPortfolio/Images/Galary/GoogleReview.png" alt="Blog website layout" loading="lazy" />
+        <span class="pg-tag">Content</span>
+        <div class="pg-info">
+          <div class="pg-title">Blog</div>
+          <div class="pg-desc">Content-first layout</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 8 -->
+    <div class="pg-card">
+      <div class="pg-img">
+        <img src="/GitPortfolio/Images/Galary/Home.png" alt="Startup homepage UI" loading="lazy" />
+        <span class="pg-tag">Branding</span>
+        <div class="pg-info">
+          <div class="pg-title">Startup</div>
+          <div class="pg-desc">Modern brand site</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 9 — spans 2 cols on mobile -->
+    <div class="pg-card">
+      <div class="pg-img">
+        <img src="/GitPortfolio/Images/Galary/PriceCard.png" alt="SaaS dashboard interface" loading="lazy" />
+        <span class="pg-tag">Product</span>
+        <div class="pg-info">
+          <div class="pg-title">SaaS</div>
+          <div class="pg-desc">Product dashboard UI</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.pg-grid -->
+</section>
+
+<script>
+  /* ═══════════════════════════════════════════
+     HEADING ENTRANCE — IntersectionObserver
+  ═══════════════════════════════════════════ */
+  const headingIds = ["pgLbl", "pgTtl", "pgSub"];
+
+  const headObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      headingIds.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el) setTimeout(() => el.classList.add("sec-in"), i * 110);
+      });
+      headingIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) headObs.unobserve(el);
+      });
+    });
+  }, { threshold: 0.2 });
+
+  const firstHeading = document.getElementById(headingIds[0]);
+  if (firstHeading) headObs.observe(firstHeading);
+
+  /* ═══════════════════════════════════════════
+     CARD ENTRANCE — staggered fade-up
+     BUG FIX: original code used gsap.from() which
+     required GSAP to be loaded. This is pure JS,
+     no dependency needed.
+  ═══════════════════════════════════════════ */
+  const cards = document.querySelectorAll(".pg-card");
+
+  const cardObs = new IntersectionObserver(entries => {
+    // Collect all intersecting cards that haven't animated yet
+    const hitting = [...entries]
+      .filter(e => e.isIntersecting && !e.target.classList.contains("card-in"))
+      .sort((a, b) => [...cards].indexOf(a.target) - [...cards].indexOf(b.target));
+
+    hitting.forEach((entry, i) => {
+      setTimeout(() => {
+        entry.target.classList.add("card-in");
+        cardObs.unobserve(entry.target);
+      }, i * 80);
+    });
+  }, { threshold: 0.1, rootMargin: "0px 0px -10% 0px" });
+
+  cards.forEach(card => cardObs.observe(card));
+
+  /* ═══════════════════════════════════════════
+     TOUCH DEVICE — disable blur-siblings effect
+     BUG FIX: the CSS hover blur looks broken on
+     touch screens because :hover stays stuck after
+     tap. We remove the effect on touch devices.
+  ═══════════════════════════════════════════ */
+  const grid = document.getElementById("pgGrid");
+
+  if (grid && window.matchMedia("(hover: none)").matches) {
+    grid.classList.add("no-hover-blur");
+  }
+
+  /* Also add a style rule to disable it */
+  const style = document.createElement("style");
+  style.textContent = `
+    .no-hover-blur .pg-card:not(:hover) {
+      filter: none !important;
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+
+</body>
+</html>

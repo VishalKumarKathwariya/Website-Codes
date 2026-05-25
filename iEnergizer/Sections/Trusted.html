@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trusted Brands – BPOC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      overflow-x: hidden;
+    }
+
+    /* ─── TRUSTED SECTION ─── */
+    .trusted {
+      background: #ffffff;
+      padding: 36px 0 40px;
+      border-top: 1px solid #efefef;
+    }
+
+    .trusted-label {
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #888;
+      letter-spacing: 0.02em;
+      margin-bottom: 24px;
+    }
+
+    /* marquee container */
+    .marquee-wrapper {
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* left/right fade masks */
+    .marquee-wrapper::before,
+    .marquee-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 120px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee-wrapper::before {
+      left: 0;
+      background: linear-gradient(to right, #fff 0%, transparent 100%);
+    }
+    .marquee-wrapper::after {
+      right: 0;
+      background: linear-gradient(to left, #fff 0%, transparent 100%);
+    }
+
+    /* the moving track — duplicated for seamless loop */
+    .marquee-track {
+      display: flex;
+      align-items: center;
+      gap: 56px;
+      width: max-content;
+      animation: scroll 22s linear infinite;
+    }
+
+    @keyframes scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* individual logo items */
+    .logo-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+    }
+    .logo-item:hover { opacity: 1; }
+
+    /* text-based logo styles matching screenshot */
+    .logo-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #333;
+      letter-spacing: -0.01em;
+    }
+
+    /* brand-specific colors */
+    .logo-coral   .logo-text { color: #e05c4b; font-size:0.9rem; font-weight:600; }
+    .logo-airtel  .logo-text { color: #e4163a; }
+    .logo-oyo     .logo-text { color: #ef2724; letter-spacing:-0.03em; }
+    .logo-ship    .logo-text { color: #f76630; }
+    .logo-tata    .logo-text { color: #00387b; letter-spacing:0.05em; }
+    .logo-adani   .logo-text { color: #1a5ea8; }
+    .logo-mg      .logo-text { color: #cc0000; font-size:0.88rem; letter-spacing:0.08em; }
+
+    /* icon dot / symbol before airtel */
+    .logo-sym {
+      font-size: 0.7rem;
+      color: #e4163a;
+      margin-right: 2px;
+    }
+
+    /* separator dot */
+    .sep {
+      width: 5px; height: 5px;
+      background: #ddd;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<section class="trusted">
+  <p class="trusted-label">Trusted by industry leaders across sectors</p>
+
+  <div class="marquee-wrapper">
+    <div class="marquee-track" id="track">
+
+      <!-- SET 1 -->
+      <div class="logo-item logo-coral">
+        <span class="logo-text">coral</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-airtel">
+        <span class="logo-sym">✦</span>
+        <span class="logo-text">airtel</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-oyo">
+        <span class="logo-text">OYO</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-ship">
+        <span class="logo-text">🚀 Shiprocket</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-tata">
+        <span class="logo-text">TATA</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-adani">
+        <span class="logo-text">adani</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-mg">
+        <span class="logo-text">MG MOTOR INDIA</span>
+      </div>
+      <div class="sep"></div>
+
+      <!-- SET 2 (duplicate for seamless loop) -->
+      <div class="logo-item logo-coral">
+        <span class="logo-text">coral</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-airtel">
+        <span class="logo-sym">✦</span>
+        <span class="logo-text">airtel</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-oyo">
+        <span class="logo-text">OYO</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-ship">
+        <span class="logo-text">🚀 Shiprocket</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-tata">
+        <span class="logo-text">TATA</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-adani">
+        <span class="logo-text">adani</span>
+      </div>
+      <div class="sep"></div>
+
+      <div class="logo-item logo-mg">
+        <span class="logo-text">MG MOTOR INDIA</span>
+      </div>
+      <div class="sep"></div>
+
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

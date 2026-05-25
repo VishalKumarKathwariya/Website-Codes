@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Healthcare Packages – Patholab</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f4faf7;
+      color: #1a2e27;
+    }
+
+    /* ── Section wrapper ── */
+    .pkg-section {
+      padding: 72px 24px 80px;
+      background: #f4faf7;
+      width: 100%;
+    }
+
+    /* ── Header ── */
+    .pkg-header {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+
+    .pkg-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #10b981;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .pkg-title {
+      font-size: 34px;
+      font-weight: 700;
+      color: #0f2820;
+      line-height: 1.22;
+      margin-bottom: 14px;
+    }
+
+    .pkg-title span {
+      color: #10b981;
+    }
+
+    .pkg-sub {
+      font-size: 15px;
+      color: #6b8075;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.72;
+    }
+
+    /* ── Tab bar ── */
+    .pkg-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #f4faf7;
+      padding: 14px 16px;
+      margin-left: -24px;
+      margin-right: -24px;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.08);
+    }
+
+    .pkg-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 50px;
+      border: 1.5px solid #c3e6d5;
+      background: #fff;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a6b5e;
+      transition: all 0.22s ease;
+      -webkit-user-select: none;
+      user-select: none;
+      outline: none;
+    }
+
+    .pkg-tab svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.22s;
+    }
+
+    .pkg-tab:hover {
+      border-color: #10b981;
+      color: #10b981;
+      background: #f0faf6;
+    }
+
+    .pkg-tab.active {
+      background: #10b981;
+      border-color: #10b981;
+      color: #fff;
+    }
+
+    .pkg-tab.active svg {
+      stroke: #fff;
+    }
+
+    /* ── Card grid ── */
+    .pkg-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* ── Panel visibility ── */
+    .pkg-panel {
+      display: none;
+    }
+
+    .pkg-panel.active {
+      display: block;
+      animation: fadeUp 0.32s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Card ── */
+    .pkg-card {
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #d8ede5;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+    }
+
+    .pkg-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(16, 185, 129, 0.13);
+    }
+
+    .pkg-card.clicked {
+      transform: translateY(-4px);
+    }
+
+    /* ── Card front ── */
+    .card-front {
+      height: 100%;
+    }
+
+    .card-img {
+      height: 168px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-img-bg1 { background: #dff5ec; }
+    .card-img-bg2 { background: #d0f0e7; }
+    .card-img-bg3 { background: #c4eadf; }
+
+    .card-img svg {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-badge {
+      position: absolute;
+      bottom: 12px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      background: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.42);
+    }
+
+    .card-badge svg {
+      width: 17px;
+      height: 17px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .card-body {
+      padding: 14px 18px 18px;
+      border-top: 1px solid #edf7f2;
+    }
+
+    .card-body h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f2820;
+      margin-bottom: 5px;
+      line-height: 1.42;
+    }
+
+    .card-body .card-params {
+      font-size: 12px;
+      color: #8aa39a;
+      margin-bottom: 9px;
+      line-height: 1.5;
+    }
+
+    .card-body .card-count {
+      font-size: 12px;
+      color: #10b981;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card-body .card-count::before {
+      content: '';
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      flex-shrink: 0;
+    }
+
+    /* ── Hover overlay ── */
+    .card-hover {
+      position: absolute;
+      inset: 0;
+      background: #10b981;
+      border-radius: 16px;
+      padding: 24px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .pkg-card.clicked .card-hover {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .hover-icon {
+      width: 42px;
+      height: 42px;
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .hover-icon svg {
+      width: 19px;
+      height: 19px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .hover-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+      line-height: 1.38;
+    }
+
+    .hover-list {
+      list-style: none;
+      flex: 1;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .hover-list li {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.92);
+      padding: 5px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .hover-list li:last-child {
+      border-bottom: none;
+    }
+
+    .hover-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      flex-shrink: 0;
+    }
+
+    .hover-params {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.72);
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+
+    .hover-btn {
+      display: block;
+      text-align: center;
+      background: #fff;
+      color: #0c9e6b;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      letter-spacing: 0.4px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .hover-btn:hover {
+      background: #e0f7ee;
+      color: #0a8058;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      .pkg-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .pkg-tab span { display: none; }
+      .pkg-tab { padding: 10px 16px; }
+    }
+
+    @media (max-width: 600px) {
+      .pkg-title { font-size: 26px; }
+      .pkg-tab { padding: 10px 14px; }
+      .pkg-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    }
+
+    @media (max-width: 400px) {
+      .pkg-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="pkg-section">
+
+  <!-- Header -->
+  <div class="pkg-header">
+    <p class="pkg-badge">Our Packages</p>
+    <h2 class="pkg-title">Our amazing <span>Healthcare</span> Packages</h2>
+    <p class="pkg-sub">Comprehensive diagnostic panels crafted by experts to give you accurate, actionable health insights at every stage of life.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="pkg-tabs" id="pkgTabs">
+
+    <button class="pkg-tab active" data-tab="complete">
+      <svg viewBox="0 0 24 24"><path d="M12 21c-4.97-3.5-8-7-8-10a8 8 0 0 1 16 0c0 3-3.03 6.5-8 10z"/><path d="M12 10v4M10 12h4"/></svg>
+      <span>Complete Care</span>
+    </button>
+
+    <button class="pkg-tab" data-tab="fitness">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><path d="M8 21l2-8-2-3h8l-2 3 2 8M5 10h2M17 10h2"/></svg>
+      <span>Fitness Care</span>
+    </button>
+
+    <button class="pkg-tab" data-tab="family">
+      <svg viewBox="0 0 24 24"><path d="M3 21v-2a4 4 0 0 1 4-4h1M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+      <span>Family Care</span>
+    </button>
+
+    <button class="pkg-tab" data-tab="corporate">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M12 12v4M10 14h4"/></svg>
+      <span>Corporate Care</span>
+    </button>
+
+    <button class="pkg-tab" data-tab="multi">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Multi Care</span>
+    </button>
+
+  </div>
+
+  <!-- Panels -->
+  <div id="pkgPanels">
+
+    <!-- ══ Complete Care ══ -->
+    <div class="pkg-panel active" data-panel="complete">
+      <div class="pkg-grid">
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg1">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".45"/><path d="M23 34h22M34 23v22" stroke="#0b7a55" stroke-width="2.8" stroke-linecap="round"/><circle cx="34" cy="34" r="9" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 3.5-8 7-8 10a8 8 0 0 0 16 0c0-3-3.03-6.5-8-10z"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Allergy &amp; Sensitivity Testing</h3>
+              <p class="card-params">Comprehensive allergen panel</p>
+              <p class="card-count">Includes: <strong>81 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 3.5-8 7-8 10a8 8 0 0 0 16 0c0-3-3.03-6.5-8-10z"/></svg></div>
+            <p class="hover-title">Allergy &amp; Sensitivity Testing</p>
+            <ul class="hover-list">
+              <li>Food allergy panel (40 allergens)</li>
+              <li>Airborne allergen profile</li>
+              <li>IgE total &amp; specific</li>
+              <li>Skin sensitivity markers</li>
+              <li>Eosinophil count</li>
+            </ul>
+            <p class="hover-params">Includes: 81 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg2">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#5dcaa5" opacity=".38"/><path d="M21 34c0-7.18 5.82-13 13-13s13 5.82 13 13" stroke="#0b7a55" stroke-width="2.5" stroke-linecap="round"/><circle cx="34" cy="41" r="6" fill="#0b7a55" opacity=".55"/><path d="M28 47h12" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Molecular Check With Spike Antibody</h3>
+              <p class="card-params">Advanced molecular diagnostics</p>
+              <p class="card-count">Includes: <strong>74 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg></div>
+            <p class="hover-title">Molecular Check With Spike Antibody</p>
+            <ul class="hover-list">
+              <li>Spike protein antibody IgG</li>
+              <li>Neutralising antibody titre</li>
+              <li>T-cell immunity assay</li>
+              <li>RT-PCR panel</li>
+              <li>Cytokine storm markers</li>
+            </ul>
+            <p class="hover-params">Includes: 74 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg3">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".42"/><path d="M34 20v4M34 44v4M20 34h4M44 34h4" stroke="#0b7a55" stroke-width="2.5" stroke-linecap="round"/><circle cx="34" cy="34" r="11" stroke="#0b7a55" stroke-width="2"/><circle cx="34" cy="34" r="4" fill="#0b7a55" opacity=".5"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2 2"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Bacterial Meningitis Detection</h3>
+              <p class="card-params">Rapid CSF &amp; blood culture</p>
+              <p class="card-count">Includes: <strong>81 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2 2"/></svg></div>
+            <p class="hover-title">Bacterial Meningitis Detection</p>
+            <ul class="hover-list">
+              <li>CSF culture &amp; sensitivity</li>
+              <li>Blood culture panel</li>
+              <li>CRP &amp; Procalcitonin</li>
+              <li>Gram stain &amp; count</li>
+              <li>Neisseria PCR</li>
+            </ul>
+            <p class="hover-params">Includes: 81 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg1">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#b8ebd9" opacity=".5"/><rect x="23" y="23" width="22" height="22" rx="4" stroke="#0b7a55" stroke-width="2"/><path d="M28 34h12M34 28v12" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 5v5l3 3"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Pan Fungal Detection PCR</h3>
+              <p class="card-params">Broad-range fungal identification</p>
+              <p class="card-count">Includes: <strong>65 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 5v5l3 3"/></svg></div>
+            <p class="hover-title">Pan Fungal Detection PCR</p>
+            <ul class="hover-list">
+              <li>18S rRNA PCR sequencing</li>
+              <li>Aspergillus panel</li>
+              <li>Candida species ID</li>
+              <li>Galactomannan antigen</li>
+              <li>Beta-D-glucan assay</li>
+            </ul>
+            <p class="hover-params">Includes: 65 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg2">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#5dcaa5" opacity=".32"/><ellipse cx="34" cy="34" rx="10" ry="16" stroke="#0b7a55" stroke-width="2"/><path d="M24 34h20" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="5" ry="9"/><path d="M3 12h18"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Osmotic Fragility Testing</h3>
+              <p class="card-params">RBC membrane analysis</p>
+              <p class="card-count">Includes: <strong>81 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="5" ry="9"/><path d="M3 12h18"/></svg></div>
+            <p class="hover-title">Osmotic Fragility Testing</p>
+            <ul class="hover-list">
+              <li>RBC fragility curve</li>
+              <li>Haemoglobin electrophoresis</li>
+              <li>Reticulocyte count</li>
+              <li>Spherocyte identification</li>
+              <li>Complete haematology</li>
+            </ul>
+            <p class="hover-params">Includes: 81 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg3">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".38"/><path d="M25 43V26l9 6 9-6v17" stroke="#0b7a55" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 38h9" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Immunoglobulin Synthesis Video Testing</h3>
+              <p class="card-params">Full antibody profiling</p>
+              <p class="card-count">Includes: <strong>81 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+            <p class="hover-title">Immunoglobulin Synthesis Video Testing</p>
+            <ul class="hover-list">
+              <li>IgA, IgG, IgM, IgE levels</li>
+              <li>Serum protein electrophoresis</li>
+              <li>B-cell function panel</li>
+              <li>Complement C3 &amp; C4</li>
+              <li>Autoimmune antibody screen</li>
+            </ul>
+            <p class="hover-params">Includes: 81 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Fitness Care ══ -->
+    <div class="pkg-panel" data-panel="fitness">
+      <div class="pkg-grid">
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg1">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".48"/><path d="M19 34h4l4-9 7 18 4-11 4 4 4-2" stroke="#0b7a55" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M4 8h4V4H4zM16 8h4V4h-4zM4 20h4v-4H4zM16 20h4v-4h-4zM8 6h8M8 18h8M6 8v8M18 8v8"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Cardiovascular Fitness Panel</h3>
+              <p class="card-params">Heart health &amp; endurance</p>
+              <p class="card-count">Includes: <strong>58 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M4 8h4V4H4zM16 8h4V4h-4zM4 20h4v-4H4z"/></svg></div>
+            <p class="hover-title">Cardiovascular Fitness Panel</p>
+            <ul class="hover-list">
+              <li>Lipid profile full</li>
+              <li>ECG markers (Troponin)</li>
+              <li>VO₂ max biomarkers</li>
+              <li>BNP &amp; NT-proBNP</li>
+              <li>Homocysteine level</li>
+            </ul>
+            <p class="hover-params">Includes: 58 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg2">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#5dcaa5" opacity=".38"/><rect x="22" y="30" width="24" height="7" rx="3.5" stroke="#0b7a55" stroke-width="2"/><rect x="15" y="23" width="7" height="21" rx="3.5" stroke="#0b7a55" stroke-width="2"/><rect x="46" y="23" width="7" height="21" rx="3.5" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M6 4v16M18 4v16M6 12h12"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Muscle &amp; Strength Assessment</h3>
+              <p class="card-params">Performance &amp; recovery</p>
+              <p class="card-count">Includes: <strong>47 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="4" rx="2"/><rect x="1" y="7" width="4" height="10" rx="2"/><rect x="19" y="7" width="4" height="10" rx="2"/></svg></div>
+            <p class="hover-title">Muscle &amp; Strength Assessment</p>
+            <ul class="hover-list">
+              <li>Creatine kinase (CK-MM)</li>
+              <li>Testosterone &amp; DHEA-S</li>
+              <li>IGF-1 growth factor</li>
+              <li>Myoglobin &amp; LDH</li>
+              <li>BCAA metabolism markers</li>
+            </ul>
+            <p class="hover-params">Includes: 47 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg3">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#a8e6d2" opacity=".42"/><path d="M34 20v4M34 48v4M20 34h4M48 34h4M24 24l3 3M41 41l3 3M24 44l3-3M41 27l3-3" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/><circle cx="34" cy="34" r="7" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Energy &amp; Metabolism Screen</h3>
+              <p class="card-params">Metabolic rate &amp; nutrition</p>
+              <p class="card-count">Includes: <strong>52 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></div>
+            <p class="hover-title">Energy &amp; Metabolism Screen</p>
+            <ul class="hover-list">
+              <li>Thyroid panel (TSH, T3, T4)</li>
+              <li>Fasting glucose &amp; insulin</li>
+              <li>Vitamin B12 &amp; D3</li>
+              <li>Ferritin &amp; iron studies</li>
+              <li>Coenzyme Q10 level</li>
+            </ul>
+            <p class="hover-params">Includes: 52 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg1">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#caf0e0" opacity=".5"/><path d="M27 47c0-7.18 3.13-13 7-13s7 5.82 7 13" stroke="#0b7a55" stroke-width="2"/><circle cx="34" cy="26" r="7" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Hormonal Balance Check</h3>
+              <p class="card-params">Endocrine optimisation</p>
+              <p class="card-count">Includes: <strong>39 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg></div>
+            <p class="hover-title">Hormonal Balance Check</p>
+            <ul class="hover-list">
+              <li>Cortisol (AM/PM)</li>
+              <li>Oestrogen &amp; Progesterone</li>
+              <li>FSH &amp; LH levels</li>
+              <li>SHBG &amp; Free testosterone</li>
+              <li>Prolactin &amp; Melatonin</li>
+            </ul>
+            <p class="hover-params">Includes: 39 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg2">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#b8ebd9" opacity=".45"/><path d="M21 38c0-7.18 5.82-13 13-13s13 5.82 13 13c0 5-5 9-13 9s-13-4-13-9z" stroke="#0b7a55" stroke-width="2"/><path d="M28 36l3 3 8-8" stroke="#0b7a55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Recovery &amp; Inflammation Panel</h3>
+              <p class="card-params">Post-exercise recovery</p>
+              <p class="card-count">Includes: <strong>44 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <p class="hover-title">Recovery &amp; Inflammation Panel</p>
+            <ul class="hover-list">
+              <li>IL-6 &amp; TNF-alpha</li>
+              <li>hsCRP ultra-sensitive</li>
+              <li>Uric acid level</li>
+              <li>Oxidative stress markers</li>
+              <li>Glutathione peroxidase</li>
+            </ul>
+            <p class="hover-params">Includes: 44 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg3">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".4"/><path d="M23 34c5-11 17-11 22 0-5 11-17 11-22 0z" stroke="#0b7a55" stroke-width="2"/><circle cx="34" cy="34" r="5" fill="#0b7a55" opacity=".48"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Hydration &amp; Electrolyte Profile</h3>
+              <p class="card-params">Sport nutrition optimisation</p>
+              <p class="card-count">Includes: <strong>31 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <p class="hover-title">Hydration &amp; Electrolyte Profile</p>
+            <ul class="hover-list">
+              <li>Sodium, Potassium, Chloride</li>
+              <li>Magnesium &amp; Phosphate</li>
+              <li>Serum osmolality</li>
+              <li>Kidney function (eGFR)</li>
+              <li>Aldosterone level</li>
+            </ul>
+            <p class="hover-params">Includes: 31 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Family Care ══ -->
+    <div class="pkg-panel" data-panel="family">
+      <div class="pkg-grid">
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg2">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".42"/><circle cx="26" cy="29" r="6" stroke="#0b7a55" stroke-width="2"/><circle cx="42" cy="29" r="6" stroke="#0b7a55" stroke-width="2"/><path d="M18 48c0-9 16-9 16 0M34 48c0-9 16-9 16 0" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4"/><circle cx="17" cy="17" r="4"/><path d="M21 21v-1a4 4 0 0 0-4-4h-1"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Family Well-being Screening</h3>
+              <p class="card-params">Suitable for all ages</p>
+              <p class="card-count">Includes: <strong>90 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4"/></svg></div>
+            <p class="hover-title">Family Well-being Screening</p>
+            <ul class="hover-list">
+              <li>CBC with differential</li>
+              <li>Liver &amp; kidney function</li>
+              <li>Blood sugar profile</li>
+              <li>Cholesterol full panel</li>
+              <li>Thyroid function</li>
+            </ul>
+            <p class="hover-params">Includes: 90 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg1">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#caf0e0" opacity=".5"/><path d="M21 32c0-7.18 5.82-13 13-13" stroke="#0b7a55" stroke-width="2.5" stroke-linecap="round"/><path d="M34 19c7.18 0 13 5.82 13 13 0 5-3 9-8 11" stroke="#0b7a55" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="3 3"/><circle cx="34" cy="40" r="5" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Child Development Panel</h3>
+              <p class="card-params">Paediatric growth markers</p>
+              <p class="card-count">Includes: <strong>67 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+            <p class="hover-title">Child Development Panel</p>
+            <ul class="hover-list">
+              <li>Growth hormone &amp; IGF-1</li>
+              <li>Vitamin D &amp; Calcium</li>
+              <li>Lead &amp; heavy metal screen</li>
+              <li>Zinc &amp; iron status</li>
+              <li>Developmental thyroid</li>
+            </ul>
+            <p class="hover-params">Includes: 67 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg3">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#a8e6d2" opacity=".4"/><path d="M34 22c-6.627 0-12 5.373-12 12 0 4 2 7 5 9l7 7 7-7c3-2 5-5 5-9 0-6.627-5.373-12-12-12z" stroke="#0b7a55" stroke-width="2"/><circle cx="34" cy="33" r="4" fill="#0b7a55" opacity=".5"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.39 19a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Senior Citizens Health Check</h3>
+              <p class="card-params">Geriatric preventive care</p>
+              <p class="card-count">Includes: <strong>82 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.39 19"/></svg></div>
+            <p class="hover-title">Senior Citizens Health Check</p>
+            <ul class="hover-list">
+              <li>Bone density markers</li>
+              <li>Cognitive health panel</li>
+              <li>PSA / CA-125 screening</li>
+              <li>Diabetes full assessment</li>
+              <li>Cardiac risk advanced</li>
+            </ul>
+            <p class="hover-params">Includes: 82 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg2">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#5dcaa5" opacity=".3"/><path d="M27 45V27l7-7 7 7v18H27z" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/><path d="M31 45v-9h7v9" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M3 22V12l9-9 9 9v10H3z"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Women's Reproductive Health</h3>
+              <p class="card-params">Gynaecological screening</p>
+              <p class="card-count">Includes: <strong>73 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M12 22V12M12 12C10 7 6 6 4 8s-1 8 8 14c9-6 10-12 8-14s-6-1-8 6z"/></svg></div>
+            <p class="hover-title">Women's Reproductive Health</p>
+            <ul class="hover-list">
+              <li>AMH &amp; ovarian reserve</li>
+              <li>PCOS hormone panel</li>
+              <li>Pap smear cytology</li>
+              <li>BRCA risk markers</li>
+              <li>Prenatal screening</li>
+            </ul>
+            <p class="hover-params">Includes: 73 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg1">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#b8ebd9" opacity=".5"/><path d="M25 34c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 9" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/><path d="M34 43v5M30 48h9" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="6"/><path d="M20 4l-6 6M20 4h-4M20 4v4"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Men's Health Vitality Pack</h3>
+              <p class="card-params">Prostate &amp; vitality screening</p>
+              <p class="card-count">Includes: <strong>61 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="6"/><path d="M20 4l-6 6M20 4h-4M20 4v4"/></svg></div>
+            <p class="hover-title">Men's Health Vitality Pack</p>
+            <ul class="hover-list">
+              <li>PSA total &amp; free</li>
+              <li>Testosterone full panel</li>
+              <li>Semen analysis</li>
+              <li>Cardiovascular risk</li>
+              <li>Diabetes &amp; liver screen</li>
+            </ul>
+            <p class="hover-params">Includes: 61 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg3">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".4"/><path d="M23 41c0-6.075 4.925-11 11-11s11 4.925 11 11" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/><path d="M34 30v-9M30 25l4-4 4 4" stroke="#0b7a55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Genetic Carrier Screening</h3>
+              <p class="card-params">Hereditary risk assessment</p>
+              <p class="card-count">Includes: <strong>55 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <p class="hover-title">Genetic Carrier Screening</p>
+            <ul class="hover-list">
+              <li>Thalassaemia carrier test</li>
+              <li>Cystic fibrosis gene panel</li>
+              <li>Sickle cell mutation</li>
+              <li>Fragile X syndrome</li>
+              <li>MTHFR gene variant</li>
+            </ul>
+            <p class="hover-params">Includes: 55 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Corporate Care ══ -->
+    <div class="pkg-panel" data-panel="corporate">
+      <div class="pkg-grid">
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg1">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".5"/><rect x="23" y="19" width="22" height="15" rx="2" stroke="#0b7a55" stroke-width="2"/><path d="M28 34v10M40 34v10M23 44h22" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Executive Health Check</h3>
+              <p class="card-params">Comprehensive leadership wellness</p>
+              <p class="card-count">Includes: <strong>110 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+            <p class="hover-title">Executive Health Check</p>
+            <ul class="hover-list">
+              <li>Full cardiac risk profile</li>
+              <li>Cancer markers (6-panel)</li>
+              <li>Stress hormone cortisol</li>
+              <li>Brain function (MoCA score)</li>
+              <li>Sleep quality biomarkers</li>
+            </ul>
+            <p class="hover-params">Includes: 110 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg2">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#5dcaa5" opacity=".35"/><path d="M27 23h14l2 20H25L27 23z" stroke="#0b7a55" stroke-width="2"/><path d="M29 23c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Employee Annual Health Audit</h3>
+              <p class="card-params">Workforce health compliance</p>
+              <p class="card-count">Includes: <strong>78 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/></svg></div>
+            <p class="hover-title">Employee Annual Health Audit</p>
+            <ul class="hover-list">
+              <li>Pre-employment screening</li>
+              <li>Vision &amp; hearing test</li>
+              <li>Occupational exposure panel</li>
+              <li>Mental health indicators</li>
+              <li>BMI &amp; metabolic risk</li>
+            </ul>
+            <p class="hover-params">Includes: 78 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg3">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#a8e6d2" opacity=".4"/><path d="M23 47V27l11-9 11 9v20H23z" stroke="#0b7a55" stroke-width="2"/><path d="M30 47v-9h9v9" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Occupational Hazard Panel</h3>
+              <p class="card-params">Industrial safety compliance</p>
+              <p class="card-count">Includes: <strong>63 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+            <p class="hover-title">Occupational Hazard Panel</p>
+            <ul class="hover-list">
+              <li>Heavy metal toxicology</li>
+              <li>Benzene &amp; solvent markers</li>
+              <li>Pulmonary function LFT</li>
+              <li>Radiation exposure CBC</li>
+              <li>Noise-induced hearing</li>
+            </ul>
+            <p class="hover-params">Includes: 63 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg1">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#caf0e0" opacity=".5"/><path d="M21 40l7-13 6 8 4-6 7 11H21z" stroke="#0b7a55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Stress &amp; Burnout Biomarkers</h3>
+              <p class="card-params">Psychological health indicators</p>
+              <p class="card-count">Includes: <strong>41 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <p class="hover-title">Stress &amp; Burnout Biomarkers</p>
+            <ul class="hover-list">
+              <li>Salivary cortisol (3-point)</li>
+              <li>DHEA-S resilience marker</li>
+              <li>Adrenal fatigue panel</li>
+              <li>Serotonin &amp; Dopamine</li>
+              <li>Sleep hormone melatonin</li>
+            </ul>
+            <p class="hover-params">Includes: 41 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg2">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#b8ebd9" opacity=".45"/><circle cx="34" cy="28" r="7" stroke="#0b7a55" stroke-width="2"/><path d="M21 48c0-7.18 5.82-13 13-13s13 5.82 13 13" stroke="#0b7a55" stroke-width="2" stroke-linecap="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Corporate Diabetes Prevention</h3>
+              <p class="card-params">Metabolic syndrome screening</p>
+              <p class="card-count">Includes: <strong>52 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg></div>
+            <p class="hover-title">Corporate Diabetes Prevention</p>
+            <ul class="hover-list">
+              <li>HbA1c &amp; fasting glucose</li>
+              <li>Insulin resistance HOMA</li>
+              <li>Full lipid panel</li>
+              <li>Urine microalbumin</li>
+              <li>Adiponectin level</li>
+            </ul>
+            <p class="hover-params">Includes: 52 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg3">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".4"/><path d="M25 42c0-4.97 4.03-9 9-9s9 4.03 9 9" stroke="#0b7a55" stroke-width="2"/><path d="M34 33v-9M30 28l4-4 4 4" stroke="#0b7a55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 22s8-4 8-10V8l-8-3-8 3v4c0 6 8 10 8 10z" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Workplace Immunity Shield</h3>
+              <p class="card-params">Infectious disease prevention</p>
+              <p class="card-count">Includes: <strong>49 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <p class="hover-title">Workplace Immunity Shield</p>
+            <ul class="hover-list">
+              <li>Hepatitis A, B, C serology</li>
+              <li>TB Gold (IGRA) test</li>
+              <li>Influenza immunity titer</li>
+              <li>Varicella IgG antibody</li>
+              <li>COVID neutralising antibody</li>
+            </ul>
+            <p class="hover-params">Includes: 49 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ Multi Care ══ -->
+    <div class="pkg-panel" data-panel="multi">
+      <div class="pkg-grid">
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg1">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".5"/><rect x="21" y="21" width="11" height="11" rx="2" stroke="#0b7a55" stroke-width="2"/><rect x="36" y="21" width="11" height="11" rx="2" stroke="#0b7a55" stroke-width="2"/><rect x="21" y="36" width="11" height="11" rx="2" stroke="#0b7a55" stroke-width="2"/><rect x="36" y="36" width="11" height="11" rx="2" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Full Body Health Passport</h3>
+              <p class="card-params">All-in-one annual screening</p>
+              <p class="card-count">Includes: <strong>130 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+            <p class="hover-title">Full Body Health Passport</p>
+            <ul class="hover-list">
+              <li>All organ systems profiled</li>
+              <li>Cancer tumour markers</li>
+              <li>Immune function analysis</li>
+              <li>Nutritional deficiency screen</li>
+              <li>Hormonal &amp; genetic risk</li>
+            </ul>
+            <p class="hover-params">Includes: 130 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg2">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#5dcaa5" opacity=".35"/><path d="M23 34c5-9 17-9 22 0-5 9-17 9-22 0z" stroke="#0b7a55" stroke-width="2"/><circle cx="34" cy="34" r="5" fill="#0b7a55" opacity=".5"/><path d="M34 22v4M34 44v4M22 34h4M44 34h4" stroke="#0b7a55" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Cancer Early Detection Suite</h3>
+              <p class="card-params">Multi-organ cancer markers</p>
+              <p class="card-count">Includes: <strong>95 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+            <p class="hover-title">Cancer Early Detection Suite</p>
+            <ul class="hover-list">
+              <li>CEA, AFP, CA-125, CA 19-9</li>
+              <li>PSA total &amp; free</li>
+              <li>Liquid biopsy ctDNA</li>
+              <li>Beta-hCG &amp; LDH</li>
+              <li>Colonoscopy FIT marker</li>
+            </ul>
+            <p class="hover-params">Includes: 95 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg3">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#a8e6d2" opacity=".4"/><path d="M34 22c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10S39.523 22 34 22z" stroke="#0b7a55" stroke-width="2"/><path d="M28.757 28.757a8 8 0 0 1 11.314 0M28.757 39.243a8 8 0 0 0 11.314 0" stroke="#0b7a55" stroke-width="1.5"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Heart Health Master Plan</h3>
+              <p class="card-params">Advanced cardiac profiling</p>
+              <p class="card-count">Includes: <strong>88 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+            <p class="hover-title">Heart Health Master Plan</p>
+            <ul class="hover-list">
+              <li>hs-Troponin I &amp; T</li>
+              <li>Lipoprotein(a) &amp; ApoB</li>
+              <li>Homocysteine &amp; folate</li>
+              <li>Coronary calcium score</li>
+              <li>Echocardiography markers</li>
+            </ul>
+            <p class="hover-params">Includes: 88 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg2">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#9fe1cb" opacity=".4"/><path d="M27 44c0-7.18 3.13-13 7-13s7 5.82 7 13" stroke="#0b7a55" stroke-width="2"/><path d="M34 31c-6.075 0-11-4.925-11-11V14l11-4 11 4v6c0 6.075-4.925 11-11 11z" stroke="#0b7a55" stroke-width="2"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Longevity &amp; Anti-Ageing Panel</h3>
+              <p class="card-params">Biological age assessment</p>
+              <p class="card-count">Includes: <strong>102 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/></svg></div>
+            <p class="hover-title">Longevity &amp; Anti-Ageing Panel</p>
+            <ul class="hover-list">
+              <li>Telomere length assay</li>
+              <li>NAD+ &amp; Sirtuins panel</li>
+              <li>Epigenetic clock markers</li>
+              <li>Senescence biomarkers</li>
+              <li>Mitochondrial function</li>
+            </ul>
+            <p class="hover-params">Includes: 102 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg1">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#caf0e0" opacity=".5"/><path d="M34 22v24M22 34h24" stroke="#0b7a55" stroke-width="3" stroke-linecap="round"/><circle cx="34" cy="34" r="15" stroke="#0b7a55" stroke-width="1.5" stroke-dasharray="4 3"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Immune System Deep Dive</h3>
+              <p class="card-params">Advanced immunity mapping</p>
+              <p class="card-count">Includes: <strong>76 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+            <p class="hover-title">Immune System Deep Dive</p>
+            <ul class="hover-list">
+              <li>T &amp; B lymphocyte subsets</li>
+              <li>NK cell activity assay</li>
+              <li>Cytokine multiplex panel</li>
+              <li>Complement pathway C3–C9</li>
+              <li>Autoantibody ANA screen</li>
+            </ul>
+            <p class="hover-params">Includes: 76 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="pkg-card">
+          <div class="card-front">
+            <div class="card-img card-img-bg3">
+              <svg width="68" height="68" viewBox="0 0 68 68" fill="none"><circle cx="34" cy="34" r="24" fill="#a8e6d2" opacity=".4"/><path d="M25 42c0-4.97 4.03-9 9-9s9 4.03 9 9" stroke="#0b7a55" stroke-width="2"/><path d="M29 29l5-9 5 9M31 29h7" stroke="#0b7a55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="card-badge"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div>
+            </div>
+            <div class="card-body">
+              <h3>Genomic Wellness Blueprint</h3>
+              <p class="card-params">Personalised genomic insights</p>
+              <p class="card-count">Includes: <strong>85 test parameters</strong></p>
+            </div>
+          </div>
+          <div class="card-hover">
+            <div class="hover-icon"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61"/></svg></div>
+            <p class="hover-title">Genomic Wellness Blueprint</p>
+            <ul class="hover-list">
+              <li>SNP analysis (150+ variants)</li>
+              <li>Pharmacogenomics panel</li>
+              <li>Nutrigenomics profile</li>
+              <li>Disease predisposition map</li>
+              <li>Ancestry health markers</li>
+            </ul>
+            <p class="hover-params">Includes: 85 test parameters</p>
+            <button class="hover-btn">Book Now</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /pkgPanels -->
+</section>
+
+<script>
+  /* ── Tab switching ── */
+  document.getElementById('pkgTabs').addEventListener('click', function (e) {
+    const btn = e.target.closest('.pkg-tab');
+    if (!btn) return;
+    document.querySelectorAll('.pkg-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pkg-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const panel = document.querySelector('[data-panel="' + btn.dataset.tab + '"]');
+    if (panel) panel.classList.add('active');
+    // close any open cards when switching tabs
+    document.querySelectorAll('.pkg-card.clicked').forEach(c => c.classList.remove('clicked'));
+    // scroll back to first card, just below the sticky tab bar
+    const tabsHeight = document.getElementById('pkgTabs').offsetHeight;
+    const grid = document.getElementById('pkgPanels');
+    const top = grid.getBoundingClientRect().top + window.scrollY - tabsHeight - 16;
+    window.scrollTo({ top, behavior: 'smooth' });
+  });
+
+  /* ── Card click toggle ── */
+  document.getElementById('pkgPanels').addEventListener('click', function (e) {
+    const card = e.target.closest('.pkg-card');
+    // clicking Book Now shouldn't close the card
+    if (e.target.closest('.hover-btn')) return;
+    if (!card) {
+      // clicked outside a card — close all
+      document.querySelectorAll('.pkg-card.clicked').forEach(c => c.classList.remove('clicked'));
+      return;
+    }
+    const isOpen = card.classList.contains('clicked');
+    // close all first
+    document.querySelectorAll('.pkg-card.clicked').forEach(c => c.classList.remove('clicked'));
+    // toggle this one
+    if (!isOpen) card.classList.add('clicked');
+  });
+
+  /* clicking the section background (outside grid) closes cards */
+  document.querySelector('.pkg-section').addEventListener('click', function (e) {
+    if (!e.target.closest('.pkg-card') && !e.target.closest('.pkg-tabs')) {
+      document.querySelectorAll('.pkg-card.clicked').forEach(c => c.classList.remove('clicked'));
+    }
+  });
+</script>
+
+</body>
+</html>

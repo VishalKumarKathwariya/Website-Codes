@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Patholab - Achievement</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Open Sans', sans-serif; background: #f0f8f8; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+
+    .ach-wrap {
+      background: #fff;
+      padding: 60px 40px;
+      text-align: center;
+      width: 100%;
+    }
+    .ach-tag {
+      font-size: 12px;
+      color: #0bbfb0;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+    .ach-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 800;
+      color: #1a2e35;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+    .ach-sub {
+      font-size: 13px;
+      color: #6b8896;
+      max-width: 520px;
+      margin: 0 auto 50px;
+      line-height: 1.7;
+    }
+    .ach-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      max-width: 800px;
+      margin: 0 auto 40px;
+      border: 1px solid #e8f0f0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .ach-stat {
+      padding: 32px 20px;
+      position: relative;
+      background: #fff;
+    }
+    .ach-stat:not(:last-child) {
+      border-right: 1px solid #e8f0f0;
+    }
+    .ach-num {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 800;
+      color: #0bbfb0;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .ach-label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a2e35;
+      margin-bottom: 4px;
+    }
+    .ach-desc {
+      font-size: 11px;
+      color: #6b8896;
+      line-height: 1.5;
+    }
+    .ach-cta {
+      font-size: 13px;
+      color: #6b8896;
+    }
+    .ach-cta a {
+      color: #0bbfb0;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .ach-cta a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .ach-grid { grid-template-columns: repeat(2, 1fr); }
+      .ach-stat:nth-child(2) { border-right: none; }
+      .ach-stat:nth-child(1),
+      .ach-stat:nth-child(2) { border-bottom: 1px solid #e8f0f0; }
+      .ach-wrap { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ach-wrap">
+  <div class="ach-tag">Our Achievements</div>
+  <h2 class="ach-title">All Our Achievement Is The<br>By Product Of Client Satisfaction</h2>
+  <p class="ach-sub">We are committed to serving our patients and community with the highest level of care, expertise, and transparency across all diagnostic services.</p>
+
+  <div class="ach-grid">
+    <div class="ach-stat">
+      <div class="ach-num" id="n1">0</div>
+      <div class="ach-label">Tests Conducted</div>
+      <div class="ach-desc">and growing every day</div>
+    </div>
+    <div class="ach-stat">
+      <div class="ach-num" id="n2">0</div>
+      <div class="ach-label">Expert Pathologists</div>
+      <div class="ach-desc">highly qualified team</div>
+    </div>
+    <div class="ach-stat">
+      <div class="ach-num" id="n3">0</div>
+      <div class="ach-label">Years of Experience</div>
+      <div class="ach-desc">trusted since founding</div>
+    </div>
+    <div class="ach-stat">
+      <div class="ach-num" id="n4">0</div>
+      <div class="ach-label">Premium Brands</div>
+      <div class="ach-desc">only certified reagents</div>
+    </div>
+  </div>
+
+  <p class="ach-cta">Want to talk to us? Call &nbsp;<a href="tel:+18001234567">+1 800 123 456 11</a></p>
+</div>
+
+<script>
+  const stats = [
+    { id: 'n1', target: 10,  suffix: 'M+' },
+    { id: 'n2', target: 300, suffix: '+'  },
+    { id: 'n3', target: 20,  suffix: '+'  },
+    { id: 'n4', target: 100, suffix: '%'  },
+  ];
+
+  function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+  function animateStat(el, target, suffix, duration) {
+    const start = performance.now();
+    function step(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      el.textContent = Math.round(easeOutQuart(progress) * target) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        stats.forEach(s => animateStat(document.getElementById(s.id), s.target, s.suffix, 2000));
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(document.querySelector('.ach-wrap'));
+</script>
+
+</body>
+</html>

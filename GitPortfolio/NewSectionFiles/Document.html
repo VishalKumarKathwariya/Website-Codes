@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Component: My Documents</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ═══════════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════════ */
+    :root {
+      --bg-1:         #0e0e10;
+      --bg-2:         #141416;
+      --accent:       #7c6dfa;
+      --accent-tint:  #1e1a3a;
+      --text-heading: #f0f0f0;
+      --text-body:    #9090a0;
+      --text-muted:   #55555f;
+      --surface-ink:  #08080a;
+      --border:       #2a2a30;
+      --border-dark:  rgba(255,255,255,0.06);
+      --radius-sm:    6px;
+      --radius-md:    16px;
+      --ease:         cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--bg-2);
+      color: var(--text-body);
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       CERTIFICATE PREVIEW (hover tooltip image)
+    ═══════════════════════════════════════════ */
+    .cert-preview {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(124,109,250,0.2);
+      width: 270px;
+      background: var(--surface-ink);
+    }
+    .cert-preview.cert-visible { opacity: 1; }
+    .cert-preview img { width: 100%; display: block; opacity: 0.72; }
+
+    /* ═══════════════════════════════════════════
+       CERT SECTION
+    ═══════════════════════════════════════════ */
+    .cert-section {
+      background: var(--bg-2);
+      padding: clamp(4rem, 8vw, 7rem) clamp(1.25rem, 5vw, 4rem);
+      border-bottom: 1px solid var(--border-dark);
+      font-family: "DM Sans", sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle radial glows */
+    .cert-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(124,109,250,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(124,109,250,0.03) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── LAYOUT GRID ── */
+    .cert-layout {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem 0;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── LEFT COL: headings ── */
+    .cert-left { position: static; }
+
+    .cert-section-label {
+      font-family: "DM Mono", monospace;
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .cert-section-label::after {
+      content: "";
+      height: 1px;
+      width: 28px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+    .cert-section-label.cert-in { opacity: 1; transform: translateY(0); }
+
+    .cert-section-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text-heading);
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease 0.1s, transform 0.55s ease 0.1s;
+    }
+    .cert-section-title span { color: var(--accent); }
+    .cert-section-title.cert-in { opacity: 1; transform: translateY(0); }
+
+    .cert-section-sub {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--text-body);
+      line-height: 1.8;
+      font-weight: 300;
+      max-width: 280px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.55s ease 0.2s, transform 0.55s ease 0.2s;
+    }
+    .cert-section-sub.cert-in { opacity: 1; transform: translateY(0); }
+
+    /* ── RIGHT COL: list ── */
+    .cert-right   { position: relative; }
+    .cert-list    { display: flex; flex-direction: column; }
+
+    /* ── CERT ITEM ── */
+    .cert-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 0;
+      border-bottom: 1px solid rgb(98,97,100);
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+      /* entrance animation */
+      opacity: 0;
+      transform: translateY(-22px);
+      transition: opacity 0.42s ease, transform 0.42s ease;
+    }
+    .cert-item:first-child { border-top: 1px solid var(--border-dark); }
+    .cert-item.cert-landed { opacity: 1; transform: translateY(0); }
+
+    /* left accent bar on hover */
+    .cert-item::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0;
+      width: 2px; height: 0;
+      background: var(--accent);
+      transition: height 0.35s var(--ease);
+      border-radius: 0 2px 2px 0;
+    }
+    .cert-item:hover::before { height: 100%; }
+
+    /* number */
+    .cert-num {
+      font-family: "DM Mono", monospace;
+      font-size: 0.62rem;
+      color: var(--text-heading);
+      min-width: 22px;
+      padding: 4px;
+      flex-shrink: 0;
+      transition: color 0.3s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .cert-item:hover .cert-num { color: var(--accent); }
+
+    /* name */
+    .cert-name {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(0.88rem, 1.4vw, 1rem);
+      font-weight: 600;
+      color: var(--text-heading);
+      line-height: 1.4;
+      flex: 1;
+      background-image: linear-gradient(var(--accent), var(--accent));
+      background-size: 0% 1px;
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      transition: color 0.3s, background-size 0.38s var(--ease);
+    }
+    .cert-item:hover .cert-name { color: var(--accent); background-size: 100% 1px; }
+
+    /* icon logo */
+    .cert-logo {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border-dark);
+      flex-shrink: 0;
+      padding: 3px;
+      filter: grayscale(0.4) brightness(0.9);
+      transition: filter 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    }
+    .cert-item:hover .cert-logo {
+      filter: grayscale(0) brightness(1);
+      border-color: var(--accent);
+      transform: scale(1.12);
+    }
+
+    /* arrow */
+    .cert-arrow {
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.3s, transform 0.3s;
+      color: var(--accent);
+      font-size: 1rem;
+      flex-shrink: 0;
+      font-family: "DM Mono", monospace;
+    }
+    .cert-item:hover .cert-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 560px) {
+      .cert-preview { display: none; }
+      .cert-arrow   { display: none; }
+      .cert-logo    { width: 24px; height: 24px; }
+      .cert-section { padding: 3rem 1.1rem; }
+    }
+
+    @media (min-width: 768px) {
+      .cert-layout {
+        grid-template-columns: 240px 1fr;
+        gap: 0 4rem;
+      }
+      .cert-left {
+        position: sticky;
+        top: 0;
+        align-self: start;
+      }
+      .cert-logo { width: 30px; height: 30px; }
+    }
+
+    @media (min-width: 1024px) {
+      .cert-layout {
+        grid-template-columns: 280px 1fr;
+        gap: 0 5rem;
+        max-width: 1000px;
+      }
+      .cert-preview { width: 300px; }
+      .cert-logo    { width: 32px; height: 32px; }
+    }
+
+    @media (min-width: 1280px) {
+      .cert-layout {
+        max-width: 1100px;
+        grid-template-columns: 300px 1fr;
+        gap: 0 6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       HOVER PREVIEW CARD
+  ═══════════════════════════════════════════ -->
+  <div class="cert-preview" id="certPreview">
+    <img src="" id="previewImg" alt="Document preview" />
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION: MY DOCUMENTS
+  ═══════════════════════════════════════════ -->
+  <section class="cert-section" id="certificates">
+    <div class="cert-layout">
+
+      <!-- ── LEFT: Headings ── -->
+      <div class="cert-left">
+        <div class="cert-section-label" id="certLbl">Credentials</div>
+        <h2 class="cert-section-title" id="certTtl">
+          My<br /><span>Documents</span>
+        </h2>
+        <p class="cert-section-sub" id="certSub">
+          Professional certifications and verified credentials earned across disciplines.
+        </p>
+      </div>
+
+      <!-- ── RIGHT: Document List ── -->
+      <div class="cert-right">
+        <div class="cert-list">
+
+          <!-- 01 -->
+          <div class="cert-item" data-img="Images/Aadhar Card.jpg">
+            <span class="cert-num">01</span>
+            <span class="cert-name">Aadhar Card</span>
+            <img class="cert-logo" alt="Aadhar"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M17.81 4.47c-.08 0-.16-.02-.23-.06C15.66 3.42 14 3 12.01 3c-1.98 0-3.86.47-5.57 1.41-.24.13-.54.04-.68-.2-.13-.24-.04-.55.2-.68C7.82 2.52 9.86 2 12.01 2c2.13 0 3.99.47 6.03 1.52.27.14.37.43.23.7-.1.18-.28.25-.46.25zm.48 3.8c-.11 0-.21-.03-.3-.1-1.06-.65-2.57-1.17-4-.17-.24.05-.47-.11-.52-.35-.04-.24.11-.47.35-.52 1.6-.34 3.26.2 4.46.95.23.14.3.44.16.67-.09.14-.24.22-.4.22l.25-.7zm.22 3.86c-.09 0-.18-.02-.26-.07-.97-.58-2.11-.88-3.26-.88-1.13 0-2.28.29-3.27.87-.23.13-.54.05-.67-.19-.13-.24-.05-.54.19-.67 1.1-.63 2.38-.97 3.75-.97 1.37 0 2.65.34 3.75.97.23.13.31.44.18.67-.09.16-.25.24-.41.24zM12 22c-1.7 0-3.26-.65-4.44-1.83-.18-.18-.18-.47 0-.65.18-.18.47-.18.65 0C9.27 20.53 10.6 21 12 21c1.42 0 2.77-.49 3.83-1.5.18-.17.47-.17.65.01.17.18.17.47-.01.65C15.28 21.35 13.7 22 12 22zm0-3c-1.14 0-2.19-.43-2.99-1.21-.18-.18-.19-.47-.01-.65.18-.18.47-.19.65-.01C10.27 17.66 11.11 18 12 18c.91 0 1.77-.36 2.41-1.01.18-.18.47-.17.65.01.17.18.17.47-.01.65C14.23 18.56 13.16 19 12 19zm0-3c-.57 0-1.1-.2-1.52-.58-.19-.17-.2-.46-.03-.65.17-.19.46-.2.65-.03.24.21.55.26.9.26.37 0 .69-.09.93-.3.19-.17.48-.15.65.04.17.19.15.48-.04.65-.44.4-1 .61-1.54.61z'/%3E%3C/svg%3E"
+            />
+            <span class="cert-arrow">→</span>
+          </div>
+
+          <!-- 02 -->
+          <div class="cert-item" data-img="Images/PanCard.jpg">
+            <span class="cert-num">02</span>
+            <span class="cert-name">Pan Card</span>
+            <img class="cert-logo" alt="PAN"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z'/%3E%3C/svg%3E"
+            />
+            <span class="cert-arrow">→</span>
+          </div>
+
+          <!-- 03 -->
+          <div class="cert-item" data-img="Images/Caste Certificate.jpg">
+            <span class="cert-num">03</span>
+            <span class="cert-name">Caste Certificate</span>
+            <img class="cert-logo" alt="Certificate"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-5 8v-2h8v2H8zm0-4v-2h8v2H8zm0-4V7h4v2H8z'/%3E%3C/svg%3E"
+            />
+            <span class="cert-arrow">→</span>
+          </div>
+
+          <!-- 04 -->
+          <div class="cert-item" data-img="Images/Address Certificate.jpg">
+            <span class="cert-num">04</span>
+            <span class="cert-name">Address Proof</span>
+            <img class="cert-logo" alt="Address"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E"
+            />
+            <span class="cert-arrow">→</span>
+          </div>
+
+          <!-- 05 -->
+          <div class="cert-item" data-img="Images/10th Marksheet.jpg">
+            <span class="cert-num">05</span>
+            <span class="cert-name">High School Marksheet</span>
+            <img class="cert-logo" alt="High School"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z'/%3E%3C/svg%3E"
+            />
+            <span class="cert-arrow">→</span>
+          </div>
+
+          <!-- 06 -->
+          <div class="cert-item" data-img="Images/12th Marksheet.jpg">
+            <span class="cert-num">06</span>
+            <span class="cert-name">Intermediate Marksheet</span>
+            <img class="cert-logo" alt="Intermediate"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M17.5 4.5c-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5-1.45 0-2.99.22-4.28.79C1.49 5.62 1 6.33 1 7.14v11.28c0 1.3 1.22 2.26 2.48 1.94.98-.25 2.02-.36 3.02-.36 1.56 0 3.22.26 4.56.92.6.3 1.28.3 1.87 0 1.34-.67 3-.92 4.56-.92 1 0 2.04.11 3.02.36C21.78 20.68 23 19.72 23 18.42V7.14c0-.81-.49-1.52-1.22-1.85-1.28-.57-2.82-.79-4.28-.79zM21 18.42c0 .31-.29.53-.59.45-.93-.24-1.89-.37-2.91-.37-1.56 0-3.55.6-4.5 1.5V8c.95-.9 2.94-1.5 4.5-1.5 1.02 0 1.96.14 2.9.38.3.08.6-.14.6-.45V18.42z'/%3E%3C/svg%3E"
+            />
+            <span class="cert-arrow">→</span>
+          </div>
+
+          <!-- 07 -->
+          <div class="cert-item" data-img="Images/Graduation.jpg">
+            <span class="cert-num">07</span>
+            <span class="cert-name">Graduation Marksheet</span>
+            <img class="cert-logo" alt="Graduation"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm-7 9.41V17l7 4 7-4v-4.59L12 17l-7-4.59z'/%3E%3C/svg%3E"
+            />
+            <span class="cert-arrow">→</span>
+          </div>
+
+          <!-- 08 -->
+          <div class="cert-item" data-img="">
+            <span class="cert-num">08</span>
+            <span class="cert-name">Full Stack Development Associate Certificate</span>
+            <img class="cert-logo" alt="Full Stack Dev"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237c6dfa'%3E%3Cpath d='M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z'/%3E%3C/svg%3E"
+            />
+            <span class="cert-arrow">→</span>
+          </div>
+
+        </div>
+      </div><!-- /.cert-right -->
+    </div><!-- /.cert-layout -->
+  </section>
+
+  <script>
+    /* ═══════════════════════════════════════════
+       HEADING ENTRANCE ANIMATION
+    ═══════════════════════════════════════════ */
+    const headingIds = ["certLbl", "certTtl", "certSub"];
+
+    const headObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        headingIds.forEach((id, i) => {
+          const el = document.getElementById(id);
+          if (el) setTimeout(() => el.classList.add("cert-in"), i * 110);
+        });
+        headingIds.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) headObs.unobserve(el);
+        });
+      });
+    }, { threshold: 0.2 });
+
+    const firstHeading = document.getElementById(headingIds[0]);
+    if (firstHeading) headObs.observe(firstHeading);
+
+    /* ═══════════════════════════════════════════
+       CERT ITEMS STAGGERED ENTRANCE
+    ═══════════════════════════════════════════ */
+    const items = document.querySelectorAll(".cert-item");
+
+    const certObs = new IntersectionObserver(entries => {
+      const hitting = [...entries]
+        .filter(e => e.isIntersecting && !e.target.classList.contains("cert-landed"))
+        .sort((a, b) => [...items].indexOf(a.target) - [...items].indexOf(b.target));
+
+      hitting.forEach((e, i) => {
+        setTimeout(() => {
+          e.target.classList.add("cert-landed");
+          certObs.unobserve(e.target);
+        }, i * 110);
+      });
+    }, { threshold: 0.12 });
+
+    items.forEach(item => certObs.observe(item));
+
+    /* ═══════════════════════════════════════════
+       HOVER PREVIEW IMAGE (follows cursor)
+    ═══════════════════════════════════════════ */
+    const preview    = document.getElementById("certPreview");
+    const previewImg = document.getElementById("previewImg");
+
+    if (preview && previewImg) {
+
+      /* Follow mouse */
+      document.addEventListener("mousemove", e => {
+        const pw  = preview.offsetWidth  || 270;
+        const ph  = preview.offsetHeight || 180;
+        const gap = 22;
+
+        let left = e.clientX + gap;
+        let top  = e.clientY - ph / 2;
+
+        /* keep inside viewport */
+        if (left + pw > window.innerWidth  - 12) left = e.clientX - pw - gap;
+        if (top < 12)                             top  = 12;
+        if (top + ph > window.innerHeight  - 12) top  = window.innerHeight - ph - 12;
+
+        preview.style.left = left + "px";
+        preview.style.top  = top  + "px";
+      });
+
+      /* Show / hide on each item */
+      items.forEach(item => {
+        item.addEventListener("mouseenter", () => {
+          if (!item.dataset.img) return; /* skip if no image path */
+          previewImg.src = item.dataset.img;
+          preview.classList.add("cert-visible");
+        });
+        item.addEventListener("mouseleave", () => {
+          preview.classList.remove("cert-visible");
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>

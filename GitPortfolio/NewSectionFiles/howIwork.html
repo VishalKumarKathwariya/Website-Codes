@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Component: How I Work</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.8/dist/lottie-player.js"></script>
+
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ═══════════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════════ */
+    :root {
+      --bg-1:         #0e0e10;
+      --accent:       #7c6dfa;
+      --accent-tint:  #1e1a3a;
+      --text-heading: #f0f0f0;
+      --text-body:    #9090a0;
+      --border-dark:  rgba(255,255,255,0.06);
+      --radius-sm:    6px;
+      --ease:         cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--bg-1);
+      color: var(--text-body);
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       SHARED HEADING PATTERN
+    ═══════════════════════════════════════════ */
+    .sec-label {
+      font-family: "DM Mono", monospace;
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .sec-label::after {
+      content: "";
+      height: 1px;
+      width: 28px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+    .sec-label.sec-in { opacity: 1; transform: translateY(0); }
+
+    .sec-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text-heading);
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease 0.1s, transform 0.55s ease 0.1s;
+    }
+    .sec-title span { color: var(--accent); }
+    .sec-title.sec-in { opacity: 1; transform: translateY(0); }
+
+    .sec-sub {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--text-body);
+      line-height: 1.8;
+      font-weight: 300;
+      max-width: 380px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.55s ease 0.2s, transform 0.55s ease 0.2s;
+    }
+    .sec-sub.sec-in { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════════
+       HOW I WORK SECTION
+    ═══════════════════════════════════════════ */
+    .how-i-work-section {
+      padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 4vw, 2.5rem);
+      background: var(--bg-1);
+      overflow: hidden;
+    }
+
+    .hiw-section-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: clamp(2rem, 5vw, 4rem);
+    }
+
+    /* ═══════════════════════════════════════════
+       CARDS GRID — THREE BREAKPOINTS
+       ┌─────────────────────────────────────────┐
+       │  Mobile  (<640px)  → 1 col · 4 rows     │
+       │  Tablet  (640-1023)→ 2 col · 2 rows     │
+       │  Desktop (≥1024px) → 4 col · 1 row      │
+       └─────────────────────────────────────────┘
+    ═══════════════════════════════════════════ */
+    .how-cards-container {
+      display: grid;
+      grid-template-columns: 1fr;              /* mobile: 1 col */
+      gap: 1rem;
+    }
+
+    /* Tablet: 2 columns × 2 rows */
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .how-cards-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+      }
+    }
+
+    /* Desktop: 4 columns × 1 row */
+    @media (min-width: 1024px) {
+      .how-cards-container {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       CARD
+    ═══════════════════════════════════════════ */
+    .how-card {
+      position: relative;
+      background-color: var(--accent-tint);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      cursor: pointer;
+      will-change: transform;
+
+      /* entrance state */
+      opacity: 0;
+      transform: translateY(40px);
+      transition:
+        opacity    0.6s ease,
+        transform  0.6s ease,
+        box-shadow 0.3s ease;
+    }
+
+    /* Card entrance done */
+    .how-card.card-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Card Heights per breakpoint ── */
+    /* Mobile */
+    .how-card { height: 240px; }
+
+    /* Tablet */
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .how-card { height: 300px; }
+    }
+
+    /* Desktop */
+    @media (min-width: 1024px) {
+      .how-card { height: 360px; }
+    }
+
+    /* ── Hover lift (only after card-in, avoids transform conflict) ── */
+    .how-card.card-in:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.4);
+    }
+
+    /* ── Bottom gradient overlay ── */
+    .how-card::after {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 65%;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.88) 0%,
+        rgba(0,0,0,0)    100%
+      );
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ── Accent bottom bar on hover ── */
+    .how-card::before {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--accent);
+      z-index: 3;
+      border-radius: 0 2px 2px 0;
+      transition: width 0.4s var(--ease);
+    }
+    .how-card.card-in:hover::before { width: 100%; }
+
+    /* ── Step Badge (top-left circle) ── */
+    .step-badge {
+      position: absolute;
+      top: 16px; left: 16px;
+      z-index: 10;
+      width: 32px; height: 32px;
+      background: rgba(124,109,250,0.22);
+      border: 1px solid rgba(124,109,250,0.45);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "DM Mono", monospace;
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--accent);
+      -webkit-backdrop-filter: blur(6px);
+       backdrop-filter: blur(6px);
+    }
+
+    /* ── Card Title ── */
+    .how-card h2 {
+      position: absolute;
+      bottom: 20px; left: 20px;
+      z-index: 10;
+      font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: 0.3px;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .how-card h2 span {
+      display: block;
+      font-size: clamp(0.62rem, 1.2vw, 0.8rem);
+      font-weight: 500;
+      color: #a8b2d1;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 3px;
+      font-family: "DM Mono", monospace;
+    }
+
+    /* ── Lottie fills the entire card ── */
+    .lottie-bg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      transform: scale(1.12);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     SECTION: HOW I WORK
+═══════════════════════════════════════════ -->
+<section class="how-i-work-section" id="work">
+
+  <!-- ── Section Header ── -->
+  <div class="hiw-section-header">
+    <div class="sec-label" id="hiwLbl">// Process</div>
+    <h2  class="sec-title"  id="hiwTtl">How I <span>Work</span></h2>
+    <p   class="sec-sub"    id="hiwSub">A streamlined, four-step process designed to turn complex problems into elegant, user-centric solutions.</p>
+  </div>
+
+  <!-- ── Cards Grid ── -->
+  <div class="how-cards-container" id="hiwGrid">
+
+    <!-- Step 1: Research -->
+    <div class="how-card" data-step="1">
+      <lottie-player
+        src="lottie-files/Woman discovering business statistics.json"
+        background="transparent"
+        speed="1"
+        loop autoplay
+        class="lottie-bg">
+      </lottie-player>
+      <div class="step-badge">01</div>
+      <h2><span>Step 1</span>Research</h2>
+    </div>
+
+    <!-- Step 2: Structure -->
+    <div class="how-card" data-step="2">
+      <lottie-player
+        src="lottie-files/Data center.json"
+        background="transparent"
+        speed="1"
+        loop autoplay
+        class="lottie-bg">
+      </lottie-player>
+      <div class="step-badge">02</div>
+      <h2><span>Step 2</span>Structure</h2>
+    </div>
+
+    <!-- Step 3: Design -->
+    <div class="how-card" data-step="3">
+      <lottie-player
+        src="lottie-files/login screen.json"
+        background="transparent"
+        speed="1"
+        loop autoplay
+        class="lottie-bg">
+      </lottie-player>
+      <div class="step-badge">03</div>
+      <h2><span>Step 3</span>Design</h2>
+    </div>
+
+    <!-- Step 4: Build -->
+    <div class="how-card" data-step="4">
+      <lottie-player
+        src="lottie-files/Programming Computer.json"
+        background="transparent"
+        speed="1"
+        loop autoplay
+        class="lottie-bg">
+      </lottie-player>
+      <div class="step-badge">04</div>
+      <h2><span>Step 4</span>Build</h2>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  /* ═══════════════════════════════════════════
+     HEADING ENTRANCE
+  ═══════════════════════════════════════════ */
+  const headingIds = ["hiwLbl", "hiwTtl", "hiwSub"];
+
+  const headObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+
+      headingIds.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el) setTimeout(() => el.classList.add("sec-in"), i * 110);
+      });
+
+      /* Unobserve all after first trigger */
+      headingIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) headObs.unobserve(el);
+      });
+    });
+  }, { threshold: 0.2 });
+
+  const firstHeading = document.getElementById(headingIds[0]);
+  if (firstHeading) headObs.observe(firstHeading);
+
+  /* ═══════════════════════════════════════════
+     CARD ENTRANCE — staggered fade-up
+  ═══════════════════════════════════════════ */
+  const cards = document.querySelectorAll(".how-card");
+
+  const cardObs = new IntersectionObserver(entries => {
+    const hitting = [...entries]
+      .filter(e => e.isIntersecting && !e.target.classList.contains("card-in"))
+      .sort((a, b) => +a.target.dataset.step - +b.target.dataset.step);
+
+    hitting.forEach((entry, i) => {
+      setTimeout(() => {
+        entry.target.classList.add("card-in");
+        cardObs.unobserve(entry.target);
+      }, i * 120);
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -5% 0px" });
+
+  cards.forEach(card => cardObs.observe(card));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Case Studies</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="study.css" />
+  </head>
+  <body>
+    <section class="case-section">
+      <div class="section-header">
+        <p class="section-label">Our Work</p>
+        <h2 class="section-title">Case Studies by Patholab</h2>
+        <p class="section-desc">
+          Real breakthroughs from our laboratory — explore how Patholab's
+          diagnostic expertise has transformed patient outcomes across
+          specialties.
+        </p>
+      </div>
+
+      <div class="carousel-outer">
+        <button class="arrow arrow-prev" aria-label="Previous">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+
+        <div class="carousel-track-wrap">
+          <div class="carousel-track" id="track"></div>
+        </div>
+
+        <button class="arrow arrow-next" aria-label="Next">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="dots" id="dots"></div>
+    </section>
+
+    <script src="study.js"></script>
+  </body>
+</html>

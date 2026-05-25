@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ – Patholab</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --teal:       #00c8a0;
+  --teal-dark:  #00957a;
+  --teal-light: #e8faf6;
+  --text-dark:  #1a2e44;
+  --text-mid:   #4a5568;
+  --text-light: #8a9bb0;
+  --white:      #ffffff;
+  --border:     #e4eeeb;
+}
+
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--white);
+  color: var(--text-dark);
+}
+
+/* ══════════════════════════════
+   SECTION
+══════════════════════════════ */
+.faq-section {
+  background: var(--white);
+  padding: 72px 24px 80px;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+/* ══════════════════════════════
+   OUTER LAYOUT — left title | right grid
+══════════════════════════════ */
+.faq-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .faq-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* ══════════════════════════════
+   LEFT — heading block
+══════════════════════════════ */
+.faq-heading {
+  padding-top: 4px;
+}
+
+.faq-eyebrow {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--teal);
+  margin-bottom: 14px;
+  font-style: italic;
+}
+
+.faq-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(24px, 3.2vw, 32px);
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.25;
+  margin-bottom: 20px;
+}
+
+.faq-desc {
+  font-size: 13.5px;
+  color: var(--text-light);
+  line-height: 1.8;
+}
+
+/* ══════════════════════════════
+   RIGHT — two INDEPENDENT columns
+   Key fix: flexbox row so each column
+   is its own block — no shared row heights
+══════════════════════════════ */
+.faq-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  align-items: flex-start; /* each column only as tall as its own content */
+}
+
+/* Each column is an independent vertical stack */
+.faq-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@media (max-width: 580px) {
+  .faq-grid {
+    flex-direction: column; /* stack columns on mobile */
+  }
+}
+
+/* ══════════════════════════════
+   ACCORDION ITEM
+══════════════════════════════ */
+.faq-item {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--white);
+  overflow: hidden;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.faq-item.open {
+  border-color: #c6ece3;
+  box-shadow: 0 4px 18px rgba(0, 200, 160, 0.09);
+}
+
+/* ── Question button ── */
+.faq-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.faq-btn-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.45;
+  flex: 1;
+}
+
+/* ── Teal square toggle ── */
+.faq-toggle {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s;
+}
+
+.faq-toggle svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--white);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  transition: transform 0.3s ease;
+  overflow: visible;
+}
+
+/* Minus bar — hidden by default, shown when open */
+.faq-toggle .minus-bar {
+  transition: opacity 0.2s;
+}
+
+/* Plus vertical bar rotates to become minus line */
+.faq-item.open .faq-toggle svg {
+  transform: rotate(45deg);
+}
+
+/* ── Answer panel ── */
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s ease;
+}
+
+.faq-item.open .faq-answer {
+  grid-template-rows: 1fr;
+}
+
+.faq-answer-inner {
+  overflow: hidden;
+}
+
+.faq-answer-text {
+  padding: 4px 16px 16px 16px;
+  font-size: 12.5px;
+  color: var(--text-light);
+  line-height: 1.8;
+}
+</style>
+</head>
+<body>
+
+<section class="faq-section">
+  <div class="container">
+    <div class="faq-layout">
+
+      <!-- ══ LEFT: Heading ══ -->
+      <div class="faq-heading">
+        <span class="faq-eyebrow">Frequently Asked Question</span>
+        <h2 class="faq-title">Frequently<br>Asked Questions</h2>
+        <p class="faq-desc">We believe in a future where renewable energy sources play a vital role in reducing carbon emissions and creating a sustainable planet.</p>
+      </div>
+
+      <!-- ══ RIGHT: Accordion — two independent columns ══ -->
+      <div class="faq-grid" id="faqGrid">
+
+        <!-- ── COLUMN 1 — independent, no shared row heights ── -->
+        <div class="faq-col">
+
+          <!-- Q1 — open by default -->
+          <div class="faq-item open">
+            <button class="faq-btn" aria-expanded="true">
+              <span class="faq-btn-text">Do We Need Prescription For These Testing?</span>
+              <span class="faq-toggle">
+                <svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="6.5" y1="0" x2="6.5" y2="13"/>
+                  <line x1="0"   y1="6.5" x2="13" y2="6.5"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p class="faq-answer-text">Patholab's Complete Care Geno identify DNA variant specific to an individual &amp; provides report about detoxification. Hormone Insight can be useful at the various stages of life, like discovering.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="faq-item">
+            <button class="faq-btn" aria-expanded="false">
+              <span class="faq-btn-text">What Is The Cost For These Testing?</span>
+              <span class="faq-toggle">
+                <svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="6.5" y1="0" x2="6.5" y2="13"/>
+                  <line x1="0"   y1="6.5" x2="13" y2="6.5"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p class="faq-answer-text">Test pricing varies depending on the type and complexity. We offer transparent pricing and packages to suit individual and family needs. Contact us for a full price list.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="faq-item">
+            <button class="faq-btn" aria-expanded="false">
+              <span class="faq-btn-text">Do I Have To Come With Empty Stomach?</span>
+              <span class="faq-toggle">
+                <svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="6.5" y1="0" x2="6.5" y2="13"/>
+                  <line x1="0"   y1="6.5" x2="13" y2="6.5"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p class="faq-answer-text">Fasting is required for certain tests such as blood glucose and lipid profiles. We will notify you in advance if your specific test requires fasting before you arrive.</p>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.faq-col 1 -->
+
+        <!-- ── COLUMN 2 — independent, no shared row heights ── -->
+        <div class="faq-col">
+
+          <!-- Q4 -->
+          <div class="faq-item">
+            <button class="faq-btn" aria-expanded="false">
+              <span class="faq-btn-text">How Much Time It Takes For Report Delivery?</span>
+              <span class="faq-toggle">
+                <svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="6.5" y1="0" x2="6.5" y2="13"/>
+                  <line x1="0"   y1="6.5" x2="13" y2="6.5"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p class="faq-answer-text">Standard reports are ready within 24–48 hours. Specialized tests may take 3–5 working days. Urgent same-day delivery is available on request at most centres.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q5 -->
+          <div class="faq-item">
+            <button class="faq-btn" aria-expanded="false">
+              <span class="faq-btn-text">What Are The Payment Methods Here?</span>
+              <span class="faq-toggle">
+                <svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="6.5" y1="0" x2="6.5" y2="13"/>
+                  <line x1="0"   y1="6.5" x2="13" y2="6.5"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p class="faq-answer-text">We accept all major credit and debit cards, UPI, net banking, and cash payments. Insurance claims are processed directly with our empanelled insurance providers.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q6 -->
+          <div class="faq-item">
+            <button class="faq-btn" aria-expanded="false">
+              <span class="faq-btn-text">Should I Bring Previous Reports Of Mine?</span>
+              <span class="faq-toggle">
+                <svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="6.5" y1="0" x2="6.5" y2="13"/>
+                  <line x1="0"   y1="6.5" x2="13" y2="6.5"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p class="faq-answer-text">Yes, bringing previous reports is highly recommended so our pathologists can track health changes over time. Digital copies on your phone are equally acceptable.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q7 -->
+          <div class="faq-item">
+            <button class="faq-btn" aria-expanded="false">
+              <span class="faq-btn-text">How Many Tests Are Available For Lipid Profile?</span>
+              <span class="faq-toggle">
+                <svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="6.5" y1="0" x2="6.5" y2="13"/>
+                  <line x1="0"   y1="6.5" x2="13" y2="6.5"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p class="faq-answer-text">Our lipid profile panel includes total cholesterol, LDL, HDL, VLDL, and triglycerides. Extended panels with ApoB and Lp(a) markers are also available for deeper cardiovascular risk assessment.</p>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.faq-col 2 -->
+
+      </div><!-- /.faq-grid -->
+    </div><!-- /.faq-layout -->
+  </div>
+</section>
+
+<script>
+  document.getElementById('faqGrid').addEventListener('click', function (e) {
+    const btn = e.target.closest('.faq-btn');
+    if (!btn) return;
+
+    const item   = btn.closest('.faq-item');
+    const col    = btn.closest('.faq-col');   // only close others in the SAME column
+    const isOpen = item.classList.contains('open');
+
+    // Close all items in this column only
+    col.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-btn').setAttribute('aria-expanded', 'false');
+    });
+
+    // If it was closed, open it
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+</script>
+
+</body>
+</html>

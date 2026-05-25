@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Amazing Services – Patholab</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #00c8a0;
+    --teal-dark: #00957a;
+    --teal-light: #e6faf6;
+    --teal-mid: #b2f0e3;
+    --text-dark: #1a2e44;
+    --text-light: #718096;
+    --white: #ffffff;
+    --card-border: #e2f7f2;
+    --stack-offset: 14px; /* visible peek of card beneath */
+  }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: #f0f4f8;
+    color: var(--text-dark);
+  }
+
+  /* extra scroll room so stacking is obvious in the demo */
+  .spacer { height: 60vh; display: flex; align-items: center; justify-content: center;
+            font-family: 'Poppins', sans-serif; color: #aaa; font-size: 14px; letter-spacing:1px; }
+
+  .services-section {
+    background: var(--white);
+    padding: 70px 20px 80px;
+  }
+
+  .container {
+    max-width: 1160px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .section-header { text-align: center; margin-bottom: 50px; }
+
+  .section-eyebrow {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(26px, 4vw, 36px); font-weight: 700;
+    color: var(--text-dark); line-height: 1.25; margin-bottom: 14px;
+  }
+
+  .section-subtitle {
+    font-size: 15px; color: var(--text-light);
+    line-height: 1.7; max-width: 560px; margin: 0 auto;
+  }
+
+  /* ── Grid – tablet/desktop unchanged ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 22px;
+  }
+  @media (max-width: 1024px) { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 640px)  { .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+  @media (max-width: 380px)  { .cards-grid { grid-template-columns: 1fr; } }
+
+  /* ── Card base ── */
+  .service-card {
+    background: var(--white);
+    border: 1.5px solid var(--card-border);
+    border-radius: 14px;
+    padding: 28px 20px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    cursor: default;
+    will-change: transform;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute; inset: 0; border-radius: 13px;
+    background: linear-gradient(145deg, #00c8a0 0%, #00a3cc 60%, #0077b6 100%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 0;
+  }
+
+  .service-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 20px 48px rgba(0, 180, 150, 0.28);
+    border-color: transparent;
+  }
+  .service-card:hover::before { opacity: 1; }
+  .service-card > * { position: relative; z-index: 1; }
+
+  .service-card:hover .card-title { color: var(--white); }
+  .service-card:hover .card-desc  { color: rgba(255,255,255,0.82); }
+  .service-card:hover .card-link  { color: var(--white); }
+
+  .service-card:hover .icon-wrap { background: rgba(255,255,255,0.22); }
+  .service-card:hover .icon-wrap svg path,
+  .service-card:hover .icon-wrap svg circle,
+  .service-card:hover .icon-wrap svg rect { stroke: #ffffff; }
+  .service-card:hover .icon-wrap svg circle[fill="#00c8a0"] { fill: #ffffff; stroke: none; }
+
+  /* ── Icon ── */
+  .icon-wrap {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: var(--teal-light);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px; transition: background 0.3s;
+  }
+  .icon-wrap svg { width: 32px; height: 32px; }
+
+  /* ── Text ── */
+  .card-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px; font-weight: 600;
+    color: var(--text-dark); margin-bottom: 9px;
+    line-height: 1.35; transition: color 0.3s;
+  }
+  .card-desc {
+    font-size: 13px; color: var(--text-light);
+    line-height: 1.65; margin-bottom: 16px; transition: color 0.3s;
+  }
+  .card-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 13px; font-weight: 700; color: var(--teal);
+    text-decoration: none; letter-spacing: 0.3px;
+    transition: color 0.3s, gap 0.2s;
+  }
+  .card-link:hover { gap: 8px; }
+  .card-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* ══════════════════════════════════════════
+     MOBILE STACKING  (≤ 480px only)
+     Each card becomes sticky and stacks on
+     top of the previous as the user scrolls.
+  ══════════════════════════════════════════ */
+  @media (max-width: 480px) {
+
+    /* Turn off the normal grid layout */
+    .cards-grid {
+      display: block;          /* single column flow */
+      position: relative;
+    }
+
+    /* Reserve enough scroll height for the stacking animation.
+       JS will set this dynamically based on card count. */
+    /* .cards-grid.stack-ready { */
+      /* height set by JS */
+    /* } */
+
+    /* Each card is sticky so it pins while the next one slides under */
+    .cards-grid.stack-ready .service-card {
+      position: sticky;
+      top: 80px;               /* gap from viewport top when pinned  */
+      margin-bottom: 0;
+      /* Scale down cards that are "behind" – set by JS via CSS vars */
+      transform: scale(var(--card-scale, 1)) translateY(var(--card-ty, 0px));
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+      z-index: var(--card-z, 1);
+      box-shadow: 0 var(--card-shadow-y, 4px) var(--card-shadow-b, 16px) rgba(0,0,0, var(--card-shadow-a, 0.08));
+    }
+
+    /* Spacer divs inserted between cards by JS to create scroll distance */
+    .card-scroll-spacer {
+      height: var(--spacer-h, 80vh);
+      pointer-events: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- scroll runway above so the effect is visible -->
+<div class="spacer">↓ Scroll down to see the services section ↓</div>
+
+<section class="services-section">
+  <div class="container">
+
+    <div class="section-header">
+      <p class="section-eyebrow">What We Offer</p>
+      <h2 class="section-title">Our Amazing Services</h2>
+      <p class="section-subtitle">We provide accurate laboratory &amp; full-service pathology solutions. We recognize the importance of accurate test results in providing quality healthcare.</p>
+    </div>
+
+    <div class="cards-grid" id="servicesGrid">
+
+      <!-- 1. General Pathology -->
+      <div class="service-card">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 6C14.06 6 6 14.06 6 24s8.06 18 18 18 18-8.06 18-18S33.94 6 24 6z" stroke="#00c8a0" stroke-width="2.2" fill="none"/>
+            <circle cx="24" cy="20" r="5" stroke="#00c8a0" stroke-width="2.2" fill="none"/>
+            <path d="M13 36c0-5.52 4.93-10 11-10s11 4.48 11 10" stroke="#00c8a0" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <h3 class="card-title">General Pathology</h3>
+        <p class="card-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</p>
+        <a href="#" class="card-link">Read More
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <!-- 2. Vaccine Research -->
+      <div class="service-card">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M28 10l10 10-16 16-10-10 16-16z" stroke="#00c8a0" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+            <path d="M20 18l10 10M10 34l4-4M34 8l4 4" stroke="#00c8a0" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+            <circle cx="13" cy="37" r="2.5" fill="#00c8a0"/>
+          </svg>
+        </div>
+        <h3 class="card-title">Vaccine Research</h3>
+        <p class="card-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</p>
+        <a href="#" class="card-link">Read More
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <!-- 3. Health Checkup -->
+      <div class="service-card">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="8" width="28" height="34" rx="4" stroke="#00c8a0" stroke-width="2.2" fill="none"/>
+            <path d="M18 20h12M18 27h8" stroke="#00c8a0" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M20 14h8" stroke="#00c8a0" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="card-title">Health Checkup</h3>
+        <p class="card-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</p>
+        <a href="#" class="card-link">Read More
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <!-- 4. Lab Management -->
+      <div class="service-card">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 8v16l-8 14h32L32 24V8" stroke="#00c8a0" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+            <path d="M16 8h16" stroke="#00c8a0" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="22" cy="30" r="2" fill="#00c8a0"/>
+            <circle cx="28" cy="34" r="2" fill="#00c8a0"/>
+          </svg>
+        </div>
+        <h3 class="card-title">Lab Management</h3>
+        <p class="card-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</p>
+        <a href="#" class="card-link">Read More
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <!-- 5. Clinical Research -->
+      <div class="service-card">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 6l4 8 9 1.3-6.5 6.3 1.5 9L24 26l-8 4.6 1.5-9L11 15.3l9-1.3 4-8z" stroke="#00c8a0" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+            <path d="M14 36l-6 6M34 36l6 6" stroke="#00c8a0" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="24" cy="38" r="3" stroke="#00c8a0" stroke-width="2.2" fill="none"/>
+          </svg>
+        </div>
+        <h3 class="card-title">Clinical Research</h3>
+        <p class="card-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</p>
+        <a href="#" class="card-link">Read More
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+    </div><!-- /.cards-grid -->
+  </div>
+</section>
+
+<div class="spacer">↑ Scroll back up ↑</div>
+
+<script>
+(function () {
+  /* ── Only activate on mobile (≤ 480px) ── */
+  const MOBILE_BP = 480;
+
+  const grid  = document.getElementById('servicesGrid');
+  const cards = Array.from(grid.querySelectorAll('.service-card'));
+
+  /* Scroll distance (px) to dedicate to each card's "entry" */
+  const SCROLL_PER_CARD = window.innerHeight * 0.6;
+
+  /* How far down from top each sticky card pins */
+  const STICKY_TOP = 80; // px  (must match CSS top value)
+
+  let active = false;
+  let spacers = [];
+
+  /* ─────────────────────────────────────────
+     Setup: inject spacer divs between cards
+     and mark the grid as stack-ready
+  ───────────────────────────────────────── */
+  function setup() {
+    if (active) return;
+    active = true;
+
+    grid.classList.add('stack-ready');
+
+    /* Insert a spacer BEFORE every card except the first.
+       The spacer gives the scroll room for the previous card
+       to "pin" before the next one slides underneath. */
+    cards.forEach((card, i) => {
+      /* Assign z-index so later cards sit on top */
+      card.style.setProperty('--card-z', i + 1);
+
+      if (i === 0) return; // no spacer before first card
+
+      const spacer = document.createElement('div');
+      spacer.className = 'card-scroll-spacer';
+      spacer.style.setProperty('--spacer-h', SCROLL_PER_CARD + 'px');
+      grid.insertBefore(spacer, card);
+      spacers.push(spacer);
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     Teardown: remove spacers + classes
+  ───────────────────────────────────────── */
+  function teardown() {
+    if (!active) return;
+    active = false;
+
+    grid.classList.remove('stack-ready');
+    spacers.forEach(s => s.remove());
+    spacers = [];
+
+    /* Reset inline custom props */
+    cards.forEach(card => {
+      card.style.removeProperty('--card-scale');
+      card.style.removeProperty('--card-ty');
+      card.style.removeProperty('--card-shadow-y');
+      card.style.removeProperty('--card-shadow-b');
+      card.style.removeProperty('--card-shadow-a');
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     Scroll handler – updates each card's
+     scale + shadow based on how many cards
+     are stacked on top of it
+  ───────────────────────────────────────── */
+  function onScroll() {
+    if (!active) return;
+
+    cards.forEach((card, i) => {
+      const rect = card.getBoundingClientRect();
+
+      /*
+        stackDepth = how many cards are currently pinned ON TOP of this card.
+        A card is "pinned on top" when it has reached sticky position AND
+        a later card hasn't yet pushed it off screen.
+      */
+      let stackDepth = 0;
+      for (let j = i + 1; j < cards.length; j++) {
+        const jRect = cards[j].getBoundingClientRect();
+        // card j is "on top" if its top is close to STICKY_TOP (pinned)
+        if (jRect.top <= STICKY_TOP + 4) stackDepth++;
+      }
+
+      /* Scale cards down slightly for each layer on top */
+      const scaleStep  = 0.04;
+      const scale      = Math.max(0.80, 1 - stackDepth * scaleStep);
+
+      /* Push card up slightly to create a visible deck peek */
+      const peekOffset = stackDepth * 10; // px shift up per layer
+      const ty         = stackDepth > 0 ? -peekOffset : 0;
+
+      /* Deepen shadow as stack grows */
+      const shadowY    = 4 + stackDepth * 4;
+      const shadowB    = 16 + stackDepth * 8;
+      const shadowA    = Math.min(0.08 + stackDepth * 0.04, 0.22);
+
+      card.style.setProperty('--card-scale', scale);
+      card.style.setProperty('--card-ty', ty + 'px');
+      card.style.setProperty('--card-shadow-y', shadowY + 'px');
+      card.style.setProperty('--card-shadow-b', shadowB + 'px');
+      card.style.setProperty('--card-shadow-a', shadowA);
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     ResizeObserver – enable/disable based
+     on viewport width
+  ───────────────────────────────────────── */
+  function checkBreakpoint() {
+    if (window.innerWidth <= MOBILE_BP) {
+      setup();
+    } else {
+      teardown();
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', checkBreakpoint);
+  checkBreakpoint(); // run once on load
+})();
+</script>
+
+</body>
+</html>

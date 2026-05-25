@@ -1,0 +1,266 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Nunito Sans", sans-serif;
+  background: #f4fafd;
+  color: #222;
+}
+
+/* ── SECTION ── */
+.case-section {
+  padding: 72px 0 80px;
+  overflow: hidden;
+}
+
+/* ── HEADER ── */
+.section-header {
+  text-align: center;
+  padding: 0 20px;
+  margin-bottom: 44px;
+}
+.section-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0abf8e;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.section-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0d1e2c;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.section-desc {
+  font-size: 14px;
+  color: #7a8fa0;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ── CAROUSEL OUTER ── */
+.carousel-outer {
+  position: relative;
+}
+.carousel-track-wrap {
+  overflow: hidden;
+  padding: 12px 0 24px;
+}
+.carousel-track {
+  display: flex;
+  gap: 22px;
+  will-change: transform;
+}
+
+/* ── SLIDE BASE ── */
+.slide {
+  flex-shrink: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  height: 330px;
+  cursor: pointer;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.1);
+}
+
+/* image always fills */
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+.slide:hover img {
+  transform: scale(1.06);
+}
+
+/* ── DEFAULT BOTTOM LABEL ── */
+.slide-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 50px 20px 18px;
+  background: linear-gradient(to top, rgba(13, 30, 44, 0.75), transparent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+/* ── HOVER OVERLAY ── */
+.slide-hover {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #0abf8e 0%, #089b74 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 26px 24px 24px;
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+  pointer-events: none;
+}
+.slide:hover .slide-hover {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.slide:hover .slide-label {
+  opacity: 0;
+}
+
+.hover-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8px;
+}
+.hover-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+.hover-desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+.hover-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  background: #fff;
+  color: #0abf8e;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 50px;
+  text-decoration: none;
+  width: fit-content;
+  font-family: "Nunito Sans", sans-serif;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.hover-btn:hover {
+  background: #0d1e2c;
+  color: #fff;
+}
+.hover-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── ARROWS ── */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-60%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.13);
+  transition:
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+  color: #0d1e2c;
+}
+.arrow:hover {
+  background: #0abf8e;
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(10, 191, 142, 0.35);
+}
+.arrow svg {
+  width: 18px;
+  height: 18px;
+}
+.arrow-prev {
+  left: 18px;
+}
+.arrow-next {
+  right: 18px;
+}
+
+/* ── DOTS ── */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 26px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c5d8e4;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 0.25s,
+    width 0.25s,
+    border-radius 0.25s;
+}
+.dot.active {
+  background: #0abf8e;
+  width: 22px;
+  border-radius: 4px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .slide {
+    height: 290px;
+  }
+}
+@media (max-width: 580px) {
+  .slide {
+    height: 260px;
+  }
+  .section-title {
+    font-size: 26px;
+  }
+  .arrow {
+    width: 36px;
+    height: 36px;
+  }
+  .arrow svg {
+    width: 15px;
+    height: 15px;
+  }
+  .arrow-prev {
+    left: 8px;
+  }
+  .arrow-next {
+    right: 8px;
+  }
+}

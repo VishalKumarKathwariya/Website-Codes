@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Production Folder Structure</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: monospace; background: #0d0d0d; color: #e0e0e0; padding: 40px; line-height: 1.8; }
+  h1 { font-family: sans-serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  p { font-family: sans-serif; font-size: 13px; color: #888; margin-bottom: 30px; }
+
+  .line { display: flex; align-items: center; gap: 12px; padding: 2px 0; }
+  .line:hover { background: #1a1a1a; border-radius: 4px; }
+
+  .name { font-size: 14px; }
+  .folder { color: #79b8ff; }
+  .file   { color: #e0e0e0; }
+  .special{ color: #f97583; }
+  .entry  { color: #85e89d; }
+  .auto   { color: #ffab70; }
+
+  .comment { font-size: 12px; color: #555; margin-left: 4px; }
+
+  .badge {
+    font-size: 10px; font-family: sans-serif; font-weight: 600;
+    padding: 1px 7px; border-radius: 10px; letter-spacing: 0.03em;
+  }
+  .b-folder  { background: #1c2d40; color: #79b8ff; }
+  .b-file    { background: #1e1e1e; color: #888; }
+  .b-deploy  { background: #3d1f00; color: #ffab70; }
+  .b-secret  { background: #3d0000; color: #f97583; }
+  .b-entry   { background: #0d2d1a; color: #85e89d; }
+  .b-seo     { background: #2a1f00; color: #e3b341; }
+
+  .indent1 { padding-left: 24px; }
+  .indent2 { padding-left: 48px; }
+  .indent3 { padding-left: 72px; }
+
+  hr { border: none; border-top: 1px solid #222; margin: 20px 0; }
+
+  .legend { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-family: sans-serif; font-size: 12px; color: #666; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<h1>Production Website Folder Structure</h1>
+<p>What big companies use — HTML / CSS / JS project</p>
+
+<div class="line">
+  <span class="name folder">my-website/</span>
+  <span class="badge b-entry">ROOT</span>
+  <span class="comment">← open this in VS Code</span>
+</div>
+
+<!-- ASSETS -->
+<div class="line indent1">
+  <span class="name folder">assets/</span>
+  <span class="badge b-folder">FOLDER</span>
+  <span class="comment">← original source files, never deployed directly</span>
+</div>
+<div class="line indent2">
+  <span class="name folder">images/</span>
+  <span class="comment">← original full-res images (JPG, PNG, SVG)</span>
+</div>
+<div class="line indent2">
+  <span class="name folder">fonts/</span>
+  <span class="comment">← .woff2 font files, self-hosted</span>
+</div>
+<div class="line indent2">
+  <span class="name folder">icons/</span>
+  <span class="comment">← SVG icons</span>
+</div>
+<div class="line indent2">
+  <span class="name folder">videos/</span>
+  <span class="comment">← original video files</span>
+</div>
+
+<hr>
+
+<!-- CSS -->
+<div class="line indent1">
+  <span class="name folder">css/</span>
+  <span class="badge b-folder">FOLDER</span>
+  <span class="comment">← split by purpose, one file = one job</span>
+</div>
+<div class="line indent2">
+  <span class="name file">variables.css</span>
+  <span class="comment">← all colors, sizes, spacing as CSS variables</span>
+</div>
+<div class="line indent2">
+  <span class="name file">base.css</span>
+  <span class="comment">← browser resets, same look in all browsers</span>
+</div>
+<div class="line indent2">
+  <span class="name file">layout.css</span>
+  <span class="comment">← header, footer, grid, containers</span>
+</div>
+<div class="line indent2">
+  <span class="name file">components.css</span>
+  <span class="comment">← buttons, cards, modals, badges</span>
+</div>
+<div class="line indent2">
+  <span class="name file">utilities.css</span>
+  <span class="comment">← helper classes like .hidden, .flex, .mt-16</span>
+</div>
+<div class="line indent2">
+  <span class="name file">animations.css</span>
+  <span class="comment">← all @keyframes and transitions</span>
+</div>
+<div class="line indent2">
+  <span class="name entry">main.css</span>
+  <span class="badge b-entry">ENTRY</span>
+  <span class="comment">← imports all CSS files. HTML links only to this</span>
+</div>
+
+<hr>
+
+<!-- JS -->
+<div class="line indent1">
+  <span class="name folder">js/</span>
+  <span class="badge b-folder">FOLDER</span>
+  <span class="comment">← split by purpose</span>
+</div>
+<div class="line indent2">
+  <span class="name file">utils.js</span>
+  <span class="comment">← helper functions: formatDate, validateEmail</span>
+</div>
+<div class="line indent2">
+  <span class="name file">components.js</span>
+  <span class="comment">← UI logic: nav, modal, tabs, accordion</span>
+</div>
+<div class="line indent2">
+  <span class="name file">api.js</span>
+  <span class="comment">← all fetch/API calls in one place</span>
+</div>
+<div class="line indent2">
+  <span class="name file">animations.js</span>
+  <span class="comment">← scroll animations, intersection observer</span>
+</div>
+<div class="line indent2">
+  <span class="name entry">main.js</span>
+  <span class="badge b-entry">ENTRY</span>
+  <span class="comment">← imports everything, runs on page load</span>
+</div>
+
+<hr>
+
+<!-- PAGES -->
+<div class="line indent1">
+  <span class="name folder">pages/</span>
+  <span class="badge b-folder">FOLDER</span>
+  <span class="comment">← each page = its own folder (clean URLs)</span>
+</div>
+<div class="line indent2">
+  <span class="name folder">about/</span>
+  <span class="comment">← yoursite.com/about/</span>
+</div>
+<div class="line indent3">
+  <span class="name file">index.html</span>
+</div>
+<div class="line indent2">
+  <span class="name folder">contact/</span>
+  <span class="comment">← yoursite.com/contact/</span>
+</div>
+<div class="line indent3">
+  <span class="name file">index.html</span>
+</div>
+<div class="line indent2">
+  <span class="name folder">blog/</span>
+  <span class="comment">← yoursite.com/blog/</span>
+</div>
+<div class="line indent3">
+  <span class="name file">index.html</span>
+</div>
+
+<hr>
+
+<!-- PUBLIC -->
+<div class="line indent1">
+  <span class="name folder">public/</span>
+  <span class="badge b-seo">SEO + BROWSER</span>
+  <span class="comment">← served as-is, no processing</span>
+</div>
+<div class="line indent2">
+  <span class="name file">favicon.ico</span>
+  <span class="comment">← browser tab icon</span>
+</div>
+<div class="line indent2">
+  <span class="name file">favicon-512.png</span>
+  <span class="comment">← for Android/iPhone home screen</span>
+</div>
+<div class="line indent2">
+  <span class="name file">robots.txt</span>
+  <span class="badge b-seo">SEO</span>
+  <span class="comment">← tells Google what to crawl</span>
+</div>
+<div class="line indent2">
+  <span class="name file">sitemap.xml</span>
+  <span class="badge b-seo">SEO</span>
+  <span class="comment">← map of all pages for Google</span>
+</div>
+<div class="line indent2">
+  <span class="name file">manifest.json</span>
+  <span class="comment">← PWA: makes site installable as app</span>
+</div>
+<div class="line indent2">
+  <span class="name file">og-image.jpg</span>
+  <span class="comment">← 1200x630px image for social sharing</span>
+</div>
+
+<hr>
+
+<!-- DIST -->
+<div class="line indent1">
+  <span class="name auto">dist/</span>
+  <span class="badge b-deploy">AUTO-GENERATED</span>
+  <span class="comment">← never edit! build tool creates this</span>
+</div>
+<div class="line indent2">
+  <span class="name auto">main.min.css</span>
+  <span class="comment">← minified (40KB → 8KB)</span>
+</div>
+<div class="line indent2">
+  <span class="name auto">main.min.js</span>
+  <span class="comment">← minified (60KB → 12KB)</span>
+</div>
+<div class="line indent2">
+  <span class="name auto">images/</span>
+  <span class="comment">← compressed WebP images (4MB → 80KB)</span>
+</div>
+
+<hr>
+
+<!-- ROOT FILES -->
+<div class="line indent1">
+  <span class="name entry">index.html</span>
+  <span class="badge b-entry">HOMEPAGE</span>
+  <span class="comment">← yoursite.com → server reads this first</span>
+</div>
+<div class="line indent1">
+  <span class="name file">404.html</span>
+  <span class="comment">← custom page not found screen</span>
+</div>
+<div class="line indent1">
+  <span class="name special">.env</span>
+  <span class="badge b-secret">SECRET</span>
+  <span class="comment">← API keys, passwords. NEVER commit to Git</span>
+</div>
+<div class="line indent1">
+  <span class="name file">.gitignore</span>
+  <span class="comment">← tells Git: ignore node_modules, dist, .env</span>
+</div>
+<div class="line indent1">
+  <span class="name file">.htaccess</span>
+  <span class="comment">← server rules: redirects, caching, HTTPS force</span>
+</div>
+<div class="line indent1">
+  <span class="name file">package.json</span>
+  <span class="comment">← project config + build scripts (npm run build)</span>
+</div>
+<div class="line indent1">
+  <span class="name file">README.md</span>
+  <span class="comment">← project docs: how to run and deploy</span>
+</div>
+
+<hr>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot"></div> Folder</div>
+  <div class="legend-item"><div class="dot"></div> Entry point (link HTML to these)</div>
+  <div class="legend-item"><div class="dot"></div> Auto-generated (never edit)</div>
+  <div class="legend-item"><div class="dot"></div> Secret (never push to GitHub)</div>
+  <div class="legend-item"><div class="dot"></div> SEO files</div>
+</div>
+
+</body>
+</html>

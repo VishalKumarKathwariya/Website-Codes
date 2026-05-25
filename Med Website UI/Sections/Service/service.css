@@ -1,0 +1,206 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --teal: #00c8a0;
+  --teal-dark: #00957a;
+  --teal-light: #e6faf6;
+  --teal-mid: #b2f0e3;
+  --text-dark: #1a2e44;
+  --text-light: #718096;
+  --white: #ffffff;
+  --card-border: #e2f7f2;
+}
+
+body {
+  font-family: "Nunito Sans", sans-serif;
+  background: var(--white);
+  color: var(--text-dark);
+}
+
+.services-section {
+  background: var(--white);
+  padding: 4rem 1.4rem 5rem;
+}
+
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.25;
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 1rem;
+  color: var(--text-light);
+  line-height: 1.7;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* Service Cards Grid*/
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 1023px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 428px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.service-card {
+  background-color: var(--white);
+  border: 1.5px solid var(--card-border);
+  border-radius: 1rem;
+  padding: 1.6rem 1.2rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+.service-card:hover {
+  border-color: transparent;
+  background: var(--teal-mid);
+  /* background: linear-gradient(
+          145deg,
+          var(--teal-mid) 0%,
+          var(--teal-light) 60%,
+          var(--teal-dark) 100%
+        ); */
+}
+
+.icon-wrap {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.service-card:hover .icon-wrap svg path,
+.service-card:hover .icon-wrap svg circle,
+.service-card:hover .icon-wrap svg rect {
+  stroke: #ffffff;
+}
+.service-card:hover .icon-wrap svg circle[fill="#00c8a0"] {
+  fill: #ffffff;
+  stroke: none;
+}
+
+.icon-wrap svg {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.card-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.6rem;
+  line-height: 1.35;
+  transition: color 0.3s;
+}
+
+.card-desc {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+  transition: color 0.3s;
+  padding: 0rem 1rem;
+}
+
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--teal);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition:
+    color 0.3s,
+    gap 0.2s ease;
+}
+
+.service-card:hover .card-title,
+.service-card:hover .card-desc,
+.service-card:hover .card-link {
+  color: #ffffff;
+}
+
+.card-link:hover {
+  gap: 8px;
+}
+
+.card-link svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.extra{
+  width: 100%;
+  height: 150vh;
+}
+
+/* STACKING CARDS */
+
+@media (max-width: 428px) {
+  .cards-grid.stack-ready {
+    display: block;
+    position: relative;
+  }
+
+  .cards-grid.cards-grid.stack-ready .service-card {
+    position: sticky;
+    top: 80px;
+    z-index: var(--card-z, 1);
+    transform: scale(var(--card-scale, 1)) translateY(var(--card-ty, 0px));
+    box-shadow: 0 var(--card-shadow-y, 4px) var(--card-shadow-b, 16px)
+      rgba(0, 0, 0, var(--card-shadow-a, 0.08));
+        transition: transform 0.25s ease,
+                box-shadow 0.25s ease,
+                background 0.3s ease,
+                border-color 0.3s ease;
+    margin-bottom: 12px;
+  }
+
+  .card-scroll-spacer {
+    height: var(--spacer-h, 60vh);
+    pointer-events: none;
+  }
+}

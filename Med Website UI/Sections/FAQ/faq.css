@@ -1,0 +1,201 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --teal:       #00c8a0;
+  --teal-dark:  #00957a;
+  --teal-light: #e8faf6;
+  --text-dark:  #1a2e44;
+  --text-mid:   #4a5568;
+  --text-light: #8a9bb0;
+  --white:      #ffffff;
+  --border:     #e4eeeb;
+}
+
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--white);
+  color: var(--text-dark);
+}
+
+/* ══════════════════════════════
+   SECTION
+══════════════════════════════ */
+.faq-section {
+  background: var(--white);
+  padding: 72px 24px 80px;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+/* ══════════════════════════════
+   OUTER LAYOUT — left title | right grid
+══════════════════════════════ */
+.faq-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .faq-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* ══════════════════════════════
+   LEFT — heading block
+══════════════════════════════ */
+.faq-heading {
+  padding-top: 4px;
+}
+
+.faq-eyebrow {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--teal);
+  margin-bottom: 14px;
+  font-style: italic;
+}
+
+.faq-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(24px, 3.2vw, 32px);
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.25;
+  margin-bottom: 20px;
+}
+
+.faq-desc {
+  font-size: 13.5px;
+  color: var(--text-light);
+  line-height: 1.8;
+}
+
+/* ══════════════════════════════
+   RIGHT — two INDEPENDENT columns
+   Key fix: flexbox row so each column
+   is its own block — no shared row heights
+══════════════════════════════ */
+.faq-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  align-items: flex-start; /* each column only as tall as its own content */
+}
+
+/* Each column is an independent vertical stack */
+.faq-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@media (max-width: 580px) {
+  .faq-grid {
+    flex-direction: column; /* stack columns on mobile */
+  }
+}
+
+/* ══════════════════════════════
+   ACCORDION ITEM
+══════════════════════════════ */
+.faq-item {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--white);
+  overflow: hidden;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.faq-item.open {
+  border-color: #c6ece3;
+  box-shadow: 0 4px 18px rgba(0, 200, 160, 0.09);
+}
+
+/* ── Question button ── */
+.faq-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.faq-btn-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.45;
+  flex: 1;
+}
+
+/* ── Teal square toggle ── */
+.faq-toggle {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s;
+}
+
+.faq-toggle svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--white);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  transition: transform 0.3s ease;
+  overflow: visible;
+}
+
+/* Minus bar — hidden by default, shown when open */
+.faq-toggle .minus-bar {
+  transition: opacity 0.2s;
+}
+
+/* Plus vertical bar rotates to become minus line */
+.faq-item.open .faq-toggle svg {
+  transform: rotate(45deg);
+}
+
+/* ── Answer panel ── */
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s ease;
+}
+
+.faq-item.open .faq-answer {
+  grid-template-rows: 1fr;
+}
+
+.faq-answer-inner {
+  overflow: hidden;
+}
+
+.faq-answer-text {
+  padding: 4px 16px 16px 16px;
+  font-size: 12.5px;
+  color: var(--text-light);
+  line-height: 1.8;
+}

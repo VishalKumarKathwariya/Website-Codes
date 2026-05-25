@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Footer – BPOC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #07080f;
+      color: #fff;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #07080f;
+      padding: 56px 24px 32px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .footer-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── TOP ROW: brand + nav cols ── */
+    .footer-top {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 64px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    /* brand */
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .brand-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    /* BPOC wordmark — exactly like screenshot: B and P dark, O and C green */
+    .logo-wordmark {
+      font-size: 1.55rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .logo-wordmark .w-bp { color: #ffffff; }
+    .logo-wordmark .w-oc { color: #00cc88; }
+
+    .brand-tagline {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.02em;
+      margin-bottom: 14px;
+    }
+
+    /* LinkedIn icon */
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      margin-top: 12px;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: border-color 0.18s, color 0.18s;
+    }
+    .social-link:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+    .social-link svg { width: 15px; height: 15px; fill: currentColor; }
+
+    /* address block */
+    .brand-addr {
+      margin-top: 20px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.7;
+    }
+
+    .brand-addr strong {
+      display: block;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      margin-top: 14px;
+    }
+
+    /* ── nav columns ── */
+    .nav-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .nav-col-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 16px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-list a {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      transition: color 0.18s;
+    }
+    .nav-list a:hover { color: rgba(255,255,255,0.85); }
+
+    /* ── OFFICE CITIES ROW ── */
+    .offices-row {
+      padding: 28px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .office-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.18s;
+    }
+    .office-item:hover { color: rgba(255,255,255,0.75); }
+
+    .office-item span {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* ── BOTTOM BAR ── */
+    .footer-bottom {
+      padding-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .copy {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .footer-email {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+    }
+    .footer-email a { color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.18s; }
+    .footer-email a:hover { color: rgba(255,255,255,0.8); }
+
+    /* ── responsive ── */
+    @media (max-width: 860px) {
+      .footer-top { grid-template-columns: 1fr; gap: 36px; }
+    }
+    @media (max-width: 540px) {
+      .nav-cols { grid-template-columns: repeat(2, 1fr); }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<footer>
+  <div class="footer-container">
+
+    <!-- top: brand + nav -->
+    <div class="footer-top">
+
+      <div class="brand">
+        <div class="brand-logo-row">
+          <span class="logo-wordmark"><span class="w-bp">BP</span><span class="w-oc">OC</span></span>
+        </div>
+        <p class="brand-tagline">BPO CONVERGENCE &nbsp;|&nbsp; A FORNAX COMPANY</p>
+
+        <a href="#" class="social-link" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+
+        <div class="brand-addr">
+          <strong>Corporate Office</strong>
+          1st Floor, Plot No. 22, Mahavir Nagar,<br>
+          Kandivali West, Mumbai – 400067,<br>
+          Maharashtra, Maharashtra – 400067
+          <strong>Registered Office</strong>
+          Plot No. 7&amp;8, Bhubaneswar, Odisha
+        </div>
+      </div>
+
+      <div class="nav-cols">
+        <div>
+          <p class="nav-col-title">Navigation</p>
+          <ul class="nav-list">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Solutions</a></li>
+            <li><a href="#">Industries</a></li>
+            <li><a href="#">Case Studies</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="nav-col-title">Company</p>
+          <ul class="nav-list">
+            <li><a href="#">About</a></li>
+            <li><a href="#">Parent Entity</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Employee HR Support</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="nav-col-title">Support</p>
+          <ul class="nav-list">
+            <li><a href="#">Getting Started</a></li>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Report a Bug</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- offices row -->
+    <div class="offices-row">
+      <a href="#" class="office-item">Anand <span>↗</span></a>
+      <a href="#" class="office-item">Bengaluru <span>↗</span></a>
+      <a href="#" class="office-item">Bhubaneswar <span>↗</span></a>
+      <a href="#" class="office-item">Guwahati <span>↗</span></a>
+      <a href="#" class="office-item">Hyderabad <span>↗</span></a>
+      <a href="#" class="office-item">Mumbai <span>↗</span></a>
+      <a href="#" class="office-item">Noida <span>↗</span></a>
+      <a href="#" class="office-item">Pune <span>↗</span></a>
+      <a href="#" class="office-item">Thane <span>↗</span></a>
+    </div>
+
+    <!-- bottom bar -->
+    <div class="footer-bottom">
+      <p class="copy">© 2026 All Rights Reserved by BPO Convergence</p>
+      <p class="footer-email">
+        <a href="mailto:info@bpoconvergence.com">info@bpoconvergence.com</a>
+      </p>
+    </div>
+
+  </div>
+</footer>
+
+</body>
+</html>

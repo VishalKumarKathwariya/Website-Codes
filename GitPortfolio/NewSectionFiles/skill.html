@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Component: Skills</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=Sekuya&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ═══════════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════════ */
+    :root {
+      --bg-1:         #0e0e10;
+      --bg-2:         #141416;
+      --bg-3:         #1a1a1c;
+      --accent:       #7c6dfa;
+      --accent-tint:  #1e1a3a;
+      --text-heading: #f0f0f0;
+      --text-body:    #9090a0;
+      --text-muted:   #55555f;
+      --border:       #2a2a30;
+      --border-dark:  rgba(255,255,255,0.06);
+      --sk-nav-w:     260px;
+      --radius-sm:    6px;
+      --ease:         cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--bg-3);
+      color: var(--text-body);
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       SKILLS SECTION WRAPPER
+    ═══════════════════════════════════════════ */
+    .skills-section {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: var(--bg-3);
+      font-family: "DM Sans", sans-serif;
+      color: var(--text-heading);
+    }
+
+    /* ═══════════════════════════════════════════
+       STICKY NAV (mobile: horizontal tabs)
+    ═══════════════════════════════════════════ */
+    .skills-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      background: var(--bg-3);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      overflow-y: visible;
+      -ms-overflow-style: none;
+    }
+    .skills-nav::-webkit-scrollbar { display: none; }
+
+    .nav-label { display: none; }
+
+    .nav-items-wrap {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+    }
+
+    .nav-item {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 0.9rem 0.5rem;
+      cursor: pointer;
+      position: relative;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.25s;
+      min-width: 70px;
+    }
+    .nav-item.active { border-bottom-color: var(--accent); }
+
+    .nav-item .num {
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+      font-family: "DM Mono", monospace;
+      transition: color 0.25s;
+    }
+    .nav-item .lbl {
+      font-family: "Syne", sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      transition: color 0.25s, transform 0.25s;
+      white-space: nowrap;
+    }
+    .nav-item.active .num { color: var(--accent); }
+    .nav-item.active .lbl { color: var(--text-heading); }
+
+    /* ═══════════════════════════════════════════
+       PANELS CONTAINER
+    ═══════════════════════════════════════════ */
+    .skills-panels { width: 100%; }
+
+    .panel {
+      display: flex;
+      align-items: flex-start;
+      padding: 2.5rem 1.4rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle grid bg per panel */
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.10;
+      pointer-events: none;
+    }
+
+    .panel-inner {
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── EYEBROW ── */
+    .panel-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-radius: 3px;
+      padding: 0.3rem 0.7rem;
+      font-family: "DM Mono", monospace;
+    }
+
+    .sk-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--accent);
+      animation: skPulse 2s ease infinite;
+    }
+    @keyframes skPulse {
+      0%,100% { box-shadow: 0 0 0 0   rgba(124,109,250,0.5); }
+      50%      { box-shadow: 0 0 0 5px rgba(124,109,250,0);   }
+    }
+
+    /* ── PANEL TITLE ── */
+    .panel-title {
+      font-family: "Sekuya", system-ui;
+      font-weight: 400;
+      font-size: clamp(2rem, 9vw, 3.2rem);
+      line-height: 1.05;
+      color: var(--text-heading);
+      margin-bottom: 0.85rem;
+    }
+    .panel-title span {
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--accent);
+    }
+
+    /* ── PANEL DESC ── */
+    .panel-desc {
+      font-size: 0.88rem;
+      line-height: 1.85;
+      color: var(--text-body);
+      margin-bottom: 1.6rem;
+    }
+
+    /* ── PROGRESS RINGS ── */
+    .sk-rings {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.2rem;
+    }
+    .sk-ring-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .sk-ring-wrap {
+      position: relative;
+      width: clamp(80px, 18vw, 100px);
+      height: clamp(80px, 18vw, 100px);
+    }
+    .sk-ring-svg {
+      width: 100%; height: 100%;
+      transform: rotate(-90deg);
+    }
+    .sk-ring-track {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 4.5;
+    }
+    .sk-ring-fill {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 4.5;
+      stroke-linecap: round;
+      stroke-dasharray: 251.33;
+      stroke-dashoffset: 251.33;
+      transition: stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1);
+      filter: drop-shadow(0 0 6px rgba(124,109,250,0.45));
+    }
+    .sk-ring-pct {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "DM Mono", monospace;
+      font-size: clamp(0.8rem, 2vw, 0.95rem);
+      font-weight: 700;
+      color: var(--text-heading);
+    }
+    .sk-ring-name {
+      font-family: "DM Mono", monospace;
+      font-size: 0.55rem;
+      color: var(--text-body);
+      text-align: center;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
+
+    /* ── STAT BAR ── */
+    .sk-stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(124,109,250,0.05);
+      border: 1px solid rgba(124,109,250,0.12);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1.2rem;
+      margin-bottom: 1.6rem;
+      gap: 1rem;
+    }
+    .sk-stat-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+    .sk-stat-name {
+      font-family: "DM Mono", monospace;
+      font-size: 0.65rem;
+      color: var(--text-body);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .sk-stat-track {
+      height: 2px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .sk-stat-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #5a4dd4, var(--accent));
+      transition: width 1.4s cubic-bezier(0.4,0,0.2,1) 0.2s;
+      box-shadow: 0 0 8px rgba(124,109,250,0.5);
+    }
+    .sk-stat-pct {
+      font-family: "DM Mono", monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* ── TECH STACK CARDS ── */
+    .sk-stack {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.45rem;
+    }
+    .sk-stack-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.6rem;
+      transition: border-color 0.2s, transform 0.2s, background 0.2s;
+      cursor: default;
+      overflow: hidden;
+    }
+    .sk-stack-item:hover {
+      border-color: var(--accent);
+      background: var(--accent-tint);
+      transform: translateY(-2px);
+    }
+    .sk-stack-abbr {
+      width: 28px; height: 28px;
+      background: var(--accent-tint);
+      border: 1px solid rgba(124,109,250,0.15);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: "DM Mono", monospace;
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .sk-stack-item:hover .sk-stack-abbr { background: rgba(124,109,250,0.2); }
+    .sk-stack-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .sk-stack-name {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1;
+    }
+    .sk-stack-level {
+      font-family: "DM Mono", monospace;
+      font-size: 0.48rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — mobile stack grid
+    ═══════════════════════════════════════════ */
+    @media (max-width: 480px) {
+      .sk-stack { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 360px) and (max-width: 1023px) {
+      .panel { height: auto; min-height: unset; }
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — min-width: 1024px (Desktop)
+    ═══════════════════════════════════════════ */
+    @media (min-width: 1024px) {
+      /* Side-by-side layout */
+      .skills-section  { flex-direction: row; }
+
+      /* Vertical sticky nav */
+      .skills-nav {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: var(--sk-nav-w);
+        min-width: var(--sk-nav-w);
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        overflow: visible;
+        padding: 2.5rem 2rem;
+        border-bottom: none;
+        border-right: 1px solid var(--border);
+      }
+
+      .nav-label {
+        display: block;
+        font-size: 0.63rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 2rem;
+        padding-left: 1.4rem;
+        font-family: "DM Mono", monospace;
+      }
+
+      .nav-items-wrap {
+        position: relative;
+        flex-direction: column;
+        width: 100%;
+      }
+      /* vertical track line */
+      .nav-items-wrap::before {
+        content: "";
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 2px;
+        background: var(--border);
+        border-radius: 2px;
+      }
+
+      .nav-item {
+        flex: 0 0 auto;
+        align-items: flex-start;
+        justify-content: center;
+        width: 100%;
+        min-width: unset;
+        padding: 0.9rem 0 0.9rem 1.4rem;
+        border-bottom: none;
+        border-left: 2px solid transparent;
+        position: relative;
+        z-index: 1;
+        transition: border-color 0.3s;
+      }
+      .nav-item.active {
+        border-left-color: var(--accent);
+        border-bottom-color: transparent;
+      }
+      .nav-item .num  { font-size: 0.62rem; }
+      .nav-item .lbl  { font-size: 1rem; }
+      .nav-item.active .lbl {
+        color: var(--text-heading);
+        transform: translateX(5px);
+      }
+
+      /* Full-height panels */
+      .panel {
+        min-height: 100vh;
+        align-items: center;
+        padding: clamp(2rem, 5vw, 5rem);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     SKILLS SECTION
+═══════════════════════════════════════════ -->
+<div class="skills-section" id="skills">
+
+  <!-- ── STICKY NAV ── -->
+  <nav class="skills-nav" id="skillsNav">
+    <p class="nav-label">// Skills</p>
+    <div class="nav-items-wrap">
+      <div class="nav-item active" data-idx="0"><div class="num">01</div><span class="lbl">Frontend</span></div>
+      <div class="nav-item"        data-idx="1"><div class="num">02</div><span class="lbl">Backend</span></div>
+      <div class="nav-item"        data-idx="2"><div class="num">03</div><span class="lbl">Database</span></div>
+      <div class="nav-item"        data-idx="3"><div class="num">04</div><span class="lbl">Tools</span></div>
+    </div>
+  </nav>
+
+  <!-- ── PANELS ── -->
+  <div class="skills-panels" id="skillsPanels">
+
+    <!-- ════════ PANEL 1 — FRONTEND ════════ -->
+    <div class="panel" id="sk-p0" data-idx="0">
+      <div class="panel-inner">
+
+        <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 01 &nbsp;·&nbsp; Interface</div>
+        <h2 class="panel-title">Frontend<br /><span>Development</span></h2>
+        <p class="panel-desc">Building pixel-perfect, performant interfaces that users love. From responsive layouts to smooth animations — clean, accessible, and maintainable code.</p>
+
+        <!-- Rings -->
+        <div class="sk-rings">
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="95"/>
+              </svg>
+              <div class="sk-ring-pct">95%</div>
+            </div>
+            <div class="sk-ring-name">HTML</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="98"/>
+              </svg>
+              <div class="sk-ring-pct">98%</div>
+            </div>
+            <div class="sk-ring-name">CSS</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="92"/>
+              </svg>
+              <div class="sk-ring-pct">92%</div>
+            </div>
+            <div class="sk-ring-name">JS</div>
+          </div>
+        </div>
+
+        <!-- Stat bar -->
+        <div class="sk-stat-row">
+          <div class="sk-stat-left">
+            <span class="sk-stat-name">Bootstrap</span>
+            <div class="sk-stat-track"><div class="sk-stat-fill" data-w="88"></div></div>
+          </div>
+          <span class="sk-stat-pct">88%</span>
+        </div>
+
+        <!-- Stack -->
+        <div class="sk-stack">
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Re</span><div class="sk-stack-info"><span class="sk-stack-name">Responsive</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Ar</span><div class="sk-stack-info"><span class="sk-stack-name">Architecture</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Co</span><div class="sk-stack-info"><span class="sk-stack-name">Component UI</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Dj</span><div class="sk-stack-info"><span class="sk-stack-name">Django Templates</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Sv</span><div class="sk-stack-info"><span class="sk-stack-name">SVG &amp; Lottie</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Gs</span><div class="sk-stack-info"><span class="sk-stack-name">GSAP</span><span class="sk-stack-level">Intermediate</span></div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 2 — BACKEND ════════ -->
+    <div class="panel" id="sk-p1" data-idx="1">
+      <div class="panel-inner">
+
+        <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 02 &nbsp;·&nbsp; Logic</div>
+        <h2 class="panel-title">Backend<br /><span>Development</span></h2>
+        <p class="panel-desc">Architecting robust APIs and scalable server-side systems. From RESTful services to real-time WebSocket servers — fast, secure, and built to last.</p>
+
+        <div class="sk-rings">
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="93"/>
+              </svg>
+              <div class="sk-ring-pct">93%</div>
+            </div>
+            <div class="sk-ring-name">Node.js<br/>Express</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="85"/>
+              </svg>
+              <div class="sk-ring-pct">85%</div>
+            </div>
+            <div class="sk-ring-name">Python<br/>FastAPI</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="90"/>
+              </svg>
+              <div class="sk-ring-pct">90%</div>
+            </div>
+            <div class="sk-ring-name">REST<br/>GraphQL</div>
+          </div>
+        </div>
+
+        <div class="sk-stat-row">
+          <div class="sk-stat-left">
+            <span class="sk-stat-name">Auth &amp; Security</span>
+            <div class="sk-stat-track"><div class="sk-stat-fill" data-w="87"></div></div>
+          </div>
+          <span class="sk-stat-pct">87%</span>
+        </div>
+
+        <div class="sk-stack">
+          <div class="sk-stack-item"><span class="sk-stack-abbr">No</span><div class="sk-stack-info"><span class="sk-stack-name">Node.js</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Py</span><div class="sk-stack-info"><span class="sk-stack-name">Python</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">FA</span><div class="sk-stack-info"><span class="sk-stack-name">FastAPI</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">GQ</span><div class="sk-stack-info"><span class="sk-stack-name">GraphQL</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Rd</span><div class="sk-stack-info"><span class="sk-stack-name">Redis</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Dk</span><div class="sk-stack-info"><span class="sk-stack-name">Docker</span><span class="sk-stack-level">Intermediate</span></div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 3 — DATABASE ════════ -->
+    <div class="panel" id="sk-p2" data-idx="2">
+      <div class="panel-inner">
+
+        <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 03 &nbsp;·&nbsp; Data</div>
+        <h2 class="panel-title">Database<br /><span>Management</span></h2>
+        <p class="panel-desc">Designing and optimizing data layers for performance and reliability. SQL or NoSQL — efficient schemas, clean queries, and data integrity at any scale.</p>
+
+        <div class="sk-rings">
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="91"/>
+              </svg>
+              <div class="sk-ring-pct">91%</div>
+            </div>
+            <div class="sk-ring-name">PostgreSQL</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="88"/>
+              </svg>
+              <div class="sk-ring-pct">88%</div>
+            </div>
+            <div class="sk-ring-name">MongoDB</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="89"/>
+              </svg>
+              <div class="sk-ring-pct">89%</div>
+            </div>
+            <div class="sk-ring-name">Prisma<br/>ORM</div>
+          </div>
+        </div>
+
+        <div class="sk-stat-row">
+          <div class="sk-stat-left">
+            <span class="sk-stat-name">MySQL</span>
+            <div class="sk-stat-track"><div class="sk-stat-fill" data-w="85"></div></div>
+          </div>
+          <span class="sk-stat-pct">85%</span>
+        </div>
+
+        <div class="sk-stack">
+          <div class="sk-stack-item"><span class="sk-stack-abbr">PG</span><div class="sk-stack-info"><span class="sk-stack-name">PostgreSQL</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Mg</span><div class="sk-stack-info"><span class="sk-stack-name">MongoDB</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">My</span><div class="sk-stack-info"><span class="sk-stack-name">MySQL</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Rd</span><div class="sk-stack-info"><span class="sk-stack-name">Redis</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Sb</span><div class="sk-stack-info"><span class="sk-stack-name">Supabase</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Fb</span><div class="sk-stack-info"><span class="sk-stack-name">Firebase</span><span class="sk-stack-level">Intermediate</span></div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════ PANEL 4 — TOOLS ════════ -->
+    <div class="panel" id="sk-p3" data-idx="3">
+      <div class="panel-inner">
+
+        <div class="panel-eyebrow"><div class="sk-dot"></div>Layer 04 &nbsp;·&nbsp; Workflow</div>
+        <h2 class="panel-title">Tools &amp;<br /><span>DevOps</span></h2>
+        <p class="panel-desc">Streamlining development with modern tooling and CI/CD pipelines. From version control to cloud deployments — shipping fast and keeping teams in sync.</p>
+
+        <div class="sk-rings">
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="96"/>
+              </svg>
+              <div class="sk-ring-pct">96%</div>
+            </div>
+            <div class="sk-ring-name">Git<br/>GitHub</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="82"/>
+              </svg>
+              <div class="sk-ring-pct">82%</div>
+            </div>
+            <div class="sk-ring-name">Docker<br/>K8s</div>
+          </div>
+          <div class="sk-ring-item">
+            <div class="sk-ring-wrap">
+              <svg class="sk-ring-svg" viewBox="0 0 100 100">
+                <circle class="sk-ring-track" cx="50" cy="50" r="40"/>
+                <circle class="sk-ring-fill"  cx="50" cy="50" r="40" data-w="84"/>
+              </svg>
+              <div class="sk-ring-pct">84%</div>
+            </div>
+            <div class="sk-ring-name">AWS<br/>Vercel</div>
+          </div>
+        </div>
+
+        <div class="sk-stat-row">
+          <div class="sk-stat-left">
+            <span class="sk-stat-name">CI/CD Pipelines</span>
+            <div class="sk-stat-track"><div class="sk-stat-fill" data-w="87"></div></div>
+          </div>
+          <span class="sk-stat-pct">87%</span>
+        </div>
+
+        <div class="sk-stack">
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Gt</span><div class="sk-stack-info"><span class="sk-stack-name">Git</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Dk</span><div class="sk-stack-info"><span class="sk-stack-name">Docker</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">K8</span><div class="sk-stack-info"><span class="sk-stack-name">Kubernetes</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">AW</span><div class="sk-stack-info"><span class="sk-stack-name">AWS</span><span class="sk-stack-level">Intermediate</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Vc</span><div class="sk-stack-info"><span class="sk-stack-name">Vercel</span><span class="sk-stack-level">Proficient</span></div></div>
+          <div class="sk-stack-item"><span class="sk-stack-abbr">Fig</span><div class="sk-stack-info"><span class="sk-stack-name">Figma</span><span class="sk-stack-level">Intermediate</span></div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /.skills-panels -->
+</div><!-- /.skills-section -->
+
+<script>
+  (function () {
+    var CIRCUMFERENCE    = 251.33;
+    var skPanels         = Array.from(document.querySelectorAll("#skillsPanels .panel"));
+    var skNavItems       = Array.from(document.querySelectorAll("#skillsNav .nav-item"));
+    var skAnimated       = {};
+    var skCurrentActive  = -1;
+
+    /* ── Animate rings + stat bars for a panel ── */
+    function skAnimateBars(panel) {
+      var idx = panel.getAttribute("data-idx");
+      if (skAnimated[idx]) return;
+      skAnimated[idx] = true;
+
+      panel.querySelectorAll(".sk-ring-fill").forEach(function (circle) {
+        var pct    = parseInt(circle.getAttribute("data-w"), 10);
+        var offset = CIRCUMFERENCE * (1 - pct / 100);
+        requestAnimationFrame(function () {
+          setTimeout(function () { circle.style.strokeDashoffset = offset; }, 80);
+        });
+      });
+
+      panel.querySelectorAll(".sk-stat-fill").forEach(function (fill) {
+        var pct = parseInt(fill.getAttribute("data-w"), 10);
+        requestAnimationFrame(function () {
+          setTimeout(function () { fill.style.width = pct + "%"; }, 80);
+        });
+      });
+    }
+
+    /* ── Set active nav item ── */
+    function skSetActive(idx) {
+      if (idx === skCurrentActive) return;
+      skCurrentActive = idx;
+      skNavItems.forEach(function (n) {
+        n.classList.toggle("active", +n.getAttribute("data-idx") === idx);
+      });
+      skAnimateBars(skPanels[idx]);
+    }
+
+    /* ── IntersectionObserver: track which panel is in view ── */
+    var skObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          skSetActive(+entry.target.getAttribute("data-idx"));
+        }
+      });
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+
+    skPanels.forEach(function (p) { skObserver.observe(p); });
+
+    /* ── Scroll fallback for smoother active tracking ── */
+    var skTicking = false;
+    window.addEventListener("scroll", function () {
+      if (skTicking) return;
+      skTicking = true;
+      requestAnimationFrame(function () {
+        var trigger = window.innerHeight * 0.45;
+        var best = 0;
+        skPanels.forEach(function (p, i) {
+          if (p.getBoundingClientRect().top <= trigger) best = i;
+        });
+        skSetActive(best);
+        skTicking = false;
+      });
+    }, { passive: true });
+
+    /* ── Nav item click: smooth scroll to panel ── */
+    skNavItems.forEach(function (navItem) {
+      navItem.addEventListener("click", function () {
+        var idx  = +navItem.getAttribute("data-idx");
+        var navH = document.getElementById("skillsNav").getBoundingClientRect().height;
+        var top  = skPanels[idx].getBoundingClientRect().top + window.pageYOffset - navH;
+        window.scrollTo({ top: top, behavior: "smooth" });
+      });
+    });
+
+    /* ── Init: activate first panel ── */
+    skSetActive(0);
+  })();
+</script>
+
+</body>
+</html>

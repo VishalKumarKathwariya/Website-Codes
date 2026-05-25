@@ -1082,10 +1082,10 @@ body {
   justify-content: center;
   overflow: hidden;
 }
-.ceo-avatar-placeholder svg {
-  width: 72%;
-  fill: #a08060;
-  margin-bottom: -2px;
+.ceo-avatar-placeholder img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 .linkedin-badge {

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Latest Research – Patholab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      background: #fff;
+      color: #222;
+    }
+
+    /* ── SECTION ── */
+    .research-section {
+      padding: 70px 20px 80px;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ── */
+    .section-header {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0abf8e;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #0d1e2c;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: #7a8fa0;
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── CARDS GRID ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #e8f0f5;
+      transition: box-shadow .25s ease, transform .25s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,.1);
+      transform: translateY(-4px);
+    }
+
+    /* image */
+    .card-img {
+      width: 100%;
+      height: 185px;
+      overflow: hidden;
+    }
+
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .4s ease;
+    }
+
+    .card:hover .card-img img {
+      transform: scale(1.05);
+    }
+
+    /* body */
+    .card-body {
+      padding: 18px 18px 20px;
+    }
+
+    /* category + date row */
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .card-category {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0abf8e;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .meta-sep {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #c5d5e0;
+      flex-shrink: 0;
+    }
+
+    .card-date {
+      font-size: 12px;
+      color: #9ab0bf;
+    }
+
+    /* title */
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0d1e2c;
+      line-height: 1.45;
+      margin-bottom: 10px;
+      transition: color .2s;
+    }
+
+    .card:hover .card-title {
+      color: #0abf8e;
+    }
+
+    /* excerpt */
+    .card-excerpt {
+      font-size: 13px;
+      color: #7a8fa0;
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+
+    /* read more */
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0abf8e;
+      text-decoration: none;
+      transition: gap .2s;
+    }
+
+    .card-link svg {
+      width: 14px;
+      height: 14px;
+      transition: transform .2s;
+    }
+
+    .card:hover .card-link { gap: 8px; }
+    .card:hover .card-link svg { transform: translateX(2px); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 540px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .section-title { font-size: 26px; }
+      .research-section { padding: 50px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="research-section">
+
+  <!-- Header -->
+  <div class="section-header">
+    <p class="section-label">Research &amp; Innovation</p>
+    <h2 class="section-title">Our Latest Research</h2>
+    <p class="section-desc">
+      Stay updated with the latest findings and breakthroughs from the Patholab research team, shaping the future of diagnostics.
+    </p>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards-grid">
+
+    <!-- Card 1 -->
+    <div class="card">
+      <div class="card-img">
+        <img
+          src="https://images.unsplash.com/photo-1579154204601-01588f351e67?w=600&q=80"
+          alt="RNA Genomic Influenza Neurology"
+          loading="lazy"
+        />
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-category">Allergy</span>
+          <span class="meta-sep"></span>
+          <span class="card-date">January 25, 2023</span>
+        </div>
+        <h3 class="card-title">How RNA Genomic Influenza Affects Neurology</h3>
+        <p class="card-excerpt">
+          Exploring the neurological impact of RNA-based influenza strains through advanced laboratory analysis and clinical study.
+        </p>
+        <a href="#" class="card-link">
+          Read More
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card">
+      <div class="card-img">
+        <img
+          src="https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?w=600&q=80"
+          alt="Modern Vaccine Biology"
+          loading="lazy"
+        />
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-category">Genomics</span>
+          <span class="meta-sep"></span>
+          <span class="card-date">February 12, 2023</span>
+        </div>
+        <h3 class="card-title">Latest Innovation in Modern Vaccine Biology 2023</h3>
+        <p class="card-excerpt">
+          New mRNA adjuvant platforms are redefining vaccine efficacy timelines and pandemic preparedness across global health systems.
+        </p>
+        <a href="#" class="card-link">
+          Read More
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card">
+      <div class="card-img">
+        <img
+          src="https://images.unsplash.com/photo-1614935151651-0bea6508db6b?w=600&q=80"
+          alt="Importance of Reagents"
+          loading="lazy"
+        />
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-category">Diagnostics</span>
+          <span class="meta-sep"></span>
+          <span class="card-date">March 08, 2023</span>
+        </div>
+        <h3 class="card-title">Importance of Reagents in Medical Pathology</h3>
+        <p class="card-excerpt">
+          High-purity reagent standards directly influence diagnostic outcomes — Patholab outlines the critical benchmarks every lab must meet.
+        </p>
+        <a href="#" class="card-link">
+          Read More
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="card">
+      <div class="card-img">
+        <img
+          src="https://images.unsplash.com/photo-1576086213369-97a306d36557?w=600&q=80"
+          alt="Genome Pattern after COVID-19"
+          loading="lazy"
+        />
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-category">Genomics</span>
+          <span class="meta-sep"></span>
+          <span class="card-date">April 15, 2023</span>
+        </div>
+        <h3 class="card-title">The Changes in Genome Pattern after COVID-19</h3>
+        <p class="card-excerpt">
+          Post-COVID genomic drift studies reveal long-term cellular mutations, reshaping how we approach future personalised medicine.
+        </p>
+        <a href="#" class="card-link">
+          Read More
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div><!-- /cards-grid -->
+
+</section>
+
+</body>
+</html>

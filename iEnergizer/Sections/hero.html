@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hero – BPOC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #06060f;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 24px 80px;
+      overflow: hidden;
+      background: #06060f;
+    }
+
+    /* big blue radial glow at top – exactly like the screenshot */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 560px;
+      background: radial-gradient(ellipse 80% 70% at 50% 25%,
+        #2244ee 0%,
+        #1133cc 18%,
+        #0a1a80 38%,
+        rgba(6,18,80,0.4) 60%,
+        transparent 80%
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* pill badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(0,230,160,0.4);
+      border-radius: 100px;
+      padding: 5px 16px 5px 10px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #5effc8;
+      background: rgba(0,230,160,0.08);
+      margin-bottom: 28px;
+      letter-spacing: 0.01em;
+    }
+    .badge-dot {
+      width: 8px; height: 8px;
+      background: #00e5a0;
+      border-radius: 50%;
+    }
+
+    /* headline */
+    .hero-h1 {
+      font-size: clamp(2.2rem, 6vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+    }
+
+    .hero-h1 .green-line {
+      color: #00e09c;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* body copy */
+    .hero-p {
+      margin-top: 20px;
+      font-size: clamp(0.88rem, 1.8vw, 1.02rem);
+      font-weight: 400;
+      color: rgba(255,255,255,0.52);
+      max-width: 500px;
+      line-height: 1.65;
+    }
+
+    /* CTA */
+    .hero-cta { margin-top: 30px; }
+
+    .btn-primary {
+      display: inline-block;
+      background: #00cc88;
+      color: #001510;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 12px 28px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: background 0.18s, transform 0.15s;
+    }
+    .btn-primary:hover {
+      background: #00e59f;
+      transform: translateY(-1px);
+    }
+
+    /* ── responsive ── */
+    @media (max-width: 600px) {
+      .hero { padding: 80px 18px 60px; }
+      .hero::before { width: 100%; height: 50vh; }
+    }
+  </style>
+</head>
+<body>
+<section class="hero">
+  <div class="hero-content">
+    <span class="badge"><span class="badge-dot"></span>AI meets Human Expertise</span>
+    <h1 class="hero-h1">
+      Intelligent CX.
+      <span class="green-line">Engineered for Scale.</span>
+    </h1>
+    <p class="hero-p">A trusted partner in business process and CX transformation, combining deep human expertise with AI-driven intelligence to deliver seamless and scalable outcomes.</p>
+    <div class="hero-cta">
+      <a href="#" class="btn-primary">How We Scale</a>
+    </div>
+  </div>
+</section>
+</body>
+</html>
